@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_margin="16dp"
     xmlns:stream="http://schemas.android.com/apk/res-auto"
-    android:background="@color/black_color"
-    app:cardCornerRadius="10dp">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:backgroundTint="@color/primary_dark_color"
+    android:layout_width="match_parent"
+    android:layout_margin="4dp"
+    android:layout_height="100dp">
 
     <TextView
         android:id="@+id/tv_error"
@@ -15,33 +14,35 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="@string/error_occurred"
-        android:textColor="@color/white"
-        android:textSize="24dp" />
+        android:visibility="gone"
+        android:textColor="@color/black_color"
+        android:textSize="16sp" />
 
-    <LinearLayout
+
+    <com.longdo.mjpegviewer.MjpegView
+        android:id="@+id/mjpeg_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/black_color"
-        android:orientation="vertical"
-        tools:context=".fragments.CameraFragment">
+        android:visibility="gone"
+        android:background="@color/primary_dark_color"
+        stream:type="stream_default" />
 
-        <TextView
-            android:id="@+id/tv_cam_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top|start"
-            android:layout_margin="8dp"
-            android:maxLines="1"
-            android:textColor="@color/white"
-            android:textSize="24dp"
-            tools:text="@string/name" />
-
-        <com.longdo.mjpegviewer.MjpegView
-            android:id="@+id/mjpeg_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            stream:type="stream_default"/>
+    <ImageView
+        android:id="@+id/iv_placeholder"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_add_serv_cam" />
 
 
-    </LinearLayout>
+    <TextView
+        android:id="@+id/tv_cam_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|start"
+        android:layout_margin="4dp"
+        android:maxLines="1"
+        android:textColor="@color/white"
+        android:textSize="16dp"
+        tools:text="@string/name" />
 </androidx.cardview.widget.CardView>

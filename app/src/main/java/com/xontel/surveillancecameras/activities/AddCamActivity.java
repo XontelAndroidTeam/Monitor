@@ -3,6 +3,8 @@ package com.xontel.surveillancecameras.activities;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.EditText;
 
@@ -94,6 +96,9 @@ public class AddCamActivity extends BaseActivity implements MainMvpView {
 
     @Override
     public void onUpdatingCamera() {
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra(CamerasActivity.KEY_CAMERAS, editedCam);
+        setResult(Activity.RESULT_OK, resultIntent);
         finish();
     }
 

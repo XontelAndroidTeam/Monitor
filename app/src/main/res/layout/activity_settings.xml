@@ -146,6 +146,46 @@
                 <!--            android:hint="@string/select_screen_rotation"-->
 
             </LinearLayout>
+            <LinearLayout
+                android:id="@+id/ll_grid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="32dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="100dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/grid_count"
+                    android:textColor="@color/white"
+                    android:textSize="34sp" />
+
+                <com.skydoves.powerspinner.PowerSpinnerView
+                    android:id="@+id/sp_grid_count"
+                    android:layout_width="250dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/bordered_bg"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white"
+                    android:textSize="14.5sp"
+                    app:spinner_arrow_gravity="end"
+                    app:spinner_arrow_padding="8dp"
+                    app:spinner_divider_color="@color/white"
+                    app:spinner_divider_show="true"
+                    app:spinner_divider_size="0.4dp"
+                    app:spinner_item_array="@array/grid_count"
+                    app:spinner_popup_animation="dropdown"
+                    app:spinner_popup_background="@color/primary_color_2"
+                    app:spinner_popup_elevation="14dp" />
+
+                <!--            android:hint="@string/select_screen_rotation"-->
+
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 </layout>

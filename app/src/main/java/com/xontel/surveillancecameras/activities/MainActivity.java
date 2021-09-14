@@ -6,27 +6,35 @@ import androidx.recyclerview.widget.GridLayoutManager;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.util.Log;
 
 import com.xontel.surveillancecameras.R;
 import com.xontel.surveillancecameras.adapters.CamsAdapter;
 import com.xontel.surveillancecameras.adapters.GridAdapter;
+import com.xontel.surveillancecameras.adapters.PagerAdapter;
 import com.xontel.surveillancecameras.base.BaseActivity;
 import com.xontel.surveillancecameras.databinding.ActivityMainBinding;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
+import com.xontel.surveillancecameras.fragments.CameraFragment;
+import com.xontel.surveillancecameras.fragments.GridFragment;
 import com.xontel.surveillancecameras.presenters.MainMvpPresenter;
 import com.xontel.surveillancecameras.presenters.MainMvpView;
+import com.xontel.surveillancecameras.utils.CommonUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
-public class MainActivity extends BaseActivity implements MainMvpView, CamsAdapter.Callback {
-    private CamsAdapter camsAdapter ;
-    private GridAdapter gridAdapter;
-    private ActivityMainBinding binding ;
+public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAdapter.Callback*/ {
+    private PagerAdapter pagerAdapter;
+    private ActivityMainBinding binding;
+    private int gridCount;
+    private List<IpCam> cams = new ArrayList<>();
     @Inject
-    MainMvpPresenter<MainMvpView> mPresenter ;
+    MainMvpPresenter<MainMvpView> mPresenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,16 +57,25 @@ public class MainActivity extends BaseActivity implements MainMvpView, CamsAdapt
     }
 
     private void initUI() {
-        binding.llSettings.setOnClickListener(v->{
+        gridCount = getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, MODE_PRIVATE).getInt(CommonUtils.KEY_GRID_COUNT, GridFragment.DEFAULT_GRID_COUNT);
+        binding.tvGridCount.setText(String.valueOf(gridCount));
+        binding.llSettings.setOnClickListener(v -> {
             startActivity(new Intent(this, SettingsActivity.class));
         });
-        binding.llSlideShow.setOnClickListener(v->{
+        binding.llSlideShow.setOnClickListener(v -> {
             Intent intent = new Intent(this, CamerasActivity.class);
-            intent.putParcelableArrayListExtra(CamerasActivity.KEY_CAMERAS, (ArrayList)camsAdapter.getCams());
+            intent.putParcelableArrayListExtra(CamerasActivity.KEY_CAMERAS, (ArrayList) cams);
             startActivity(intent);
         });
+        binding.tvGridCount.setOnClickListener(v->{
+            gridCount =(int) Math.pow(((((int)Math.sqrt(gridCount))% 4) + 1), 2);
+            binding.tvGridCount.setText(String.valueOf(gridCount));
+            getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, MODE_PRIVATE).edit().putInt(CommonUtils.KEY_GRID_COUNT, gridCount).apply();
+            updateViewPager();
+
+        });
+        setupCamerasPager();
 //        setupCamsGrid();
-        setupCamsList();
     }
 
     private void setupCamsGrid() {
@@ -67,47 +84,43 @@ public class MainActivity extends BaseActivity implements MainMvpView, CamsAdapt
 //        populateCamsList();
     }
 
-    public ArrayList<IpCam> populateDummyCameras(){
-        ArrayList<IpCam> cams = new ArrayList<>();
-        for(int i = 1 ; i<= 1 ; i++){
-            cams.add(new IpCam("http://192.168.1.1ideo.cgi", "cam_"+i, "dummy"));
+
+//    private void setupCamsList() {
+//        camsAdapter = new CamsAdapter(new ArrayList<>(), this, this);
+//        binding.rvCams.setAdapter(camsAdapter);
+//        binding.rvCams.setLayoutManager(new GridLayoutManager(this, 4));
+////        populateCamsList();
+
+//    }
+    private void setupCamerasPager() {
+        pagerAdapter = new PagerAdapter(getSupportFragmentManager());
+        GridFragment gridFragment = new GridFragment();
+        pagerAdapter.addFragment(gridFragment);
+        binding.vpSlider.setAdapter(pagerAdapter);
+        binding.vpSlider.setOffscreenPageLimit(1);
+        binding.dotsIndicator.setViewPager(binding.vpSlider);
+    }
+
+    private void updateViewPager() {
+        pagerAdapter.getmFragmentList().clear();
+        for(int i = 0  ; i< cams.size() ; i+=gridCount){
+            List<IpCam> subCams = cams.subList(i, Math.min(cams.size(), i+gridCount));
+            Log.e("subCams", subCams.size()+"");
+            GridFragment gridFragment =  GridFragment.newInstance(subCams);
+            pagerAdapter.addFragment(gridFragment);
+
         }
-        return cams;
-    }
-
-    private void setupCamsList() {
-        camsAdapter = new CamsAdapter(new ArrayList<>(), this, this);
-        binding.rvCams.setAdapter(camsAdapter);
-        binding.rvCams.setLayoutManager(new GridLayoutManager(this, 2));
-//        populateCamsList();
-    }
-
-    void populateCamsList(){
-        List<IpCam> cams = new ArrayList<>();
-        cams.add(new IpCam("http://192.168.1.152:8080/video.cgi", "cam1", "my cam"));
-        cams.add(new IpCam("http://192.168.1.152:8080/video.cgi", "cam2", "my cam"));
-        cams.add(new IpCam("http://192.168.1.152:8080/video.cgi", "cam3", "my cam"));
-        cams.add(new IpCam("http://192.168.1.152:8080/video.cgi", "cam4", "my cam"));
-        cams.add(new IpCam("http://192.168.1.152:8080/video.cgi", "cam5", "my cam"));
-        cams.add(new IpCam("http://192.168.1.152:8080/video.cgi", "cam6", "my cam"));
-        cams.add(new IpCam("http://192.168.1.152:8080/video.cgi", "cam7", "my cam"));
-        cams.add(new IpCam("http://192.168.1.152:8080/video.cgi", "cam8", "my cam"));
-        cams.add(new IpCam("http://192.168.1.152:8080/video.cgi", "cam9", "my cam"));
-        cams.add(new IpCam("http://192.168.1.152:8080/video.cgi", "cam10", "my cam"));
-        cams.add(new IpCam("http://192.168.1.152:8080/video.cgi", "cam11", "my cam"));
-        cams.add(new IpCam("http://192.168.1.152:8080/video.cgi", "cam12", "my cam"));
-        cams.add(new IpCam("http://192.168.1.152:8080/video.cgi", "cam13", "my cam"));
-        cams.add(new IpCam("http://192.168.1.152:8080/video.cgi", "cam14", "my cam"));
-        cams.add(new IpCam("http://192.168.1.152:8080/video.cgi", "cam15", "my cam"));
-        cams.add(new IpCam("http://192.168.1.152:8080/video.cgi", "cam16", "my cam"));
-        camsAdapter.addItems(cams);
+        binding.vpSlider.setAdapter(pagerAdapter);
+        binding.vpSlider.setOffscreenPageLimit(1);
+        binding.dotsIndicator.setViewPager(binding.vpSlider);
 
     }
 
-    @Override
-    public void onCamClicked(int position) {
+//    @Override
+//    public void onCamClicked(int position) {
+//
 
-    }
+//    }
 
     @Override
     public void onInsertingCamera() {
@@ -131,10 +144,11 @@ public class MainActivity extends BaseActivity implements MainMvpView, CamsAdapt
 
     @Override
     public void onGettingAllCameras(List<IpCam> response) {
-        camsAdapter.addItems(response);
-        camsAdapter.notifyDataSetChanged();
-//        gridAdapter.addItems(response);
-//        gridAdapter.notifyDataSetChanged();
+        Log.e("cams number", response.size()+"");
+        cams.clear();
+        cams.addAll(response);
+        updateViewPager();
+
     }
 
     @Override

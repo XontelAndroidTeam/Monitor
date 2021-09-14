@@ -26,6 +26,10 @@ public class IpCam implements Parcelable  {
         this.description = description;
     }
 
+    @Ignore
+    public IpCam() {
+    }
+
     protected IpCam(Parcel in) {
         id = in.readInt();
         url = in.readString();

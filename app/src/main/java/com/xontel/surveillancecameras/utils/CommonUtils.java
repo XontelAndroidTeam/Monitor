@@ -2,6 +2,7 @@ package com.xontel.surveillancecameras.utils;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
@@ -13,6 +14,7 @@ public class CommonUtils {
     public static final String SHARED_PREFERENCES_FILE = "com.xontel.surveillancecameras.preferences.file";
     public static final String KEY_AUTO_PREVIEW = "auto_preview";
     public static final String KEY_SLIDE_INTERVAL_INDEX = "slide_interval_index";
+    public static final String KEY_GRID_COUNT = "grid_count";
 
     // America/New jersey => New jersey
     public static String cityNameFromZoneId(String zoneId){
@@ -56,4 +58,6 @@ public class CommonUtils {
         progressDialog.setCanceledOnTouchOutside(false);
         return progressDialog;
     }
+
+
 }

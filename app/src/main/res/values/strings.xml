@@ -25,6 +25,8 @@
     <string name="are_you_sure_delete">Are you sure you want to delete this camera ?</string>
     <string name="cam_details">Camera details</string>
     <string name="ok">ok</string>
+    <string name="grid_count">Grid count</string>
+    <string name="live_cameras">Live cameras</string>
 
 
 </resources>

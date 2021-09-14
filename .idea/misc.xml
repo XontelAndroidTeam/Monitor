@@ -3,12 +3,21 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/A.Khadir/AndroidStudioProjects/Surveillancecameras/app/src/main/res/drawable/ic_add_serv_cam.xml" value="0.2703125" />
+        <entry key="..\:/Users/A.Khadir/AndroidStudioProjects/Surveillancecameras/app/src/main/res/drawable/ic_baseline_add_24.xml" value="0.2703125" />
+        <entry key="..\:/Users/A.Khadir/AndroidStudioProjects/Surveillancecameras/app/src/main/res/drawable/ic_baseline_add_a_photo_24.xml" value="0.2703125" />
+        <entry key="..\:/Users/A.Khadir/AndroidStudioProjects/Surveillancecameras/app/src/main/res/drawable/ic_baseline_person_add_alt_1_24.xml" value="0.2703125" />
+        <entry key="..\:/Users/A.Khadir/AndroidStudioProjects/Surveillancecameras/app/src/main/res/drawable/ic_cctv.xml" value="0.2703125" />
+        <entry key="..\:/Users/A.Khadir/AndroidStudioProjects/Surveillancecameras/app/src/main/res/drawable/ic_svg.xml" value="0.2703125" />
         <entry key="..\:/Users/A.Khadir/AndroidStudioProjects/Surveillancecameras/app/src/main/res/layout/activity_cameras.xml" value="0.25416666666666665" />
-        <entry key="..\:/Users/A.Khadir/AndroidStudioProjects/Surveillancecameras/app/src/main/res/layout/activity_main.xml" value="0.1671195652173913" />
+        <entry key="..\:/Users/A.Khadir/AndroidStudioProjects/Surveillancecameras/app/src/main/res/layout/activity_main.xml" value="0.264" />
         <entry key="..\:/Users/A.Khadir/AndroidStudioProjects/Surveillancecameras/app/src/main/res/layout/activity_settings.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/A.Khadir/AndroidStudioProjects/Surveillancecameras/app/src/main/res/layout/dialog_cam_details.xml" value="0.4" />
         <entry key="..\:/Users/A.Khadir/AndroidStudioProjects/Surveillancecameras/app/src/main/res/layout/fragment_camera.xml" value="0.1671195652173913" />
-        <entry key="..\:/Users/A.Khadir/AndroidStudioProjects/Surveillancecameras/app/src/main/res/layout/item_cam.xml" value="0.1671195652173913" />
+        <entry key="..\:/Users/A.Khadir/AndroidStudioProjects/Surveillancecameras/app/src/main/res/layout/fragment_grid.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/A.Khadir/AndroidStudioProjects/Surveillancecameras/app/src/main/res/layout/item_cam.xml" value="0.264" />
+        <entry key="..\:/Users/A.Khadir/AndroidStudioProjects/Surveillancecameras/app/src/main/res/menu/main_menu.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/A.Khadir/AndroidStudioProjects/Surveillancecameras/app/src/main/res/menu/toolbar_menu.xml" value="0.25416666666666665" />
       </map>
     </option>
   </component>

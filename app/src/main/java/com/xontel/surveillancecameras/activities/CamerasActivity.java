@@ -1,15 +1,18 @@
 package com.xontel.surveillancecameras.activities;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Html;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -31,10 +34,11 @@ import javax.inject.Inject;
 
 public class CamerasActivity extends BaseActivity implements MainMvpView {
     public static final String KEY_CAMERAS = "cameras";
+    private static final int REQUEST_CODE_EDIT_CAM = 44;
     private List<IpCam> cams = new ArrayList<>();
     private ActivityCamerasBinding binding;
     int slideInterval = 2 ;
-    static int i = 0;
+    int selectedPage = 0;
     private final Handler handler = new Handler();
     PagerAdapter pagerAdapter;
     @Inject
@@ -110,9 +114,36 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
         int camPosition = binding.vpSlider.getCurrentItem();
         Intent intent = new Intent(this, AddCamActivity.class);
         intent.putExtra(AddCamActivity.KEY_CAMERA, cams.get(camPosition));
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_CODE_EDIT_CAM);
     }
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode){
+            case REQUEST_CODE_EDIT_CAM:
+                if(resultCode == Activity.RESULT_OK && data != null){
+                    Log.e("TAG", "onActivityResult");
+                    IpCam ipCam = data.getParcelableExtra(KEY_CAMERAS);
+                    updateCurrentCam(ipCam);
+                }
+        }
+    }
+
+    private void updateCurrentCam(IpCam ipCam) {
+        replaceCamById(ipCam);
+        setupCamerasPager();
+    }
+
+    private void replaceCamById(IpCam ipCam) {
+        for(int i =0 ; i<cams.size();i++){
+            if(ipCam.getId() == cams.get(i).getId()){
+                cams.set(i, ipCam);
+                break;
+            }
+        }
+    }
 
     private void deleteCam() {
         int camPosition = binding.vpSlider.getCurrentItem();
@@ -139,6 +170,7 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
             onBackPressed();
         });
         setupCamerasPager();
+        checkPreview();
     }
 
     private void setupCamerasPager() {
@@ -148,22 +180,22 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
             pagerAdapter.addFragment(cameraFragment);
         }
         binding.vpSlider.setAdapter(pagerAdapter);
-        pagerAdapter.notifyDataSetChanged();
         binding.vpSlider.setOffscreenPageLimit(1);
-        if (cams.size() > 1)
+        if (cams.size()>1)
             binding.dotsIndicator.setViewPager(binding.vpSlider);
 
-       checkPreview();
+
     }
 
     void checkPreview(){
         boolean autoPreview = getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE)
                 .getBoolean(CommonUtils.KEY_AUTO_PREVIEW, true);
         if (autoPreview) {
-            slideInterval = Integer.parseInt(getResources().getStringArray(R.array.intervals)[getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE)
-                    .getInt(CommonUtils.KEY_SLIDE_INTERVAL_INDEX, 0)].split(" ")[0]);
+            int slideShowIntervalChoiceIndex = getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE)
+                    .getInt(CommonUtils.KEY_SLIDE_INTERVAL_INDEX, 0);
+            slideInterval = Integer.parseInt(getResources().getStringArray(R.array.intervals)[slideShowIntervalChoiceIndex].split(" ")[0]);
+            Log.e("TAG", "checkPreview: "+slideInterval);
             handler.post(viewPagerVisibleScroll);
-
         }else{
             handler.removeCallbacks(viewPagerVisibleScroll);
         }
@@ -171,18 +203,18 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
 
     @Override
     protected void onResume() {
-       checkPreview();
         super.onResume();
     }
 
     Runnable viewPagerVisibleScroll = new Runnable() {
         @Override
         public void run() {
-            if (i <= pagerAdapter.getCount()) {
-                binding.vpSlider.setCurrentItem(i%pagerAdapter.getCount(), true);
-                handler.postDelayed(viewPagerVisibleScroll, slideInterval* 1000);
-                i = (i+1)%pagerAdapter.getCount();
+            selectedPage = binding.vpSlider.getCurrentItem();
+            if (selectedPage <= pagerAdapter.getCount()) {
+                selectedPage = (selectedPage+1) % pagerAdapter.getCount() ;
+                binding.vpSlider.setCurrentItem(selectedPage);
             }
+            handler.postDelayed(viewPagerVisibleScroll, slideInterval* 1000);
         }
     };
 
