@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.xontel.surveillancecameras.R;
+import com.xontel.surveillancecameras.activities.MainActivity;
 import com.xontel.surveillancecameras.adapters.CamsAdapter;
 import com.xontel.surveillancecameras.databinding.FragmentGridBinding;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
@@ -35,12 +36,7 @@ public class GridFragment extends Fragment {
     private CamsAdapter gridAdapter;
     private FragmentGridBinding binding;
     private SharedPreferences sharedPreferences ;
-    SharedPreferences.OnSharedPreferenceChangeListener listener = (sharedPreferences, key) -> {
-        if(key.equals(CommonUtils.KEY_GRID_COUNT)){
-//            gridCount = sharedPreferences.getInt(CommonUtils.KEY_GRID_COUNT, DEFAULT_GRID_COUNT);
-//            setupCamGrid();
-        }
-    };
+
 
     public GridFragment() {
         // Required empty public constructor
@@ -74,7 +70,7 @@ public class GridFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         sharedPreferences = getContext().getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE);
-        sharedPreferences.registerOnSharedPreferenceChangeListener(listener);
+
         gridCount = getContext().getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE).getInt(CommonUtils.KEY_GRID_COUNT, DEFAULT_GRID_COUNT);
         if (getArguments() != null) {
             actualCams = getArguments().getParcelableArrayList(KEY_CAMS);
@@ -83,7 +79,7 @@ public class GridFragment extends Fragment {
 
     @Override
     public void onDestroy() {
-        sharedPreferences.unregisterOnSharedPreferenceChangeListener(listener);
+
         super.onDestroy();
 
     }
@@ -109,9 +105,10 @@ public class GridFragment extends Fragment {
 
 
     private void setupCamGrid() {
+        int allCamsSize = ((MainActivity)getContext()).getCams().size();
         allCams.clear();
         allCams.addAll(actualCams);
-        if (actualCams.size() < gridCount) {
+        if (actualCams.size() < gridCount && allCamsSize < 16) {
             for (int i = actualCams.size(); i < gridCount; i++) { // completing the grid with empty items till filling them
                 allCams.add(new IpCam());
             }

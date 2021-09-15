@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="600dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:backgroundTint="@color/primary_dark_color"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="2dp">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="600dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="24dp">
+
+                <TextView
+                    style="@style/status_bar_font"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:text="@string/settings"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/white"
+                    android:textSize="24sp" />
+                <LinearLayout
+                    android:id="@+id/ll_auto_preview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="32dp"
+                    android:gravity="start"
+                    android:orientation="horizontal"
+                    >
+
+                    <TextView
+                        android:text="@string/auto_preview"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textColor="@color/white"
+                        android:textSize="20sp" />
+
+                    <Switch
+                        android:id="@+id/sw_auto_preview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="100dp"
+                        android:layout_marginEnd="30dp"
+                        android:gravity="center"
+                        android:scaleX="1.5"
+                        android:scaleY="1.5"
+                        android:thumb="@drawable/thumb_selector"
+                        android:track="@drawable/track_selector" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_slide_show"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="32dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:text="@string/slide_show_interval"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textColor="@color/white"
+                        android:textSize="20sp" />
+
+                    <com.skydoves.powerspinner.PowerSpinnerView
+                        android:id="@+id/sp_slide_show_interval"
+                        android:layout_width="250dp"
+                        android:layout_height="60dp"
+                        android:background="@drawable/bordered_bg"
+                        android:backgroundTint="@color/white"
+                        android:gravity="center"
+                        android:padding="10dp"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/white"
+                        android:textSize="14.5sp"
+                        app:spinner_arrow_gravity="end"
+                        app:spinner_arrow_padding="8dp"
+                        app:spinner_divider_color="@color/white"
+                        app:spinner_divider_show="true"
+                        app:spinner_divider_size="0.4dp"
+                        app:spinner_item_array="@array/intervals"
+                        app:spinner_popup_animation="dropdown"
+                        app:spinner_popup_background="@color/grey_color"
+                        app:spinner_popup_elevation="14dp" />
+
+                    <!--            android:hint="@string/select_screen_rotation"-->
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_settings_buttons"
+                    android:layout_width="match_parent"
+                    android:gravity="end|bottom"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btn_ok"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:background="@color/accent_color"
+                        android:text="@string/ok"
+                        android:layout_marginHorizontal="24dp"
+                        android:textColor="@color/white" />
+
+                    <Button
+                        android:id="@+id/btn_cancel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:background="@color/accent_color"
+                        android:text="@string/cancel"
+                        android:textColor="@color/white" />
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+    </androidx.cardview.widget.CardView>
+</layout>

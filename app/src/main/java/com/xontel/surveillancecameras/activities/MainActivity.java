@@ -5,6 +5,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import android.content.Intent;
+import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
@@ -51,6 +52,10 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
         mPresenter.onDetach();
     }
 
+    public List<IpCam> getCams() {
+        return cams;
+    }
+
     @Override
     protected void setUp() {
 
@@ -59,16 +64,18 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
     private void initUI() {
         gridCount = getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, MODE_PRIVATE).getInt(CommonUtils.KEY_GRID_COUNT, GridFragment.DEFAULT_GRID_COUNT);
         binding.tvGridCount.setText(String.valueOf(gridCount));
-        binding.llSettings.setOnClickListener(v -> {
-            startActivity(new Intent(this, SettingsActivity.class));
+        binding.ivAddCam.setOnClickListener(v -> {
+           addNewCam();
+
         });
-        binding.llSlideShow.setOnClickListener(v -> {
+        binding.tvSlideShow.setOnClickListener(v -> {
             Intent intent = new Intent(this, CamerasActivity.class);
             intent.putParcelableArrayListExtra(CamerasActivity.KEY_CAMERAS, (ArrayList) cams);
             startActivity(intent);
         });
         binding.tvGridCount.setOnClickListener(v->{
             gridCount =(int) Math.pow(((((int)Math.sqrt(gridCount))% 4) + 1), 2);
+            Log.e("TAG", "gridCount: "+gridCount);
             binding.tvGridCount.setText(String.valueOf(gridCount));
             getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, MODE_PRIVATE).edit().putInt(CommonUtils.KEY_GRID_COUNT, gridCount).apply();
             updateViewPager();
@@ -76,6 +83,14 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
         });
         setupCamerasPager();
 //        setupCamsGrid();
+    }
+
+    public void addNewCam() {
+        if(cams.size() < 16){
+            startActivity(new Intent(this, AddCamActivity.class));
+        }else{
+            showMessage(R.string.cameras_limit);
+        }
     }
 
     private void setupCamsGrid() {
@@ -102,7 +117,7 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
     }
 
     private void updateViewPager() {
-        pagerAdapter.getmFragmentList().clear();
+        pagerAdapter.getFragmentList().clear();
         for(int i = 0  ; i< cams.size() ; i+=gridCount){
             List<IpCam> subCams = cams.subList(i, Math.min(cams.size(), i+gridCount));
             Log.e("subCams", subCams.size()+"");
@@ -112,7 +127,9 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
         }
         binding.vpSlider.setAdapter(pagerAdapter);
         binding.vpSlider.setOffscreenPageLimit(1);
-        binding.dotsIndicator.setViewPager(binding.vpSlider);
+
+        binding.dotsIndicator.refreshDots();
+
 
     }
 

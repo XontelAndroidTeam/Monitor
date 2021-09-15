@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">كامير البث الحي</string>
     <string name="settings">الإعدادات</string>
-    <string name="slided_show">عرض الشرائح</string>
+    <string name="slide_show">عرض الشرائح</string>
     <string name="add_camera">أضف كاميرا</string>
     <string name="click_to_add">إضغط للإضافة</string>
     <string name="auto_preview">عرض تلقائي</string>
@@ -24,5 +24,7 @@
     <string name="are_you_sure_delete">هل تريد بالفعل حذف هذه الكاميرا؟</string>
     <string name="ok">موافق</string>
     <string name="grid_count">Grid count</string>
-    <string name="live_cameras">Live cameras</string>
+    <string name="live_cameras">كاميرات البث الحي</string>
+    <string name="cancel">إلغاء الأمر</string>
+    <string name="cameras_limit">مسموح فقط ب 16 كاميرا</string>
 </resources>

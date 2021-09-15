@@ -24,7 +24,7 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
 
     private final List<Fragment> mFragmentList = new ArrayList<>();
 
-    public List<Fragment> getmFragmentList() {
+    public List<Fragment> getFragmentList() {
         return mFragmentList;
     }
 
