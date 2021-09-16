@@ -14,6 +14,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.github.niqdev.mjpeg.Mjpeg;
+import com.github.niqdev.mjpeg.MjpegInputStream;
 import com.xontel.surveillancecameras.R;
 import com.xontel.surveillancecameras.activities.MainActivity;
 import com.xontel.surveillancecameras.adapters.CamsAdapter;
@@ -26,6 +28,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Observable;
+import rx.Scheduler;
+import rx.schedulers.Schedulers;
+
 public class GridFragment extends Fragment {
 
     public static final String KEY_CAMS = "cams";
@@ -35,26 +41,34 @@ public class GridFragment extends Fragment {
     private ArrayList<IpCam> allCams = new ArrayList<>();
     private CamsAdapter gridAdapter;
     private FragmentGridBinding binding;
-    private SharedPreferences sharedPreferences ;
+    private Mjpeg mjpeg ;
+    private ArrayList<Observable<MjpegInputStream>> observables = new ArrayList<>() ;
 
 
     public GridFragment() {
         // Required empty public constructor
     }
 
+
     @Override
     public void onResume() {
-
+//        initializeObservable();
+//        gridAdapter.notifyDataSetChanged();
         super.onResume();
     }
 
     @Override
     public void onPause() {
-
         super.onPause();
+//        stopObservables();
+//        gridAdapter.notifyDataSetChanged();
     }
 
-
+    private void stopObservables() {
+        for(int i =0 ; i<observables.size() ; i++){
+            observables.get(i).unsubscribeOn(Schedulers.io());
+        }
+    }
 
 
     public static GridFragment newInstance(List<IpCam> cams) {
@@ -69,11 +83,16 @@ public class GridFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        sharedPreferences = getContext().getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE);
-
+//        mjpeg = Mjpeg.newInstance();
         gridCount = getContext().getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE).getInt(CommonUtils.KEY_GRID_COUNT, DEFAULT_GRID_COUNT);
         if (getArguments() != null) {
             actualCams = getArguments().getParcelableArrayList(KEY_CAMS);
+        }
+    }
+
+    private void initializeObservable() {
+        for(int i =0 ; i<actualCams.size();i++){
+            observables.add(mjpeg.open(actualCams.get(i).getUrl()));
         }
     }
 
@@ -99,6 +118,7 @@ public class GridFragment extends Fragment {
 
     }
 
+
     private void initUI() {
         setupCamGrid();
     }
@@ -113,9 +133,10 @@ public class GridFragment extends Fragment {
                 allCams.add(new IpCam());
             }
         }
-        gridAdapter = new CamsAdapter(allCams, getContext(), gridCount);
+        gridAdapter = new CamsAdapter(allCams, getContext(), observables,  gridCount);
         binding.rvGrid.setLayoutManager(new GridLayoutManager(getContext(), (int) Math.sqrt(gridCount)));
         binding.rvGrid.setAdapter(gridAdapter);
 
     }
+
 }

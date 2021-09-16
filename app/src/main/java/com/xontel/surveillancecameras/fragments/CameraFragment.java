@@ -7,9 +7,11 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.github.niqdev.mjpeg.DisplayMode;
 import com.github.niqdev.mjpeg.Mjpeg;
@@ -24,11 +26,12 @@ import rx.functions.Action1;
 
 public class CameraFragment extends Fragment {
 
+
     private static final String KEY_CAM_INFO = "cam_info";
 
     private IpCam cam;
 
-    private FragmentCameraBinding binding ;
+    private FragmentCameraBinding binding;
 
     public CameraFragment() {
         // Required empty public constructor
@@ -42,8 +45,6 @@ public class CameraFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
-
-
 
 
     @Override
@@ -63,18 +64,18 @@ public class CameraFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(@NonNull @NotNull View view, @Nullable  Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull @NotNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initUI();
-        
+
     }
 
     private void initUI() {
         setupCamView();
     }
+
     @Override
     public void onResume() {
-        binding.mjpegView.setUrl(cam.getUrl());
         binding.mjpegView.startStream();
         super.onResume();
     }
@@ -83,10 +84,16 @@ public class CameraFragment extends Fragment {
     public void onPause() {
         binding.mjpegView.stopStream();
         super.onPause();
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 
     private void setupCamView() {
-         binding.tvCamName.setText(cam.getName());
+        binding.tvCamName.setText(cam.getName());
         binding.mjpegView.setAdjustHeight(true);
         binding.mjpegView.setAdjustWidth(true);
         binding.mjpegView.setMode(MjpegView.MODE_FIT_WIDTH);
@@ -95,5 +102,20 @@ public class CameraFragment extends Fragment {
         binding.mjpegView.setRecycleBitmap(true);
         binding.mjpegView.startStream();
 
+
+//        int TIMEOUT = 5; //seconds
+//
+//        Mjpeg.newInstance()
+//                .open(cam.getUrl(), TIMEOUT).subscribe(inputStream -> {
+//                    binding.mjpegView.setSource(inputStream);
+//                    binding.mjpegView.setDisplayMode(DisplayMode.FULLSCREEN);
+//                    binding.mjpegView.showFps(true);
+//                }, throwable -> {
+//                    binding.tvError.setVisibility(View.VISIBLE);
+//                    Log.e(getClass().getSimpleName(), "mjpeg error", throwable);
+////                    Toast.makeText(getContext(), "Error", Toast.LENGTH_LONG).show();
+//                });
+
     }
+
 }

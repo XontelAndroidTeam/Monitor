@@ -8,15 +8,7 @@
     android:layout_margin="4dp"
     android:layout_height="100dp">
 
-    <TextView
-        android:id="@+id/tv_error"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/error_occurred"
-        android:visibility="gone"
-        android:textColor="@color/black_color"
-        android:textSize="16sp" />
+
 
 
     <com.longdo.mjpegviewer.MjpegView
@@ -26,6 +18,12 @@
         android:visibility="gone"
         android:background="@color/primary_dark_color"
         stream:type="stream_default" />
+<!--    <com.github.niqdev.mjpeg.MjpegSurfaceView-->
+<!--        android:id="@+id/mjpeg_view"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:visibility="gone"-->
+<!--        stream:type="stream_default" />-->
 
     <ImageView
         android:id="@+id/iv_placeholder"
@@ -45,4 +43,13 @@
         android:textColor="@color/white"
         android:textSize="16dp"
         tools:text="@string/name" />
+    <TextView
+        android:id="@+id/tv_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/error_occurred"
+        android:visibility="gone"
+        android:textColor="@color/white"
+        android:textSize="16sp" />
 </androidx.cardview.widget.CardView>

@@ -52,6 +52,11 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
         mPresenter.onDetach();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
     public List<IpCam> getCams() {
         return cams;
     }

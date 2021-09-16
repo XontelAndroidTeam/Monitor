@@ -3,13 +3,13 @@ plugins {
 }
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "com.xontel.surveillancecameras"
         minSdkVersion 27
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode 1
         versionName "1.0"
 
@@ -50,6 +50,8 @@ dependencies {
     implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
     implementation 'io.reactivex.rxjava3:rxjava:3.0.0'
     implementation 'com.github.perthcpe23:android-mjpeg-view:v1.0.9'
+
+    implementation 'com.github.niqdev:ipcam-view:2.1.0'
 
     //retrofit
     implementation "com.squareup.retrofit2:retrofit:2.9.0"
