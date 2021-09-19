@@ -70,7 +70,7 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
         gridCount = getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, MODE_PRIVATE).getInt(CommonUtils.KEY_GRID_COUNT, GridFragment.DEFAULT_GRID_COUNT);
         binding.tvGridCount.setText(String.valueOf(gridCount));
         binding.ivAddCam.setOnClickListener(v -> {
-           addNewCam();
+            addNewCam();
 
         });
         binding.tvSlideShow.setOnClickListener(v -> {
@@ -78,9 +78,9 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
             intent.putParcelableArrayListExtra(CamerasActivity.KEY_CAMERAS, (ArrayList) cams);
             startActivity(intent);
         });
-        binding.tvGridCount.setOnClickListener(v->{
-            gridCount =(int) Math.pow(((((int)Math.sqrt(gridCount))% 4) + 1), 2);
-            Log.e("TAG", "gridCount: "+gridCount);
+        binding.tvGridCount.setOnClickListener(v -> {
+            gridCount = (int) Math.pow(((((int) Math.sqrt(gridCount)) % 4) + 1), 2);
+            Log.e("TAG", "gridCount: " + gridCount);
             binding.tvGridCount.setText(String.valueOf(gridCount));
             getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, MODE_PRIVATE).edit().putInt(CommonUtils.KEY_GRID_COUNT, gridCount).apply();
             updateViewPager();
@@ -91,9 +91,9 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
     }
 
     public void addNewCam() {
-        if(cams.size() < 16){
+        if (cams.size() < 16) {
             startActivity(new Intent(this, AddCamActivity.class));
-        }else{
+        } else {
             showMessage(R.string.cameras_limit);
         }
     }
@@ -111,7 +111,7 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
 //        binding.rvCams.setLayoutManager(new GridLayoutManager(this, 4));
 ////        populateCamsList();
 
-//    }
+    //    }
     private void setupCamerasPager() {
         pagerAdapter = new PagerAdapter(getSupportFragmentManager());
         GridFragment gridFragment = new GridFragment();
@@ -122,18 +122,22 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
     }
 
     private void updateViewPager() {
-        pagerAdapter.getFragmentList().clear();
-        for(int i = 0  ; i< cams.size() ; i+=gridCount){
-            List<IpCam> subCams = cams.subList(i, Math.min(cams.size(), i+gridCount));
-            Log.e("subCams", subCams.size()+"");
-            GridFragment gridFragment =  GridFragment.newInstance(subCams);
-            pagerAdapter.addFragment(gridFragment);
+        if(cams.size() > 0) {
+            pagerAdapter.getFragmentList().clear();
+            for (int i = 0; i < cams.size(); i += gridCount) {
+                List<IpCam> subCams = cams.subList(i, Math.min(cams.size(), i + gridCount));
+                Log.e("subCams", subCams.size() + "");
+                GridFragment gridFragment = GridFragment.newInstance(subCams);
+                pagerAdapter.addFragment(gridFragment);
 
+            }
+            binding.vpSlider.setAdapter(pagerAdapter);
+            binding.vpSlider.setOffscreenPageLimit(1);
+
+            binding.dotsIndicator.refreshDots();
+        }else{
+            setupCamerasPager();
         }
-        binding.vpSlider.setAdapter(pagerAdapter);
-        binding.vpSlider.setOffscreenPageLimit(1);
-
-        binding.dotsIndicator.refreshDots();
 
 
     }
@@ -166,7 +170,7 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
 
     @Override
     public void onGettingAllCameras(List<IpCam> response) {
-        Log.e("cams number", response.size()+"");
+        Log.e("cams number", response.size() + "");
         cams.clear();
         cams.addAll(response);
         updateViewPager();

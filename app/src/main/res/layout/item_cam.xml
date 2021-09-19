@@ -11,19 +11,25 @@
 
 
 
-    <com.longdo.mjpegviewer.MjpegView
-        android:id="@+id/mjpeg_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        android:background="@color/primary_dark_color"
-        stream:type="stream_default" />
+<!--    <com.longdo.mjpegviewer.MjpegView-->
+<!--        android:id="@+id/mjpeg_view"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:visibility="gone"-->
+<!--        android:background="@color/primary_dark_color"-->
+<!--        stream:type="stream_default" />-->
 <!--    <com.github.niqdev.mjpeg.MjpegSurfaceView-->
 <!--        android:id="@+id/mjpeg_view"-->
 <!--        android:layout_width="match_parent"-->
 <!--        android:layout_height="match_parent"-->
 <!--        android:visibility="gone"-->
 <!--        stream:type="stream_default" />-->
+    <org.videolan.libvlc.util.VLCVideoLayout
+        android:id="@+id/video_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"/>
+
 
     <ImageView
         android:id="@+id/iv_placeholder"

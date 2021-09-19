@@ -53,7 +53,7 @@ public class GridAdapter extends BaseAdapter {
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
         view = inflater.inflate(R.layout.item_cam, null); // inflate the layout
-        MjpegView mjpegView = view.findViewById(R.id.mjpeg_view);
+//        MjpegView mjpegView = view.findViewById(R.id.mjpeg_view);
         TextView camName = view.findViewById(R.id.tv_cam_name);
         TextView textError = view.findViewById(R.id.tv_error);
         ImageView placeholder = view.findViewById(R.id.iv_placeholder);
@@ -61,17 +61,17 @@ public class GridAdapter extends BaseAdapter {
         IpCam ipCam = cams.get(i);
         if(ipCam.getUrl() == null){ // not set yet
             camName.setText("");
-            mjpegView.setVisibility(View.GONE);
+//            mjpegView.setVisibility(View.GONE);
             placeholder.setVisibility(View.VISIBLE);
             placeholder.setOnClickListener(v->{
                 //TODO open add activity
             });
 
         }else {
-            mjpegView.setVisibility(View.VISIBLE);
+//            mjpegView.setVisibility(View.VISIBLE);
             placeholder.setVisibility(View.GONE);
             camName.setText(ipCam.getName());
-            setupVideoPlayer(mjpegView, i);
+//            setupVideoPlayer(mjpegView, i);
             // TODO error text
 
             view.setOnClickListener(v -> {
@@ -88,13 +88,13 @@ public class GridAdapter extends BaseAdapter {
 
 
     private void setupVideoPlayer(MjpegView mjpegView , int position){
-        mjpegView.setAdjustHeight(true);
-        mjpegView.setAdjustWidth(true);
-        mjpegView.setMode(MjpegView.MODE_FIT_WIDTH);
-        mjpegView.setMsecWaitAfterReadImageError(1000);
-        mjpegView.setUrl(cams.get(position).getUrl());
-        mjpegView.setRecycleBitmap(true);
-        mjpegView.startStream();
+//        mjpegView.setAdjustHeight(true);
+//        mjpegView.setAdjustWidth(true);
+//        mjpegView.setMode(MjpegView.MODE_FIT_WIDTH);
+//        mjpegView.setMsecWaitAfterReadImageError(1000);
+//        mjpegView.setUrl(cams.get(position).getUrl());
+//        mjpegView.setRecycleBitmap(true);
+//        mjpegView.startStream();
 
 
         //        int TIMEOUT = 5; //seconds

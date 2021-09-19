@@ -77,4 +77,8 @@ dependencies {
 
     //http logging
     implementation 'com.squareup.okhttp3:logging-interceptor:3.9.1'
+
+    // vlc
+
+    implementation 'org.videolan.android:libvlc-all:3.3.13'
 }

@@ -1,5 +1,11 @@
 package com.xontel.surveillancecameras.fragments;
 
+import org.videolan.libvlc.LibVLC;
+import org.videolan.libvlc.Media;
+import org.videolan.libvlc.MediaPlayer;
+import org.videolan.libvlc.util.VLCVideoLayout;
+
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -22,11 +28,17 @@ import com.xontel.surveillancecameras.data.db.model.IpCam;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import rx.functions.Action1;
 
 public class CameraFragment extends Fragment {
-
-
+    private MediaPlayer mediaPlayer;
+    private LibVLC libVLC;
+    private static final boolean USE_TEXTURE_VIEW = false;
+    private static final boolean ENABLE_SUBTITLES = true;
     private static final String KEY_CAM_INFO = "cam_info";
 
     private IpCam cam;
@@ -66,7 +78,19 @@ public class CameraFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initUI();
+        initVlcPlayer();
+//        initUI();
+
+    }
+
+    private void initVlcPlayer() {
+
+        List<String> args = new ArrayList<String>();
+        args.add("--vout=android-display");
+        args.add("-vvv");
+        libVLC = new LibVLC(getContext(), args);
+        mediaPlayer = new MediaPlayer(libVLC);
+
 
     }
 
@@ -75,46 +99,72 @@ public class CameraFragment extends Fragment {
     }
 
     @Override
-    public void onResume() {
-        binding.mjpegView.startStream();
-        super.onResume();
+    public void onStart() {
+        super.onStart();
+        mediaPlayer.attachViews(binding.videoLayout, null, ENABLE_SUBTITLES, USE_TEXTURE_VIEW);
+
+        final Media media = new Media(libVLC, Uri.parse("http://192.168.1.133:8080/video.cgi"));
+        mediaPlayer.setMedia(media);
+        media.addOption(":fullscreen");
+        media.release();
+
+        mediaPlayer.play();
+
     }
 
     @Override
-    public void onPause() {
-        binding.mjpegView.stopStream();
-        super.onPause();
-
+    public void onStop() {
+        super.onStop();
+        mediaPlayer.stop();
+        mediaPlayer.detachViews();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mediaPlayer.release();
+        libVLC.release();
     }
+
+    @Override
+    public void onResume() {
+//        binding.mjpegView.startStream();
+        initUI();
+        super.onResume();
+    }
+
+
+    @Override
+    public void onPause() {
+//        binding.mjpegView.stopPlayback();
+        super.onPause();
+
+    }
+
 
     private void setupCamView() {
         binding.tvCamName.setText(cam.getName());
-        binding.mjpegView.setAdjustHeight(true);
-        binding.mjpegView.setAdjustWidth(true);
-        binding.mjpegView.setMode(MjpegView.MODE_FIT_WIDTH);
-        binding.mjpegView.setMsecWaitAfterReadImageError(1000);
-        binding.mjpegView.setUrl(cam.getUrl());
-        binding.mjpegView.setRecycleBitmap(true);
-        binding.mjpegView.startStream();
+//        binding.mjpegView.setAdjustHeight(true);
+//        binding.mjpegView.setAdjustWidth(true);
+//        binding.mjpegView.setMode(MjpegView.MODE_FIT_WIDTH);
+//        binding.mjpegView.setMsecWaitAfterReadImageError(1000);
+//        binding.mjpegView.setUrl(cam.getUrl());
+//        binding.mjpegView.setRecycleBitmap(true);
+//        binding.mjpegView.startStream();
 
-
+//
 //        int TIMEOUT = 5; //seconds
 //
 //        Mjpeg.newInstance()
 //                .open(cam.getUrl(), TIMEOUT).subscribe(inputStream -> {
-//                    binding.mjpegView.setSource(inputStream);
-//                    binding.mjpegView.setDisplayMode(DisplayMode.FULLSCREEN);
-//                    binding.mjpegView.showFps(true);
-//                }, throwable -> {
-//                    binding.tvError.setVisibility(View.VISIBLE);
-//                    Log.e(getClass().getSimpleName(), "mjpeg error", throwable);
+//            binding.mjpegView.setSource(inputStream);
+//            binding.mjpegView.setDisplayMode(DisplayMode.FULLSCREEN);
+//            binding.mjpegView.showFps(true);
+//        }, throwable -> {
+//            binding.tvError.setVisibility(View.VISIBLE);
+//            Log.e(getClass().getSimpleName(), "mjpeg error", throwable);
 ////                    Toast.makeText(getContext(), "Error", Toast.LENGTH_LONG).show();
-//                });
+//        });
 
     }
 

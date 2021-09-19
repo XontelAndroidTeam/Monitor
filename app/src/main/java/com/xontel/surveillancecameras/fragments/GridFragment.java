@@ -10,6 +10,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -136,6 +137,8 @@ public class GridFragment extends Fragment {
         gridAdapter = new CamsAdapter(allCams, getContext(), observables,  gridCount);
         binding.rvGrid.setLayoutManager(new GridLayoutManager(getContext(), (int) Math.sqrt(gridCount)));
         binding.rvGrid.setAdapter(gridAdapter);
+
+
 
     }
 
