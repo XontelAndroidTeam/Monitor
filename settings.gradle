@@ -1,2 +1,3 @@
 rootProject.name = "Surveillance cameras"
 include ':app'
+include ':app' , 'mjpeg-viewer'

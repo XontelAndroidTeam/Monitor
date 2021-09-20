@@ -33,6 +33,11 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
     }
 
 
+    @Override
+    public int getItemPosition(@NonNull Object object) {
+        return POSITION_NONE;
+    }
+
     public void addFragment(Fragment fragment) {
         mFragmentList.add(fragment);
     }

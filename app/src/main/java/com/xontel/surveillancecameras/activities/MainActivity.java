@@ -76,6 +76,7 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
         binding.tvSlideShow.setOnClickListener(v -> {
             Intent intent = new Intent(this, CamerasActivity.class);
             intent.putParcelableArrayListExtra(CamerasActivity.KEY_CAMERAS, (ArrayList) cams);
+            intent.putExtra(CamerasActivity.KEY_SLIDE_SHOW, true);
             startActivity(intent);
         });
         binding.tvGridCount.setOnClickListener(v -> {
@@ -131,8 +132,9 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
                 pagerAdapter.addFragment(gridFragment);
 
             }
-            binding.vpSlider.setAdapter(pagerAdapter);
-            binding.vpSlider.setOffscreenPageLimit(1);
+            pagerAdapter.notifyDataSetChanged();
+//            binding.vpSlider.setAdapter(pagerAdapter);
+//            binding.vpSlider.setOffscreenPageLimit(1);
 
             binding.dotsIndicator.refreshDots();
         }else{

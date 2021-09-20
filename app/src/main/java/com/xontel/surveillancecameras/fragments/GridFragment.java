@@ -43,7 +43,7 @@ public class GridFragment extends Fragment {
     private CamsAdapter gridAdapter;
     private FragmentGridBinding binding;
     private Mjpeg mjpeg ;
-    private ArrayList<Observable<MjpegInputStream>> observables = new ArrayList<>() ;
+    private List<MjpegInputStream> streams = new ArrayList<>() ;
 
 
     public GridFragment() {
@@ -54,6 +54,7 @@ public class GridFragment extends Fragment {
     @Override
     public void onResume() {
 //        initializeObservable();
+        gridAdapter.resumeAll();
 //        gridAdapter.notifyDataSetChanged();
         super.onResume();
     }
@@ -62,13 +63,14 @@ public class GridFragment extends Fragment {
     public void onPause() {
         super.onPause();
 //        stopObservables();
+        gridAdapter.pauseAll();
 //        gridAdapter.notifyDataSetChanged();
     }
 
     private void stopObservables() {
-        for(int i =0 ; i<observables.size() ; i++){
-            observables.get(i).unsubscribeOn(Schedulers.io());
-        }
+//        for(int i =0 ; i<observables.size() ; i++){
+//            observables.get(i).unsubscribeOn(Schedulers.io());
+//        }
     }
 
 
@@ -93,7 +95,7 @@ public class GridFragment extends Fragment {
 
     private void initializeObservable() {
         for(int i =0 ; i<actualCams.size();i++){
-            observables.add(mjpeg.open(actualCams.get(i).getUrl()));
+//            observables.add(mjpeg.open(actualCams.get(i).getUrl()));
         }
     }
 
@@ -134,7 +136,7 @@ public class GridFragment extends Fragment {
                 allCams.add(new IpCam());
             }
         }
-        gridAdapter = new CamsAdapter(allCams, getContext(), observables,  gridCount);
+        gridAdapter = new CamsAdapter(allCams, getContext(),  gridCount);
         binding.rvGrid.setLayoutManager(new GridLayoutManager(getContext(), (int) Math.sqrt(gridCount)));
         binding.rvGrid.setAdapter(gridAdapter);
 

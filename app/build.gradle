@@ -49,9 +49,7 @@ dependencies {
     implementation 'commons-net:commons-net:3.3'
     implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
     implementation 'io.reactivex.rxjava3:rxjava:3.0.0'
-    implementation 'com.github.perthcpe23:android-mjpeg-view:v1.0.9'
 
-    implementation 'com.github.niqdev:ipcam-view:2.1.0'
 
     //retrofit
     implementation "com.squareup.retrofit2:retrofit:2.9.0"
@@ -78,7 +76,7 @@ dependencies {
     //http logging
     implementation 'com.squareup.okhttp3:logging-interceptor:3.9.1'
 
-    // vlc
+    implementation 'com.github.marcoscgdev:IPCamView:1.0.0'
 
-    implementation 'org.videolan.android:libvlc-all:3.3.13'
+
 }

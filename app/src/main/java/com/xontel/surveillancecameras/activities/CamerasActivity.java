@@ -36,6 +36,7 @@ import javax.inject.Inject;
 
 public class CamerasActivity extends BaseActivity implements MainMvpView {
     public static final String KEY_CAMERAS = "cameras";
+    public static final String KEY_SLIDE_SHOW = "slide_show";
     private static final int REQUEST_CODE_EDIT_CAM = 44;
     private List<IpCam> cams = new ArrayList<>();
     private ActivityCamerasBinding binding;
@@ -43,6 +44,7 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
     int selectedPage = 0;
     boolean isAutoPreview;
     int slideIntervalIndex;
+    boolean isSlideShow = false ;
     private final Handler handler = new Handler();
     PagerAdapter pagerAdapter;
     @Inject
@@ -68,6 +70,14 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
         sharedPreferences.registerOnSharedPreferenceChangeListener(listener);
         setSupportActionBar(binding.toolbar);
         cams = getIntent().getParcelableArrayListExtra(KEY_CAMERAS);
+        if(getIntent().hasExtra(KEY_SLIDE_SHOW)){
+            binding.tvStatusText.setText(R.string.slide_show);
+            isSlideShow = true;
+
+        }else{
+            binding.tvStatusText.setText(R.string.cameras);
+            isSlideShow = false;
+        }
         getActivityComponent().inject(this);
         mPresenter.onAttach(this);
 
@@ -89,6 +99,15 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+
+            for(int i = 0 ; i < menu.size() ; i++){
+                if(menu.getItem(i).getItemId() == R.id.action_settings){
+                    menu.getItem(i).setVisible(isSlideShow);
+                }else{
+                    menu.getItem(i).setVisible(!isSlideShow);
+                }
+            }
+
         return true;
     }
 
