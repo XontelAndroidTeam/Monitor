@@ -118,7 +118,7 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
         GridFragment gridFragment = new GridFragment();
         pagerAdapter.addFragment(gridFragment);
         binding.vpSlider.setAdapter(pagerAdapter);
-        binding.vpSlider.setOffscreenPageLimit(1);
+        binding.vpSlider.setOffscreenPageLimit(2);
         binding.dotsIndicator.setViewPager(binding.vpSlider);
     }
 

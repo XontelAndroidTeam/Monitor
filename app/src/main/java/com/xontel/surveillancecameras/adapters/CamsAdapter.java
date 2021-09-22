@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +25,15 @@ import com.github.niqdev.mjpeg.MjpegInputStream;
 //import com.github.niqdev.mjpeg.MjpegSurfaceView;
 import com.github.niqdev.mjpeg.MjpegView;
 
+import com.google.android.exoplayer2.MediaItem;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.TrackSelector;
+import com.google.android.exoplayer2.ui.PlayerView;
+import com.google.android.exoplayer2.upstream.BandwidthMeter;
+import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.xontel.surveillancecameras.R;
 import com.xontel.surveillancecameras.activities.AddCamActivity;
 import com.xontel.surveillancecameras.activities.CamerasActivity;
@@ -33,6 +43,12 @@ import com.xontel.surveillancecameras.data.db.model.IpCam;
 //import org.videolan.libvlc.Media;
 //import org.videolan.libvlc.MediaPlayer;
 //import org.videolan.libvlc.util.VLCVideoLayout;
+
+import org.videolan.libvlc.Dialog;
+import org.videolan.libvlc.LibVLC;
+import org.videolan.libvlc.Media;
+import org.videolan.libvlc.MediaPlayer;
+import org.videolan.libvlc.util.VLCVideoLayout;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -87,18 +103,19 @@ public class CamsAdapter extends RecyclerView.Adapter<CamsAdapter.CamsViewHolder
         IpCam ipCam = cams.get(position);
         if (ipCam.getUrl() == null) { // not set yet
             holder.camName.setText("");
-            ((View) holder.mjpegView).setVisibility(View.GONE);
+            ((View) holder.vlcVideoLayout).setVisibility(View.GONE);
             holder.placeholder.setVisibility(View.VISIBLE);
+//            holder.progressDialog.setVisibility(View.INVISIBLE);
             holder.itemView.setOnClickListener(v -> {
                 context.startActivity(new Intent(context, AddCamActivity.class));
             });
 
         } else {
-            ((View) holder.mjpegView).setVisibility(View.VISIBLE);
+            ((View) holder.vlcVideoLayout).setVisibility(View.VISIBLE);
             holder.placeholder.setVisibility(View.GONE);
             holder.camName.setText(ipCam.getName());
-            holder.setupVideoPlayer();
-//            holder.initVlcPlayer();
+//            holder.setupVideoPlayer();
+            holder.initVlcPlayer();
             // TODO error text
 
             holder.itemView.setOnClickListener(v -> {
@@ -125,7 +142,13 @@ public class CamsAdapter extends RecyclerView.Adapter<CamsAdapter.CamsViewHolder
     @Override
     public void onViewDetachedFromWindow(@NonNull CamsViewHolder holder) {
         super.onViewDetachedFromWindow(holder);
-        Log.e("tag", "detached");
+
+
+    }
+
+    @Override
+    public void onViewAttachedToWindow(@NonNull CamsViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
     }
 
     @Override
@@ -134,10 +157,16 @@ public class CamsAdapter extends RecyclerView.Adapter<CamsAdapter.CamsViewHolder
     }
 
     public class CamsViewHolder extends RecyclerView.ViewHolder {
-        private MjpegView mjpegView;
         private TextView camName;
         private TextView textError;
         private ImageView placeholder;
+        private ProgressBar progressDialog;
+        private MediaPlayer mediaPlayer;
+        private LibVLC libVLC;
+        private static final boolean USE_TEXTURE_VIEW = false;
+        private static final boolean ENABLE_SUBTITLES = true;
+        private VLCVideoLayout vlcVideoLayout;
+
 
         public CamsViewHolder(View itemView) {
             super(itemView);
@@ -145,37 +174,56 @@ public class CamsAdapter extends RecyclerView.Adapter<CamsAdapter.CamsViewHolder
             lifecycleObservable.addObserver((o, arg) -> {
                 int lifecycleStatus = ((LifecycleObservable) o).status;
                 if (lifecycleStatus == LifecycleObservable.ON_PAUSE) {
-                    if (mjpegView != null) {
-                        mjpegView.stopPlayback();
+                    if (mediaPlayer != null) {
+//                        pausePlayer();
                     }
+
+
                 } else {
                     if (cams.get(getAdapterPosition()).getUrl() != null)
-                        setupVideoPlayer();
+                        initVlcPlayer();
                 }
             });
-            mjpegView = itemView.findViewById(R.id.mjpeg_view);
+            vlcVideoLayout = itemView.findViewById(R.id.video_layout);
             camName = itemView.findViewById(R.id.tv_cam_name);
             textError = itemView.findViewById(R.id.tv_error);
             placeholder = itemView.findViewById(R.id.iv_placeholder);
         }
 
+        private void pausePlayer() {
+//            progressDialog.setVisibility(View.VISIBLE);
+            mediaPlayer.stop();
 
-        private void setupVideoPlayer() {
-            int TIMEOUT = 5; //seconds
-            try {
-                Mjpeg.newInstance()
-                        .open(cams.get(getAdapterPosition()).getUrl(), TIMEOUT)
-                        .subscribe(inputStream -> {
-                            mjpegView.setSource(inputStream);
-                            mjpegView.setDisplayMode(DisplayMode.FULLSCREEN);
-                            mjpegView.showFps(true);
-                        }, throwable -> {
-                            textError.setVisibility(View.VISIBLE);
-                            Log.e(getClass().getSimpleName(), "mjpeg error", throwable);
-                        });
-            } catch (Exception e) {
-                textError.setText(e.getMessage());
-            }
+        }
+
+        private void initVlcPlayer() {
+
+            List<String> args = new ArrayList<String>();
+            args.add("--vout=android-display");
+            args.add("-vvv");
+            libVLC = new LibVLC(context, args);
+            mediaPlayer = new MediaPlayer(libVLC);
+            mediaPlayer.attachViews(vlcVideoLayout, null, ENABLE_SUBTITLES, USE_TEXTURE_VIEW);
+
+            final Media media = new Media(libVLC, Uri.parse(cams.get(getAdapterPosition()).getUrl()));
+            mediaPlayer.setMedia(media);
+            mediaPlayer.setEventListener(new MediaPlayer.EventListener() {
+                @Override
+                public void onEvent(MediaPlayer.Event event) {
+                    switch (event.type) {
+                        case MediaPlayer.Event.EncounteredError:
+
+                            textError.setText(R.string.error_occurred);
+                            break;
+                    }
+                }
+            });
+
+            media.addOption(":fullscreen");
+            media.release();
+
+            mediaPlayer.play();
+
 
         }
 

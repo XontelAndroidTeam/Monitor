@@ -27,11 +27,16 @@
 <!--            android:layout_width="match_parent"-->
 <!--            android:layout_height="match_parent"-->
 <!--            stream:type="stream_default"/>-->
-        <com.github.niqdev.mjpeg.MjpegSurfaceView
-            android:id="@+id/mjpeg_view"
+<!--        <com.github.niqdev.mjpeg.MjpegSurfaceView-->
+<!--            android:id="@+id/mjpeg_view"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            stream:type="stream_default" />-->
+        <org.videolan.libvlc.util.VLCVideoLayout
+            android:id="@+id/video_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            stream:type="stream_default" />
+            android:fitsSystemWindows="true"/>
 
 
     </LinearLayout>

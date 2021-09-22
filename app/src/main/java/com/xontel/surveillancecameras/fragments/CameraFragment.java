@@ -1,9 +1,9 @@
 package com.xontel.surveillancecameras.fragments;
 
-//import org.videolan.libvlc.LibVLC;
-//import org.videolan.libvlc.Media;
-//import org.videolan.libvlc.MediaPlayer;
-//import org.videolan.libvlc.util.VLCVideoLayout;
+import org.videolan.libvlc.LibVLC;
+import org.videolan.libvlc.Media;
+import org.videolan.libvlc.MediaPlayer;
+import org.videolan.libvlc.util.VLCVideoLayout;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -35,8 +35,8 @@ import java.util.List;
 import rx.functions.Action1;
 
 public class CameraFragment extends Fragment {
-//    private MediaPlayer mediaPlayer;
-//    private LibVLC libVLC;
+    private MediaPlayer mediaPlayer;
+    private LibVLC libVLC;
     private static final boolean USE_TEXTURE_VIEW = false;
     private static final boolean ENABLE_SUBTITLES = true;
     private static final String KEY_CAM_INFO = "cam_info";
@@ -44,6 +44,7 @@ public class CameraFragment extends Fragment {
     private IpCam cam;
 
     private FragmentCameraBinding binding;
+
 
     public CameraFragment() {
         // Required empty public constructor
@@ -78,7 +79,37 @@ public class CameraFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-//        initUI();
+        initUI();
+
+    }
+    private void initVlcPlayer() {
+
+        List<String> args = new ArrayList<String>();
+        args.add("--vout=android-display");
+        args.add("-vvv");
+        libVLC = new LibVLC(getContext(), args);
+        mediaPlayer = new MediaPlayer(libVLC);
+        mediaPlayer.attachViews(binding.videoLayout, null, ENABLE_SUBTITLES, USE_TEXTURE_VIEW);
+        mediaPlayer.setEventListener(new MediaPlayer.EventListener() {
+            @Override
+            public void onEvent(MediaPlayer.Event event) {
+                switch(event.type) {
+//                        case MediaPlayer.Event.Buffering:
+//                            showLoading((int)event.getBuffering());
+//                            break;
+                    case MediaPlayer.Event.EncounteredError:
+                        binding.tvError.setText(R.string.error_occurred);
+                        break;
+                }
+            }
+        });
+        final Media media = new Media(libVLC, Uri.parse(cam.getUrl()));
+        media.addOption(":fullscreen");
+        mediaPlayer.setMedia(media);
+        media.release();
+
+
+
 
     }
 
@@ -103,6 +134,12 @@ public class CameraFragment extends Fragment {
 
     @Override
     public void onDestroy() {
+        if(mediaPlayer != null){
+            mediaPlayer.stop();
+            mediaPlayer.detachViews();
+            mediaPlayer.release();
+            libVLC.release();
+        }
         super.onDestroy();
 
     }
@@ -110,14 +147,20 @@ public class CameraFragment extends Fragment {
     @Override
     public void onResume() {
 //        binding.mjpegView.startStream();
-        initUI();
+        if(mediaPlayer != null){
+            mediaPlayer.play();
+            Log.e("tagoo","resume");
+        }
         super.onResume();
     }
 
 
     @Override
     public void onPause() {
-        binding.mjpegView.stopPlayback();
+        if(mediaPlayer != null) {
+            mediaPlayer.pause();
+            Log.e("tagoo","pause");
+        }
         super.onPause();
 
     }
@@ -134,19 +177,8 @@ public class CameraFragment extends Fragment {
 //        binding.mjpegView.startStream();
 
 
-        int TIMEOUT = 5; //seconds
-
-        Mjpeg.newInstance()
-                .open(cam.getUrl(), TIMEOUT).subscribe(inputStream -> {
-
-            binding.mjpegView.setSource(inputStream);
-            binding.mjpegView.setDisplayMode(DisplayMode.FULLSCREEN);
-            binding.mjpegView.showFps(true);
-        }, throwable -> {
-            binding.tvError.setVisibility(View.VISIBLE);
-            Log.e(getClass().getSimpleName(), "mjpeg error", throwable);
-//                    Toast.makeText(getContext(), "Error", Toast.LENGTH_LONG).show();
-        });
+//
+        initVlcPlayer();
 
 
 

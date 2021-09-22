@@ -78,5 +78,13 @@ dependencies {
 
     implementation 'com.github.marcoscgdev:IPCamView:1.0.0'
 
+    implementation 'com.github.faizkhan12:mjpeg-view-android-kotlin:v1.0.0'
+
+    //exo player
+    implementation 'com.google.android.exoplayer:exoplayer:2.14.1'
+
+    // vlc
+    implementation 'org.videolan.android:libvlc-all:3.3.13'
+
 
 }

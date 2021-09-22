@@ -225,7 +225,7 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
             pagerAdapter.addFragment(cameraFragment);
         }
         binding.vpSlider.setAdapter(pagerAdapter);
-        binding.vpSlider.setOffscreenPageLimit(1);
+        binding.vpSlider.setOffscreenPageLimit(2);
         if (cams.size() > 1)
             binding.dotsIndicator.setViewPager(binding.vpSlider);
 
