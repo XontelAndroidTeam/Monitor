@@ -89,6 +89,8 @@ public class CameraFragment extends Fragment {
         args.add("-vvv");
         libVLC = new LibVLC(getContext(), args);
         mediaPlayer = new MediaPlayer(libVLC);
+        mediaPlayer.setAspectRatio("16:9");
+
         mediaPlayer.attachViews(binding.videoLayout, null, ENABLE_SUBTITLES, USE_TEXTURE_VIEW);
         mediaPlayer.setEventListener(new MediaPlayer.EventListener() {
             @Override

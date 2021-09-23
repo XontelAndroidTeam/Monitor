@@ -144,6 +144,7 @@ public class CamsAdapter extends RecyclerView.Adapter<CamsAdapter.CamsViewHolder
         super.onViewDetachedFromWindow(holder);
 
 
+
     }
 
     @Override
@@ -157,33 +158,39 @@ public class CamsAdapter extends RecyclerView.Adapter<CamsAdapter.CamsViewHolder
     }
 
     public class CamsViewHolder extends RecyclerView.ViewHolder {
+        private IpCam ipCam ;
         private TextView camName;
         private TextView textError;
         private ImageView placeholder;
-        private ProgressBar progressDialog;
-        private MediaPlayer mediaPlayer;
-        private LibVLC libVLC;
+//        private ProgressBar progressDialog;
+//        private MediaPlayer mediaPlayer;
+//        private LibVLC libVLC;
         private static final boolean USE_TEXTURE_VIEW = false;
         private static final boolean ENABLE_SUBTITLES = true;
         private VLCVideoLayout vlcVideoLayout;
 
 
+
         public CamsViewHolder(View itemView) {
             super(itemView);
             // observe oPause to pause all together
-            lifecycleObservable.addObserver((o, arg) -> {
-                int lifecycleStatus = ((LifecycleObservable) o).status;
-                if (lifecycleStatus == LifecycleObservable.ON_PAUSE) {
-                    if (mediaPlayer != null) {
-//                        pausePlayer();
-                    }
-
-
-                } else {
-                    if (cams.get(getAdapterPosition()).getUrl() != null)
-                        initVlcPlayer();
-                }
-            });
+//            lifecycleObservable.addObserver((o, arg) -> {
+//                int lifecycleStatus = ((LifecycleObservable) o).status;
+//                if (lifecycleStatus == LifecycleObservable.ON_PAUSE) {
+//                    if (ipCam.getMediaPlayer() != null) {
+////                        pausePlayer();
+//                        Log.e("taggo", "view detached" + getAdapterPosition());
+////                        ipCam.getMediaPlayer().stop();
+////                        ipCam.getMediaPlayer().detachViews();
+//                    }
+//
+//
+////                } else {
+////                    if (cams.get(getAdapterPosition()).getUrl() != null)
+////                        initVlcPlayer();
+////                }
+//                }
+//            });
             vlcVideoLayout = itemView.findViewById(R.id.video_layout);
             camName = itemView.findViewById(R.id.tv_cam_name);
             textError = itemView.findViewById(R.id.tv_error);
@@ -192,37 +199,39 @@ public class CamsAdapter extends RecyclerView.Adapter<CamsAdapter.CamsViewHolder
 
         private void pausePlayer() {
 //            progressDialog.setVisibility(View.VISIBLE);
-            mediaPlayer.stop();
+//            mediaPlayer.stop();
 
         }
 
         private void initVlcPlayer() {
+            ipCam = cams.get(getAdapterPosition());
+            // libvlc initialization
+//            List<String> args = new ArrayList<String>();
+//            args.add("--vout=android-display");
+//            args.add("-vvv");
+//            libVLC = new LibVLC(context, args);
+//
+//             media player setup
+//            mediaPlayer = new MediaPlayer(libVLC);
+//            final Media media = new Media(ipCam.getMediaPlayer().getLibVLC(), Uri.parse(ipCam.getUrl()));
+//            cams.get(getAdapterPosition()).getMediaPlayer().setMedia(media);
 
-            List<String> args = new ArrayList<String>();
-            args.add("--vout=android-display");
-            args.add("-vvv");
-            libVLC = new LibVLC(context, args);
-            mediaPlayer = new MediaPlayer(libVLC);
-            mediaPlayer.attachViews(vlcVideoLayout, null, ENABLE_SUBTITLES, USE_TEXTURE_VIEW);
+//            mediaPlayer.setEventListener(new MediaPlayer.EventListener() {
+//                @Override
+//                public void onEvent(MediaPlayer.Event event) {
+//                    switch (event.type) {
+//                        case MediaPlayer.Event.EncounteredError:
+//
+//                            textError.setText(R.string.error_occurred);
+//                            break;
+//                    }
+//                }
+//            });
 
-            final Media media = new Media(libVLC, Uri.parse(cams.get(getAdapterPosition()).getUrl()));
-            mediaPlayer.setMedia(media);
-            mediaPlayer.setEventListener(new MediaPlayer.EventListener() {
-                @Override
-                public void onEvent(MediaPlayer.Event event) {
-                    switch (event.type) {
-                        case MediaPlayer.Event.EncounteredError:
-
-                            textError.setText(R.string.error_occurred);
-                            break;
-                    }
-                }
-            });
-
-            media.addOption(":fullscreen");
-            media.release();
-
-            mediaPlayer.play();
+//            media.addOption(":fullscreen");
+//            media.release();
+            ipCam.getMediaPlayer().attachViews(vlcVideoLayout, null, false, false);
+            ipCam.getMediaPlayer().play();
 
 
         }

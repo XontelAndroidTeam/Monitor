@@ -54,16 +54,22 @@ public class GridFragment extends Fragment {
     @Override
     public void onResume() {
 //        initializeObservable();
-        gridAdapter.resumeAll();
+//        gridAdapter.resumeAll();
 //        gridAdapter.notifyDataSetChanged();
+        initUI();
         super.onResume();
     }
 
     @Override
     public void onPause() {
+        try {
+            pauseAllPlayers();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         super.onPause();
 //        stopObservables();
-        gridAdapter.pauseAll();
+//        gridAdapter.pauseAll();
 //        gridAdapter.notifyDataSetChanged();
     }
 
@@ -101,10 +107,18 @@ public class GridFragment extends Fragment {
 
     @Override
     public void onDestroy() {
-
         super.onDestroy();
 
     }
+
+    private void pauseAllPlayers() {
+        for(int i = 0 ; i< actualCams.size() ; i++){
+            actualCams.get(i).getMediaPlayer().stop();
+//            actualCams.get(i).getMediaPlayer().detachViews();
+        }
+    }
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -117,7 +131,7 @@ public class GridFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initUI();
+
 
     }
 

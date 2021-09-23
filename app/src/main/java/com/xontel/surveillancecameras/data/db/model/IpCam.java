@@ -8,6 +8,8 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import org.videolan.libvlc.MediaPlayer;
+
 @Entity(tableName = "camera")
 public class IpCam implements Parcelable  {
     @PrimaryKey(autoGenerate = true)
@@ -18,6 +20,8 @@ public class IpCam implements Parcelable  {
     private String name;
     @ColumnInfo(name = "description")
     private String description ;
+    @Ignore
+    private MediaPlayer mediaPlayer ;
 
 
     public IpCam(String url, String name, String description) {
@@ -28,6 +32,15 @@ public class IpCam implements Parcelable  {
 
     @Ignore
     public IpCam() {
+    }
+
+
+    public MediaPlayer getMediaPlayer() {
+        return mediaPlayer;
+    }
+
+    public void setMediaPlayer(MediaPlayer mediaPlayer) {
+        this.mediaPlayer = mediaPlayer;
     }
 
     protected IpCam(Parcel in) {

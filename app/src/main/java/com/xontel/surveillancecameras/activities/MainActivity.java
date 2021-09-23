@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 
 import android.content.Intent;
 import android.database.DataSetObserver;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
@@ -23,6 +24,10 @@ import com.xontel.surveillancecameras.presenters.MainMvpPresenter;
 import com.xontel.surveillancecameras.presenters.MainMvpView;
 import com.xontel.surveillancecameras.utils.CommonUtils;
 
+import org.videolan.libvlc.LibVLC;
+import org.videolan.libvlc.Media;
+import org.videolan.libvlc.MediaPlayer;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +38,7 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
     private ActivityMainBinding binding;
     private int gridCount;
     private List<IpCam> cams = new ArrayList<>();
+    private List<MediaPlayer> mediaPlayers = new ArrayList<>();
     @Inject
     MainMvpPresenter<MainMvpView> mPresenter;
 
@@ -48,8 +54,27 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
 
     @Override
     protected void onDestroy() {
+        try {
+            releaseMediaPlayers();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         super.onDestroy();
         mPresenter.onDetach();
+
+    }
+
+    private void releaseMediaPlayers() {
+        for(int i = 0 ;  i< cams.size() ; i++){
+           MediaPlayer mediaPlayer =  cams.get(i).getMediaPlayer();
+           if(mediaPlayer != null) {
+               mediaPlayer.stop();
+               mediaPlayer.detachViews();
+               mediaPlayer.release();
+               mediaPlayer.getLibVLC().release();
+           }
+
+        }
     }
 
     @Override
@@ -64,6 +89,10 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
     @Override
     protected void setUp() {
 
+    }
+
+    public List<MediaPlayer> getMediaPlayers() {
+        return mediaPlayers;
     }
 
     private void initUI() {
@@ -123,7 +152,7 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
     }
 
     private void updateViewPager() {
-        if(cams.size() > 0) {
+        if (cams.size() > 0) {
             pagerAdapter.getFragmentList().clear();
             for (int i = 0; i < cams.size(); i += gridCount) {
                 List<IpCam> subCams = cams.subList(i, Math.min(cams.size(), i + gridCount));
@@ -137,7 +166,7 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
 //            binding.vpSlider.setOffscreenPageLimit(1);
 
             binding.dotsIndicator.refreshDots();
-        }else{
+        } else {
             setupCamerasPager();
         }
 
@@ -175,7 +204,40 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
         Log.e("cams number", response.size() + "");
         cams.clear();
         cams.addAll(response);
+        createMediaPlayers();
         updateViewPager();
+
+    }
+
+    private void createMediaPlayers() {
+        for (int i = 0; i < cams.size(); i++) {
+            IpCam ipCam = cams.get(i);
+            ipCam.setMediaPlayer(getMediaPlayerForCam(ipCam.getUrl()));
+        }
+    }
+
+    private MediaPlayer getMediaPlayerForCam(String url) {
+        LibVLC libVLC;
+        MediaPlayer mediaPlayer;
+
+        // libvlc initialization
+        List<String> args = new ArrayList<String>();
+        args.add("--vout=android-display");
+        args.add("-vvv");
+        libVLC = new LibVLC(this, args);
+
+        // media player setup
+        mediaPlayer = new MediaPlayer(libVLC);
+        final Media media = new Media(libVLC, Uri.parse(url));
+        media.setHWDecoderEnabled(true,false);
+        media.addOption(":fullscreen");
+        mediaPlayer.setMedia(media);
+
+        media.release();
+//            mediaPlayer.attachViews(vlcVideoLayout, null, ENABLE_SUBTITLES, USE_TEXTURE_VIEW);
+//            mediaPlayer.play();
+
+        return mediaPlayer;
 
     }
 
