@@ -1,54 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:stream="http://schemas.android.com/apk/res-auto">
-<FrameLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:stream="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
+    <FrameLayout
+        android:id="@+id/parent"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/black_color"
-        android:orientation="vertical"
-        tools:context=".fragments.CameraFragment">
+        android:layout_height="match_parent">
+
         <TextView
             android:id="@+id/tv_cam_name"
-            android:maxLines="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
             android:layout_gravity="top|start"
-            tools:text="@string/name"
+            android:layout_margin="16dp"
+            android:maxLines="1"
             android:textColor="@color/white"
-            android:textSize="24dp" />
-<!--        <com.longdo.mjpegviewer.MjpegView-->
-<!--            android:id="@+id/mjpeg_view"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            stream:type="stream_default"/>-->
-<!--        <com.github.niqdev.mjpeg.MjpegSurfaceView-->
-<!--            android:id="@+id/mjpeg_view"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            stream:type="stream_default" />-->
-        <org.videolan.libvlc.util.VLCVideoLayout
-            android:id="@+id/video_layout"
+            android:textSize="24dp"
+            tools:text="@string/name" />
+
+        <SurfaceView
+            android:id="@+id/surface_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fitsSystemWindows="true"/>
+            android:layout_height="match_parent" />
+
+        <ProgressBar
+            android:id="@+id/loading_dialog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
 
 
-    </LinearLayout>
-    <TextView
-        android:id="@+id/tv_error"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/error_occurred"
-        android:visibility="gone"
-        tools:visibility="visible"
-        android:textColor="@color/white"
-        android:textSize="24dp" />
-</FrameLayout>
+        <TextView
+            android:id="@+id/tv_error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/error_occurred"
+            android:textColor="@color/white"
+            android:textSize="24dp"
+            android:visibility="gone"
+            tools:visibility="visible" />
+    </FrameLayout>
 </layout>

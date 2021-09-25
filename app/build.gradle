@@ -42,7 +42,7 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    androidTestImplementation 'androidx.tes t.espresso:espresso-core:3.4.0'
     implementation 'com.github.niqdev:ipcam-view:2.1.0'
     implementation "com.github.skydoves:powerspinner:1.1.8"
     implementation 'com.tbuonomo:dotsindicator:4.2'
@@ -84,7 +84,7 @@ dependencies {
     implementation 'com.google.android.exoplayer:exoplayer:2.14.1'
 
     // vlc
-    implementation 'org.videolan.android:libvlc-all:3.3.13'
+    implementation 'org.videolan.android:libvlc-all:3.1.12@aar'
 
 
 }

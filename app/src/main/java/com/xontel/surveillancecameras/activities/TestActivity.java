@@ -4,7 +4,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.GridLayoutManager;
 
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
+import android.widget.MediaController;
+import android.widget.VideoView;
 
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.SimpleExoPlayer;
@@ -27,7 +31,8 @@ public class TestActivity extends BaseActivity implements MainMvpView {
     private ActivityTestBinding binding;
     private List<IpCam> cams = new ArrayList<>();
     private CamsAdapter gridAdapter;
-    private int gridCount  = 4;
+    private VideoView videoView;
+    private int gridCount = 4;
     @Inject
     MainMvpPresenter<MainMvpView> mPresenter;
     private SimpleExoPlayer player;
@@ -38,6 +43,7 @@ public class TestActivity extends BaseActivity implements MainMvpView {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_test);
         getActivityComponent().inject(this);
         mPresenter.onAttach(this);
+        videoView = findViewById(R.id.videoView);
         initUI();
     }
 
@@ -54,19 +60,28 @@ public class TestActivity extends BaseActivity implements MainMvpView {
 
     private void initUI() {
         setupPlayer();
-        
+
     }
 
     private void setupPlayer() {
-        // Create a player instance.
-        player = new SimpleExoPlayer.Builder(this).build();
-        binding.player.setPlayer(player);
 
-// Set the media item to be played.
-        player.setMediaItem(MediaItem.fromUri("rtsp://admin:X0nP@ssw0rd_000@192.168.1.123/Streaming/Channels/102"));
-// Prepare the player.
-        player.prepare();
-        player.play();
+// Network video.
+        String netVideoUrl = "rtsp://admin:Admin123@78.89.170.173:554/Streaming/Channels/102";
+// Specify the URL of the video file.
+        videoView.setVideoURI(Uri.parse(netVideoUrl));
+// Set the video controller.
+        videoView.setMediaController(new MediaController(this));
+// Playback callback is complete.
+        videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+
+            }
+        });
+
+        if(!videoView.isPlaying()){ // Play.
+            videoView.start();
+        }
     }
 
     @Override

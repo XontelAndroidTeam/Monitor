@@ -3,52 +3,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:stream="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:backgroundTint="@color/primary_dark_color"
     android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:layout_margin="4dp"
-    android:layout_height="100dp">
+    android:backgroundTint="@color/primary_dark_color">
 
-
-
-<!--    <com.longdo.mjpegviewer.MjpegView-->
-<!--        android:id="@+id/mjpeg_view"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:visibility="gone"-->
-<!--        android:background="@color/primary_dark_color"-->
-<!--        stream:type="stream_default" />-->
-<!--    <com.github.niqdev.mjpeg.MjpegSurfaceView-->
-<!--        android:id="@+id/mjpeg_view"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:backgroundTint="@color/green_color"-->
-<!--        android:visibility="gone"-->
-<!--        stream:type="stream_default" />-->
-    <!--Widget for exoplayer view-->
-<!--    <com.google.android.exoplayer2.ui.PlayerView-->
-<!--        android:id="@+id/idExoPlayerVIew"-->
-<!--        android:layout_width="match_parent"-->
-<!--        app:use_controller="false"-->
-<!--        android:layout_height="match_parent" />-->
-    <FrameLayout
+    <SurfaceView
+        android:id="@+id/surface_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <org.videolan.libvlc.util.VLCVideoLayout
-            android:id="@+id/video_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fitsSystemWindows="false"/>
-<!--        <ProgressBar-->
-<!--            android:id="@+id/loading_dialog"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            style="@style/Widget.AppCompat.ProgressBar.Horizontal"-->
-<!--            android:layout_gravity="bottom"-->
-<!--            app:theme="@style/CustomProgressBarHorizontal" />-->
+        android:layout_height="match_parent" />
 
-    </FrameLayout>
-
-
+    <ProgressBar
+        android:id="@+id/loading_dialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
 
     <ImageView
         android:id="@+id/iv_placeholder"
@@ -68,14 +37,15 @@
         android:textColor="@color/white"
         android:textSize="16dp"
         tools:text="@string/name" />
+
     <TextView
         android:id="@+id/tv_error"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="@string/error_occurred"
-        android:visibility="gone"
         android:textColor="@color/white"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        android:visibility="gone" />
 
 </androidx.cardview.widget.CardView>

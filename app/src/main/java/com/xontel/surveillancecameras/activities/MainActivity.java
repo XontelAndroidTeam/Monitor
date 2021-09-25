@@ -71,7 +71,6 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
                mediaPlayer.stop();
                mediaPlayer.detachViews();
                mediaPlayer.release();
-               mediaPlayer.getLibVLC().release();
            }
 
         }
@@ -222,15 +221,26 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
 
         // libvlc initialization
         List<String> args = new ArrayList<String>();
-        args.add("--vout=android-display");
         args.add("-vvv");
-        libVLC = new LibVLC(this, args);
+//        args.add("--vout=android-display");
+        args.add("--network-caching=33");
+        args.add("--file-caching=33");
+        args.add("--live-caching=33");
+        args.add("--clock-synchro=0");
+        args.add("--clock-jitter=0");
+        args.add("--h264-fps=60");
+        args.add("--avcodec-fast");
+        args.add("--avcodec-threads=1");
+        args.add("--no-audio");
+
+        libVLC = new LibVLC(this, (ArrayList<String>) args);
 
         // media player setup
         mediaPlayer = new MediaPlayer(libVLC);
         final Media media = new Media(libVLC, Uri.parse(url));
-        media.setHWDecoderEnabled(true,false);
+        media.setHWDecoderEnabled(true,true);
         media.addOption(":fullscreen");
+        media.addOption(":rtsp-tcp");
         mediaPlayer.setMedia(media);
 
         media.release();

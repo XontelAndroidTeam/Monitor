@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
@@ -45,6 +46,7 @@ import com.xontel.surveillancecameras.data.db.model.IpCam;
 //import org.videolan.libvlc.util.VLCVideoLayout;
 
 import org.videolan.libvlc.Dialog;
+import org.videolan.libvlc.IVLCVout;
 import org.videolan.libvlc.LibVLC;
 import org.videolan.libvlc.Media;
 import org.videolan.libvlc.MediaPlayer;
@@ -93,7 +95,9 @@ public class CamsAdapter extends RecyclerView.Adapter<CamsAdapter.CamsViewHolder
         View view = LayoutInflater.from(context).inflate(R.layout.item_cam, parent, false);
         GridLayoutManager.LayoutParams lp = (GridLayoutManager.LayoutParams) view.getLayoutParams();
         lp.height = parent.getMeasuredHeight() / (int) Math.sqrt(gridCount);
+        Log.e("taggo", lp.height+"");
         view.setLayoutParams(lp);
+        Log.e("taggo", view.getWidth()+"");
         return new CamsViewHolder(view);
     }
 
@@ -103,15 +107,15 @@ public class CamsAdapter extends RecyclerView.Adapter<CamsAdapter.CamsViewHolder
         IpCam ipCam = cams.get(position);
         if (ipCam.getUrl() == null) { // not set yet
             holder.camName.setText("");
-            ((View) holder.vlcVideoLayout).setVisibility(View.GONE);
+            ((View) holder.mSurfaceView).setVisibility(View.GONE);
             holder.placeholder.setVisibility(View.VISIBLE);
-//            holder.progressDialog.setVisibility(View.INVISIBLE);
+            holder.progressDialog.setVisibility(View.INVISIBLE);
             holder.itemView.setOnClickListener(v -> {
                 context.startActivity(new Intent(context, AddCamActivity.class));
             });
 
         } else {
-            ((View) holder.vlcVideoLayout).setVisibility(View.VISIBLE);
+            ((View) holder.mSurfaceView).setVisibility(View.VISIBLE);
             holder.placeholder.setVisibility(View.GONE);
             holder.camName.setText(ipCam.getName());
 //            holder.setupVideoPlayer();
@@ -162,12 +166,13 @@ public class CamsAdapter extends RecyclerView.Adapter<CamsAdapter.CamsViewHolder
         private TextView camName;
         private TextView textError;
         private ImageView placeholder;
-//        private ProgressBar progressDialog;
+        private ProgressBar progressDialog;
 //        private MediaPlayer mediaPlayer;
 //        private LibVLC libVLC;
         private static final boolean USE_TEXTURE_VIEW = false;
         private static final boolean ENABLE_SUBTITLES = true;
         private VLCVideoLayout vlcVideoLayout;
+        private SurfaceView mSurfaceView;
 
 
 
@@ -191,7 +196,9 @@ public class CamsAdapter extends RecyclerView.Adapter<CamsAdapter.CamsViewHolder
 ////                }
 //                }
 //            });
-            vlcVideoLayout = itemView.findViewById(R.id.video_layout);
+//            vlcVideoLayout = itemView.findViewById(R.id.video_layout);
+            progressDialog = itemView.findViewById(R.id.loading_dialog);
+            mSurfaceView = itemView.findViewById(R.id.surface_view);
             camName = itemView.findViewById(R.id.tv_cam_name);
             textError = itemView.findViewById(R.id.tv_error);
             placeholder = itemView.findViewById(R.id.iv_placeholder);
@@ -201,6 +208,12 @@ public class CamsAdapter extends RecyclerView.Adapter<CamsAdapter.CamsViewHolder
 //            progressDialog.setVisibility(View.VISIBLE);
 //            mediaPlayer.stop();
 
+        }
+        void showProgressDialog(){
+            progressDialog.setVisibility(View.VISIBLE);
+        }
+        void hideProgressDialog(){
+            progressDialog.setVisibility(View.GONE);
         }
 
         private void initVlcPlayer() {
@@ -216,21 +229,47 @@ public class CamsAdapter extends RecyclerView.Adapter<CamsAdapter.CamsViewHolder
 //            final Media media = new Media(ipCam.getMediaPlayer().getLibVLC(), Uri.parse(ipCam.getUrl()));
 //            cams.get(getAdapterPosition()).getMediaPlayer().setMedia(media);
 
-//            mediaPlayer.setEventListener(new MediaPlayer.EventListener() {
-//                @Override
-//                public void onEvent(MediaPlayer.Event event) {
-//                    switch (event.type) {
-//                        case MediaPlayer.Event.EncounteredError:
-//
-//                            textError.setText(R.string.error_occurred);
-//                            break;
-//                    }
-//                }
-//            });
+            ipCam.getMediaPlayer().setEventListener(new MediaPlayer.EventListener() {
+                @Override
+                public void onEvent(MediaPlayer.Event event) {
+                    switch (event.type) {
+                        case MediaPlayer.Event.EncounteredError:
+                            hideProgressDialog();
+                            textError.setVisibility(View.VISIBLE);
+                            textError.setText(R.string.error_occurred);
+                            break;
+                        case MediaPlayer.Event.Playing:
+                            hideProgressDialog();
+                            break;
+                        case MediaPlayer.Event.Buffering:
+                            if(event.getBuffering()>= 100){
+                                hideProgressDialog();
+                            }
+                            break;
+                    }
+                }
+            });
 
 //            media.addOption(":fullscreen");
 //            media.release();
-            ipCam.getMediaPlayer().attachViews(vlcVideoLayout, null, false, false);
+//            ViewGroup.LayoutParams videoParams = vlcVideoLayout.getLayoutParams();
+//            ipCam.getMediaPlayer().getVLCVout().setWindowSize(videoParams.width, videoParams.height);
+//            ipCam.getMediaPlayer().attachViews(vlcVideoLayout, null, false, false);
+            ipCam.getMediaPlayer().getVLCVout().setVideoView(mSurfaceView);
+
+            ipCam.getMediaPlayer().getVLCVout().attachViews();
+            ipCam.getMediaPlayer().getVLCVout().addCallback(new IVLCVout.Callback() {
+                @Override
+                public void onSurfacesCreated(IVLCVout vlcVout) {
+                    vlcVout.setWindowSize(mSurfaceView.getMeasuredWidth(), mSurfaceView.getMeasuredHeight());
+                    ipCam.getMediaPlayer().setAspectRatio(mSurfaceView.getMeasuredWidth()+":"+mSurfaceView.getMeasuredHeight());
+                }
+
+                @Override
+                public void onSurfacesDestroyed(IVLCVout vlcVout) {
+
+                }
+            });
             ipCam.getMediaPlayer().play();
 
 

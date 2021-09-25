@@ -1,5 +1,6 @@
 package com.xontel.surveillancecameras.fragments;
 
+import org.videolan.libvlc.IVLCVout;
 import org.videolan.libvlc.LibVLC;
 import org.videolan.libvlc.Media;
 import org.videolan.libvlc.MediaPlayer;
@@ -79,42 +80,84 @@ public class CameraFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initUI();
+
 
     }
     private void initVlcPlayer() {
-
+        showLoadingDialog();
         List<String> args = new ArrayList<String>();
-        args.add("--vout=android-display");
         args.add("-vvv");
-        libVLC = new LibVLC(getContext(), args);
-        mediaPlayer = new MediaPlayer(libVLC);
-        mediaPlayer.setAspectRatio("16:9");
+//        args.add("--vout=android-display");
+        args.add("--network-caching=33");
+        args.add("--file-caching=33");
+        args.add("--live-caching=33");
+        args.add("--clock-synchro=0");
+        args.add("--clock-jitter=0");
+        args.add("--h264-fps=60");
+        args.add("--avcodec-fast");
+        args.add("--avcodec-threads=1");args.add("--no-audio");
 
-        mediaPlayer.attachViews(binding.videoLayout, null, ENABLE_SUBTITLES, USE_TEXTURE_VIEW);
+
+        libVLC = new LibVLC(getContext(), (ArrayList<String>) args);
+
+
+        mediaPlayer = new MediaPlayer(libVLC);
+        mediaPlayer.getVLCVout().addCallback(new IVLCVout.Callback() {
+            @Override
+            public void onSurfacesCreated(IVLCVout vlcVout) {
+                vlcVout.setWindowSize(binding.parent.getMeasuredWidth(), binding.parent.getMeasuredHeight());
+                mediaPlayer.setAspectRatio(binding.surfaceView.getMeasuredWidth()+":"+binding.surfaceView.getMeasuredHeight());
+            }
+
+            @Override
+            public void onSurfacesDestroyed(IVLCVout vlcVout) {
+            }
+        });
+
         mediaPlayer.setEventListener(new MediaPlayer.EventListener() {
             @Override
             public void onEvent(MediaPlayer.Event event) {
-                switch(event.type) {
-//                        case MediaPlayer.Event.Buffering:
-//                            showLoading((int)event.getBuffering());
-//                            break;
+                switch (event.type) {
                     case MediaPlayer.Event.EncounteredError:
+                        hideProgressDialog();
+                        binding.tvError.setVisibility(View.VISIBLE);
                         binding.tvError.setText(R.string.error_occurred);
+                        break;
+                    case MediaPlayer.Event.Playing:
+                        hideProgressDialog();
+                        break;
+                    case MediaPlayer.Event.Buffering:
+                        if(event.getBuffering()>= 100){
+                            hideProgressDialog();
+                        }
                         break;
                 }
             }
         });
+        mediaPlayer.getVLCVout().setVideoView(binding.surfaceView);
+        mediaPlayer.getVLCVout().attachViews();
         final Media media = new Media(libVLC, Uri.parse(cam.getUrl()));
         media.addOption(":fullscreen");
+        media.addOption(":rtsp-tcp");
+        media.setHWDecoderEnabled(true, true);
         mediaPlayer.setMedia(media);
+//        mediaPlayer.setVideoScale(MediaPlayer.ScaleType.SURFACE_FIT_SCREEN);
         media.release();
+
+        mediaPlayer.play();
 
 
 
 
     }
 
+    private void showLoadingDialog() {
+        binding.loadingDialog.setVisibility(View.VISIBLE);
+    }
+
+    private void hideProgressDialog() {
+        binding.loadingDialog.setVisibility(View.GONE);
+    }
 
 
     private void initUI() {
@@ -123,6 +166,7 @@ public class CameraFragment extends Fragment {
 
     @Override
     public void onStart() {
+        initUI();
         super.onStart();
 
 
@@ -130,6 +174,11 @@ public class CameraFragment extends Fragment {
 
     @Override
     public void onStop() {
+        if(mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.detachViews();
+            Log.e("tagoo","pause");
+        }
         super.onStop();
 
     }
@@ -148,24 +197,16 @@ public class CameraFragment extends Fragment {
 
     @Override
     public void onResume() {
-//        binding.mjpegView.startStream();
-        if(mediaPlayer != null){
-            mediaPlayer.play();
-            Log.e("tagoo","resume");
-        }
         super.onResume();
     }
 
 
     @Override
     public void onPause() {
-        if(mediaPlayer != null) {
-            mediaPlayer.pause();
-            Log.e("tagoo","pause");
-        }
         super.onPause();
 
     }
+
 
 
     private void setupCamView() {
