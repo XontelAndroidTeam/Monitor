@@ -78,6 +78,7 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
 
     @Override
     protected void onResume() {
+        updateViewPager();
         super.onResume();
     }
 
@@ -108,7 +109,7 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
             startActivity(intent);
         });
         binding.tvGridCount.setOnClickListener(v -> {
-            gridCount = (int) Math.pow(((((int) Math.sqrt(gridCount)) % 4) + 1), 2);
+            gridCount = (gridCount * 2) % 7;
             Log.e("TAG", "gridCount: " + gridCount);
             binding.tvGridCount.setText(String.valueOf(gridCount));
             getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, MODE_PRIVATE).edit().putInt(CommonUtils.KEY_GRID_COUNT, gridCount).apply();

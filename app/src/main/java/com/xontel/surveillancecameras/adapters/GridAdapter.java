@@ -11,11 +11,6 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.github.niqdev.mjpeg.DisplayMode;
-import com.github.niqdev.mjpeg.Mjpeg;
-import com.github.niqdev.mjpeg.MjpegSurfaceView;
-//import com.longdo.mjpegviewer.MjpegView;
-import com.github.niqdev.mjpeg.MjpegView;
 import com.xontel.surveillancecameras.R;
 import com.xontel.surveillancecameras.activities.CamerasActivity;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
@@ -23,7 +18,6 @@ import com.xontel.surveillancecameras.data.db.model.IpCam;
 import java.util.ArrayList;
 import java.util.List;
 
-import rx.functions.Action1;
 
 public class GridAdapter extends BaseAdapter {
     Context context;
@@ -57,7 +51,7 @@ public class GridAdapter extends BaseAdapter {
 //        MjpegView mjpegView = view.findViewById(R.id.mjpeg_view);
         TextView camName = view.findViewById(R.id.tv_cam_name);
         TextView textError = view.findViewById(R.id.tv_error);
-        ImageView placeholder = view.findViewById(R.id.iv_placeholder);
+        ImageView placeholder = view.findViewById(R.id.player_surface_frame);
 
         IpCam ipCam = cams.get(i);
         if(ipCam.getUrl() == null){ // not set yet
@@ -88,7 +82,7 @@ public class GridAdapter extends BaseAdapter {
     }
 
 
-    private void setupVideoPlayer(MjpegView mjpegView , int position){
+    private void setupVideoPlayer(/*MjpegView mjpegView* ,*/ int position){
 //        mjpegView.setAdjustHeight(true);
 //        mjpegView.setAdjustWidth(true);
 //        mjpegView.setMode(MjpegView.MODE_FIT_WIDTH);

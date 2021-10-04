@@ -151,7 +151,7 @@ public class GridFragment extends Fragment {
             }
         }
         gridAdapter = new CamsAdapter(allCams, getContext(),  gridCount);
-        binding.rvGrid.setLayoutManager(new GridLayoutManager(getContext(), (int) Math.sqrt(gridCount)));
+        binding.rvGrid.setLayoutManager(new GridLayoutManager(getContext(), gridCount == 4 ? 2 : gridCount));
         binding.rvGrid.setAdapter(gridAdapter);
 
 

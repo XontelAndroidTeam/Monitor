@@ -8,16 +8,40 @@
     android:layout_margin="4dp"
     android:backgroundTint="@color/primary_dark_color">
 
-    <SurfaceView
-        android:id="@+id/surface_view"
+    <FrameLayout
+        android:id="@+id/video_surface_frame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_weight="25"
+        android:foregroundGravity="clip_horizontal|clip_vertical"
+        tools:ignore="true">
 
-    <ProgressBar
-        android:id="@+id/loading_dialog"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center" />
+        <ViewStub
+            android:id="@+id/surface_stub"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout="@layout/surface_view" />
+
+        <ViewStub
+            android:id="@+id/subtitles_surface_stub"
+            android:layout_width="1dp"
+            android:layout_height="1dp"
+            android:layout="@layout/surface_view" />
+
+        <ViewStub
+            android:id="@+id/texture_stub"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout="@layout/texture_view" />
+
+        <ProgressBar
+            android:id="@+id/loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+    </FrameLayout>
 
     <ImageView
         android:id="@+id/iv_placeholder"
