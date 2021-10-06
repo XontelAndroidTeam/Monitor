@@ -3,6 +3,8 @@ package com.xontel.surveillancecameras.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SurfaceView;
@@ -24,6 +26,7 @@ import com.xontel.surveillancecameras.activities.AddCamActivity;
 import com.xontel.surveillancecameras.activities.CamerasActivity;
 import com.xontel.surveillancecameras.activities.MainActivity;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
+import com.xontel.surveillancecameras.utils.HikUtil;
 import com.xontel.surveillancecameras.utils.VideoHelper;
 
 //import org.videolan.libvlc.LibVLC;
@@ -31,12 +34,12 @@ import com.xontel.surveillancecameras.utils.VideoHelper;
 //import org.videolan.libvlc.MediaPlayer;
 //import org.videolan.libvlc.util.VLCVideoLayout;
 
-import org.videolan.libvlc.Dialog;
-import org.videolan.libvlc.IVLCVout;
-import org.videolan.libvlc.LibVLC;
-import org.videolan.libvlc.Media;
-import org.videolan.libvlc.MediaPlayer;
-import org.videolan.libvlc.util.VLCVideoLayout;
+//import org.videolan.libvlc.Dialog;
+//import org.videolan.libvlc.IVLCVout;
+//import org.videolan.libvlc.LibVLC;
+//import org.videolan.libvlc.Media;
+//import org.videolan.libvlc.MediaPlayer;
+//import org.videolan.libvlc.util.VLCVideoLayout;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -48,15 +51,21 @@ public class CamsAdapter extends RecyclerView.Adapter<CamsAdapter.CamsViewHolder
     private List<IpCam> cams;
     private Context context;
     private int gridCount;
-    private LibVLC libVLC ;
+//    private LibVLC libVLC ;
     private LifecycleObservable lifecycleObservable;
+    private List<VideoHelper> videoHelpers ;
 
 
-    public CamsAdapter(List<IpCam> cams, Context context, int gridCount) {
+    public CamsAdapter(List<IpCam> cams, List<VideoHelper> videoHelpers, Context context, int gridCount) {
         this.cams = cams;
         this.context = context;
         this.gridCount = gridCount;
         lifecycleObservable = new LifecycleObservable();
+        this.videoHelpers = videoHelpers;
+        initLibvlc();
+    }
+
+    private void initLibvlc() {
         // libvlc initialization
         List<String> args = new ArrayList<String>();
         args.add("-vvv");
@@ -70,7 +79,7 @@ public class CamsAdapter extends RecyclerView.Adapter<CamsAdapter.CamsViewHolder
 //        args.add("--avcodec-fast");
 //        args.add("--avcodec-threads=1");
 //        args.add("--no-audio");
-        libVLC = new LibVLC(context, (ArrayList<String>) args);
+//        libVLC = new LibVLC(context, (ArrayList<String>) args);
     }
 
     public List<IpCam> getCams() {
@@ -104,7 +113,7 @@ public class CamsAdapter extends RecyclerView.Adapter<CamsAdapter.CamsViewHolder
         IpCam ipCam = cams.get(position);
         if (ipCam.getUrl() == null) { // not set yet
             holder.camName.setText("");
-            holder.frameLayout.setVisibility(View.GONE);
+            holder.mSurfaceView.setVisibility(View.GONE);
             holder.placeholder.setVisibility(View.VISIBLE);
 //            holder.progressDialog.setVisibility(View.INVISIBLE);
             holder.itemView.setOnClickListener(v -> {
@@ -112,11 +121,12 @@ public class CamsAdapter extends RecyclerView.Adapter<CamsAdapter.CamsViewHolder
             });
 
         } else {
-            holder.frameLayout.setVisibility(View.VISIBLE);
+            holder.mSurfaceView.setVisibility(View.VISIBLE);
             holder.placeholder.setVisibility(View.GONE);
             holder.camName.setText(ipCam.getName());
 //            holder.setupVideoPlayer();
-            holder.initVlcPlayer();
+//            holder.initVlcPlayer();
+            holder.initHikPlayer();
             // TODO error text
 
             holder.itemView.setOnClickListener(v -> {
@@ -159,10 +169,12 @@ public class CamsAdapter extends RecyclerView.Adapter<CamsAdapter.CamsViewHolder
     }
 
     public class CamsViewHolder extends RecyclerView.ViewHolder {
+        private static final int PLAY_HIK_STREAM_CODE = 1001;
         private IpCam ipCam ;
         private TextView camName;
         private TextView textError;
         private ImageView placeholder;
+        private VideoHelper videoHelper;
 //        private ProgressBar progressDialog;
         private FrameLayout frameLayout;
 //        private MediaPlayer mediaPlayer;
@@ -170,7 +182,7 @@ public class CamsAdapter extends RecyclerView.Adapter<CamsAdapter.CamsViewHolder
         private static final boolean USE_TEXTURE_VIEW = false;
         private static final boolean ENABLE_SUBTITLES = true;
 //        private VLCVideoLayout vlcVideoLayout;
-//        private SurfaceView mSurfaceView;
+        private SurfaceView mSurfaceView;
 
 
 
@@ -180,23 +192,21 @@ public class CamsAdapter extends RecyclerView.Adapter<CamsAdapter.CamsViewHolder
 //            lifecycleObservable.addObserver((o, arg) -> {
 //                int lifecycleStatus = ((LifecycleObservable) o).status;
 //                if (lifecycleStatus == LifecycleObservable.ON_PAUSE) {
-//                    if (ipCam.getMediaPlayer() != null) {
-////                        pausePlayer();
-//                        Log.e("taggo", "view detached" + getAdapterPosition());
-////                        ipCam.getMediaPlayer().stop();
-////                        ipCam.getMediaPlayer().detachViews();
+//                    if (videoHelper != null) {
+//                        videoHelper.onStop();
+//                        videoHelper.onDestroy();
 //                    }
 //
 //
-////                } else {
-////                    if (cams.get(getAdapterPosition()).getUrl() != null)
-////                        initVlcPlayer();
-////                }
+//                } else {
+//                    if (cams.get(getAdapterPosition()).getUrl() != null)
+//                        initVlcPlayer();
 //                }
+//
 //            });
 //            vlcVideoLayout = itemView.findViewById(R.id.video_layout);
 //            progressDialog = itemView.findViewById(R.id.loading_dialog);
-//            mSurfaceView = itemView.findViewById(R.id.surface_view);
+            mSurfaceView = itemView.findViewById(R.id.surface_view);
             frameLayout = itemView.findViewById(R.id.video_surface_frame);
             camName = itemView.findViewById(R.id.tv_cam_name);
             textError = itemView.findViewById(R.id.tv_error);
@@ -206,46 +216,68 @@ public class CamsAdapter extends RecyclerView.Adapter<CamsAdapter.CamsViewHolder
 
 
 
-        private void initVlcPlayer() {
-            ipCam = cams.get(getAdapterPosition());
-            MediaPlayer mediaPlayer = new MediaPlayer(libVLC);
-
-
-            VideoHelper videoHelper = new VideoHelper(itemView, libVLC, mediaPlayer,
-                    R.id.video_surface_frame,
-                    R.id.surface_stub,
-                    R.id.subtitles_surface_stub,
-                    R.id.texture_stub);
-            videoHelper.setVIDEO_URL(ipCam.getUrl());
-//            videoHelperArrayList.add(videoHelper);
-
-            final ProgressBar loadingBar1 = itemView.findViewById(R.id.loading);
-
-
-            loadingBar1.setVisibility(View.VISIBLE);
-            mediaPlayer.setEventListener(new MediaPlayer.EventListener() {
-                float buffered = 0.0f;
-
+//        private void initVlcPlayer() {
+//            ipCam = cams.get(getAdapterPosition());
+//            MediaPlayer mediaPlayer = new MediaPlayer(libVLC);
+//
+//
+//             videoHelper = new VideoHelper(itemView, libVLC, mediaPlayer,
+//                    R.id.video_surface_frame,
+//                    R.id.surface_stub,
+//                    R.id.subtitles_surface_stub,
+//                    R.id.texture_stub);
+//            videoHelper.setVIDEO_URL(ipCam.getUrl());
+//            videoHelpers.add(videoHelper);
+//
+//            final ProgressBar loadingBar1 = itemView.findViewById(R.id.loading);
+//
+//
+//            loadingBar1.setVisibility(View.VISIBLE);
+//            mediaPlayer.setEventListener(new MediaPlayer.EventListener() {
+//                float buffered = 0.0f;
+//
+//                @Override
+//                public void onEvent(MediaPlayer.Event event) {
+//                    if (event.type == MediaPlayer.Event.Buffering) {
+//                        buffered = event.getBuffering();
+//                    }
+//                    if (buffered == 100.0) {
+//                        loadingBar1.setVisibility(View.GONE);
+//                        Log.d("EVENT", event.type + "");
+//                    }
+//
+//                    if( event.type == MediaPlayer.Event.EncounteredError) {
+//                        Log.d("EVENT", event.type + "");
+//                        loadingBar1.setVisibility(View.GONE);
+//                        textError.setVisibility(View.VISIBLE);
+//                        textError.setText(R.string.error_occurred);
+//                    }
+//                }
+//            });
+//            videoHelper.onStart();
+//
+//        }
+        private void initHikPlayer(){
+                        ipCam = cams.get(getAdapterPosition());
+            HikUtil hikUtil = new HikUtil();
+             Handler mHandler = new Handler(new Handler.Callback() {
                 @Override
-                public void onEvent(MediaPlayer.Event event) {
-                    if (event.type == MediaPlayer.Event.Buffering) {
-                        buffered = event.getBuffering();
+                public boolean handleMessage(Message msg) {
+                    switch (msg.what) {
+                        case PLAY_HIK_STREAM_CODE:
+                            hikUtil.playOrStopStream();
+                            break;
+                        default:
+                            break;
                     }
-                    if (buffered == 100.0) {
-                        loadingBar1.setVisibility(View.GONE);
-                        Log.d("EVENT", event.type + "");
-                    }
-
-                    if( event.type == MediaPlayer.Event.EncounteredError) {
-                        Log.d("EVENT", event.type + "");
-                        loadingBar1.setVisibility(View.GONE);
-                        textError.setVisibility(View.VISIBLE);
-                        textError.setText(R.string.error_occurred);
-                    }
+                    return false;
                 }
             });
-            videoHelper.onStart();
-
+            HikUtil.initSDK();
+            hikUtil.initView(mSurfaceView);
+            Uri uri = Uri.parse(ipCam.getUrl());
+            hikUtil.setDeviceData(uri.getHost(), uri.getPort() == -1 ? 8000 : uri.getPort() , uri.getUserInfo().split(":")[0], uri.getUserInfo().split(":")[1]);
+            hikUtil.loginDevice(mHandler, PLAY_HIK_STREAM_CODE);
         }
 
         private void hideProgressDialog() {

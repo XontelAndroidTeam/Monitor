@@ -51,21 +51,21 @@ public class GridAdapter extends BaseAdapter {
 //        MjpegView mjpegView = view.findViewById(R.id.mjpeg_view);
         TextView camName = view.findViewById(R.id.tv_cam_name);
         TextView textError = view.findViewById(R.id.tv_error);
-        ImageView placeholder = view.findViewById(R.id.player_surface_frame);
+//        ImageView placeholder = view.findViewById(R.id.player_surface_frame);
 
         IpCam ipCam = cams.get(i);
         if(ipCam.getUrl() == null){ // not set yet
             camName.setText("");
 //            mjpegView.setVisibility(View.GONE);
-            placeholder.setVisibility(View.VISIBLE);
-            placeholder.setOnClickListener(v->{
+//            placeholder.setVisibility(View.VISIBLE);
+//            placeholder.setOnClickListener(v->{
                 //TODO open add activity
-            });
+//            });
 
         }else {
 //            mjpegView.setVisibility(View.VISIBLE);
-            placeholder.setVisibility(View.GONE);
-            camName.setText(ipCam.getName());
+//            placeholder.setVisibility(View.GONE);
+//            camName.setText(ipCam.getName());
 //            setupVideoPlayer(mjpegView, i);
             // TODO error text
 

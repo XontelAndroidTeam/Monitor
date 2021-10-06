@@ -20,20 +20,21 @@
         <ViewStub
             android:id="@+id/surface_stub"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout="@layout/surface_view" />
+            android:layout_height="match_parent"/>
+<!--            android:layout="@layout/surface_view" />-->
 
         <ViewStub
             android:id="@+id/subtitles_surface_stub"
             android:layout_width="1dp"
-            android:layout_height="1dp"
-            android:layout="@layout/surface_view" />
+            android:layout_height="1dp"/>
+<!--            android:layout="@layout/surface_view" />-->
 
         <ViewStub
             android:id="@+id/texture_stub"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout="@layout/texture_view" />
+            android:layout_height="match_parent"/>
+<!--            android:layout="@layout/texture_view" />-->
+
 
         <ProgressBar
             android:id="@+id/loading"
@@ -42,6 +43,10 @@
             android:layout_gravity="center"
             android:visibility="gone" />
     </FrameLayout>
+    <SurfaceView
+        android:id="@+id/surface_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
     <ImageView
         android:id="@+id/iv_placeholder"

@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import com.xontel.surveillancecameras.adapters.CamsAdapter;
 import com.xontel.surveillancecameras.databinding.FragmentGridBinding;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
 import com.xontel.surveillancecameras.utils.CommonUtils;
+import com.xontel.surveillancecameras.utils.VideoHelper;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -42,8 +44,7 @@ public class GridFragment extends Fragment {
     private ArrayList<IpCam> allCams = new ArrayList<>();
     private CamsAdapter gridAdapter;
     private FragmentGridBinding binding;
-    private Mjpeg mjpeg ;
-    private List<MjpegInputStream> streams = new ArrayList<>() ;
+    private List<VideoHelper> videoHelpers = new ArrayList<>();
 
 
     public GridFragment() {
@@ -56,17 +57,15 @@ public class GridFragment extends Fragment {
 //        initializeObservable();
 //        gridAdapter.resumeAll();
 //        gridAdapter.notifyDataSetChanged();
+        Log.e("lifecycle", "onResume()" + hashCode());
         initUI();
         super.onResume();
     }
 
     @Override
     public void onPause() {
-        try {
-            pauseAllPlayers();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+        Log.e("lifecycle", "onPause()" + hashCode());
+
         super.onPause();
 //        stopObservables();
 //        gridAdapter.pauseAll();
@@ -97,27 +96,39 @@ public class GridFragment extends Fragment {
         if (getArguments() != null) {
             actualCams = getArguments().getParcelableArrayList(KEY_CAMS);
         }
+        Log.e("lifecycle", "onCreate()" + hashCode());
     }
 
     private void initializeObservable() {
-        for(int i =0 ; i<actualCams.size();i++){
+        for (int i = 0; i < actualCams.size(); i++) {
 //            observables.add(mjpeg.open(actualCams.get(i).getUrl()));
         }
     }
 
     @Override
     public void onDestroy() {
+        Log.e("lifecycle", "onDestroy()" + hashCode() + "\n" + "================================");
         super.onDestroy();
 
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        Log.e("lifecycle", "isVisible() = "+isVisibleToUser + hashCode());
+        super.setUserVisibleHint(isVisibleToUser);
+
+    }
+
     private void pauseAllPlayers() {
-        for(int i = 0 ; i< actualCams.size() ; i++){
-            actualCams.get(i).getMediaPlayer().stop();
+        for (int i = 0; i < actualCams.size(); i++) {
+            VideoHelper videoHelper = actualCams.get(i).getVideoHelper();
+            if(videoHelper != null){
+//                videoHelper.onStop();
+//                videoHelper.onDestroy();
+            }
 //            actualCams.get(i).getMediaPlayer().detachViews();
         }
     }
-
 
 
     @Override
@@ -142,7 +153,7 @@ public class GridFragment extends Fragment {
 
 
     private void setupCamGrid() {
-        int allCamsSize = ((MainActivity)getContext()).getCams().size();
+        int allCamsSize = ((MainActivity) getContext()).getCams().size();
         allCams.clear();
         allCams.addAll(actualCams);
         if (actualCams.size() < gridCount && allCamsSize < 16) {
@@ -150,10 +161,9 @@ public class GridFragment extends Fragment {
                 allCams.add(new IpCam());
             }
         }
-        gridAdapter = new CamsAdapter(allCams, getContext(),  gridCount);
+        gridAdapter = new CamsAdapter(allCams, videoHelpers, getContext(), gridCount);
         binding.rvGrid.setLayoutManager(new GridLayoutManager(getContext(), gridCount == 4 ? 2 : gridCount));
         binding.rvGrid.setAdapter(gridAdapter);
-
 
 
     }

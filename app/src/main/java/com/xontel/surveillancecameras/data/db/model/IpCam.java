@@ -8,7 +8,9 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
-import org.videolan.libvlc.MediaPlayer;
+import com.xontel.surveillancecameras.utils.VideoHelper;
+
+//import org.videolan.libvlc.MediaPlayer;
 
 @Entity(tableName = "camera")
 public class IpCam implements Parcelable  {
@@ -21,7 +23,7 @@ public class IpCam implements Parcelable  {
     @ColumnInfo(name = "description")
     private String description ;
     @Ignore
-    private MediaPlayer mediaPlayer ;
+    private VideoHelper videoHelper ;
 
 
     public IpCam(String url, String name, String description) {
@@ -35,12 +37,12 @@ public class IpCam implements Parcelable  {
     }
 
 
-    public MediaPlayer getMediaPlayer() {
-        return mediaPlayer;
+    public VideoHelper getVideoHelper() {
+        return videoHelper;
     }
 
-    public void setMediaPlayer(MediaPlayer mediaPlayer) {
-        this.mediaPlayer = mediaPlayer;
+    public void setMediaPlayer(VideoHelper videoHelper) {
+        this.videoHelper = videoHelper;
     }
 
     protected IpCam(Parcel in) {

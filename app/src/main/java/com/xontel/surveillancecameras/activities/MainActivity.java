@@ -23,10 +23,10 @@ import com.xontel.surveillancecameras.fragments.GridFragment;
 import com.xontel.surveillancecameras.presenters.MainMvpPresenter;
 import com.xontel.surveillancecameras.presenters.MainMvpView;
 import com.xontel.surveillancecameras.utils.CommonUtils;
-
-import org.videolan.libvlc.LibVLC;
-import org.videolan.libvlc.Media;
-import org.videolan.libvlc.MediaPlayer;
+//
+//import org.videolan.libvlc.LibVLC;
+//import org.videolan.libvlc.Media;
+//import org.videolan.libvlc.MediaPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +38,7 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
     private ActivityMainBinding binding;
     private int gridCount;
     private List<IpCam> cams = new ArrayList<>();
-    private List<MediaPlayer> mediaPlayers = new ArrayList<>();
+//    private List<MediaPlayer> mediaPlayers = new ArrayList<>();
     @Inject
     MainMvpPresenter<MainMvpView> mPresenter;
 
@@ -54,27 +54,12 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
 
     @Override
     protected void onDestroy() {
-        try {
-            releaseMediaPlayers();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
         super.onDestroy();
         mPresenter.onDetach();
 
     }
 
-    private void releaseMediaPlayers() {
-        for(int i = 0 ;  i< cams.size() ; i++){
-           MediaPlayer mediaPlayer =  cams.get(i).getMediaPlayer();
-           if(mediaPlayer != null) {
-               mediaPlayer.stop();
-               mediaPlayer.detachViews();
-               mediaPlayer.release();
-           }
 
-        }
-    }
 
     @Override
     protected void onResume() {
@@ -91,9 +76,6 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
 
     }
 
-    public List<MediaPlayer> getMediaPlayers() {
-        return mediaPlayers;
-    }
 
     private void initUI() {
         gridCount = getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, MODE_PRIVATE).getInt(CommonUtils.KEY_GRID_COUNT, GridFragment.DEFAULT_GRID_COUNT);
@@ -147,7 +129,7 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
         GridFragment gridFragment = new GridFragment();
         pagerAdapter.addFragment(gridFragment);
         binding.vpSlider.setAdapter(pagerAdapter);
-        binding.vpSlider.setOffscreenPageLimit(2);
+        binding.vpSlider.setOffscreenPageLimit(0);
         binding.dotsIndicator.setViewPager(binding.vpSlider);
     }
 
@@ -204,53 +186,11 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
         Log.e("cams number", response.size() + "");
         cams.clear();
         cams.addAll(response);
-        createMediaPlayers();
         updateViewPager();
 
     }
 
-    private void createMediaPlayers() {
-        for (int i = 0; i < cams.size(); i++) {
-            IpCam ipCam = cams.get(i);
-            ipCam.setMediaPlayer(getMediaPlayerForCam(ipCam.getUrl()));
-        }
-    }
 
-    private MediaPlayer getMediaPlayerForCam(String url) {
-        LibVLC libVLC;
-        MediaPlayer mediaPlayer;
-
-        // libvlc initialization
-        List<String> args = new ArrayList<String>();
-        args.add("-vvv");
-//        args.add("--vout=android-display");
-        args.add("--network-caching=33");
-        args.add("--file-caching=33");
-        args.add("--live-caching=33");
-        args.add("--clock-synchro=0");
-        args.add("--clock-jitter=0");
-        args.add("--h264-fps=60");
-        args.add("--avcodec-fast");
-        args.add("--avcodec-threads=1");
-        args.add("--no-audio");
-
-        libVLC = new LibVLC(this, (ArrayList<String>) args);
-
-        // media player setup
-        mediaPlayer = new MediaPlayer(libVLC);
-        final Media media = new Media(libVLC, Uri.parse(url));
-        media.setHWDecoderEnabled(true,true);
-        media.addOption(":fullscreen");
-        media.addOption(":rtsp-tcp");
-        mediaPlayer.setMedia(media);
-
-        media.release();
-//            mediaPlayer.attachViews(vlcVideoLayout, null, ENABLE_SUBTITLES, USE_TEXTURE_VIEW);
-//            mediaPlayer.play();
-
-        return mediaPlayer;
-
-    }
 
     @Override
     public void onCreatingCam() {
