@@ -1,45 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:stream="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+<androidx.cardview.widget.CardView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp"
+    android:backgroundTint="@color/black_color">
 
     <FrameLayout
-        android:id="@+id/parent"
+        android:id="@+id/video_surface_frame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_weight="25"
+        android:foregroundGravity="clip_horizontal|clip_vertical"
+        tools:ignore="true">
 
-        <TextView
-            android:id="@+id/tv_cam_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top|start"
-            android:layout_margin="16dp"
-            android:maxLines="1"
-            android:textColor="@color/white"
-            android:textSize="24dp"
-            tools:text="@string/name" />
-
-        <SurfaceView
-            android:id="@+id/surface_view"
+        <ViewStub
+            android:id="@+id/surface_stub"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout="@layout/surface_view" />
+
+        <ViewStub
+            android:id="@+id/subtitles_surface_stub"
+            android:layout_width="1dp"
+            android:layout_height="1dp"
+            android:layout="@layout/surface_view" />
+
+        <ViewStub
+            android:id="@+id/texture_stub"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout="@layout/texture_view" />
+
 
         <ProgressBar
-            android:id="@+id/loading_dialog"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center" />
-
-
-        <TextView
-            android:id="@+id/tv_error"
+            android:id="@+id/loading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/error_occurred"
-            android:textColor="@color/white"
-            android:textSize="24dp"
-            android:visibility="gone"
-            tools:visibility="visible" />
+            android:visibility="gone" />
     </FrameLayout>
+    <TextView
+        android:id="@+id/tv_cam_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|start"
+        android:layout_margin="4dp"
+        android:maxLines="1"
+        android:textColor="@color/white"
+        android:textSize="16dp"
+        tools:text="@string/name" />
+
+    <TextView
+        android:id="@+id/tv_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/error_occurred"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:visibility="gone" />
+
+</androidx.cardview.widget.CardView>
 </layout>

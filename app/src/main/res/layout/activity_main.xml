@@ -114,14 +114,19 @@
                     android:paddingVertical="2dp"
                     android:paddingHorizontal="8dp"
                     android:text="@string/slide_show" />
-                <TextView
+                <com.skydoves.powerspinner.PowerSpinnerView
                     android:id="@+id/tv_grid_count"
                     style="@style/status_bar_font"
                     android:layout_width="50dp"
+                    app:spinner_arrow_show="false"
+                    app:spinner_popup_background="@color/dark_primary"
+                    app:spinner_divider_show="true"
                     android:layout_height="match_parent"
                     android:layout_toEndOf="@+id/iv_back"
                     android:gravity="center"
                     android:textSize="24sp"
+
+                    app:spinner_item_array="@array/grid_count"
                     android:background="@drawable/bordered_bg"
                     android:paddingVertical="2dp"
                     android:paddingHorizontal="8dp"

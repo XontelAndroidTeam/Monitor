@@ -1,10 +1,10 @@
 package com.xontel.surveillancecameras.fragments;
 
-//import org.videolan.libvlc.IVLCVout;
-//import org.videolan.libvlc.LibVLC;
-//import org.videolan.libvlc.Media;
-//import org.videolan.libvlc.MediaPlayer;
-//import org.videolan.libvlc.util.VLCVideoLayout;
+import org.videolan.libvlc.IVLCVout;
+import org.videolan.libvlc.LibVLC;
+import org.videolan.libvlc.Media;
+import org.videolan.libvlc.MediaPlayer;
+import org.videolan.libvlc.util.VLCVideoLayout;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.github.niqdev.mjpeg.DisplayMode;
@@ -26,6 +27,7 @@ import com.github.niqdev.mjpeg.Mjpeg;
 import com.xontel.surveillancecameras.R;
 import com.xontel.surveillancecameras.databinding.FragmentCameraBinding;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
+import com.xontel.surveillancecameras.utils.VideoHelper;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -36,8 +38,9 @@ import java.util.List;
 import rx.functions.Action1;
 
 public class CameraFragment extends Fragment {
-//    private MediaPlayer mediaPlayer;
-//    private LibVLC libVLC;
+    private MediaPlayer mediaPlayer;
+    private LibVLC libVLC;
+    private VideoHelper videoHelper ;
     private static final boolean USE_TEXTURE_VIEW = false;
     private static final boolean ENABLE_SUBTITLES = true;
     private static final String KEY_CAM_INFO = "cam_info";
@@ -80,14 +83,13 @@ public class CameraFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-
+        initUI();
     }
-//    private void initVlcPlayer() {
-//        showLoadingDialog();
-//        List<String> args = new ArrayList<String>();
-//        args.add("-vvv");
-////        args.add("--vout=android-display");
+    private void initVlcPlayer() {
+        // libvlc initialization
+        List<String> args = new ArrayList<String>();
+        args.add("-vvv");
+//        args.add("--vout=android-display");
 //        args.add("--network-caching=33");
 //        args.add("--file-caching=33");
 //        args.add("--live-caching=33");
@@ -95,102 +97,67 @@ public class CameraFragment extends Fragment {
 //        args.add("--clock-jitter=0");
 //        args.add("--h264-fps=60");
 //        args.add("--avcodec-fast");
-//        args.add("--avcodec-threads=1");args.add("--no-audio");
-//
-//
-//        libVLC = new LibVLC(getContext(), (ArrayList<String>) args);
-//
-//
-//        mediaPlayer = new MediaPlayer(libVLC);
-//        mediaPlayer.getVLCVout().addCallback(new IVLCVout.Callback() {
-//            @Override
-//            public void onSurfacesCreated(IVLCVout vlcVout) {
-//                vlcVout.setWindowSize(binding.parent.getMeasuredWidth(), binding.parent.getMeasuredHeight());
-//                mediaPlayer.setAspectRatio(binding.surfaceView.getMeasuredWidth()+":"+binding.surfaceView.getMeasuredHeight());
-//            }
-//
-//            @Override
-//            public void onSurfacesDestroyed(IVLCVout vlcVout) {
-//            }
-//        });
-//
-//        mediaPlayer.setEventListener(new MediaPlayer.EventListener() {
-//            @Override
-//            public void onEvent(MediaPlayer.Event event) {
-//                switch (event.type) {
-//                    case MediaPlayer.Event.EncounteredError:
-//                        hideProgressDialog();
-//                        binding.tvError.setVisibility(View.VISIBLE);
-//                        binding.tvError.setText(R.string.error_occurred);
-//                        break;
-//                    case MediaPlayer.Event.Playing:
-//                        hideProgressDialog();
-//                        break;
-//                    case MediaPlayer.Event.Buffering:
-//                        if(event.getBuffering()>= 100){
-//                            hideProgressDialog();
-//                        }
-//                        break;
-//                }
-//            }
-//        });
-//        mediaPlayer.getVLCVout().setVideoView(binding.surfaceView);
-//        mediaPlayer.getVLCVout().attachViews();
-//        final Media media = new Media(libVLC, Uri.parse(cam.getUrl()));
-//        media.addOption(":fullscreen");
-//        media.addOption(":rtsp-tcp");
-//        media.setHWDecoderEnabled(true, true);
-//        mediaPlayer.setMedia(media);
-////        mediaPlayer.setVideoScale(MediaPlayer.ScaleType.SURFACE_FIT_SCREEN);
-//        media.release();
-//
-//        mediaPlayer.play();
-//
-//
-//
-//
-//    }
+//        args.add("--avcodec-threads=1");
+//        args.add("--no-audio");
+        libVLC = new LibVLC(getContext(), (ArrayList<String>) args);
+        MediaPlayer mediaPlayer = new MediaPlayer(libVLC);
 
-    private void showLoadingDialog() {
-        binding.loadingDialog.setVisibility(View.VISIBLE);
+
+        videoHelper = new VideoHelper(binding.getRoot(), libVLC, mediaPlayer,
+                R.id.video_surface_frame,
+                R.id.surface_stub,
+                R.id.subtitles_surface_stub,
+                R.id.texture_stub);
+        videoHelper.setVIDEO_URL(cam.getUrl());
+
+        final ProgressBar loadingBar1 = binding.getRoot().findViewById(R.id.loading);
+
+
+        loadingBar1.setVisibility(View.VISIBLE);
+        mediaPlayer.setEventListener(new MediaPlayer.EventListener() {
+            float buffered = 0.0f;
+
+            @Override
+            public void onEvent(MediaPlayer.Event event) {
+                if (event.type == MediaPlayer.Event.Buffering) {
+                    buffered = event.getBuffering();
+                }
+                if (buffered == 100.0) {
+                    loadingBar1.setVisibility(View.GONE);
+                    Log.d("EVENT", event.type + "");
+                }
+
+                if( event.type == MediaPlayer.Event.EncounteredError) {
+                    Log.d("EVENT", event.type + "");
+                    loadingBar1.setVisibility(View.GONE);
+                    binding.tvError.setVisibility(View.VISIBLE);
+                    binding.tvError.setText(R.string.error_occurred);
+                }
+            }
+        });
+        videoHelper.onStart();
+
     }
 
-    private void hideProgressDialog() {
-        binding.loadingDialog.setVisibility(View.GONE);
-    }
 
 
     private void initUI() {
-        setupCamView();
+        initVlcPlayer();
     }
 
-    @Override
-    public void onStart() {
-        initUI();
-        super.onStart();
-
-
-    }
 
     @Override
     public void onStop() {
-//        if(mediaPlayer != null) {
-//            mediaPlayer.stop();
-//            mediaPlayer.detachViews();
-//            Log.e("tagoo","pause");
-//        }
         super.onStop();
 
     }
 
     @Override
     public void onDestroy() {
-//        if(mediaPlayer != null){
-//            mediaPlayer.stop();
-//            mediaPlayer.detachViews();
-//            mediaPlayer.release();
-//            libVLC.release();
-//        }
+        if(videoHelper != null){
+            videoHelper.onStop();
+            videoHelper.onDestroy();
+        }
         super.onDestroy();
 
     }

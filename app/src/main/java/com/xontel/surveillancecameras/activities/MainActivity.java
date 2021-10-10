@@ -1,5 +1,6 @@
 package com.xontel.surveillancecameras.activities;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -11,6 +12,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
 
+import com.skydoves.powerspinner.OnSpinnerItemSelectedListener;
 import com.xontel.surveillancecameras.R;
 import com.xontel.surveillancecameras.adapters.CamsAdapter;
 import com.xontel.surveillancecameras.adapters.GridAdapter;
@@ -90,13 +92,17 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
             intent.putExtra(CamerasActivity.KEY_SLIDE_SHOW, true);
             startActivity(intent);
         });
-        binding.tvGridCount.setOnClickListener(v -> {
-            gridCount = (gridCount * 2) % 7;
-            Log.e("TAG", "gridCount: " + gridCount);
-            binding.tvGridCount.setText(String.valueOf(gridCount));
-            getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, MODE_PRIVATE).edit().putInt(CommonUtils.KEY_GRID_COUNT, gridCount).apply();
-            updateViewPager();
-
+        binding.tvGridCount.setOnSpinnerItemSelectedListener(new OnSpinnerItemSelectedListener<Object>() {
+            @Override
+            public void onItemSelected(int i, @Nullable Object o, int i1, Object t1) {
+                if(i != i1) {
+                    gridCount = Integer.parseInt((String) t1);/*(int) Math.pow(((((int) Math.sqrt(gridCount)) % 4) + 1), 2);*/
+                    Log.e("TAG", "gridCount: " + gridCount);
+                    binding.tvGridCount.setText(String.valueOf(gridCount));
+                    getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, MODE_PRIVATE).edit().putInt(CommonUtils.KEY_GRID_COUNT, gridCount).apply();
+                    updateViewPager();
+                }
+            }
         });
         setupCamerasPager();
 //        setupCamsGrid();
