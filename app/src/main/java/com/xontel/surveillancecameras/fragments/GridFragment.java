@@ -67,7 +67,7 @@ public class GridFragment extends Fragment {
         gridAdapter.pauseAll();
         actualCams.clear();
         videoHelpers.clear();
-        setupCamGrid();
+//        setupCamGrid();
     }
 
 
