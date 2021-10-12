@@ -165,6 +165,9 @@ public class VideoHelper implements IVLCVout.OnNewVideoLayoutListener {
 
     public void onDestroy() {
         mMediaPlayer.release();
+        mLibVLC.release();
+
+
     }
 
     private void changeMediaPlayerLayout(int displayW, int displayH) {

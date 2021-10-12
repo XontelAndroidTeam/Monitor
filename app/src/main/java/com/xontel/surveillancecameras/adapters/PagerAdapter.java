@@ -43,6 +43,10 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
         mFragmentList.add(fragment);
     }
 
+    public void removeFragment(int index ) {
+        mFragmentList.remove(index);
+    }
+
     @NonNull
     @NotNull
     @Override

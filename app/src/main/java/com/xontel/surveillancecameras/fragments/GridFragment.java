@@ -24,6 +24,7 @@ import com.xontel.surveillancecameras.adapters.CamsAdapter;
 import com.xontel.surveillancecameras.databinding.FragmentGridBinding;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
 import com.xontel.surveillancecameras.utils.CommonUtils;
+import com.xontel.surveillancecameras.utils.RxBus;
 import com.xontel.surveillancecameras.utils.VideoHelper;
 
 import org.jetbrains.annotations.NotNull;
@@ -31,6 +32,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 import rx.Observable;
 import rx.Scheduler;
 import rx.schedulers.Schedulers;
@@ -54,9 +57,7 @@ public class GridFragment extends Fragment {
 
     @Override
     public void onResume() {
-//        initializeObservable();
-//        gridAdapter.resumeAll();
-//        gridAdapter.notifyDataSetChanged();
+        Log.e("TAG", "onResume"+hashCode() );
         setupPlayers();
         super.onResume();
     }
@@ -64,9 +65,10 @@ public class GridFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
+        Log.e("TAG", "onPause"+hashCode() );
         gridAdapter.pauseAll();
-        actualCams.clear();
-        videoHelpers.clear();
+//        actualCams.clear();
+//        videoHelpers.clear();
 //        setupCamGrid();
     }
 
@@ -83,6 +85,7 @@ public class GridFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.e("TAG", "onCreate"+hashCode() );
         super.onCreate(savedInstanceState);
         gridCount = getContext().getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE).getInt(CommonUtils.KEY_GRID_COUNT, DEFAULT_GRID_COUNT);
     }
@@ -91,6 +94,7 @@ public class GridFragment extends Fragment {
 
     @Override
     public void onDestroy() {
+        Log.e("TAG", "onDestroy"+hashCode() );
         super.onDestroy();
 
     }
@@ -105,6 +109,7 @@ public class GridFragment extends Fragment {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_grid, container, false);
         return binding.getRoot();
     }
+
 
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable Bundle savedInstanceState) {
@@ -129,10 +134,8 @@ public class GridFragment extends Fragment {
     private void setupPlayers(){
 
         if (getArguments() != null) {
-            actualCams.clear();
-            actualCams.addAll(getArguments().getParcelableArrayList(KEY_CAMS));
+            gridAdapter.addItems(getArguments().getParcelableArrayList(KEY_CAMS));
         }
-        gridAdapter.notifyDataSetChanged();
     }
 
 }

@@ -70,6 +70,7 @@ public class CameraFragment extends Fragment {
         if (getArguments() != null) {
             cam = getArguments().getParcelable(KEY_CAM_INFO);
         }
+        Log.e("TAG", "onCreate"+hashCode() );
     }
 
     @Override
@@ -83,7 +84,7 @@ public class CameraFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initUI();
+//        initUI();
     }
     private void initVlcPlayer() {
         // libvlc initialization
@@ -148,49 +149,35 @@ public class CameraFragment extends Fragment {
 
     @Override
     public void onStop() {
+        Log.e("TAG", "onStop"+hashCode() );
         super.onStop();
 
     }
 
     @Override
     public void onDestroy() {
-        if(videoHelper != null){
-            videoHelper.onStop();
-            videoHelper.onDestroy();
-        }
+        Log.e("TAG", "onDestroy"+hashCode() );
+
         super.onDestroy();
 
     }
 
     @Override
     public void onResume() {
+        initUI();
+        Log.e("TAG", "onResume"+hashCode() );
         super.onResume();
     }
 
 
     @Override
     public void onPause() {
+        Log.e("TAG", "onPause"+hashCode() );
+        if(videoHelper != null){
+            videoHelper.onStop();
+            videoHelper.onDestroy();
+        }
         super.onPause();
-
-    }
-
-
-
-    private void setupCamView() {
-        binding.tvCamName.setText(cam.getName());
-//        binding.mjpegView.setAdjustHeight(true);
-//        binding.mjpegView.setAdjustWidth(true);
-//        binding.mjpegView.setMode(MjpegView.MODE_FIT_WIDTH);
-//        binding.mjpegView.setMsecWaitAfterReadImageError(1000);
-//        binding.mjpegView.setUrl(cam.getUrl());
-//        binding.mjpegView.setRecycleBitmap(true);
-//        binding.mjpegView.startStream();
-
-
-//
-//        initVlcPlayer();
-
-
 
     }
 

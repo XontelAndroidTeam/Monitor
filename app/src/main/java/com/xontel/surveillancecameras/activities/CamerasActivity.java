@@ -1,12 +1,6 @@
 package com.xontel.surveillancecameras.activities;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
-
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,20 +11,26 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.databinding.DataBindingUtil;
+
 import com.xontel.surveillancecameras.R;
 import com.xontel.surveillancecameras.adapters.PagerAdapter;
 import com.xontel.surveillancecameras.base.BaseActivity;
+import com.xontel.surveillancecameras.data.db.model.IpCam;
 import com.xontel.surveillancecameras.databinding.ActivityCamerasBinding;
 import com.xontel.surveillancecameras.dialogs.CamDetailsDialog;
 import com.xontel.surveillancecameras.dialogs.SettingsDialog;
 import com.xontel.surveillancecameras.fragments.CameraFragment;
-import com.xontel.surveillancecameras.data.db.model.IpCam;
 import com.xontel.surveillancecameras.presenters.MainMvpPresenter;
 import com.xontel.surveillancecameras.presenters.MainMvpView;
 import com.xontel.surveillancecameras.utils.CommonUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.inject.Inject;
 
@@ -38,27 +38,18 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
     public static final String KEY_CAMERAS = "cameras";
     public static final String KEY_SLIDE_SHOW = "slide_show";
     private static final int REQUEST_CODE_EDIT_CAM = 44;
-    private List<IpCam> cams = new ArrayList<>();
-    private ActivityCamerasBinding binding;
-    int slideInterval = 2;
-    int selectedPage = 0;
-    boolean isAutoPreview;
-    int slideIntervalIndex;
-    boolean isSlideShow = false ;
-    private final Handler handler = new Handler();
+    int slideInterval;
+    int selectedPage;
+    boolean isSlideShow = false;
     PagerAdapter pagerAdapter;
     @Inject
     MainMvpPresenter<MainMvpView> mPresenter;
+    private List<IpCam> cams = new ArrayList<>();
+    private ActivityCamerasBinding binding;
+    private Timer timer;
     private SharedPreferences sharedPreferences;
-
     SharedPreferences.OnSharedPreferenceChangeListener listener = (sharedPreferences, key) -> {
-        if (key.equals(CommonUtils.KEY_AUTO_PREVIEW)) {
-            isAutoPreview = sharedPreferences.getBoolean(CommonUtils.KEY_AUTO_PREVIEW, true);
-            checkPreview();
-        } else if (key.equals(CommonUtils.KEY_SLIDE_INTERVAL_INDEX)) {
-            slideIntervalIndex = sharedPreferences.getInt(CommonUtils.KEY_SLIDE_INTERVAL_INDEX, 0);
-            checkPreview();
-        }
+        setupSlider();
     };
 
 
@@ -70,17 +61,15 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
         sharedPreferences.registerOnSharedPreferenceChangeListener(listener);
         setSupportActionBar(binding.toolbar);
         cams = getIntent().getParcelableArrayListExtra(KEY_CAMERAS);
-        if(getIntent().hasExtra(KEY_SLIDE_SHOW)){
+        if (getIntent().hasExtra(KEY_SLIDE_SHOW)) {
             binding.tvStatusText.setText(R.string.slide_show);
             isSlideShow = true;
-
-        }else{
+        } else {
             binding.tvStatusText.setText(R.string.cameras);
             isSlideShow = false;
         }
         getActivityComponent().inject(this);
         mPresenter.onAttach(this);
-
         initUI();
     }
 
@@ -89,6 +78,10 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
         super.onDestroy();
         mPresenter.onDetach();
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(listener);
+        if(timer != null){
+            timer.cancel();
+            timer = null ;
+        }
     }
 
     @Override
@@ -100,13 +93,13 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar_menu, menu);
 
-            for(int i = 0 ; i < menu.size() ; i++){
-                if(menu.getItem(i).getItemId() == R.id.action_settings){
-                    menu.getItem(i).setVisible(isSlideShow);
-                }else{
-                    menu.getItem(i).setVisible(!isSlideShow);
-                }
+        for (int i = 0; i < menu.size(); i++) {
+            if (menu.getItem(i).getItemId() == R.id.action_settings) {
+                menu.getItem(i).setVisible(isSlideShow);
+            } else {
+                menu.getItem(i).setVisible(!isSlideShow);
             }
+        }
 
         return true;
     }
@@ -162,7 +155,6 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
         startActivityForResult(intent, REQUEST_CODE_EDIT_CAM);
     }
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -215,7 +207,7 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
             onBackPressed();
         });
         setupCamerasPager();
-        checkPreview();
+        setupSlider();
     }
 
     private void setupCamerasPager() {
@@ -228,20 +220,39 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
         binding.vpSlider.setOffscreenPageLimit(0);
         if (cams.size() > 1)
             binding.dotsIndicator.setViewPager(binding.vpSlider);
-
-
     }
 
-    void checkPreview() {
-        isAutoPreview =
-                sharedPreferences.getBoolean(CommonUtils.KEY_AUTO_PREVIEW, true);
-        if (isAutoPreview) {
-            slideIntervalIndex =
-                    sharedPreferences.getInt(CommonUtils.KEY_SLIDE_INTERVAL_INDEX, 0);
+    private void setupSlider() {
+        boolean isAutoPreview = sharedPreferences.getBoolean(CommonUtils.KEY_AUTO_PREVIEW, true);
+        int slideIntervalIndex = sharedPreferences.getInt(CommonUtils.KEY_SLIDE_INTERVAL_INDEX, 0);
+        disableAutoPreview();
+        if (isAutoPreview){
             slideInterval = Integer.parseInt(getResources().getStringArray(R.array.intervals)[slideIntervalIndex].split(" ")[0]);
-            handler.post(viewPagerVisibleScroll);
-        } else {
-            handler.removeCallbacks(viewPagerVisibleScroll);
+            timer = new Timer();
+            timer.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    Log.e("TAG", System.currentTimeMillis() + "");
+                    selectedPage = binding.vpSlider.getCurrentItem();
+                    if (selectedPage <= pagerAdapter.getCount()) {
+                        selectedPage = (selectedPage + 1) % pagerAdapter.getCount();
+                        CamerasActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                binding.vpSlider.setCurrentItem(selectedPage);
+                            }
+                        });
+
+                    }
+                }
+            }, slideInterval * 1000, slideInterval * 1000);
+        }
+    }
+
+    private void disableAutoPreview() {
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
         }
     }
 
@@ -249,18 +260,6 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
     protected void onResume() {
         super.onResume();
     }
-
-    Runnable viewPagerVisibleScroll = new Runnable() {
-        @Override
-        public void run() {
-            selectedPage = binding.vpSlider.getCurrentItem();
-            if (selectedPage <= pagerAdapter.getCount()) {
-                selectedPage = (selectedPage + 1) % pagerAdapter.getCount();
-                binding.vpSlider.setCurrentItem(selectedPage);
-            }
-            handler.postDelayed(viewPagerVisibleScroll, slideInterval * 1000);
-        }
-    };
 
     @Override
     public void onInsertingCamera() {
