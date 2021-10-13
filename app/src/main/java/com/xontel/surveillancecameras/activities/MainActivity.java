@@ -109,7 +109,7 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
     }
 
     public void addNewCam() {
-        if (cams.size() < 16) {
+        if (cams.size() < 24) {
             startActivity(new Intent(this, AddCamActivity.class));
         } else {
             showMessage(R.string.cameras_limit);
@@ -140,6 +140,7 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
     }
 
     private void updateViewPager() {
+
         if (cams.size() > 0) {
             pagerAdapter.getFragmentList().clear();
             for (int i = 0; i < cams.size(); i += gridCount) {

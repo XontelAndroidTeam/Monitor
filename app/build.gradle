@@ -89,6 +89,8 @@ dependencies {
     // vlc
     implementation 'org.videolan.android:libvlc-all:3.2.2'
 
+    implementation 'com.eyalbira.loadingdots:loading-dots:1.0.2'
+
 
     implementation files('libs/AudioEngineSDK.jar')
     implementation files('libs/HCNetSDK.jar')

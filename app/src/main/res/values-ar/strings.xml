@@ -26,5 +26,5 @@
     <string name="grid_count">Grid count</string>
     <string name="live_cameras">كاميرات البث الحي</string>
     <string name="cancel">إلغاء الأمر</string>
-    <string name="cameras_limit">مسموح فقط ب 16 كاميرا</string>
+    <string name="cameras_limit">مسموح فقط ب 24 كاميرا</string>
 </resources>

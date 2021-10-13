@@ -84,38 +84,17 @@ public class CameraFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-//        initUI();
+        initUI();
     }
     private void initVlcPlayer() {
-        // libvlc initialization
-        List<String> args = new ArrayList<String>();
-        args.add("-vvv");
-//        args.add("--vout=android-display");
-//        args.add("--network-caching=33");
-//        args.add("--file-caching=33");
-//        args.add("--live-caching=33");
-//        args.add("--clock-synchro=0");
-//        args.add("--clock-jitter=0");
-//        args.add("--h264-fps=60");
-//        args.add("--avcodec-fast");
-//        args.add("--avcodec-threads=1");
-//        args.add("--no-audio");
-        libVLC = new LibVLC(getContext(), (ArrayList<String>) args);
-        MediaPlayer mediaPlayer = new MediaPlayer(libVLC);
 
-
-        videoHelper = new VideoHelper(binding.getRoot(), libVLC, mediaPlayer,
-                R.id.video_surface_frame,
-                R.id.surface_stub,
-                R.id.subtitles_surface_stub,
-                R.id.texture_stub);
+        videoHelper = new VideoHelper(getContext(),binding.videoSurfaceFrame, binding.surfaceStub.getViewStub(), binding.getRoot());
         videoHelper.setVIDEO_URL(cam.getUrl());
 
-        final ProgressBar loadingBar1 = binding.getRoot().findViewById(R.id.loading);
 
 
-        loadingBar1.setVisibility(View.VISIBLE);
-        mediaPlayer.setEventListener(new MediaPlayer.EventListener() {
+        binding.loading.setVisibility(View.VISIBLE);
+        videoHelper.getMediaPlayer().setEventListener(new MediaPlayer.EventListener() {
             float buffered = 0.0f;
 
             @Override
@@ -124,13 +103,13 @@ public class CameraFragment extends Fragment {
                     buffered = event.getBuffering();
                 }
                 if (buffered == 100.0) {
-                    loadingBar1.setVisibility(View.GONE);
+                    binding.loading.setVisibility(View.GONE);
                     Log.d("EVENT", event.type + "");
                 }
 
                 if( event.type == MediaPlayer.Event.EncounteredError) {
                     Log.d("EVENT", event.type + "");
-                    loadingBar1.setVisibility(View.GONE);
+                    binding.loading.setVisibility(View.GONE);
                     binding.tvError.setVisibility(View.VISIBLE);
                     binding.tvError.setText(R.string.error_occurred);
                 }
@@ -157,14 +136,16 @@ public class CameraFragment extends Fragment {
     @Override
     public void onDestroy() {
         Log.e("TAG", "onDestroy"+hashCode() );
-
+        if(videoHelper != null){
+            videoHelper.onStop();
+            videoHelper.onDestroy();
+        }
         super.onDestroy();
 
     }
 
     @Override
     public void onResume() {
-        initUI();
         Log.e("TAG", "onResume"+hashCode() );
         super.onResume();
     }
@@ -173,10 +154,7 @@ public class CameraFragment extends Fragment {
     @Override
     public void onPause() {
         Log.e("TAG", "onPause"+hashCode() );
-        if(videoHelper != null){
-            videoHelper.onStop();
-            videoHelper.onDestroy();
-        }
+
         super.onPause();
 
     }
