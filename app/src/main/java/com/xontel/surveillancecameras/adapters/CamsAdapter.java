@@ -2,9 +2,7 @@ package com.xontel.surveillancecameras.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SurfaceView;
@@ -13,7 +11,6 @@ import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -22,13 +19,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.eyalbira.loadingdots.LoadingDots;
 import com.xontel.surveillancecameras.R;
-import com.xontel.surveillancecameras.activities.AddCamActivity;
 import com.xontel.surveillancecameras.activities.CamerasActivity;
 import com.xontel.surveillancecameras.activities.MainActivity;
 import com.xontel.surveillancecameras.base.BaseViewHolder;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
 import com.xontel.surveillancecameras.fragments.GridFragment;
-import com.xontel.surveillancecameras.utils.HikUtil;
 import com.xontel.surveillancecameras.utils.VideoHelper;
 
 import org.videolan.libvlc.MediaPlayer;
@@ -44,14 +39,16 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
     private GridFragment gridFragment;
     private LifecycleObservable lifecycleObservable;
     private List<VideoHelper> videoHelpers;
+    private int camsCount;
     private static final int ITEM_CAM = 0;
     private static final int ITEM_ADD_CAM = 1;
 
 
-    public CamsAdapter(GridFragment gridFragment, List<IpCam> cams, List<VideoHelper> videoHelpers, Context context, int gridCount) {
+    public CamsAdapter(GridFragment gridFragment, List<IpCam> cams, List<VideoHelper> videoHelpers, Context context, int camsCount, int gridCount) {
         this.cams = cams;
         this.context = context;
         this.gridFragment = gridFragment;
+        this.camsCount = camsCount;
         this.gridCount = gridCount;
         lifecycleObservable = new LifecycleObservable();
         this.videoHelpers = videoHelpers;
@@ -79,7 +76,7 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
             case ITEM_CAM:
                 view = LayoutInflater.from(context).inflate(R.layout.item_cam, parent, false);
                 GridLayoutManager.LayoutParams lp = (GridLayoutManager.LayoutParams) view.getLayoutParams();
-                lp.height = (parent.getMeasuredHeight() / (int) Math.sqrt(gridCount)) - 10;
+                lp.height = (parent.getMeasuredHeight() /  (int) Math.sqrt(gridCount)) - 10;
                 view.setLayoutParams(lp);
                 return new CamsViewHolder(view);
 
@@ -102,6 +99,7 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
     @Override
     public void onBindViewHolder(BaseViewHolder holder, int position) {
+        Log.e("GREAT_TAG", "position : " + position + " --- " + " type : " + holder.getClass().getSimpleName());
         holder.onBind(position);
     }
 
@@ -172,7 +170,7 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
                     public void run() {
                         initVlcPlayer();
                     }
-                }, getAdapterPosition()* 10);
+                }, getAdapterPosition() * 10);
 
 //          initHikPlayer();
             itemView.setOnClickListener(v -> {
@@ -221,28 +219,28 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
         }
 
-        private void initHikPlayer() {
-            ipCam = cams.get(getAdapterPosition());
-            HikUtil hikUtil = new HikUtil();
-            Handler mHandler = new Handler(new Handler.Callback() {
-                @Override
-                public boolean handleMessage(Message msg) {
-                    switch (msg.what) {
-                        case PLAY_HIK_STREAM_CODE:
-                            hikUtil.playOrStopStream();
-                            break;
-                        default:
-                            break;
-                    }
-                    return false;
-                }
-            });
-            HikUtil.initSDK();
-            hikUtil.initView(mSurfaceView);
-            Uri uri = Uri.parse(ipCam.getUrl());
-            hikUtil.setDeviceData(uri.getHost(), uri.getPort() == -1 ? 8000 : uri.getPort(), uri.getUserInfo().split(":")[0], uri.getUserInfo().split(":")[1]);
-            hikUtil.loginDevice(mHandler, PLAY_HIK_STREAM_CODE);
-        }
+//        private void initHikPlayer() {
+//            ipCam = cams.get(getAdapterPosition());
+//            HikUtil hikUtil = new HikUtil();
+//            Handler mHandler = new Handler(new Handler.Callback() {
+//                @Override
+//                public boolean handleMessage(Message msg) {
+//                    switch (msg.what) {
+//                        case PLAY_HIK_STREAM_CODE:
+//                            hikUtil.playOrStopStream();
+//                            break;
+//                        default:
+//                            break;
+//                    }
+//                    return false;
+//                }
+//            });
+//            HikUtil.initSDK();
+//            hikUtil.initView(mSurfaceView);
+//            Uri uri = Uri.parse(ipCam.getUrl());
+//            hikUtil.setDeviceData(uri.getHost(), uri.getPort() == -1 ? 8000 : uri.getPort(), uri.getUserInfo().split(":")[0], uri.getUserInfo().split(":")[1]);
+//            hikUtil.loginDevice(mHandler, PLAY_HIK_STREAM_CODE);
+//        }
 
         private void hideProgressDialog() {
 
@@ -258,23 +256,20 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
     public class AddCamViewHolder extends BaseViewHolder {
         public AddCamViewHolder(@NonNull View itemView) {
             super(itemView);
-            if(!(((MainActivity)context).getCams().size() < 24)){
-                itemView.setVisibility(View.GONE);
-            }
+
         }
 
         @Override
         public void onBind(int position) {
             super.onBind(position);
             itemView.setOnClickListener(v -> {
-                ((MainActivity)context).addNewCam();
+                ((MainActivity) context).addNewCam();
             });
 
         }
 
         @Override
         protected void clear() {
-
         }
     }
 

@@ -1,6 +1,7 @@
 package com.xontel.surveillancecameras.activities;
 
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;

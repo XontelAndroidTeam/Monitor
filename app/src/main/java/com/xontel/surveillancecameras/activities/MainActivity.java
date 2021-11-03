@@ -146,7 +146,7 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
             for (int i = 0; i < cams.size(); i += gridCount) {
                 List<IpCam> subCams = cams.subList(i, Math.min(cams.size(), i + gridCount));
                 Log.e("subCams", subCams.size() + "");
-                GridFragment gridFragment = GridFragment.newInstance(subCams);
+                GridFragment gridFragment = GridFragment.newInstance(subCams, cams.size());
                 pagerAdapter.addFragment(gridFragment);
 
             }

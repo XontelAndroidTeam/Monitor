@@ -28,12 +28,14 @@ import java.util.List;
 public class GridFragment extends Fragment {
 
     public static final String KEY_CAMS = "cams";
+    public static final String KEY_CAMS_COUNT = "cams_count";
     public static final int DEFAULT_GRID_COUNT = 4;
     private int gridCount;
     private LifecycleCallbacks lifecycleCallbacks;
     private ArrayList<IpCam> actualCams = new ArrayList<>();
     private ArrayList<IpCam> allCams = new ArrayList<>();
     private CamsAdapter gridAdapter;
+    private int camsCount ;
     private FragmentGridBinding binding;
     private List<VideoHelper> videoHelpers = new ArrayList<>();
 
@@ -67,10 +69,11 @@ public class GridFragment extends Fragment {
     }
 
 
-    public static GridFragment newInstance(List<IpCam> cams) {
+    public static GridFragment newInstance(List<IpCam> cams, int camsCount) {
         GridFragment fragment = new GridFragment();
         Bundle args = new Bundle();
         args.putParcelableArrayList(KEY_CAMS, new ArrayList<>(cams));
+        args.putInt(KEY_CAMS_COUNT, camsCount);
         fragment.setArguments(args);
         return fragment;
     }
@@ -107,6 +110,7 @@ public class GridFragment extends Fragment {
         Log.e("TAG", "onViewCreated" + hashCode());
         if (getArguments() != null) {
             actualCams.addAll(getArguments().getParcelableArrayList(KEY_CAMS));
+            camsCount = getArguments().getInt(KEY_CAMS_COUNT);
         }
         initUI();
     }
@@ -118,8 +122,8 @@ public class GridFragment extends Fragment {
 
 
     private void setupCamGrid() {
-        gridAdapter = new CamsAdapter(this, actualCams, videoHelpers, getContext(), gridCount);
-        binding.rvGrid.setLayoutManager(new GridLayoutManager(getContext(), (int) Math.sqrt(gridCount)));
+        gridAdapter = new CamsAdapter(this, actualCams, videoHelpers, getContext(), camsCount, gridCount);
+        binding.rvGrid.setLayoutManager(new GridLayoutManager(getContext(), gridCount / (int) Math.sqrt(gridCount)));
         binding.rvGrid.setAdapter(gridAdapter);
     }
 

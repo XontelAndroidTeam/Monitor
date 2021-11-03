@@ -19,12 +19,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/mainTheme">
-        <activity
-            android:name=".activities.TestActivity"
-            android:exported="true" >
-
-
-        </activity>
         <activity android:name=".activities.CamerasActivity"></activity>
         <activity android:name=".activities.AddCamActivity" />
         <activity android:name=".activities.SettingsActivity" />
