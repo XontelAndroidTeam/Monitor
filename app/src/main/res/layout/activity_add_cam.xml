@@ -52,10 +52,10 @@
                 android:layout_marginVertical="32dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:paddingHorizontal="100dp">
+                android:paddingHorizontal="50dp">
 
                 <TextView
-                    android:layout_width="200dp"
+                    android:layout_width="220dp"
                     android:layout_height="wrap_content"
                     android:text="@string/name"
                     android:textColor="@color/white"
@@ -86,10 +86,10 @@
                 android:layout_marginVertical="32dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:paddingHorizontal="100dp">
+                android:paddingHorizontal="50dp">
 
                 <TextView
-                    android:layout_width="200dp"
+                    android:layout_width="220dp"
                     android:layout_height="wrap_content"
                     android:text="@string/url"
                     android:textColor="@color/white"
@@ -119,10 +119,10 @@
                 android:layout_marginVertical="32dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:paddingHorizontal="100dp">
+                android:paddingHorizontal="50dp">
 
                 <TextView
-                    android:layout_width="200dp"
+                    android:layout_width="220dp"
                     android:layout_height="wrap_content"
                     android:text="@string/description"
                     android:textColor="@color/white"

@@ -29,6 +29,7 @@
     <string name="live_cameras">Live cameras</string>
     <string name="cancel">Cancel</string>
     <string name="cameras_limit">Only 24 cameras are allowed </string>
+    <string name="no_cameras_added_yet">No cameras added yet</string>
 
 
 </resources>

@@ -61,7 +61,11 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
 
     }
 
-
+    @Override
+    protected void onPause() {
+        super.onPause();
+        binding.spGridCount.dismiss();
+    }
 
     @Override
     protected void onResume() {
@@ -81,24 +85,28 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
 
     private void initUI() {
         gridCount = getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, MODE_PRIVATE).getInt(CommonUtils.KEY_GRID_COUNT, GridFragment.DEFAULT_GRID_COUNT);
-        binding.tvGridCount.setText(String.valueOf(gridCount));
+        binding.spGridCount.setText(String.valueOf(gridCount));
         binding.ivAddCam.setOnClickListener(v -> {
             addNewCam();
 
         });
         binding.tvSlideShow.setOnClickListener(v -> {
-            Intent intent = new Intent(this, CamerasActivity.class);
-            intent.putParcelableArrayListExtra(CamerasActivity.KEY_CAMERAS, (ArrayList) cams);
-            intent.putExtra(CamerasActivity.KEY_SLIDE_SHOW, true);
-            startActivity(intent);
+            if(cams.size() > 0 ) {
+                Intent intent = new Intent(this, CamerasActivity.class);
+                intent.putParcelableArrayListExtra(CamerasActivity.KEY_CAMERAS, (ArrayList) cams);
+                intent.putExtra(CamerasActivity.KEY_SLIDE_SHOW, true);
+                startActivity(intent);
+            }else{
+                showMessage(R.string.no_cameras_added_yet);
+            }
         });
-        binding.tvGridCount.setOnSpinnerItemSelectedListener(new OnSpinnerItemSelectedListener<Object>() {
+        binding.spGridCount.setOnSpinnerItemSelectedListener(new OnSpinnerItemSelectedListener<Object>() {
             @Override
             public void onItemSelected(int i, @Nullable Object o, int i1, Object t1) {
                 if(i != i1) {
                     gridCount = Integer.parseInt((String) t1);/*(int) Math.pow(((((int) Math.sqrt(gridCount)) % 4) + 1), 2);*/
                     Log.e("TAG", "gridCount: " + gridCount);
-                    binding.tvGridCount.setText(String.valueOf(gridCount));
+                    binding.spGridCount.setText(String.valueOf(gridCount));
                     getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, MODE_PRIVATE).edit().putInt(CommonUtils.KEY_GRID_COUNT, gridCount).apply();
                     updateViewPager();
                 }

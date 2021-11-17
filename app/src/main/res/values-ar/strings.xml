@@ -27,4 +27,5 @@
     <string name="live_cameras">كاميرات البث الحي</string>
     <string name="cancel">إلغاء الأمر</string>
     <string name="cameras_limit">مسموح فقط ب 24 كاميرا</string>
+    <string name="no_cameras_added_yet">لم يتم إضافة كاميرات</string>
 </resources>
