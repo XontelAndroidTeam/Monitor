@@ -30,5 +30,15 @@
         android:icon="@drawable/ic_baseline_settings_24"
         android:title="@string/delete"
         app:showAsAction="always"/>
+    <item
+        android:id="@+id/action_capture_photo"
+        android:icon="@drawable/ic_baseline_insert_photo_24"
+        android:title="@string/capture_photo"
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/action_record_video"
+        android:icon="@drawable/ic_baseline_video_cam_24"
+        android:title="@string/record_video"
+        app:showAsAction="always"/>
 
 </menu>

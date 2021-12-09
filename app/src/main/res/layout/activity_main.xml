@@ -115,8 +115,8 @@
                 <com.skydoves.powerspinner.PowerSpinnerView
                     android:id="@+id/sp_grid_count"
                     style="@style/status_bar_font"
-                    android:layout_width="80dp"
-                    app:spinner_arrow_show="false"
+                    android:layout_width="100dp"
+                    app:spinner_arrow_show="true"
                     app:spinner_popup_background="@color/dark_primary"
                     app:spinner_divider_show="true"
                     android:layout_height="match_parent"

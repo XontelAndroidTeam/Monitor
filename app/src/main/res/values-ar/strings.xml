@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">كامير البث الحي</string>
+    <string name="app_name">كاميرات الأمن</string>
     <string name="settings">الإعدادات</string>
     <string name="slide_show">عرض الشرائح</string>
     <string name="add_camera">أضف كاميرا</string>
@@ -24,8 +24,11 @@
     <string name="are_you_sure_delete">هل تريد بالفعل حذف هذه الكاميرا؟</string>
     <string name="ok">موافق</string>
     <string name="grid_count">Grid count</string>
-    <string name="live_cameras">كاميرات البث الحي</string>
+    <string name="live_cameras">كاميرات الأمن</string>
     <string name="cancel">إلغاء الأمر</string>
     <string name="cameras_limit">مسموح فقط ب 24 كاميرا</string>
     <string name="no_cameras_added_yet">لم يتم إضافة كاميرات</string>
+    <string name="capture_photo">اخذ صورة</string>
+    <string name="record_video">تسجيل فيديو</string>
+    <string name="edit_camera">تعديل الكاميرا</string>
 </resources>

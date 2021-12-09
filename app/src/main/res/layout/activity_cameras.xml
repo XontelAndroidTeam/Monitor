@@ -31,7 +31,7 @@
             android:src="@drawable/ic_back" />
 
         <TextView
-            android:id="@+id/tv_status_text"
+            android:id="@+id/tv_title"
             style="@style/status_bar_font"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

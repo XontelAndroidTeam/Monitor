@@ -71,11 +71,13 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
     @Override
     public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        Log.e("MainActivity", "onCreateViewHolder: " );
         View view;
         switch (viewType) {
             case ITEM_CAM:
                 view = LayoutInflater.from(context).inflate(R.layout.item_cam, parent, false);
                 GridLayoutManager.LayoutParams lp = (GridLayoutManager.LayoutParams) view.getLayoutParams();
+                Log.e("MainActivity_", parent.getMeasuredHeight()+"" );
                 lp.height = (parent.getMeasuredHeight() /  (int) Math.sqrt(gridCount)) - 10;
                 view.setLayoutParams(lp);
                 return new CamsViewHolder(view);
@@ -84,7 +86,8 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
             default:
                 view = LayoutInflater.from(context).inflate(R.layout.item_add_cam, parent, false);
                 GridLayoutManager.LayoutParams lp2 = (GridLayoutManager.LayoutParams) view.getLayoutParams();
-                lp2.height = parent.getMeasuredHeight() / (int) Math.sqrt(gridCount);
+                Log.e("MainActivity_", parent.getMeasuredHeight()+"" );
+                lp2.height = (parent.getMeasuredHeight() / (int) Math.sqrt(gridCount)) - 10;
                 view.setLayoutParams(lp2);
                 return new AddCamViewHolder(view);
 
@@ -99,6 +102,7 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
     @Override
     public void onBindViewHolder(BaseViewHolder holder, int position) {
+        Log.e("MainActivity", "onBindViewHolder: " );
         Log.e("GREAT_TAG", "position : " + position + " --- " + " type : " + holder.getClass().getSimpleName());
         holder.onBind(position);
     }

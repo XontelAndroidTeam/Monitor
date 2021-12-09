@@ -4,8 +4,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
 import android.app.Activity;
+import android.app.Instrumentation;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.view.KeyEvent;
+import android.view.inputmethod.BaseInputConnection;
 import android.widget.EditText;
 
 import com.google.android.material.textfield.TextInputLayout;
@@ -34,6 +38,7 @@ public class AddCamActivity extends BaseActivity implements MainMvpView {
         getActivityComponent().inject(this);
         mPresenter.onAttach(this);
         if(getIntent().hasExtra(KEY_CAMERA)){
+            binding.tvTitle.setText(R.string.edit_camera);
             editedCam = getIntent().getParcelableExtra(KEY_CAMERA);
             fillFieldsWithData();
         }
@@ -42,8 +47,11 @@ public class AddCamActivity extends BaseActivity implements MainMvpView {
 
     private void fillFieldsWithData() {
         binding.etName.setText(editedCam.getName());
+        binding.etName.setSelection(binding.etName.getText().length());
         binding.etUrl.setText(editedCam.getUrl());
+        binding.etUrl.setSelection(binding.etUrl.getText().length());
         binding.etDescription.setText(editedCam.getDescription());
+        binding.etDescription.setSelection(binding.etDescription.getText().length());
     }
 
     @Override
@@ -58,15 +66,15 @@ public class AddCamActivity extends BaseActivity implements MainMvpView {
     }
 
     private void initUI() {
-        binding.ivBack.setOnClickListener(v->{
+        binding.ivBack.setOnClickListener(v-> {
             onBackPressed();
         });
+
         binding.btnSubmit.setOnClickListener(v->{
             if(isNotEmpty(binding.etName , binding.ilName) && isNotEmpty(binding.etUrl , binding.ilUrl) && isNotEmpty(binding.etDescription , binding.ilDescription)){
                String url =  binding.etUrl.getText().toString();
                String name =  binding.etName.getText().toString();
                 String description = binding.etDescription.getText().toString();
-
                 if(editedCam == null) {
                     mPresenter.createCamera(new IpCam(url, name , description ));
                 }else{
@@ -91,7 +99,7 @@ public class AddCamActivity extends BaseActivity implements MainMvpView {
 
     @Override
     public void onInsertingCamera() {
-        finish();
+        binding.ivBack.performClick();
     }
 
     @Override

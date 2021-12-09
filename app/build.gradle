@@ -3,6 +3,14 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        release {
+            storeFile file('C:\\Users\\A.Khadir\\AndroidStudioProjects\\Surveillancecameras\\app\\key.jks')
+            storePassword 'qwertyuiop'
+            keyPassword 'qwertyuiop'
+            keyAlias 'key0'
+        }
+    }
     compileSdkVersion 29
     buildToolsVersion "30.0.3"
 
@@ -15,15 +23,16 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         ndk {
-            abiFilters "armeabi-v7a"
+            abiFilters "armeabi-v7a", "x86"
             //"armeabi-v7a-v7a", "x86", "armeabi-v7a", "mips"
         }
+        signingConfig signingConfigs.release
 
     }
     packagingOptions{
         exclude 'META-INF/rxjava.properties'
-        exclude 'lib/armeabi-v7a/libvlc.so'
-        exclude 'lib/armeabi-v7a/libvlcjni.so'
+//        exclude 'lib/armeabi-v7a/libvlc.so'
+//        exclude 'lib/armeabi-v7a/libvlcjni.so'
     }
     ndkVersion '22.1.7171670'
     sourceSets{

@@ -36,6 +36,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAdapter.Callback*/ {
+    private static final String TAG = MainActivity.class.getSimpleName();
     private PagerAdapter pagerAdapter;
     private ActivityMainBinding binding;
     private int gridCount;
@@ -47,6 +48,7 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.e(TAG, "onCreate: " );
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         getActivityComponent().inject(this);
         mPresenter.onAttach(this);
@@ -57,6 +59,7 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Log.e(TAG, "onDestroy: " );
         mPresenter.onDetach();
 
     }
@@ -64,11 +67,13 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
     @Override
     protected void onPause() {
         super.onPause();
+        Log.e(TAG, "onPause: " );
         binding.spGridCount.dismiss();
     }
 
     @Override
     protected void onResume() {
+        Log.e(TAG, "onResume: " );
         updateViewPager();
         super.onResume();
     }
@@ -82,6 +87,17 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
 
     }
 
+    @Override
+    protected void onStop() {
+        Log.e(TAG, "onStop: " );
+        super.onStop();
+    }
+
+    @Override
+    protected void onStart() {
+        Log.e(TAG, "onStart: " );
+        super.onStart();
+    }
 
     private void initUI() {
         gridCount = getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, MODE_PRIVATE).getInt(CommonUtils.KEY_GRID_COUNT, GridFragment.DEFAULT_GRID_COUNT);
@@ -92,7 +108,7 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
         });
         binding.tvSlideShow.setOnClickListener(v -> {
             if(cams.size() > 0 ) {
-                Intent intent = new Intent(this, CamerasActivity.class);
+                Intent intent = new Intent(MainActivity.this, CamerasActivity.class);
                 intent.putParcelableArrayListExtra(CamerasActivity.KEY_CAMERAS, (ArrayList) cams);
                 intent.putExtra(CamerasActivity.KEY_SLIDE_SHOW, true);
                 startActivity(intent);
@@ -118,7 +134,7 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
 
     public void addNewCam() {
         if (cams.size() < 24) {
-            startActivity(new Intent(this, AddCamActivity.class));
+            startActivity(new Intent(MainActivity.this, AddCamActivity.class));
         } else {
             showMessage(R.string.cameras_limit);
         }

@@ -4,5 +4,6 @@
         android:id="@+id/rv_grid"
         android:layout_width="match_parent"
         android:overScrollMode="never"
+        android:background="@color/green_color"
         android:layout_height="wrap_content" />
 </layout>

@@ -50,7 +50,7 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
     private Timer timer;
     private SharedPreferences sharedPreferences;
     SharedPreferences.OnSharedPreferenceChangeListener listener = (sharedPreferences, key) -> {
-        setupSlider();
+        setupSliderSettings();
     };
 
 
@@ -63,10 +63,14 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
         setSupportActionBar(binding.toolbar);
         cams = getIntent().getParcelableArrayListExtra(KEY_CAMERAS);
         if (getIntent().hasExtra(KEY_SLIDE_SHOW)) {
-            binding.tvStatusText.setText(R.string.slide_show);
+            binding.tvTitle.setText(R.string.slide_show);
             isSlideShow = true;
         } else {
-            binding.tvStatusText.setText(R.string.cameras);
+            try {
+                binding.tvTitle.setText(cams.get(0).getName());
+            }catch (Exception e){
+                e.printStackTrace();
+            }
             isSlideShow = false;
         }
         getActivityComponent().inject(this);
@@ -207,8 +211,6 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
         binding.ivBack.setOnClickListener(v -> {
             onBackPressed();
         });
-        setupCamerasPager();
-        setupSlider();
     }
 
     private void setupCamerasPager() {
@@ -221,9 +223,10 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
         binding.vpSlider.setOffscreenPageLimit(0);
         if (cams.size() > 1)
             binding.dotsIndicator.setViewPager(binding.vpSlider);
+        setupSliderSettings();
     }
 
-    private void setupSlider() {
+    private void setupSliderSettings() {
         boolean isAutoPreview = sharedPreferences.getBoolean(CommonUtils.KEY_AUTO_PREVIEW, true);
         int slideIntervalIndex = sharedPreferences.getInt(CommonUtils.KEY_SLIDE_INTERVAL_INDEX, 0);
         disableAutoPreview();
@@ -260,6 +263,7 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
     @Override
     protected void onResume() {
         super.onResume();
+        setupCamerasPager();
     }
 
     @Override
