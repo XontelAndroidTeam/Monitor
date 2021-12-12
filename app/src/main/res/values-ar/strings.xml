@@ -31,4 +31,9 @@
     <string name="capture_photo">اخذ صورة</string>
     <string name="record_video">تسجيل فيديو</string>
     <string name="edit_camera">تعديل الكاميرا</string>
+    <string name="auto_slide_show">عرض تلقائي</string>
+    <string name="save_to">ملف الوسائط المحفوظة</string>
+    <string name="show_media">عرض الوسائط المحفوظة</string>
+    <string name="no_photos">لا توجد صور</string>
+    <string name="photos">الوسائط المحفوظة</string>
 </resources>

@@ -42,39 +42,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center_vertical"
+            android:layout_marginTop="24dp"
             android:orientation="vertical">
-
-            <LinearLayout
-                android:id="@+id/ll_new_camera"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="32dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingHorizontal="100dp">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/add_camera"
-                    android:textColor="@color/white"
-                    android:textSize="34sp" />
-
-                <Button
-                    android:id="@+id/btn_add_camera"
-                    android:layout_width="250dp"
-                    android:layout_height="80dp"
-                    android:background="@color/white"
-                    android:text="@string/click_to_add"
-                    android:textAllCaps="false"
-                    android:textColor="@color/black_color"
-                    android:textSize="24dp"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-
             <LinearLayout
                 android:id="@+id/ll_auto_preview"
                 android:layout_width="match_parent"
@@ -88,9 +57,9 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/auto_preview"
+                    android:text="@string/auto_slide_show"
                     android:textColor="@color/white"
-                    android:textSize="34sp" />
+                    android:textSize="28sp" />
 
                 <Switch
                     android:id="@+id/sw_auto_preview"
@@ -121,7 +90,7 @@
                     android:layout_weight="1"
                     android:text="@string/slide_show_interval"
                     android:textColor="@color/white"
-                    android:textSize="34sp" />
+                    android:textSize="28sp" />
 
                 <com.skydoves.powerspinner.PowerSpinnerView
                     android:id="@+id/sp_slide_show_interval"
@@ -161,7 +130,7 @@
                     android:layout_weight="1"
                     android:text="@string/grid_count"
                     android:textColor="@color/white"
-                    android:textSize="34sp" />
+                    android:textSize="28sp" />
 
                 <com.skydoves.powerspinner.PowerSpinnerView
                     android:id="@+id/sp_grid_count"
@@ -184,6 +153,67 @@
                     app:spinner_popup_elevation="14dp" />
 
                 <!--            android:hint="@string/select_screen_rotation"-->
+
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/ll_save_to"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="32dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="100dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/save_to"
+                    android:textColor="@color/white"
+                    android:textSize="28sp" />
+
+                <com.skydoves.powerspinner.PowerSpinnerView
+                    android:id="@+id/sp_save_to"
+                    android:layout_width="250dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/bordered_bg"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white"
+                    android:textSize="14.5sp"
+                    app:spinner_arrow_gravity="end"
+                    app:spinner_arrow_padding="8dp"
+                    app:spinner_divider_color="@color/white"
+                    app:spinner_divider_show="true"
+                    app:spinner_divider_size="0.4dp"
+                    app:spinner_item_array="@array/save_to"
+                    app:spinner_popup_animation="dropdown"
+                    app:spinner_popup_background="@color/primary_color_2"
+                    app:spinner_popup_elevation="14dp" />
+
+                <!--            android:hint="@string/select_screen_rotation"-->
+
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/ll_show_media"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="32dp"
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:orientation="horizontal"
+                android:paddingHorizontal="100dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/show_media"
+                    android:textColor="@color/white"
+                    android:textSize="28sp" />
+
 
             </LinearLayout>
         </LinearLayout>

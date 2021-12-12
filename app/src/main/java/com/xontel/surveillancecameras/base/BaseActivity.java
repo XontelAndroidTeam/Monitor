@@ -84,6 +84,7 @@ public abstract class BaseActivity extends AppCompatActivity implements MvpView,
         }
     }
 
+
     private void resetTitles() {
         try {
             ActivityInfo info = getPackageManager().getActivityInfo(getComponentName(), GET_META_DATA);

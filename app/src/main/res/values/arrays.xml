@@ -15,4 +15,8 @@
         <item>6</item>
         <item>12</item>
     </string-array>
+    <string-array name="save_to">
+        <item>internal storage</item>
+        <item>external storage</item>
+    </string-array>
 </resources>

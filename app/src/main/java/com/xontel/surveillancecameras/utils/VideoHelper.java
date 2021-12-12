@@ -3,6 +3,7 @@ package com.xontel.surveillancecameras.utils;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
 import android.net.Uri;
 import android.os.Build;
@@ -96,6 +97,11 @@ public class VideoHelper implements IVLCVout.OnNewVideoLayoutListener {
         LibVLC libVLC = new LibVLC(context, (ArrayList<String>) args);
         return libVLC;
     }
+
+
+//    public Bitmap takeScreenShot(String directory){
+//        mMediaPlayer.get
+//    }
 
 
     public LibVLC getmLibVLC() {

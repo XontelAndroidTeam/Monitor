@@ -8,5 +8,9 @@
         <item>25 ثوان</item>
         <item>30 ثوان</item>
     </string-array>
+    <string-array name="save_to">
+        <item>الذاكرة الداخلية</item>
+        <item>الذاكرة الخارجية</item>
+    </string-array>
 
 </resources>

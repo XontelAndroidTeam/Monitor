@@ -11,6 +11,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 
 import com.skydoves.powerspinner.OnSpinnerItemSelectedListener;
 import com.xontel.surveillancecameras.R;
@@ -52,6 +55,7 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         getActivityComponent().inject(this);
         mPresenter.onAttach(this);
+        setSupportActionBar(binding.toolbar);
         initUI();
         mPresenter.getAllCameras();
     }
@@ -106,6 +110,9 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
             addNewCam();
 
         });
+        binding.ivSettings.setOnClickListener(v -> {
+        showSettings();
+        });
         binding.tvSlideShow.setOnClickListener(v -> {
             if(cams.size() > 0 ) {
                 Intent intent = new Intent(MainActivity.this, CamerasActivity.class);
@@ -130,6 +137,12 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
         });
         setupCamerasPager();
 //        setupCamsGrid();
+    }
+
+
+
+    private void showSettings() {
+        startActivity(new Intent(this, SettingsActivity.class));
     }
 
     public void addNewCam() {

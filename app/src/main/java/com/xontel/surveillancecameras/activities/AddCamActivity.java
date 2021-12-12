@@ -67,6 +67,7 @@ public class AddCamActivity extends BaseActivity implements MainMvpView {
 
     private void initUI() {
         binding.ivBack.setOnClickListener(v-> {
+            hideKeyboard();
             onBackPressed();
         });
 

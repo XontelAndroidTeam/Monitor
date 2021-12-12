@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_margin="8dp"
+    android:background="@color/black_color"
+    android:layout_height="200dp">
+    <ImageView
+        android:id="@+id/iv_photo"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
+        tools:src="@tools:sample/avatars"
+        android:scaleType="centerCrop"/>
+    <ImageView
+        android:id="@+id/iv_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:src="@drawable/overlay_gradient"
+        android:scaleType="fitXY"/>
+    <ImageView
+        android:id="@+id/iv_Play"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:visibility="gone"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_baseline_play_circle_filled_24"
+        android:scaleType="fitXY"/>
+    <CheckBox
+        android:id="@+id/cb_checker"
+        android:button="@drawable/custom_check_box"
+        android:visibility="gone"
+        android:layout_width="30dp"
+        android:layout_height="30dp"/>
+</FrameLayout>

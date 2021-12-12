@@ -1,12 +1,10 @@
 package com.xontel.surveillancecameras.activities;
 
 import android.app.Activity;
-import android.app.NotificationManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
@@ -68,7 +66,7 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
         } else {
             try {
                 binding.tvTitle.setText(cams.get(0).getName());
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             isSlideShow = false;
@@ -83,9 +81,9 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
         super.onDestroy();
         mPresenter.onDetach();
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(listener);
-        if(timer != null){
+        if (timer != null) {
             timer.cancel();
-            timer = null ;
+            timer = null;
         }
     }
 
@@ -96,17 +94,13 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
-
-        for (int i = 0; i < menu.size(); i++) {
-            if (menu.getItem(i).getItemId() == R.id.action_settings) {
-                menu.getItem(i).setVisible(isSlideShow);
-            } else {
-                menu.getItem(i).setVisible(!isSlideShow);
-            }
+        if(!isSlideShow) {
+            getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+            return true;
+        }else{
+            return false;
         }
 
-        return true;
     }
 
     @Override
@@ -125,12 +119,25 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
             case R.id.action_details:
                 showCamDetails();
                 return true;
-            case R.id.action_settings:
-                showSettings();
+//            case R.id.action_settings:
+//                showSettings();
+//                return true;
+            case R.id.action_capture_photo:
+                capturePhoto();
+                return true;
+            case R.id.action_record_video:
+                recordVideo();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void recordVideo() {
+    }
+
+    private void capturePhoto() {
+
     }
 
     private void showSettings() {
@@ -230,7 +237,7 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
         boolean isAutoPreview = sharedPreferences.getBoolean(CommonUtils.KEY_AUTO_PREVIEW, true);
         int slideIntervalIndex = sharedPreferences.getInt(CommonUtils.KEY_SLIDE_INTERVAL_INDEX, 0);
         disableAutoPreview();
-        if (isAutoPreview){
+        if (isAutoPreview) {
             slideInterval = Integer.parseInt(getResources().getStringArray(R.array.intervals)[slideIntervalIndex].split(" ")[0]);
             timer = new Timer();
             timer.scheduleAtFixedRate(new TimerTask() {

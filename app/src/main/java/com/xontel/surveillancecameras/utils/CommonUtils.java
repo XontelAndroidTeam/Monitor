@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
+import android.os.Environment;
 import android.util.Log;
 
 import com.xontel.surveillancecameras.R;
@@ -14,6 +15,7 @@ public class CommonUtils {
     public static final String SHARED_PREFERENCES_FILE = "com.xontel.surveillancecameras.preferences.file";
     public static final String KEY_AUTO_PREVIEW = "auto_preview";
     public static final String KEY_SLIDE_INTERVAL_INDEX = "slide_interval_index";
+    public static final String KEY_MEDIA_STORAGE = "media_storage";
     public static final String KEY_GRID_COUNT = "grid_count";
 
     // America/New jersey => New jersey
@@ -23,6 +25,11 @@ public class CommonUtils {
         return words[words.length -1];
     }
 
+    public static boolean hasSDCard(){
+        Boolean isSDPresent = android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED);
+       return   isSDPresent;
+    }
+
     // 3 => GMT+3:00
     public static String getHoursFromUTCQualified(double timeFromUTC){
         String sign = "+";
@@ -30,7 +37,7 @@ public class CommonUtils {
         int minutes = (int)((Math.abs(timeFromUTC) - hours)*60) ;
         String hoursText =hours +"";
         String minutesText = minutes+"" ;
-        if(Math.abs(hours) <= 9 ) { // 1 digit
+        if(Math.abs(hours) <= 9) { // 1 digit
             hoursText = "0"+hours;
         }
         if(timeFromUTC <0) sign = "-";

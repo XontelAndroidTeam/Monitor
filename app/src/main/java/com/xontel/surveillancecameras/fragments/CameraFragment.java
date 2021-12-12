@@ -116,7 +116,6 @@ public class CameraFragment extends Fragment {
             }
         });
         videoHelper.onStart();
-
     }
 
 

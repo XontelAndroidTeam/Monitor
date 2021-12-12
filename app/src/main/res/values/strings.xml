@@ -33,6 +33,11 @@
     <string name="capture_photo">Capture photo</string>
     <string name="record_video">Capture video</string>
     <string name="edit_camera">Edit camera</string>
+    <string name="auto_slide_show">Auto slide show</string>
+    <string name="save_to">Saved media folder</string>
+    <string name="show_media">Show saved media</string>
+    <string name="no_photos">No photos yet</string>
+    <string name="photos">Saved media</string>
 
 
 </resources>
