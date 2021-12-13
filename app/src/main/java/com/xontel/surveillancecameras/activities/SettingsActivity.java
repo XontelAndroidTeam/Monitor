@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 import com.skydoves.powerspinner.OnSpinnerItemSelectedListener;
 import com.xontel.surveillancecameras.R;
@@ -42,6 +43,9 @@ public class SettingsActivity extends BaseActivity {
     private void initUI() {
         binding.ivBack.setOnClickListener(v->{
             onBackPressed();
+        });
+        binding.llShowMedia.setOnClickListener(v -> {
+            startActivity(new Intent(this, SavedMediaActivity.class));
         });
         binding.swAutoPreview.setChecked(sharedPreferences.getBoolean(CommonUtils.KEY_AUTO_PREVIEW, true));
         binding.swAutoPreview.setOnCheckedChangeListener((v, isChecked)->{
@@ -104,8 +108,5 @@ public class SettingsActivity extends BaseActivity {
         });
     }
 
-    @Override
-    public void onCreatingCam() {
 
-    }
 }

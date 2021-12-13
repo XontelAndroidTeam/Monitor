@@ -21,6 +21,9 @@
         android:theme="@style/mainTheme"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".activities.MediaViewerActivity"
+            android:exported="true" />
+        <activity
             android:name=".activities.SavedMediaActivity"
             android:exported="true" />
         <activity android:name=".activities.CamerasActivity" />

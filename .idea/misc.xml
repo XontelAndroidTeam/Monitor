@@ -22,6 +22,7 @@
         <entry key="..\:/Users/A.Khadir/AndroidStudioProjects/Surveillancecameras/app/src/main/res/layout/activity_saved_media.xml" value="0.4" />
         <entry key="..\:/Users/A.Khadir/AndroidStudioProjects/Surveillancecameras/app/src/main/res/layout/activity_settings.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/A.Khadir/AndroidStudioProjects/Surveillancecameras/app/src/main/res/layout/activity_test.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/A.Khadir/AndroidStudioProjects/Surveillancecameras/app/src/main/res/layout/activity_video_viewer_activity.xml" value="0.24010416666666667" />
         <entry key="..\:/Users/A.Khadir/AndroidStudioProjects/Surveillancecameras/app/src/main/res/layout/dialog_cam_details.xml" value="0.4" />
         <entry key="..\:/Users/A.Khadir/AndroidStudioProjects/Surveillancecameras/app/src/main/res/layout/dialog_settings.xml" value="0.264" />
         <entry key="..\:/Users/A.Khadir/AndroidStudioProjects/Surveillancecameras/app/src/main/res/layout/fragment_camera.xml" value="0.1" />
@@ -32,6 +33,7 @@
         <entry key="..\:/Users/A.Khadir/AndroidStudioProjects/Surveillancecameras/app/src/main/res/layout/live.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/A.Khadir/AndroidStudioProjects/Surveillancecameras/app/src/main/res/layout/progress_dialog.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/A.Khadir/AndroidStudioProjects/Surveillancecameras/app/src/main/res/menu/main_menu.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/A.Khadir/AndroidStudioProjects/Surveillancecameras/app/src/main/res/menu/selection_menu.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/A.Khadir/AndroidStudioProjects/Surveillancecameras/app/src/main/res/menu/toolbar_menu.xml" value="0.25416666666666665" />
       </map>
     </option>

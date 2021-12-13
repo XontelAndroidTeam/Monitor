@@ -126,8 +126,5 @@ public class AddCamActivity extends BaseActivity implements MainMvpView {
 
     }
 
-    @Override
-    public void onCreatingCam() {
 
-    }
 }

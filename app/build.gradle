@@ -108,6 +108,9 @@ dependencies {
 
     implementation 'com.eyalbira.loadingdots:loading-dots:1.0.2'
 
+    //exo
+    implementation 'com.google.android.exoplayer:exoplayer:2.9.6'
+
 
 //    implementation files('libs/AudioEngineSDK.jar')
 //    implementation files('libs/HCNetSDK.jar')

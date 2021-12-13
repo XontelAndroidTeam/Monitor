@@ -38,28 +38,6 @@
                 android:gravity="center_vertical"
                 android:text="@string/photos" />
 
-            <Button
-                android:id="@+id/btn_delete_photo"
-                android:layout_width="100dp"
-                android:layout_height="40dp"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="16dp"
-                android:background="@color/white"
-                android:text="@string/delete"
-                android:textAllCaps="false"
-                android:textColor="@color/dark_primary" />
-
-            <TextView
-                android:id="@+id/tv_photos_count"
-                style="@style/status_bar_font"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:layout_toStartOf="@id/btn_delete_photo"
-                android:gravity="center_vertical"
-                android:text="0"
-                android:visibility="gone"
-                tools:visibility="visible" />
         </RelativeLayout>
 
 

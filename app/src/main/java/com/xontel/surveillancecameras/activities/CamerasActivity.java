@@ -298,8 +298,5 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
 
     }
 
-    @Override
-    public void onCreatingCam() {
 
-    }
 }

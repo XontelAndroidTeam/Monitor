@@ -45,7 +45,6 @@ public class CommonUtils {
         if(minutes <= 9 )
             minutesText = "0"+minutes ;
         return "GMT"+sign+hoursText+":"+minutesText;
-
     }
 
     public static boolean isConnectionAvailable(Context context){

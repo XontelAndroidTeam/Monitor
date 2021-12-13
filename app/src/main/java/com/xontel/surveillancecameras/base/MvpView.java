@@ -29,6 +29,5 @@ public interface MvpView {
 
     void hideKeyboard();
 
-    void onCreatingCam();
 }
 
