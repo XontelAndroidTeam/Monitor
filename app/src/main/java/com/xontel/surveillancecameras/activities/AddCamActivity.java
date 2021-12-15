@@ -125,6 +125,4 @@ public class AddCamActivity extends BaseActivity implements MainMvpView {
     public void onGettingAllCameras(List<IpCam> response) {
 
     }
-
-
 }

@@ -121,19 +121,19 @@ public class VideoHelper implements IVLCVout.OnNewVideoLayoutListener {
 //        mVideoSurfaceFrame = (FrameLayout) viewHolder.findViewById(video_surface_frame);
         if (USE_SURFACE_VIEW) {
 //            ViewStub stub = (ViewStub) viewHolder.findViewById(surface_stub);
-            mVideoSurface = (SurfaceView) viewStub.inflate();
-
-//            if (ENABLE_SUBTITLES) {
-//                stub = (ViewStub) viewHolder.findViewById(subtitles_surface_stub);
-//                mSubtitlesSurface = (SurfaceView) stub.inflate();
-//                mSubtitlesSurface.setZOrderMediaOverlay(true);
-//                mSubtitlesSurface.getHolder().setFormat(PixelFormat.TRANSLUCENT);
-//            }
-            mVideoView = mVideoSurface;
-        } else {
+//            mVideoSurface = (TextureView) viewStub.inflate();
+//
+////            if (ENABLE_SUBTITLES) {
+////                stub = (ViewStub) viewHolder.findViewById(subtitles_surface_stub);
+////                mSubtitlesSurface = (SurfaceView) stub.inflate();
+////                mSubtitlesSurface.setZOrderMediaOverlay(true);
+////                mSubtitlesSurface.getHolder().setFormat(PixelFormat.TRANSLUCENT);
+////            }
+//            mVideoView = mVideoSurface;
+//        } else {
 //            ViewStub stub = (ViewStub) viewHolder.findViewById(texture_stub);
-//            mVideoTexture = (TextureView) stub.inflate();
-//            mVideoView = mVideoTexture;
+            mVideoTexture = (TextureView) viewStub.inflate();
+            mVideoView = mVideoTexture;
         }
     }
 

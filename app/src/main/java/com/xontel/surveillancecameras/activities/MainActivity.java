@@ -2,7 +2,6 @@ package com.xontel.surveillancecameras.activities;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.GridLayoutManager;
 
@@ -34,7 +33,6 @@ import com.xontel.surveillancecameras.utils.CommonUtils;
 //import org.videolan.libvlc.Media;
 //import org.videolan.libvlc.MediaPlayer;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,13 +52,6 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.e(TAG, "onCreate: " );
-//        Log.e(TAG, "filesDir: "+getFilesDir().getAbsolutePath()+"\n"+"externalFilesDir:"+getExternalFilesDir(null).getAbsolutePath());
-//        File[] dirs = ContextCompat.getExternalFilesDirs(this, null);
-//        for(File dir : dirs) {
-//            Log.e(TAG, "parts: " +dir.getAbsolutePath()+" type: "+dir.getT);
-//        }
-        Log.e(TAG, "onCreate: " );
-
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         getActivityComponent().inject(this);
         mPresenter.onAttach(this);
@@ -242,7 +233,6 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
         updateViewPager();
 
     }
-
 
 
 

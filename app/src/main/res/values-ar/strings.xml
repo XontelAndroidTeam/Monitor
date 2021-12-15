@@ -36,4 +36,10 @@
     <string name="show_media">عرض الوسائط المحفوظة</string>
     <string name="no_photos">لا توجد صور</string>
     <string name="photos">الوسائط المحفوظة</string>
+    <string name="stop">وقف</string>
+    <string name="record_saved">تم حفظ الفيديو بنجاح</string>
+    <string name="record_failed">خظأ حفظ التسجيل</string>
+    <string name="cant_take_photo">غير قادر علي أخذ لقطة الشاشة</string>
+    <string name="cant_rec_video">غير قادر علي تسجيل فيديو</string>
+    <string name="snapshot_taken">تم أخذ لقطة الفيديو بنجاح</string>
 </resources>

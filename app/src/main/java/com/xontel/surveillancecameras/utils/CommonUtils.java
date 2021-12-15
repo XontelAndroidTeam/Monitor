@@ -11,6 +11,8 @@ import android.util.Log;
 
 import com.xontel.surveillancecameras.R;
 
+import java.io.File;
+
 public class CommonUtils {
     public static final String SHARED_PREFERENCES_FILE = "com.xontel.surveillancecameras.preferences.file";
     public static final String KEY_AUTO_PREVIEW = "auto_preview";
@@ -25,9 +27,14 @@ public class CommonUtils {
         return words[words.length -1];
     }
 
-    public static boolean hasSDCard(){
-        Boolean isSDPresent = android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED);
-       return   isSDPresent;
+    public static boolean hasSDCard(Context context){
+        File[] externalDirs = context.getExternalFilesDirs(null);
+        for(File dir: externalDirs){
+            if(Environment.isExternalStorageRemovable(dir)){
+                return true;
+            }
+        }
+       return   false;
     }
 
     // 3 => GMT+3:00
