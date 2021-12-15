@@ -1,22 +1,9 @@
 package com.xontel.surveillancecameras.fragments;
 
-import org.videolan.libvlc.IVLCVout;
-import org.videolan.libvlc.LibVLC;
-import org.videolan.libvlc.Media;
-import org.videolan.libvlc.MediaPlayer;
-import org.videolan.libvlc.util.VLCVideoLayout;
-
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.Fragment;
-
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -24,35 +11,32 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.PixelCopy;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.github.niqdev.mjpeg.DisplayMode;
-import com.github.niqdev.mjpeg.Mjpeg;
-//import com.longdo.mjpegviewer.MjpegView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+
 import com.xontel.surveillancecameras.R;
-import com.xontel.surveillancecameras.activities.CamerasActivity;
-import com.xontel.surveillancecameras.databinding.FragmentCameraBinding;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
+import com.xontel.surveillancecameras.databinding.FragmentCameraBinding;
+import com.xontel.surveillancecameras.utils.CommonUtils;
 import com.xontel.surveillancecameras.utils.VideoHelper;
 
 import org.jetbrains.annotations.NotNull;
+import org.videolan.libvlc.LibVLC;
+import org.videolan.libvlc.MediaPlayer;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import rx.functions.Action1;
 
 public class CameraFragment extends Fragment {
     public static final String TAG = CameraFragment.class.getSimpleName();
@@ -62,7 +46,7 @@ public class CameraFragment extends Fragment {
     private boolean isRecording = false;
     private ObjectAnimator objAnimator;
     private long recordTime = 0;
-     private SimpleDateFormat mSimpleDateFormat ;
+    private SimpleDateFormat mSimpleDateFormat;
     private static final boolean USE_TEXTURE_VIEW = false;
     private static final boolean ENABLE_SUBTITLES = true;
     private static final String KEY_CAM_INFO = "cam_info";
@@ -100,6 +84,7 @@ public class CameraFragment extends Fragment {
         }
         Log.e("TAG", "onCreate" + hashCode());
     }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
@@ -173,31 +158,14 @@ public class CameraFragment extends Fragment {
 
 
     private void initUI() {
-         mSimpleDateFormat = new SimpleDateFormat("HH:mm:ss");
-         mSimpleDateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+        mSimpleDateFormat = new SimpleDateFormat("HH:mm:ss");
+        mSimpleDateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
         binding.btnStop.setOnClickListener(v -> {
             stopRecordingVideo();
         });
 
         initVlcPlayer();
     }
-
-    private void stopRecordingVideo() {
-        if (isRecording) {
-            isRecording = false;
-            recordTime = 0;
-            boolean isRecorded = videoHelper.getMediaPlayer().record(null); // check if ended successfully
-            Log.v(TAG, "isRecording : " + isRecorded);
-            binding.llRecordPanel.setVisibility(View.GONE);
-            mTimer.cancel();
-            stopIndicatorAnimation();
-            if (isRecorded)
-                showSuccessMessage();
-            else
-                showFailedMessage();
-        }
-    }
-
     private void showSuccessMessage() {
         Toast.makeText(getContext(), R.string.record_saved, Toast.LENGTH_LONG).show();
     }
@@ -206,34 +174,59 @@ public class CameraFragment extends Fragment {
         Toast.makeText(getContext(), R.string.record_failed, Toast.LENGTH_LONG).show();
     }
 
+    private void stopRecordingVideo() {
+        if (isRecording) {
+            isRecording = false;
+            boolean isRecorded = videoHelper.getMediaPlayer().record(null); // check if ended successfully
+            Log.v(TAG, "isRecording : " + isRecorded);
+            disableVideoRecordingView();
+            if (isRecorded)
+                showSuccessMessage();
+            else
+                showFailedMessage();
+        }
+    }
+
+
+
     private void startRecordingVideo() {
-        if(videoHelper.getMediaPlayer().isPlaying() && videoHelper.getMediaPlayer().hasMedia() ) {
+        if (videoHelper.getMediaPlayer().isPlaying() && videoHelper.getMediaPlayer().hasMedia()) {
             if (!isRecording) { // there is no record operation in progress
                 isRecording = videoHelper.getMediaPlayer().record(getContext().getExternalFilesDir(null).getAbsolutePath());
                 if (isRecording) { // if player started recording do ui things
-                    binding.llRecordPanel.setVisibility(View.VISIBLE);
-                    mTimer.scheduleAtFixedRate(new TimerTask() {
-                        @Override
-                        public void run() {
-                            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    binding.timer.setText(mSimpleDateFormat.format(recordTime));
-                                    recordTime += 1000;
-                                }
-                            });
-
-                        }
-                    }, 0, 1000);
-                    startIndicatorAnimation();
-                    Log.v(TAG, "isRecording : " + isRecording);
+                    enableVideoRecordingView();
                 } else {
                     showFailedMessage();
                 }
             }
-        }else{
+        } else {
             Toast.makeText(getContext(), R.string.cant_rec_video, Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void enableVideoRecordingView() {
+        binding.llRecordPanel.setVisibility(View.VISIBLE);
+        mTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        binding.timer.setText(mSimpleDateFormat.format(recordTime));
+                        recordTime += 1000;
+                    }
+                });
+
+            }
+        }, 0, 1000);
+        startIndicatorAnimation();
+        Log.v(TAG, "isRecording : " + isRecording);
+    }
+    private void disableVideoRecordingView(){
+        binding.llRecordPanel.setVisibility(View.GONE);
+        mTimer.cancel();
+        recordTime = 0;
+        stopIndicatorAnimation();
     }
 
     private void startIndicatorAnimation() {
@@ -248,26 +241,29 @@ public class CameraFragment extends Fragment {
         objAnimator.end();
     }
 
-    private void capturePhoto() {
-        if(videoHelper.getMediaPlayer().isPlaying() && videoHelper.getMediaPlayer().hasMedia() ) {
-            binding.videoSurfaceFrame.setDrawingCacheEnabled(true);
-            binding.videoSurfaceFrame.buildDrawingCache();
-            Bitmap bitmap = binding.videoSurfaceFrame.getDrawingCache();
-            String extStorageDirectory = getContext().getExternalFilesDir(null).getAbsolutePath();
-            OutputStream outStream = null;
-            File file = new File(extStorageDirectory, System.currentTimeMillis()+".jpg");
-            try {
-                outStream = new FileOutputStream(file);
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outStream);
-                outStream.flush();
-                outStream.close();
-                Toast.makeText(getContext(), R.string.snapshot_taken, Toast.LENGTH_LONG).show();
-            } catch (Exception e) {
-                Toast.makeText(getContext(), R.string.error_occurred, Toast.LENGTH_LONG).show();
-                e.printStackTrace();
-            }
-        }else{
+    public void capturePhoto() {
+        if (videoHelper.getMediaPlayer().isPlaying() && videoHelper.getMediaPlayer().hasMedia()) {
+            Bitmap surfaceBitmap = Bitmap.createBitmap(videoHelper.getVideoSurface().getWidth(), videoHelper.getVideoSurface().getHeight(), Bitmap.Config.ARGB_8888);
+            PixelCopy.request(videoHelper.getVideoSurface(), surfaceBitmap, new PixelCopy.OnPixelCopyFinishedListener() {
+                @Override
+                public void onPixelCopyFinished(int copyResult) {
+                    Log.v(TAG, copyResult + "");
+                    savePhoto(surfaceBitmap);
+                }
+            }, new Handler());
+        } else {
             Toast.makeText(getContext(), R.string.cant_take_photo, Toast.LENGTH_LONG).show();
+        }
+
+    }
+
+    private void savePhoto(Bitmap bitmap) {
+        String extStorageDirectory = getContext().getExternalFilesDir(null).getAbsolutePath();
+        File imageFile = CommonUtils.saveBitmap(bitmap, extStorageDirectory);
+        if(imageFile != null){
+            Toast.makeText(getContext(), R.string.snapshot_taken, Toast.LENGTH_LONG).show();
+        }else{
+            Toast.makeText(getContext(), R.string.error_occurred, Toast.LENGTH_LONG).show();
         }
 
     }
@@ -275,14 +271,12 @@ public class CameraFragment extends Fragment {
 
     @Override
     public void onStop() {
-        Log.e("TAG", "onStop" + hashCode());
         super.onStop();
 
     }
 
     @Override
     public void onDestroy() {
-        Log.e("TAG", "onDestroy" + hashCode());
         if (videoHelper != null) {
             videoHelper.onStop();
             videoHelper.onDestroy();
@@ -293,7 +287,6 @@ public class CameraFragment extends Fragment {
 
     @Override
     public void onResume() {
-        Log.e("TAG", "onResume" + hashCode());
         if (mTimer != null) {
             mTimer.cancel();
         }
@@ -304,12 +297,11 @@ public class CameraFragment extends Fragment {
 
     @Override
     public void onPause() {
+        stopRecordingVideo();
         if (mTimer != null) {
             mTimer.cancel();
             mTimer = null;
         }
-        Log.e("TAG", "onPause" + hashCode());
-
         super.onPause();
 
     }

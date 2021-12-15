@@ -1,17 +1,26 @@
 package com.xontel.surveillancecameras.utils;
 
+import static android.content.Context.STORAGE_SERVICE;
+
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.os.Environment;
+import android.os.storage.StorageManager;
+import android.os.storage.StorageVolume;
 import android.util.Log;
+
+import androidx.core.content.ContextCompat;
 
 import com.xontel.surveillancecameras.R;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 
 public class CommonUtils {
     public static final String SHARED_PREFERENCES_FILE = "com.xontel.surveillancecameras.preferences.file";
@@ -27,7 +36,28 @@ public class CommonUtils {
         return words[words.length -1];
     }
 
+//
+
+    public static File saveBitmap(Bitmap bitmap, String parentDirPath){
+        OutputStream outStream = null;
+        File file = new File(parentDirPath, System.currentTimeMillis() + ".jpeg");
+        try {
+            outStream = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outStream);
+            outStream.flush();
+            outStream.close();
+            return file;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public static boolean hasSDCard(Context context){
+        StorageManager storageManager = (StorageManager) context.getSystemService(STORAGE_SERVICE);
+//        for(StorageVolume storageVolume : storageManager.getStorageVolumes()){
+//            Log.e("TAG", storageVolume.createAccessIntent()+"" );
+//        }
         File[] externalDirs = context.getExternalFilesDirs(null);
         for(File dir: externalDirs){
             if(Environment.isExternalStorageRemovable(dir)){

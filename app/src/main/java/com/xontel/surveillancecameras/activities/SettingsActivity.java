@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.storage.StorageVolume;
 import android.util.Log;
 import android.view.View;
 
@@ -31,7 +32,8 @@ public class SettingsActivity extends BaseActivity implements Observer {
     private ActivitySettingsBinding binding ;
     private  SharedPreferences sharedPreferences ;
     public static final int INTERNAL_STORAGE = 0 ;
-    public static final int EXTERNAL_STORAGE = 1 ;
+    public static final int SDCARD_STORAGE = 1 ;
+    public static final int USB_STORAGE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +69,9 @@ public class SettingsActivity extends BaseActivity implements Observer {
     }
 
     private void setupStorageSpinner() {
+
         int storageChoiceIndex = sharedPreferences.getInt(CommonUtils.KEY_MEDIA_STORAGE, INTERNAL_STORAGE);
+
         if(!CommonUtils.hasSDCard(this)){
             storageChoiceIndex = INTERNAL_STORAGE;
             binding.spSaveTo.setEnabled(false);
@@ -82,6 +86,8 @@ public class SettingsActivity extends BaseActivity implements Observer {
             }
         });
     }
+
+
 
     private void setupIntervalsSpinner() {
         int intervalChoiceIndex = sharedPreferences.getInt(CommonUtils.KEY_SLIDE_INTERVAL_INDEX, 0);
