@@ -37,6 +37,7 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
     public static final String KEY_CAMERAS = "cameras";
     public static final String KEY_SLIDE_SHOW = "slide_show";
     private static final int REQUEST_CODE_EDIT_CAM = 44;
+    private Menu optionMenu ;
     int slideInterval;
     int selectedPage;
     boolean isSlideShow = false;
@@ -92,8 +93,13 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
 
     }
 
+    public Menu getOptionMenu() {
+        return optionMenu;
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        optionMenu = menu ;
         if(!isSlideShow) {
             getMenuInflater().inflate(R.menu.toolbar_menu, menu);
             return true;
@@ -123,22 +129,15 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
 //                showSettings();
 //                return true;
             case R.id.action_capture_photo:
-                capturePhoto();
-                return true;
+                return false;
             case R.id.action_record_video:
-                recordVideo();
-                return true;
+                return false;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    private void recordVideo() {
-    }
 
-    private void capturePhoto() {
-
-    }
 
     private void showSettings() {
         SettingsDialog settingsDialog = new SettingsDialog(this);
@@ -298,8 +297,5 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
 
     }
 
-    @Override
-    public void onCreatingCam() {
 
-    }
 }

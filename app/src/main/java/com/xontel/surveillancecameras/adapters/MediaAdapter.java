@@ -12,16 +12,17 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.xontel.surveillancecameras.R;
-import com.xontel.surveillancecameras.models.MediaItem;
 
+import java.io.File;
 import java.util.List;
 
 public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHolder> {
     private Context context ;
-    private List<MediaItem> itemList ;
+    private List<File> itemList ;
     private ClickActionListener clickAction ;
+    private boolean selectionModeEnabled = false ;
 
-    public MediaAdapter(Context context, List<MediaItem> itemList, ClickActionListener clickAction) {
+    public MediaAdapter(Context context, List<File> itemList, ClickActionListener clickAction) {
         this.context = context;
         this.itemList = itemList;
         this.clickAction = clickAction;
@@ -35,7 +36,7 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
 
     @Override
     public void onBindViewHolder(@NonNull MediaViewHolder holder, int position) {
-
+       holder.onBind(position);
     }
 
 
@@ -45,7 +46,7 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
     }
 
 
-    class MediaViewHolder extends RecyclerView.ViewHolder{
+    class MediaViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         private ImageView image ;
         private ImageView checkBoxOverlay;
         private ImageView play ;
@@ -54,11 +55,15 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
 
         public MediaViewHolder(@NonNull View itemView) {
             super(itemView);
+            itemView.setOnLongClickListener(this);
+            itemView.setOnClickListener(this);
               image = itemView.findViewById(R.id.iv_photo) ;
               checkBoxOverlay = itemView.findViewById(R.id.iv_overlay) ;
               play = itemView.findViewById(R.id.iv_Play) ;
               checker = itemView.findViewById(R.id.cb_checker) ;
         }
+
+
 
 
         public void showChecker(boolean show){
@@ -71,9 +76,48 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
             int visibility = show ? View.VISIBLE : View.GONE ;
             play.setVisibility(visibility);
         }
+
+        @Override
+        public void onClick(View v) {
+            if(selectionModeEnabled){
+                checker.toggle();
+            }else{
+                viewMedia();
+            }
+        }
+
+        private void viewMedia() {
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+            if(!selectionModeEnabled){
+                enableSelectionMode();
+                itemView.performClick();
+            }
+            return true;
+        }
+
+        private void enableSelectionMode() {
+            selectionModeEnabled = true;
+            clickAction.onSelectionModeEnables(true);
+            notifyDataSetChanged();
+        }
+
+        public void onBind(int position) {
+            showChecker(selectionModeEnabled);
+            File file = itemList.get(position);
+            if(file.getName().endsWith(".jpg")){
+
+            }else{
+
+            }
+            
+        }
     }
 
     public interface ClickActionListener{
 
+        void onSelectionModeEnables(boolean enabled);
     }
 }

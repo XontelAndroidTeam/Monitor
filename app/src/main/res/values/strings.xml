@@ -38,6 +38,12 @@
     <string name="show_media">Show saved media</string>
     <string name="no_photos">No photos yet</string>
     <string name="photos">Saved media</string>
+    <string name="stop">Stop</string>
+    <string name="record_saved">Video recorded successfully</string>
+    <string name="record_failed">Record failed</string>
+    <string name="cant_take_photo">Can\'t take snapshot</string>
+    <string name="cant_rec_video">Can\'t record video</string>
+    <string name="snapshot_taken">Snapshot taken successfully</string>
 
 
 </resources>

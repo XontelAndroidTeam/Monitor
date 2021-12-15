@@ -7,20 +7,27 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
+import android.view.View;
 
 import com.skydoves.powerspinner.OnSpinnerItemSelectedListener;
 import com.xontel.surveillancecameras.R;
 import com.xontel.surveillancecameras.base.BaseActivity;
 import com.xontel.surveillancecameras.databinding.ActivitySettingsBinding;
 import com.xontel.surveillancecameras.utils.CommonUtils;
+import com.xontel.surveillancecameras.utils.SDCardObservable;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
-public class SettingsActivity extends BaseActivity {
+public class SettingsActivity extends BaseActivity implements Observer {
+    public static final String TAG = SettingsActivity.class.getSimpleName();
     private ActivitySettingsBinding binding ;
     private  SharedPreferences sharedPreferences ;
     public static final int INTERNAL_STORAGE = 0 ;
@@ -31,6 +38,7 @@ public class SettingsActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_settings);
         sharedPreferences = getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE);
+        SDCardObservable.getInstance().addObserver(this);
         initUI();
     }
 
@@ -42,6 +50,9 @@ public class SettingsActivity extends BaseActivity {
     private void initUI() {
         binding.ivBack.setOnClickListener(v->{
             onBackPressed();
+        });
+        binding.llShowMedia.setOnClickListener(v -> {
+            startActivity(new Intent(this, SavedMediaActivity.class));
         });
         binding.swAutoPreview.setChecked(sharedPreferences.getBoolean(CommonUtils.KEY_AUTO_PREVIEW, true));
         binding.swAutoPreview.setOnCheckedChangeListener((v, isChecked)->{
@@ -57,8 +68,7 @@ public class SettingsActivity extends BaseActivity {
 
     private void setupStorageSpinner() {
         int storageChoiceIndex = sharedPreferences.getInt(CommonUtils.KEY_MEDIA_STORAGE, INTERNAL_STORAGE);
-        if(!CommonUtils.hasSDCard()){
-            binding.spSaveTo.selectItemByIndex(INTERNAL_STORAGE);
+        if(!CommonUtils.hasSDCard(this)){
             storageChoiceIndex = INTERNAL_STORAGE;
             binding.spSaveTo.setEnabled(false);
         }
@@ -104,8 +114,15 @@ public class SettingsActivity extends BaseActivity {
         });
     }
 
-    @Override
-    public void onCreatingCam() {
 
+
+    @Override
+    public void update(Observable o, Object arg) {
+        if(((String)arg).equals(Intent.ACTION_MEDIA_MOUNTED)){
+            Log.v(TAG, "SDCard inserted"+ getExternalFilesDirs(null).length);
+        }else{
+            Log.v(TAG, "SDCard ejected"+ getExternalFilesDirs(null).length);
+        }
+        setupStorageSpinner();
     }
 }
