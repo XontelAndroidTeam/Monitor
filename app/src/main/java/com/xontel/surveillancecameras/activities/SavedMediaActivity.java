@@ -1,9 +1,8 @@
 package com.xontel.surveillancecameras.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
-
 import android.os.Bundle;
+
+import androidx.databinding.DataBindingUtil;
 
 import com.xontel.surveillancecameras.R;
 import com.xontel.surveillancecameras.base.BaseActivity;
@@ -15,9 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class SavedMediaActivity extends BaseActivity {
-    private ActivitySavedMediaBinding binding ;
-    public static final String imagesDirPath = "/images";
-    public static final String videosDirPath = "/videos";
+    private ActivitySavedMediaBinding binding;
     private List<File> mediaFiles = new ArrayList<>();
 
     @Override
@@ -29,10 +26,16 @@ public class SavedMediaActivity extends BaseActivity {
     }
 
     private void loadMediaFiles() {
-        File[] externalStorageDirs = getExternalFilesDirs(null) ;
-        for(File dir : externalStorageDirs){
-            mediaFiles.addAll(Arrays.asList(new File(dir.getAbsolutePath()+imagesDirPath)));
-            mediaFiles.addAll(Arrays.asList(new File(dir.getAbsolutePath()+videosDirPath)));
+        String imagesDirPath = "/media/images";
+        String videosDirPath = "/media/videos";
+        File[] externalStorageDirs = getExternalFilesDirs(null);
+        for (File dir : externalStorageDirs) {
+            File[] images = new File(dir.getAbsolutePath() + imagesDirPath).listFiles();
+            File[] videos = new File(dir.getAbsolutePath() + videosDirPath).listFiles();
+            if (images != null)
+                mediaFiles.addAll(Arrays.asList(images));
+            if (videos != null)
+                mediaFiles.addAll(Arrays.asList(videos));
         }
     }
 

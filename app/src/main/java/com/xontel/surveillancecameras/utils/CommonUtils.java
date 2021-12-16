@@ -13,6 +13,7 @@ import android.os.Environment;
 import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 
@@ -20,6 +21,7 @@ import com.xontel.surveillancecameras.R;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 
 public class CommonUtils {
@@ -38,19 +40,22 @@ public class CommonUtils {
 
 //
 
-    public static File saveBitmap(Bitmap bitmap, String parentDirPath){
-        OutputStream outStream = null;
-        File file = new File(parentDirPath, System.currentTimeMillis() + ".jpeg");
-        try {
-            outStream = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outStream);
-            outStream.flush();
-            outStream.close();
-            return file;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+    public static File saveBitmap(Context context, Bitmap bitmap, String parentDirPath){
+        if(parentDirPath !=null) {
+            OutputStream outStream = null;
+            File file = new File(parentDirPath, System.currentTimeMillis() + ".jpeg");
+            try {
+                outStream = new FileOutputStream(file);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outStream);
+                outStream.flush();
+                outStream.close();
+                return file;
+            } catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(context, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+            }
         }
+        return null;
     }
 
     public static boolean hasSDCard(Context context){

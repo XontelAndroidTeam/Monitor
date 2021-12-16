@@ -6,9 +6,11 @@ import androidx.databinding.DataBindingUtil;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.storage.StorageVolume;
+import android.provider.DocumentsContract;
 import android.util.Log;
 import android.view.View;
 
@@ -55,7 +57,7 @@ public class SettingsActivity extends BaseActivity implements Observer {
             onBackPressed();
         });
         binding.llShowMedia.setOnClickListener(v -> {
-            startActivity(new Intent(this, SavedMediaActivity.class));
+            openDefaultMediaFolder();
         });
         binding.swAutoPreview.setChecked(sharedPreferences.getBoolean(CommonUtils.KEY_AUTO_PREVIEW, true));
         binding.swAutoPreview.setOnCheckedChangeListener((v, isChecked)->{
@@ -69,8 +71,19 @@ public class SettingsActivity extends BaseActivity implements Observer {
 
     }
 
+    private void openDefaultMediaFolder() {
+        Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
+        chooseFile.addCategory(Intent.CATEGORY_OPENABLE);
+        chooseFile.setType("text/plain");
+        startActivityForResult(
+                Intent.createChooser(chooseFile, "Choose a file"),
+                66
+        );
+    }
+
     private void setupStorageSpinner() {
-        binding.spSaveTo.getSpinnerAdapter().setItems(StorageHelper.getVolumesNamesList(this));
+        binding.spSaveTo.setItems(StorageHelper.getVolumesNamesList(this));
+        binding.spSaveTo.setSpinnerPopupHeight(StorageHelper.getVolumesNamesList(this).size() * 46); // work around a bug in this library
         int storageChoiceIndex = StorageHelper.getSavedStorageType(this);
 
 //        if(!CommonUtils.hasSDCard(this)){

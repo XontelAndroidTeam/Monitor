@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.storage.StorageVolume;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -27,12 +28,14 @@ import com.xontel.surveillancecameras.data.db.model.IpCam;
 import com.xontel.surveillancecameras.databinding.FragmentCameraBinding;
 import com.xontel.surveillancecameras.utils.CommonUtils;
 import com.xontel.surveillancecameras.utils.VideoHelper;
+import com.xontel.surveillancecameras.utils.rx.StorageHelper;
 
 import org.jetbrains.annotations.NotNull;
 import org.videolan.libvlc.LibVLC;
 import org.videolan.libvlc.MediaPlayer;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 import java.util.Timer;
@@ -190,16 +193,22 @@ public class CameraFragment extends Fragment {
 
 
     private void startRecordingVideo() {
-        if (videoHelper.getMediaPlayer().isPlaying() && videoHelper.getMediaPlayer().hasMedia()) {
-            if (!isRecording) { // there is no record operation in progress
-                isRecording = videoHelper.getMediaPlayer().record(getContext().getExternalFilesDir(null).getAbsolutePath());
-                if (isRecording) { // if player started recording do ui things
-                    enableVideoRecordingView();
-                } else {
-                    showFailedMessage();
+        try {
+            File videoDirectory = StorageHelper.getMediaDirectory(getContext(), StorageHelper.VIDEOS_DIRECTORY_NAME);
+            Log.v("err", videoDirectory.getAbsolutePath());
+            if (videoHelper.getMediaPlayer().isPlaying() && videoHelper.getMediaPlayer().hasMedia() && videoDirectory != null) {
+                if (!isRecording) { // there is no record operation in progress
+                    isRecording = videoHelper.getMediaPlayer().record(videoDirectory.getAbsolutePath());
+                    if (isRecording) { // if player started recording do ui things
+                        enableVideoRecordingView();
+                    } else {
+                        showFailedMessage();
+                    }
                 }
+            } else {
+                Toast.makeText(getContext(), R.string.cant_rec_video, Toast.LENGTH_LONG).show();
             }
-        } else {
+        }catch (Exception e ){
             Toast.makeText(getContext(), R.string.cant_rec_video, Toast.LENGTH_LONG).show();
         }
     }
@@ -258,11 +267,17 @@ public class CameraFragment extends Fragment {
     }
 
     private void savePhoto(Bitmap bitmap) {
-        String extStorageDirectory = getContext().getExternalFilesDir(null).getAbsolutePath();
-        File imageFile = CommonUtils.saveBitmap(bitmap, extStorageDirectory);
-        if(imageFile != null){
-            Toast.makeText(getContext(), R.string.snapshot_taken, Toast.LENGTH_LONG).show();
-        }else{
+        try {
+            File imagesDirectory = StorageHelper.getMediaDirectory(getContext(), StorageHelper.IMAGES_DIRECTORY_NAME);
+            Log.v("err", imagesDirectory.getAbsolutePath());
+            File imageFile = CommonUtils.saveBitmap(getContext() ,bitmap, imagesDirectory.getAbsolutePath());
+            if (imageFile != null) {
+                Toast.makeText(getContext(), R.string.snapshot_taken, Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(getContext(), R.string.error_occurred, Toast.LENGTH_LONG).show();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
             Toast.makeText(getContext(), R.string.error_occurred, Toast.LENGTH_LONG).show();
         }
 

@@ -45,4 +45,6 @@
     <string name="internal_storage">الذاكرة الداخلية</string>
     <string name="sd_card">بطاقة الذاكرة</string>
     <string name="usb">USB</string>
+    <string name="media_storage_ready">قرص التخزين جاهز</string>
+    <string name="media_ejected">تم إخراج قرص التخزين</string>
 </resources>

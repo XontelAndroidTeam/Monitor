@@ -1,7 +1,9 @@
 package com.xontel.surveillancecameras.adapters;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.opengl.Visibility;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -100,24 +102,31 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
 
         private void enableSelectionMode() {
             selectionModeEnabled = true;
-            clickAction.onSelectionModeEnables(true);
+            clickAction.onSelectionModeEnabled(true);
             notifyDataSetChanged();
         }
 
         public void onBind(int position) {
             showChecker(selectionModeEnabled);
             File file = itemList.get(position);
-            if(file.getName().endsWith(".jpg")){
-
-            }else{
-
+            if(file.getName().toLowerCase().endsWith("jpeg")){
+                bindImage(file);
+            }else if(file.getName().toLowerCase().endsWith("mp4")){
+                bindVideo(file);
             }
             
+        }
+
+        private void bindVideo(File file) {
+        }
+
+        private void bindImage(File file) {
+            image.setImageBitmap( BitmapFactory.decodeFile(file.getAbsolutePath()));
         }
     }
 
     public interface ClickActionListener{
 
-        void onSelectionModeEnables(boolean enabled);
+        void onSelectionModeEnabled(boolean enabled);
     }
 }

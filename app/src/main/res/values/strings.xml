@@ -47,6 +47,8 @@
     <string name="internal_storage">Internal storage</string>
     <string name="sd_card">SDCard</string>
     <string name="usb">USB</string>
+    <string name="media_storage_ready">Media storage is ready</string>
+    <string name="media_ejected">Media ejected</string>
 
 
 </resources>
