@@ -18,6 +18,7 @@ import com.xontel.surveillancecameras.base.BaseActivity;
 import com.xontel.surveillancecameras.databinding.ActivitySettingsBinding;
 import com.xontel.surveillancecameras.utils.CommonUtils;
 import com.xontel.surveillancecameras.utils.SDCardObservable;
+import com.xontel.surveillancecameras.utils.rx.StorageHelper;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -65,24 +66,25 @@ public class SettingsActivity extends BaseActivity implements Observer {
 
         setupIntervalsSpinner();
         setupGridCountSpinner();
-        setupStorageSpinner();
+
     }
 
     private void setupStorageSpinner() {
+        binding.spSaveTo.getSpinnerAdapter().setItems(StorageHelper.getVolumesNamesList(this));
+        int storageChoiceIndex = StorageHelper.getSavedStorageType(this);
 
-        int storageChoiceIndex = sharedPreferences.getInt(CommonUtils.KEY_MEDIA_STORAGE, INTERNAL_STORAGE);
-
-        if(!CommonUtils.hasSDCard(this)){
-            storageChoiceIndex = INTERNAL_STORAGE;
-            binding.spSaveTo.setEnabled(false);
-        }
+//        if(!CommonUtils.hasSDCard(this)){
+//            storageChoiceIndex = INTERNAL_STORAGE;
+//            binding.spSaveTo.setEnabled(false);
+//        }
         binding.spSaveTo.selectItemByIndex(storageChoiceIndex);
         binding.spSaveTo.setOnSpinnerItemSelectedListener(new OnSpinnerItemSelectedListener<String>() {
             @Override
             public void onItemSelected(int i, @Nullable String s, int i1, String t1) {
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putInt(CommonUtils.KEY_MEDIA_STORAGE, i1);
-                editor.apply();
+//                SharedPreferences.Editor editor = sharedPreferences.edit();
+//                editor.putInt(CommonUtils.KEY_MEDIA_STORAGE, i1);
+//                editor.apply();
+                StorageHelper.saveStorageType(SettingsActivity.this, t1);
             }
         });
     }
@@ -120,7 +122,11 @@ public class SettingsActivity extends BaseActivity implements Observer {
         });
     }
 
-
+    @Override
+    protected void onResume() {
+        setupStorageSpinner();
+        super.onResume();
+    }
 
     @Override
     public void update(Observable o, Object arg) {

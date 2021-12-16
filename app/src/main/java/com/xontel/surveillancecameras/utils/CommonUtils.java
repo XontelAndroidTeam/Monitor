@@ -55,9 +55,9 @@ public class CommonUtils {
 
     public static boolean hasSDCard(Context context){
         StorageManager storageManager = (StorageManager) context.getSystemService(STORAGE_SERVICE);
-//        for(StorageVolume storageVolume : storageManager.getStorageVolumes()){
-//            Log.e("TAG", storageVolume.createAccessIntent()+"" );
-//        }
+        for(StorageVolume storageVolume : storageManager.getStorageVolumes()){
+            Log.e("TAG", storageVolume.isRemovable()+"" );
+        }
         File[] externalDirs = context.getExternalFilesDirs(null);
         for(File dir: externalDirs){
             if(Environment.isExternalStorageRemovable(dir)){

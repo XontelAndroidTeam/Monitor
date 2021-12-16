@@ -44,6 +44,9 @@
     <string name="cant_take_photo">Can\'t take snapshot</string>
     <string name="cant_rec_video">Can\'t record a video</string>
     <string name="snapshot_taken">Snapshot taken successfully</string>
+    <string name="internal_storage">Internal storage</string>
+    <string name="sd_card">SDCard</string>
+    <string name="usb">USB</string>
 
 
 </resources>
