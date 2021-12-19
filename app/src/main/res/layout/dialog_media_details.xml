@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="600dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/primary_dark_color"
+        android:layout_gravity="center"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="2dp">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_width="600dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="24dp">
+
+                <TextView
+                    style="@style/status_bar_font"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:textColor="@color/white"
+                    android:text="@string/media_details"
+                    android:textAlignment="viewStart"
+                    android:textSize="24sp" />
+
+
+                <TextView
+                    style="@style/status_bar_font"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/name"
+                    android:textColor="@color/white"
+                    android:textAlignment="viewStart"
+                    android:textSize="20sp" />
+                <TextView
+                    android:id="@+id/tv_media_name"
+                    style="@style/status_bar_font"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    tools:text="dsfsdfsddfdfsdfsdggdfgdfgdfgdfgdfgdfgdfgfdgdfgfdgddfdsffffffffffffffffffffffffffff"
+                    android:textColor="@color/grey_color"
+                    android:textAlignment="viewStart"
+                    android:textSize="20sp" />
+
+                <TextView
+                    style="@style/status_bar_font"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/location"
+                    android:textColor="@color/white"
+                    android:textAlignment="viewStart"
+                    android:textSize="20sp" />
+                <TextView
+                    android:id="@+id/tv_media_url"
+                    style="@style/status_bar_font"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    tools:text="http://192.168.1.152:8080/video.cgi"
+                    android:textColor="@color/grey_color"
+                    android:textAlignment="viewStart"
+                    android:textSize="20sp" />
+
+                <TextView
+                    style="@style/status_bar_font"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/size"
+                    android:textColor="@color/white"
+                    android:textAlignment="viewStart"
+                    android:textSize="20sp" />
+                <TextView
+                    android:id="@+id/tv_media_size"
+                    style="@style/status_bar_font"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginTop="8dp"
+                    tools:text="dsfsdfsddfdfsdfsdfdsffdsdgdfgdfgdfgdfgdfgdfgdffffffffffffffffffffffffffff"
+                    android:textColor="@color/grey_color"
+                    android:layout_marginEnd="16dp"
+                    android:textAlignment="viewStart"
+                    android:textSize="20sp" />
+
+
+
+
+                <Button
+                    android:id="@+id/btn_ok"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginVertical="24dp"
+                    android:background="@color/accent_color"
+                    android:text="@string/ok"
+                    android:textColor="@color/white" />
+            </LinearLayout>
+        </ScrollView>
+    </androidx.cardview.widget.CardView>
+</layout>

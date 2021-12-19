@@ -54,7 +54,7 @@ public class SettingsActivity extends BaseActivity implements Observer {
 
     private void initUI() {
         binding.ivBack.setOnClickListener(v->{
-            onBackPressed();
+            hitBack();
         });
         binding.llShowMedia.setOnClickListener(v -> {
             openDefaultMediaFolder();
@@ -72,13 +72,7 @@ public class SettingsActivity extends BaseActivity implements Observer {
     }
 
     private void openDefaultMediaFolder() {
-        Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
-        chooseFile.addCategory(Intent.CATEGORY_OPENABLE);
-        chooseFile.setType("text/plain");
-        startActivityForResult(
-                Intent.createChooser(chooseFile, "Choose a file"),
-                66
-        );
+        startActivity(new Intent(this, SavedMediaActivity.class));
     }
 
     private void setupStorageSpinner() {

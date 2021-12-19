@@ -64,6 +64,10 @@ public abstract class BaseActivity extends AppCompatActivity implements MvpView,
             requestPermissions(permissions, requestCode);
         }
     }
+    public void hitBack(){
+        hideKeyboard();
+        onBackPressed();
+    }
 
     @TargetApi(Build.VERSION_CODES.M)
     public boolean hasPermission(String permission) {

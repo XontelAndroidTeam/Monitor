@@ -23,6 +23,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 
 public class CommonUtils {
     public static final String SHARED_PREFERENCES_FILE = "com.xontel.surveillancecameras.preferences.file";
@@ -36,6 +39,21 @@ public class CommonUtils {
         Log.e("adapter", "cityNameFromZoneId: "+zoneId );
         String [] words = zoneId.split("/");
         return words[words.length -1];
+    }
+    public static String getFileSize(File file) {
+        double size = (double) file.length() / 1000.0; // Get size and convert bytes into KB.
+        if (size >= 1024) {
+            return new DecimalFormat("##.00", DecimalFormatSymbols.getInstance(new Locale("en"))).format(size / 1024) + " MB";
+        } else {
+            return size + " KB";
+        }
+    }
+
+    public static boolean deleteFile(File file) {
+        if (file.exists())
+            return file.delete();
+        return false;
+
     }
 
 //

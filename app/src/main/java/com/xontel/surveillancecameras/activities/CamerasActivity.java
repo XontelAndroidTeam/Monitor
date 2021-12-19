@@ -215,7 +215,7 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
 
     private void initUI() {
         binding.ivBack.setOnClickListener(v -> {
-            onBackPressed();
+           hitBack();
         });
     }
 
@@ -284,7 +284,7 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
 
     @Override
     public void onDeletingCamera() {
-        finish();
+        hitBack();
     }
 
     @Override

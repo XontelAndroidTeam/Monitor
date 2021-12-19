@@ -7,10 +7,13 @@
         <!-- Android theme override -->
         <item name="colorAccent">@drawable/launch_screen</item>
         <item name="android:colorPrimary">@color/primary_color</item>
+        <item name="actionModeBackground">@color/primary_dark_color</item>
         <!-- Comment out the following line to disable system's status bar coloring -->
         <item name="android:colorPrimaryDark">@color/primary_dark_color</item>
+        <item name="android:actionModeCloseDrawable">@drawable/ic_baseline_close_24</item>
         <item name="android:textColorPrimary">@color/white</item>
         <item name="android:textColorSecondary">@color/white</item>
+        <item name="windowActionModeOverlay">true</item>
         <item name="android:textColorHint">@color/light_grey_color</item>
         <item name="android:colorBackground">@color/white_color</item>
         <item name="android:fontFamily">@font/cairo_regular</item>

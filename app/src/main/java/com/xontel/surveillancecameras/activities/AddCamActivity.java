@@ -67,8 +67,7 @@ public class AddCamActivity extends BaseActivity implements MainMvpView {
 
     private void initUI() {
         binding.ivBack.setOnClickListener(v-> {
-            hideKeyboard();
-            onBackPressed();
+          hitBack();
         });
 
         binding.btnSubmit.setOnClickListener(v->{
@@ -108,7 +107,7 @@ public class AddCamActivity extends BaseActivity implements MainMvpView {
         Intent resultIntent = new Intent();
         resultIntent.putExtra(CamerasActivity.KEY_CAMERAS, editedCam);
         setResult(Activity.RESULT_OK, resultIntent);
-        finish();
+        hitBack();
     }
 
     @Override
