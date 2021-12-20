@@ -69,6 +69,7 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
         if(selectionModeEnabled){
             selectedItems.clear();
             selectedItems.addAll(itemList);
+            notifyDataSetChanged();
         }
     }
 
@@ -99,10 +100,6 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
             checker.setVisibility(visibility);
         }
 
-        public void showPlayVideo(boolean show){
-            int visibility = show ? View.VISIBLE : View.GONE ;
-            play.setVisibility(visibility);
-        }
 
         @Override
         public void onClick(View v) {
@@ -113,6 +110,7 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
                 }else{
                     selectedItems.remove(itemList.get(getAdapterPosition()));
                 }
+                clickAction.notifySelectionMode();
             }else{
                 viewMedia();
             }
@@ -141,6 +139,7 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
 
         public void onBind(int position) {
             showChecker(selectionModeEnabled);
+            checker.setChecked(selectedItems.contains(itemList.get(getAdapterPosition())));
             File file = itemList.get(position);
             if(file.getName().toLowerCase().endsWith("jpeg")){
                 bindImage(file);
@@ -171,6 +170,6 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
     public interface ClickActionListener{
 
         void onSelectionModeEnabled(boolean enabled);
-        void notifySelectionMode(int selectedItemsCount);
+        void notifySelectionMode();
     }
 }

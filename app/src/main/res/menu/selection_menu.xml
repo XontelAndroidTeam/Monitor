@@ -10,5 +10,10 @@
         android:icon="@drawable/ic_baseline_delete_24"
         android:title="@string/delete"
         app:showAsAction="always"/>
+    <item
+        android:id="@+id/action_share"
+        android:icon="@drawable/ic_baseline_share_24"
+        android:title="@string/share"
+        app:showAsAction="always"/>
 
 </menu>

@@ -4,11 +4,13 @@ import static android.content.Context.STORAGE_SERVICE;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
+import android.net.Uri;
 import android.os.Environment;
 import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;
@@ -34,6 +36,13 @@ public class CommonUtils {
     public static final String KEY_MEDIA_STORAGE = "media_storage";
     public static final String KEY_GRID_COUNT = "grid_count";
 
+    public static void galleryAddPic(Context context, String filePath) {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(filePath);
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        context.sendBroadcast(mediaScanIntent);
+    }
     // America/New jersey => New jersey
     public static String cityNameFromZoneId(String zoneId){
         Log.e("adapter", "cityNameFromZoneId: "+zoneId );

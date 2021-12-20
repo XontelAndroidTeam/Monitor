@@ -37,10 +37,10 @@ public class DialogDeleteProgress extends Dialog {
         getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         initUI();
     }
-    onV
 
     private void initUI() {
         deleteFiles();
+
     }
 
     private void deleteFiles() {
@@ -48,8 +48,8 @@ public class DialogDeleteProgress extends Dialog {
             if (!CommonUtils.deleteFile(files.get(i))) {
                 Toast.makeText(getContext(), R.string.file_delete_error + files.get(i).getName(), Toast.LENGTH_LONG).show();
             }
-            int progress = ((files.size() * (i + 1)) / 100);
-            binding.tvProgress.setText(progress + "");
+            int progress = (((i + 1) * 100) / files.size());
+            binding.tvProgress.setText(progress + " %");
             binding.pbProgressIndicator.setProgress(progress);
         }
         files.clear();

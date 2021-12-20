@@ -112,6 +112,7 @@ public class StorageHelper {
 
 
     public static String getVolumeLabel(Context context, StorageVolume storageVolume) {
+        Log.e("err", storageVolume.getDescription(context).toString() );
         if (isSDCard(context, storageVolume)) {
             return context.getString(R.string.sd_card);
         } else if (isUSB(context, storageVolume)) {
@@ -137,7 +138,7 @@ public class StorageHelper {
     }
 
     public static boolean isSDCard(Context context, StorageVolume storageVolume) {
-        return storageVolume.isRemovable() && storageVolume.getDescription(context).toLowerCase().contains("card");
+        return storageVolume.isRemovable() && storageVolume.getDescription(context).toLowerCase().contains(context.getString(R.string.card));
     }
 
     public static boolean isUSB(Context context, StorageVolume storageVolume) {
