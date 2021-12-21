@@ -19,14 +19,17 @@ import com.xontel.surveillancecameras.adapters.MediaAdapter;
 import com.xontel.surveillancecameras.base.BaseActivity;
 import com.xontel.surveillancecameras.databinding.ActivitySavedMediaBinding;
 import com.xontel.surveillancecameras.utils.CommonUtils;
+import com.xontel.surveillancecameras.utils.SDCardObservable;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
-public class SavedMediaActivity extends BaseActivity implements MediaAdapter.ClickActionListener/*, DialogDeleteProgress.ClickAction*/ {
+public class SavedMediaActivity extends BaseActivity implements Observer, MediaAdapter.ClickActionListener/*, DialogDeleteProgress.ClickAction*/ {
     private ActivitySavedMediaBinding binding;
     private List<File> mediaFiles = new ArrayList<>();
     private MediaAdapter mediaAdapter;
@@ -38,6 +41,7 @@ public class SavedMediaActivity extends BaseActivity implements MediaAdapter.Cli
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_saved_media);
         setSupportActionBar(binding.toolbar);
+        SDCardObservable.getInstance().addObserver(this);
         binding.ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -69,8 +73,8 @@ public class SavedMediaActivity extends BaseActivity implements MediaAdapter.Cli
         switch (item.getItemId()) {
             case R.id.action_delete:
             case R.id.action_share:
-                startSelectionMode();
             default:
+                startSelectionMode();
                 return super.onOptionsItemSelected(item);
         }
     }
@@ -78,7 +82,6 @@ public class SavedMediaActivity extends BaseActivity implements MediaAdapter.Cli
 
     @Override
     protected void onResume() {
-        loadMediaFiles();
         initUI();
         super.onResume();
     }
@@ -115,16 +118,12 @@ public class SavedMediaActivity extends BaseActivity implements MediaAdapter.Cli
                 public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
                     switch (item.getItemId()) {
                         case R.id.action_delete:
-                            if(mediaAdapter.getSelectedItems().size() > 0)
-                            deleteSelectedItems();
-                            else
-                                showMessage(R.string.nothing_selected);
+                            deleteSelectedItems(mediaAdapter.getSelectedItems());
+                            endSelectionMode();
                             return true;
                         case R.id.action_share:
-                            if(mediaAdapter.getSelectedItems().size() > 0)
-                            shareSelectedItems();
-                            else
-                                showMessage(R.string.nothing_selected);
+                            shareSelectedItems(mediaAdapter.getSelectedItems());
+                            endSelectionMode();
                             return true;
                         case R.id.action_select_all:
                             mediaAdapter.selectAll();
@@ -139,57 +138,52 @@ public class SavedMediaActivity extends BaseActivity implements MediaAdapter.Cli
                     mediaAdapter.enableSelectionMode(false);
                 }
             });
-            actionMode.setTitle(mediaAdapter.getSelectedItems().size()+"");
+            actionMode.setTitle(mediaAdapter.getSelectedItems().size() + "");
             mediaAdapter.enableSelectionMode(true);
         }
     }
 
-    private void shareSelectedItems() {
-        endSelectionMode();
-//        progressDialog.show();
-        List<File> selectedFiles = mediaAdapter.getSelectedItems();
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_SEND_MULTIPLE);
-        intent.putExtra(Intent.EXTRA_SUBJECT, "Here are some files.");
-        intent.setType("image/jpeg"); /* This example is sharing jpeg images. */
-
-        ArrayList<Uri> files = new ArrayList<Uri>();
-
-        for (File file : selectedFiles /* List of the files you want to send */) {
-            Uri uri = Uri.fromFile(file);
-            files.add(uri);
+    private void shareSelectedItems(List<File> selectedFiles) {
+        if(selectedFiles.size() > 0) {
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_SEND_MULTIPLE);
+            intent.putExtra(Intent.EXTRA_SUBJECT, "Here are some files.");
+            intent.setType("image/jpeg"); /* This example is sharing jpeg images. */
+            ArrayList<Uri> files = new ArrayList<Uri>();
+            for (File file : selectedFiles) {
+                Uri uri = Uri.fromFile(file);
+                files.add(uri);
+            }
+            selectedFiles.clear();
+            intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, files);
+            startActivity(intent);
+        }else{
+            showMessage(R.string.nothing_selected);
         }
-
-        selectedFiles.clear();
-        intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, files);
-        startActivity(intent);
-//        progressDialog.dismiss();
 
     }
 
     public void updateActionMode() {
         //  ((MainActivity)getContext()).getActionMode().getMenu().getItem(0).setVisible(itemsCount == 1);
         if (actionMode != null) {
-            actionMode.setTitle(mediaAdapter.getSelectedItems().size()+"");
+            actionMode.setTitle(mediaAdapter.getSelectedItems().size() + "");
             actionMode.invalidate();
         }
     }
 
 
-    private void deleteSelectedItems() {
-        endSelectionMode();
-//        progressDialog.show();
-        List<File> selectedFiles = mediaAdapter.getSelectedItems();
-        for (int i = 0; i < selectedFiles.size(); i++) {
-            if (!CommonUtils.deleteFile(selectedFiles.get(i))) {
-                Toast.makeText(this, R.string.file_delete_error + selectedFiles.get(i).getName(), Toast.LENGTH_LONG).show();
+    private void deleteSelectedItems(List<File> selectedFiles) {
+        if(selectedFiles.size() > 0 ) {
+            for (int i = 0; i < selectedFiles.size(); i++) {
+                if (!CommonUtils.deleteFile(selectedFiles.get(i))) {
+                    Toast.makeText(this, R.string.file_delete_error + selectedFiles.get(i).getName(), Toast.LENGTH_LONG).show();
+                }
             }
-            int progress = (((i + 1) * 100) / selectedFiles.size());
-//           progressDialog.setProgress(progress);
+            selectedFiles.clear();
+            onDeleteCompleted();
+        }else{
+            showMessage(R.string.nothing_selected);
         }
-        selectedFiles.clear();
-//        progressDialog.dismiss();
-        onDeleteCompleted();
 
 
     }
@@ -217,10 +211,12 @@ public class SavedMediaActivity extends BaseActivity implements MediaAdapter.Cli
                 return -1;
             }
         });
+        mediaAdapter.notifyDataSetChanged();
     }
 
     private void initUI() {
         setupMediaList();
+        loadMediaFiles();
     }
 
     private void setupMediaList() {
@@ -245,9 +241,13 @@ public class SavedMediaActivity extends BaseActivity implements MediaAdapter.Cli
         updateActionMode();
     }
 
-    //    @Override
+
     public void onDeleteCompleted() {
         loadMediaFiles();
-        setupMediaList();
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        loadMediaFiles();
     }
 }

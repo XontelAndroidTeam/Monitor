@@ -4,9 +4,9 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.storage.StorageVolume;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -28,14 +28,13 @@ import com.xontel.surveillancecameras.data.db.model.IpCam;
 import com.xontel.surveillancecameras.databinding.FragmentCameraBinding;
 import com.xontel.surveillancecameras.utils.CommonUtils;
 import com.xontel.surveillancecameras.utils.VideoHelper;
-import com.xontel.surveillancecameras.utils.rx.StorageHelper;
+import com.xontel.surveillancecameras.utils.StorageHelper;
 
 import org.jetbrains.annotations.NotNull;
 import org.videolan.libvlc.LibVLC;
 import org.videolan.libvlc.MediaPlayer;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 import java.util.Timer;
@@ -209,12 +208,14 @@ public class CameraFragment extends Fragment {
                 Toast.makeText(getContext(), R.string.cant_rec_video, Toast.LENGTH_LONG).show();
             }
         }catch (Exception e ){
+            Log.e("err", e.getMessage() );
             Toast.makeText(getContext(), R.string.cant_rec_video, Toast.LENGTH_LONG).show();
         }
     }
 
     private void enableVideoRecordingView() {
         binding.llRecordPanel.setVisibility(View.VISIBLE);
+        mTimer = new Timer();
         mTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {

@@ -1,17 +1,18 @@
-package com.xontel.surveillancecameras.utils.rx;
+package com.xontel.surveillancecameras.utils;
 
 import static android.content.Context.STORAGE_SERVICE;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Environment;
 import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;
+import android.provider.MediaStore;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.xontel.surveillancecameras.R;
-import com.xontel.surveillancecameras.utils.CommonUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -72,7 +73,7 @@ public class StorageHelper {
         if (storageVolume.getState().equals(Environment.MEDIA_MOUNTED)) {
             File[] externalDirs = context.getExternalFilesDirs(null);
             for (File dir : externalDirs) {
-                Log.v("err", storageVolume.getUuid()+" == "+dir.getAbsolutePath());
+                Log.v("err", storageVolume.getUuid() + " == " + dir.getAbsolutePath());
                 if (storageVolume.getUuid() != null && dir.getAbsolutePath().contains(storageVolume.getUuid())) {
                     return dir;
                 }
@@ -82,11 +83,22 @@ public class StorageHelper {
 
     }
 
+//    private static void insertMediaFile(Context context, File file, String mediaType) {
+//        ContentValues contentValues = new ContentValues();
+//        contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, file.getName());
+//        contentValues.put(MediaStore.MediaColumns.MIME_TYPE, mediaType.equals(IMAGES_DIRECTORY_NAME) ? "image/jpeg" : "video/mp4");
+//        contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, "IP cameras");
+//
+//
+//        Uri uri = context.getContentResolver().insert(mediaType.equals(IMAGES_DIRECTORY_NAME) ? MediaStore.Images.Media.EXTERNAL_CONTENT_URI :
+//                MediaStore.Video.Media.EXTERNAL_CONTENT_URI, contentValues);
+//    }
+
     public static List<String> getVolumesNamesList(Context context) {
         List<String> labels = new ArrayList<>();
         List<StorageVolume> volumes = getActiveVolumes(context);
         for (StorageVolume storageVolume : volumes) {
-                labels.add(getVolumeLabel(context, storageVolume));
+            labels.add(getVolumeLabel(context, storageVolume));
         }
 //        String[] labelsArr = new String[labels.size()];
         return labels /*.toArray(labelsArr)*/;
@@ -112,7 +124,7 @@ public class StorageHelper {
 
 
     public static String getVolumeLabel(Context context, StorageVolume storageVolume) {
-        Log.e("err", storageVolume.getDescription(context).toString() );
+        Log.e("err", storageVolume.getDescription(context));
         if (isSDCard(context, storageVolume)) {
             return context.getString(R.string.sd_card);
         } else if (isUSB(context, storageVolume)) {
@@ -142,7 +154,7 @@ public class StorageHelper {
     }
 
     public static boolean isUSB(Context context, StorageVolume storageVolume) {
-        return storageVolume.isRemovable() && storageVolume.getDescription(context).toLowerCase().contains("usb");
+        return storageVolume.isRemovable() && !isSDCard(context, storageVolume);
     }
 
     public static int getSavedStorageType(Context context) {

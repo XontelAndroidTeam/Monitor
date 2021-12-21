@@ -62,6 +62,7 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
 
     public void enableSelectionMode(boolean enabled) {
         selectionModeEnabled = enabled;
+        if(!enabled) selectedItems.clear();
         notifyDataSetChanged();
     }
 
@@ -74,7 +75,7 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
     }
 
 
-    class MediaViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
+    class MediaViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private ImageView image ;
         private ImageView checkBoxOverlay;
         private ImageView play ;
@@ -83,7 +84,6 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
 
         public MediaViewHolder(@NonNull View itemView) {
             super(itemView);
-            itemView.setOnLongClickListener(this);
             itemView.setOnClickListener(this);
               image = itemView.findViewById(R.id.iv_photo) ;
               checkBoxOverlay = itemView.findViewById(R.id.iv_overlay) ;
@@ -126,14 +126,6 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
             }
             intent.putExtra(MediaViewerActivity.KEY_MEDIA_FILE_PATH, file.getAbsolutePath());
             context.startActivity(intent);
-        }
-
-        @Override
-        public boolean onLongClick(View v) {
-            if(!selectionModeEnabled){
-                ((SavedMediaActivity)context).startSelectionMode();
-            }
-            return true;
         }
 
 

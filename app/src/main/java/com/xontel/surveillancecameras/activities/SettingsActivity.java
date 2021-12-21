@@ -1,18 +1,12 @@
 package com.xontel.surveillancecameras.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.storage.StorageVolume;
-import android.provider.DocumentsContract;
 import android.util.Log;
-import android.view.View;
 
 import com.skydoves.powerspinner.OnSpinnerItemSelectedListener;
 import com.xontel.surveillancecameras.R;
@@ -20,11 +14,10 @@ import com.xontel.surveillancecameras.base.BaseActivity;
 import com.xontel.surveillancecameras.databinding.ActivitySettingsBinding;
 import com.xontel.surveillancecameras.utils.CommonUtils;
 import com.xontel.surveillancecameras.utils.SDCardObservable;
-import com.xontel.surveillancecameras.utils.rx.StorageHelper;
+import com.xontel.surveillancecameras.utils.StorageHelper;
 
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Observable;
