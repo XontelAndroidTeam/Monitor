@@ -274,7 +274,7 @@ public class CameraFragment extends Fragment {
             File imageFile = CommonUtils.saveBitmap(getContext() ,bitmap, imagesDirectory.getAbsolutePath());
             if (imageFile != null) {
                 CommonUtils.galleryAddPic(getContext(), imageFile.getAbsolutePath());
-                Toast.makeText(getContext(), R.string.snapshot_taken, Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), R.string.snapshot_taken, Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(getContext(), R.string.error_occurred, Toast.LENGTH_LONG).show();
             }
