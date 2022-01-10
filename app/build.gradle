@@ -18,13 +18,14 @@ android {
         applicationId "com.xontel.surveillancecameras"
         minSdkVersion 27
         targetSdkVersion 22
-        versionCode 2
+        versionCode 3
         versionName "1.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         ndk {
             abiFilters "armeabi-v7a", "x86"
             //"armeabi-v7a-v7a", "x86", "armeabi-v7a", "mips"
+
         }
         signingConfig signingConfigs.release
 

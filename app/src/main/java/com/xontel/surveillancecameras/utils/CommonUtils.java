@@ -28,6 +28,7 @@ import java.io.OutputStream;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
+import java.util.UUID;
 
 public class CommonUtils {
     public static final String SHARED_PREFERENCES_FILE = "com.xontel.surveillancecameras.preferences.file";
@@ -35,6 +36,7 @@ public class CommonUtils {
     public static final String KEY_SLIDE_INTERVAL_INDEX = "slide_interval_index";
     public static final String KEY_MEDIA_STORAGE = "media_storage";
     public static final String KEY_GRID_COUNT = "grid_count";
+    private static final long NUM_BYTES_NEEDED_FOR_MY_APP = 1024 * 1024 * 10L;
 
     public static void galleryAddPic(Context context, String filePath) {
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
@@ -135,4 +137,27 @@ public class CommonUtils {
     }
 
 
+    public static boolean hasFreeSpace(Context context, File videoDirectory) {
+        // App needs 10 MB within internal storage.
+//
+//
+//        StorageManager storageManager = context.getSystemService(StorageManager.class);
+//        UUID appSpecificInternalDirUuid = null;
+//        try {
+//            appSpecificInternalDirUuid = storageManager.getUuidForPath(videoDirectory);
+//
+//        long availableBytes =
+//                storageManager.getAllocatableBytes(appSpecificInternalDirUuid);
+//        if (availableBytes >= NUM_BYTES_NEEDED_FOR_MY_APP) {
+//            return true ;
+//        } else {
+//            // To request that the user remove all app cache files instead, set
+//            // "action" to ACTION_CLEAR_APP_CACHE.
+//            Intent storageIntent = new Intent();
+//            storageIntent.setAction(ACTION_MANAGE_STORAGE);
+//        }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+    }
 }
