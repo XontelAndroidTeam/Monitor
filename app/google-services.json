@@ -1,0 +1,232 @@
+{
+  "project_info": {
+    "project_number": "609639095089",
+    "project_id": "xt-15-c18f2",
+    "storage_bucket": "xt-15-c18f2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:609639095089:android:862e48dcb5043e726bee10",
+        "android_client_info": {
+          "package_name": "com.xontel.connectionssettings"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "609639095089-unkor1r18vmvji7fs486cqe8ir534cs5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.xontel.connectionssettings",
+            "certificate_hash": "b08a36bf419d54521fca0d337d510e18c02005f8"
+          }
+        },
+        {
+          "client_id": "609639095089-fnc5ocpkqrttnuc1kq80i65bv26tnh69.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7QZR78HqcWcgX0flZPab9uMWLVzpXjqM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "609639095089-fnc5ocpkqrttnuc1kq80i65bv26tnh69.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:609639095089:android:41579a6c7a22f2856bee10",
+        "android_client_info": {
+          "package_name": "com.xontel.datetimemanager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "609639095089-276jgp0ml25e1gnlbr2td190r0pv4fqo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.xontel.datetimemanager",
+            "certificate_hash": "2045730a2e71dfb1b07ea05a56fc94312a5e3ac4"
+          }
+        },
+        {
+          "client_id": "609639095089-fnc5ocpkqrttnuc1kq80i65bv26tnh69.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7QZR78HqcWcgX0flZPab9uMWLVzpXjqM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "609639095089-fnc5ocpkqrttnuc1kq80i65bv26tnh69.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:609639095089:android:2bd58b335aac6ffc6bee10",
+        "android_client_info": {
+          "package_name": "com.xontel.dialer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "609639095089-cvke6r626bh4o312ovq2g8s9cj3no8hm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.xontel.dialer",
+            "certificate_hash": "aaf93b9b05c4f6bdae8c03d2f7a7c28099782e6c"
+          }
+        },
+        {
+          "client_id": "609639095089-fnc5ocpkqrttnuc1kq80i65bv26tnh69.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7QZR78HqcWcgX0flZPab9uMWLVzpXjqM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "609639095089-fnc5ocpkqrttnuc1kq80i65bv26tnh69.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:609639095089:android:902420f56d3a5bf56bee10",
+        "android_client_info": {
+          "package_name": "com.xontel.launcher"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "609639095089-o8kh1c1ac2n93f7ksjej3pnrkvjueqic.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.xontel.launcher",
+            "certificate_hash": "a9ccfbfa13cda19c77b59304115a2866eae36974"
+          }
+        },
+        {
+          "client_id": "609639095089-fnc5ocpkqrttnuc1kq80i65bv26tnh69.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7QZR78HqcWcgX0flZPab9uMWLVzpXjqM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "609639095089-fnc5ocpkqrttnuc1kq80i65bv26tnh69.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:609639095089:android:df2eac7266aa30246bee10",
+        "android_client_info": {
+          "package_name": "com.xontel.screensaver"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "609639095089-spsn749dv3cdcee4co4u23s5kiptv9il.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.xontel.screensaver",
+            "certificate_hash": "8430b2dfd6be49ac96d2f37796dc662a7cc3a267"
+          }
+        },
+        {
+          "client_id": "609639095089-fnc5ocpkqrttnuc1kq80i65bv26tnh69.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7QZR78HqcWcgX0flZPab9uMWLVzpXjqM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "609639095089-fnc5ocpkqrttnuc1kq80i65bv26tnh69.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:609639095089:android:b37d66e4cfe489d36bee10",
+        "android_client_info": {
+          "package_name": "com.xontel.surveillancecameras"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "609639095089-u53l29lrd2ieqejh533ss5snlin1b8e5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.xontel.surveillancecameras",
+            "certificate_hash": "dd152eda3f5468d865502749e8121897295c3ac7"
+          }
+        },
+        {
+          "client_id": "609639095089-fnc5ocpkqrttnuc1kq80i65bv26tnh69.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7QZR78HqcWcgX0flZPab9uMWLVzpXjqM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "609639095089-fnc5ocpkqrttnuc1kq80i65bv26tnh69.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

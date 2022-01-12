@@ -137,7 +137,7 @@ public class CommonUtils {
     }
 
 
-    public static boolean hasFreeSpace(Context context, File videoDirectory) {
+//    public static boolean hasFreeSpace(Context context, File videoDirectory) {
         // App needs 10 MB within internal storage.
 //
 //
@@ -159,5 +159,5 @@ public class CommonUtils {
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
-    }
+//    }
 }

@@ -3,6 +3,7 @@ package com.xontel.surveillancecameras.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.media.ThumbnailUtils;
 import android.opengl.Visibility;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -70,6 +72,7 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
         if(selectionModeEnabled){
             selectedItems.clear();
             selectedItems.addAll(itemList);
+            clickAction.notifySelectionMode();
             notifyDataSetChanged();
         }
     }
@@ -89,6 +92,12 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
               checkBoxOverlay = itemView.findViewById(R.id.iv_overlay) ;
               play = itemView.findViewById(R.id.iv_Play) ;
               checker = itemView.findViewById(R.id.cb_checker) ;
+              checker.setOnClickListener(new View.OnClickListener() {
+                  @Override
+                  public void onClick(View v) {
+                      itemView.performClick();
+                  }
+              });
         }
 
 
@@ -143,11 +152,13 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
 
         private void bindVideo(File file) {
             play.setVisibility(View.VISIBLE);
-            Glide.with(context)
-                    .asBitmap()
-                    .load(file.getPath())
-                    .thumbnail(0.5f)// or URI/path// or URI/path
-                    .into(image);
+//            Glide.with(context)
+//                    .asBitmap()
+//                    .load(file.getPath())
+//                    .thumbnail(0.5f)// or URI/path// or URI/path
+//                    .into(image);
+            image.setImageBitmap(ThumbnailUtils.createVideoThumbnail(file.getAbsolutePath(),
+                    MediaStore.Images.Thumbnails.MINI_KIND));
         }
 
         private void bindImage(File file) {

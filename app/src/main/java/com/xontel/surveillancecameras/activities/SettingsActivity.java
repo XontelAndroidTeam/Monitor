@@ -69,9 +69,11 @@ public class SettingsActivity extends BaseActivity implements Observer {
     }
 
     private void setupStorageSpinner() {
-        binding.spSaveTo.setItems(StorageHelper.getVolumesNamesList(this));
+        List<String> volNames = StorageHelper.getVolumesNamesList(this);
+        binding.spSaveTo.setItems(volNames);
         binding.spSaveTo.setSpinnerPopupHeight(StorageHelper.getVolumesNamesList(this).size() * 46); // work around a bug in this library
-        int storageChoiceIndex = StorageHelper.getSavedStorageType(this);
+        int storageChoiceType =  StorageHelper.getSavedStorageType(this);
+        int storageChoiceIndex = getIndexFromStorageType(storageChoiceType, volNames);
 
 //        if(!CommonUtils.hasSDCard(this)){
 //            storageChoiceIndex = INTERNAL_STORAGE;
@@ -89,6 +91,15 @@ public class SettingsActivity extends BaseActivity implements Observer {
         });
     }
 
+    private int getIndexFromStorageType(int storageChoiceType, List<String> volNames) {
+        String label = StorageHelper.getLabelFromStorageType(this, storageChoiceType);
+        Log.v("helper", label);
+        for(int i =0 ; i< volNames.size() ; i++){
+            if(label.equals(volNames.get(i)))
+                return i;
+        }
+        return 0 ;
+    }
 
 
     private void setupIntervalsSpinner() {

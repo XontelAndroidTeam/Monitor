@@ -195,32 +195,36 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
 
         private void initVlcPlayer() {
-            ipCam = cams.get(getAdapterPosition());
-            videoHelper = new VideoHelper(context, mVideoSurfaceFrame, stub, itemView);
-            videoHelper.setVIDEO_URL(ipCam.getUrl());
-            videoHelpers.add(videoHelper);
-            videoHelper.getMediaPlayer().setEventListener(new MediaPlayer.EventListener() {
-                float buffered = 0.0f;
+            try {
+                ipCam = cams.get(getAdapterPosition());
+                videoHelper = new VideoHelper(context, mVideoSurfaceFrame, stub, itemView);
+                videoHelper.setVIDEO_URL(ipCam.getUrl());
+                videoHelpers.add(videoHelper);
+                videoHelper.getMediaPlayer().setEventListener(new MediaPlayer.EventListener() {
+                    float buffered = 0.0f;
 
-                @Override
-                public void onEvent(MediaPlayer.Event event) {
-                    if (event.type == MediaPlayer.Event.Buffering) {
-                        buffered = event.getBuffering();
-                    }
-                    if (buffered == 100.0) {
-                        loadingBar.setVisibility(View.GONE);
-                        Log.d("EVENT", event.type + "");
-                    }
+                    @Override
+                    public void onEvent(MediaPlayer.Event event) {
+                        if (event.type == MediaPlayer.Event.Buffering) {
+                            buffered = event.getBuffering();
+                        }
+                        if (buffered == 100.0) {
+                            loadingBar.setVisibility(View.GONE);
+                            Log.d("EVENT", event.type + "");
+                        }
 
-                    if (event.type == MediaPlayer.Event.EncounteredError) {
-                        Log.d("EVENT", event.type + "");
-                        loadingBar.setVisibility(View.GONE);
-                        textError.setVisibility(View.VISIBLE);
-                        textError.setText(R.string.error_occurred);
+                        if (event.type == MediaPlayer.Event.EncounteredError) {
+                            Log.d("EVENT", event.type + "");
+                            loadingBar.setVisibility(View.GONE);
+                            textError.setVisibility(View.VISIBLE);
+                            textError.setText(R.string.error_occurred);
+                        }
                     }
-                }
-            });
-            videoHelper.onStart();
+                });
+                videoHelper.onStart();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
 
         }
 

@@ -110,6 +110,7 @@ public class StorageHelper {
         for (StorageVolume storageVolume : volumes) {
             types.add(getVolumeType(context, storageVolume));
         }
+        Log.v("helper", types.toString());
         return new ArrayList<>(new HashSet<>(types));
     }
 
@@ -144,6 +145,17 @@ public class StorageHelper {
         }
     }
 
+    public static String getLabelFromStorageType(Context context, int storageType) {
+        if (storageType == SDCARD_STORAGE) {
+            return  context.getString(R.string.sd_card);
+
+        } else if (storageType == USB_STORAGE) {
+            return  context.getString(R.string.usb);
+        } else {
+            return context.getString(R.string.internal_storage);
+        }
+    }
+
 
     public static boolean isInternalStorage(StorageVolume storageVolume) {
         return storageVolume.isEmulated();
@@ -160,6 +172,7 @@ public class StorageHelper {
     public static int getSavedStorageType(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE);
         int storageType = sharedPreferences.getInt(KEY_CHOSEN_STORAGE, INTERNAL_STORAGE);
+        Log.v("helper", storageType+"");
         return getVolumesTypesList(context).contains(storageType) ? storageType : INTERNAL_STORAGE;
     }
 

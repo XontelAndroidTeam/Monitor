@@ -196,7 +196,7 @@ public class CameraFragment extends Fragment {
         try {
             File videoDirectory = StorageHelper.getMediaDirectory(getContext(), StorageHelper.VIDEOS_DIRECTORY_NAME);
             Log.v("err", videoDirectory.getAbsolutePath());
-            if (videoHelper.getMediaPlayer().isPlaying() && videoHelper.getMediaPlayer().hasMedia() && videoDirectory != null && CommonUtils.hasFreeSpace(videoDirectory)) {
+            if (videoHelper.getMediaPlayer().isPlaying() && videoHelper.getMediaPlayer().hasMedia() && videoDirectory != null /*&& CommonUtils.hasFreeSpace(videoDirectory)*/) {
                 if (!isRecording) { // there is no record operation in progress
                     isRecording = videoHelper.getMediaPlayer().record(videoDirectory.getAbsolutePath());
                     if (isRecording) { // if player started recording do ui things
