@@ -92,12 +92,7 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
               checkBoxOverlay = itemView.findViewById(R.id.iv_overlay) ;
               play = itemView.findViewById(R.id.iv_Play) ;
               checker = itemView.findViewById(R.id.cb_checker) ;
-              checker.setOnClickListener(new View.OnClickListener() {
-                  @Override
-                  public void onClick(View v) {
-                      itemView.performClick();
-                  }
-              });
+
         }
 
 

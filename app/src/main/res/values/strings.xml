@@ -26,7 +26,7 @@
     <string name="cam_details">Camera details</string>
     <string name="ok">ok</string>
     <string name="grid_count">Grid count</string>
-    <string name="live_cameras">IP cameras</string>
+    <string name="live_cameras">Monitor</string>
     <string name="cancel">Cancel</string>
     <string name="cameras_limit">Only 24 cameras are allowed </string>
     <string name="no_cameras_added_yet">No cameras added yet</string>

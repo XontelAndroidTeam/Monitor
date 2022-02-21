@@ -24,7 +24,7 @@
     <string name="are_you_sure_delete">هل تريد بالفعل حذف هذه الكاميرا؟</string>
     <string name="ok">موافق</string>
     <string name="grid_count">العدد اثناء العرض</string>
-    <string name="live_cameras">كاميرات IP</string>
+    <string name="live_cameras">المراقب</string>
     <string name="cancel">إلغاء الأمر</string>
     <string name="cameras_limit">مسموح فقط ب 24 كاميرا</string>
     <string name="no_cameras_added_yet">لم يتم إضافة كاميرات</string>

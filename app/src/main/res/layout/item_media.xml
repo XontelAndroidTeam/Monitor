@@ -32,6 +32,9 @@
         android:id="@+id/cb_checker"
         android:button="@drawable/custom_check_box"
         android:visibility="gone"
+        android:clickable="false"
+        android:focusable="false"
+        android:longClickable="false"
         android:layout_width="30dp"
         android:layout_height="30dp"/>
 </androidx.cardview.widget.CardView>
