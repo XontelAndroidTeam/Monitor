@@ -124,7 +124,7 @@ public class GridFragment extends Fragment {
 
 
     private void setupCamGrid() {
-        binding.rvGrid.setLayoutManager(new GridLayoutManager(getContext(), gridCount / (int) Math.sqrt(gridCount)));
+        binding.rvGrid.setLayoutManager(new GridLayoutManager(getContext(), (int) Math.sqrt(gridCount)));
         gridAdapter = new CamsAdapter(this, actualCams, videoHelpers, getContext(), camsCount, gridCount);
         binding.rvGrid.setAdapter(gridAdapter);
         Log.e("TAG__", "setupCamGrid: "+ binding.rvGrid.getMeasuredHeight() );
