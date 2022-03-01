@@ -6,9 +6,11 @@ import androidx.databinding.DataBindingUtil;
 import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.KeyEvent;
+import android.view.WindowManager;
 import android.view.inputmethod.BaseInputConnection;
 import android.widget.EditText;
 

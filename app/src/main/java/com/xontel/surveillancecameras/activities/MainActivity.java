@@ -146,7 +146,7 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
     }
 
     public void addNewCam() {
-        if (cams.size() < 24) {
+        if (cams.size() < 32) {
             startActivity(new Intent(MainActivity.this, AddCamActivity.class));
         } else {
             showMessage(R.string.cameras_limit);
