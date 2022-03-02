@@ -26,7 +26,7 @@
     <string name="grid_count">العدد اثناء العرض</string>
     <string name="live_cameras">المراقب</string>
     <string name="cancel">إلغاء الأمر</string>
-    <string name="cameras_limit">مسموح فقط ب 24 كاميرا</string>
+    <string name="cameras_limit">مسموح فقط ب 32 كاميرا</string>
     <string name="no_cameras_added_yet">لم يتم إضافة كاميرات</string>
     <string name="capture_photo">اخذ صورة</string>
     <string name="record_video">تسجيل فيديو</string>
