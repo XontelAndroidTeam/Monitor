@@ -222,14 +222,16 @@ public class SavedMediaActivity extends BaseActivity implements Observer, MediaA
     private void setupMediaList() {
         mediaAdapter = new MediaAdapter(this, mediaFiles, this);
         binding.rvMedia.setEmptyView(binding.tvEmpty);
-        binding.rvMedia.setAdapter(mediaAdapter);
+        binding.rvMedia.setAdapter(mediaAdapter)    ;
         binding.rvMedia.setLayoutManager(new GridLayoutManager(this, 4));
     }
+
 
     @Override
     protected void setUp() {
 
     }
+
 
     @Override
     public void onSelectionModeEnabled(boolean enabled) {

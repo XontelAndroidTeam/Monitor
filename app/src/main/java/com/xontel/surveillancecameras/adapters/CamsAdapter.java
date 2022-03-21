@@ -202,9 +202,9 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
                 videoHelpers.add(videoHelper);
                 videoHelper.getMediaPlayer().setEventListener(new MediaPlayer.EventListener() {
                     float buffered = 0.0f;
-
                     @Override
                     public void onEvent(MediaPlayer.Event event) {
+                        Log.e("EVENT", MediaPlayer.Event.RecordChanged + "");
                         if (event.type == MediaPlayer.Event.Buffering) {
                             buffered = event.getBuffering();
                         }

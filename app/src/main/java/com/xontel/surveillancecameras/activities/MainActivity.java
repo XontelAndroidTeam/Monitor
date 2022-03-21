@@ -1,9 +1,11 @@
 package com.xontel.surveillancecameras.activities;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
 import android.database.DataSetObserver;
@@ -40,9 +42,11 @@ import javax.inject.Inject;
 
 public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAdapter.Callback*/ {
     private static final String TAG = MainActivity.class.getSimpleName();
+    private static final String KEY_CURRENT_PAGE_INDEX = "current_page_index";
     private PagerAdapter pagerAdapter;
     private ActivityMainBinding binding;
     private int gridCount;
+    private int currentPageIndex ;
     private List<IpCam> cams = new ArrayList<>();
 //    private List<MediaPlayer> mediaPlayers = new ArrayList<>();
     @Inject
@@ -58,6 +62,9 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
         setSupportActionBar(binding.toolbar);
         initUI();
         mPresenter.getAllCameras();
+        if(savedInstanceState != null){
+            currentPageIndex = savedInstanceState.getInt(KEY_CURRENT_PAGE_INDEX, 0);
+        }
     }
 
     @Override
@@ -105,7 +112,7 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
 
     private void initUI() {
         gridCount = getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, MODE_PRIVATE).getInt(CommonUtils.KEY_GRID_COUNT, GridFragment.DEFAULT_GRID_COUNT);
-        binding.spGridCount.setText(String.valueOf(gridCount));
+        binding.spGridCount.setText(String.valueOf(String.format("%d",gridCount)));
         binding.ivAddCam.setOnClickListener(v -> {
             addNewCam();
 
@@ -129,7 +136,7 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
                 if(i != i1) {
                     gridCount = Integer.parseInt((String) t1);/*(int) Math.pow(((((int) Math.sqrt(gridCount)) % 4) + 1), 2);*/
                     Log.e("TAG", "gridCount: " + gridCount);
-                    binding.spGridCount.setText(String.valueOf(gridCount));
+                    binding.spGridCount.setText(String.valueOf(String.format("%d",gridCount)));
                     getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, MODE_PRIVATE).edit().putInt(CommonUtils.KEY_GRID_COUNT, gridCount).apply();
                     updateViewPager();
                 }
@@ -174,6 +181,29 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
         binding.vpSlider.setAdapter(pagerAdapter);
         binding.vpSlider.setOffscreenPageLimit(0);
         binding.dotsIndicator.setViewPager(binding.vpSlider);
+        binding.vpSlider.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                currentPageIndex = position ;
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+    }
+
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(KEY_CURRENT_PAGE_INDEX, currentPageIndex);
     }
 
     private void updateViewPager() {
@@ -185,12 +215,11 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
                 Log.e("subCams", subCams.size() + "");
                 GridFragment gridFragment = GridFragment.newInstance(subCams, cams.size());
                 pagerAdapter.addFragment(gridFragment);
-
             }
             pagerAdapter.notifyDataSetChanged();
 //            binding.vpSlider.setAdapter(pagerAdapter);
 //            binding.vpSlider.setOffscreenPageLimit(1);
-
+            binding.vpSlider.setCurrentItem(currentPageIndex);
             binding.dotsIndicator.refreshDots();
         } else {
             setupCamerasPager();

@@ -40,8 +40,8 @@
     <string name="record_saved">تم حفظ الفيديو بنجاح</string>
     <string name="record_failed">خظأ حفظ التسجيل</string>
     <string name="cant_take_photo">غير قادر علي أخذ لقطة الشاشة</string>
-    <string name="cant_rec_video">غير قادر علي تسجيل فيديو</string>
     <string name="snapshot_taken">تم أخذ لقطة الشاشة بنجاح</string>
+    <string name="cant_rec_video">غير قادر علي تسجيل فيديو</string>
     <string name="internal_storage">الذاكرة الداخلية</string>
     <string name="sd_card">بطاقة الذاكرة</string>
     <string name="usb">مفتاح USB</string>

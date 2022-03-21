@@ -8,6 +8,12 @@
         <item>25 ثوان</item>
         <item>30 ثوان</item>
     </string-array>
+    <string-array name="grid_count">
+        <item>١</item>
+        <item>٤</item>
+        <item>٩</item>
+        <item>١٦</item>
+    </string-array>
     <string-array name="save_to">
         <item>الذاكرة الداخلية</item>
         <item>الذاكرة الخارجية</item>
