@@ -18,7 +18,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.eyalbira.loadingdots.LoadingDots;
 import com.xontel.surveillancecameras.R;
 import com.xontel.surveillancecameras.activities.CamerasActivity;
 import com.xontel.surveillancecameras.activities.MainActivity;
@@ -28,6 +27,7 @@ import com.xontel.surveillancecameras.fragments.GridFragment;
 import com.xontel.surveillancecameras.utils.VideoHelper;
 
 import org.videolan.libvlc.MediaPlayer;
+import org.videolan.libvlc.util.LoadingDots;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +44,29 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
     private static final int ITEM_CAM = 0;
     private static final int ITEM_ADD_CAM = 1;
 
+    @Override
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        Log.v("TAGGO","onAttachedToRecyclerView" );
+    }
+
+    @Override
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView);
+        Log.v("TAGGO","onDetachedFromRecyclerView" );
+    }
+
+    @Override
+    public void onViewAttachedToWindow(@NonNull BaseViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        Log.v("TAGGO","onViewAttachedToWindow" );
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(@NonNull BaseViewHolder holder) {
+        super.onViewDetachedFromWindow(holder);
+        Log.v("TAGGO","onViewDetachedFromWindow" );
+    }
 
     public CamsAdapter(GridFragment gridFragment, List<IpCam> cams, List<VideoHelper> videoHelpers, Context context, int camsCount, int gridCount) {
         this.cams = cams;
@@ -103,6 +126,7 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
     @Override
     public void onBindViewHolder(BaseViewHolder holder, int position) {
+        Log.v("TAGGO","onBindViewHolder" );
         Log.e("MainActivity", "onBindViewHolder: " );
         Log.e("GREAT_TAG", "position : " + position + " --- " + " type : " + holder.getClass().getSimpleName());
         holder.onBind(position);
@@ -156,33 +180,33 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 //            vlcVideoLayout = itemView.findViewById(R.id.video_layout);
 //            progressDialog = itemView.findViewById(R.id.loading_dialog);
 //            mSurfaceView = itemView.findViewById(R.id.surface_view);
-            mVideoSurfaceFrame = itemView.findViewById(R.id.video_surface_frame);
-            stub = itemView.findViewById(R.id.surface_stub);
-            frameLayout = itemView.findViewById(R.id.video_surface_frame);
-            camName = itemView.findViewById(R.id.tv_cam_name);
-            textError = itemView.findViewById(R.id.tv_error);
-            loadingBar = itemView.findViewById(R.id.loading);
+//            mVideoSurfaceFrame = itemView.findViewById(R.id.video_surface_frame);
+//            stub = itemView.findViewById(R.id.surface_stub);
+//            frameLayout = itemView.findViewById(R.id.video_surface_frame);
+//            camName = itemView.findViewById(R.id.tv_cam_name);
+//            textError = itemView.findViewById(R.id.tv_error);
+//            loadingBar = itemView.findViewById(R.id.loading);
         }
 
         @Override
         public void onBind(int position) {
             super.onBind(position);
-            IpCam ipCam = cams.get(position);
-            camName.setText(ipCam.getName());
-            if (gridFragment.isResumed())
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        initVlcPlayer();
-                    }
-                }, getAdapterPosition() * 10);
-
+//            IpCam ipCam = cams.get(position);
+//            camName.setText(ipCam.getName());
+//            if (gridFragment.isResumed())
+//                new Handler().postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        initVlcPlayer();
+//                    }
+//                }, getAdapterPosition() * 10);
+//
 //          initHikPlayer();
             itemView.setOnClickListener(v -> {
                 Intent intent = new Intent(context, CamerasActivity.class);
-                ArrayList<IpCam> cams = new ArrayList<>();
-                cams.add(ipCam);
-                intent.putParcelableArrayListExtra(CamerasActivity.KEY_CAMERAS, cams);
+                ArrayList<IpCam> ipCams = new ArrayList<>();
+                ipCams.add(cams.get(getAdapterPosition()));
+                intent.putParcelableArrayListExtra(CamerasActivity.KEY_CAMERAS, ipCams);
                 context.startActivity(intent);
             });
 
@@ -194,39 +218,39 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
         }
 
 
-        private void initVlcPlayer() {
-            try {
-                ipCam = cams.get(getAdapterPosition());
-                videoHelper = new VideoHelper(context, mVideoSurfaceFrame, stub, itemView);
-                videoHelper.setVIDEO_URL(ipCam.getUrl());
-                videoHelpers.add(videoHelper);
-                videoHelper.getMediaPlayer().setEventListener(new MediaPlayer.EventListener() {
-                    float buffered = 0.0f;
-                    @Override
-                    public void onEvent(MediaPlayer.Event event) {
-                        Log.e("EVENT", MediaPlayer.Event.RecordChanged + "");
-                        if (event.type == MediaPlayer.Event.Buffering) {
-                            buffered = event.getBuffering();
-                        }
-                        if (buffered == 100.0) {
-                            loadingBar.setVisibility(View.GONE);
-                            Log.d("EVENT", event.type + "");
-                        }
+//        private void initVlcPlayer() {
+//            try {
+//                ipCam = cams.get(getAdapterPosition());
+//                videoHelper = new VideoHelper(context, mVideoSurfaceFrame, stub, itemView);
+//                videoHelper.setVIDEO_URL(ipCam.getUrl());
+//                videoHelpers.add(videoHelper);
+//                videoHelper.getMediaPlayer().setEventListener(new MediaPlayer.EventListener() {
+//                    float buffered = 0.0f;
+//                    @Override
+//                    public void onEvent(MediaPlayer.Event event) {
+//                        Log.e("EVENT", MediaPlayer.Event.RecordChanged + "");
+//                        if (event.type == MediaPlayer.Event.Buffering) {
+//                            buffered = event.getBuffering();
+//                        }
+//                        if (buffered == 100.0) {
+//                            loadingBar.setVisibility(View.GONE);
+//                            Log.d("EVENT", event.type + "");
+//                        }
+//
+//                        if (event.type == MediaPlayer.Event.EncounteredError) {
+//                            Log.d("EVENT", event.type + "");
+//                            loadingBar.setVisibility(View.GONE);
+//                            textError.setVisibility(View.VISIBLE);
+//                            textError.setText(R.string.error_occurred);
+//                        }
+//                    }
+//                });
+//                videoHelper.onStart();
+//            }catch (Exception e){
+//                e.printStackTrace();
+//            }
 
-                        if (event.type == MediaPlayer.Event.EncounteredError) {
-                            Log.d("EVENT", event.type + "");
-                            loadingBar.setVisibility(View.GONE);
-                            textError.setVisibility(View.VISIBLE);
-                            textError.setText(R.string.error_occurred);
-                        }
-                    }
-                });
-                videoHelper.onStart();
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-
-        }
+//        }
 
 //        private void initHikPlayer() {
 //            ipCam = cams.get(getAdapterPosition());
@@ -258,7 +282,7 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
         @Override
         public void onResumed() {
-            initVlcPlayer();
+//            initVlcPlayer();
         }
     }
 

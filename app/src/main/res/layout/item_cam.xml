@@ -8,7 +8,6 @@
     android:layout_margin="4dp"
     app:cardCornerRadius="10dp"
     android:backgroundTint="@color/black_color">
-
     <FrameLayout
         android:id="@+id/video_surface_frame"
         android:layout_width="match_parent"
@@ -39,7 +38,7 @@
 
 
     </FrameLayout>
-    <com.eyalbira.loadingdots.LoadingDots
+    <org.videolan.libvlc.util.LoadingDots
         android:id="@+id/loading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
