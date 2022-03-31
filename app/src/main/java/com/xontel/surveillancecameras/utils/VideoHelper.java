@@ -38,10 +38,10 @@ public class VideoHelper implements IVLCVout.OnNewVideoLayoutListener {
     private static final int SURFACE_4_3 = 4;
     private static final int SURFACE_ORIGINAL = 5;
     private static int CURRENT_SIZE = SURFACE_BEST_FIT;
-    private static final int video_surface_frame = R.id.video_surface_frame;
-    private static final int surface_stub = R.id.surface_stub;
-    private static final int subtitles_surface_stub = R.id.subtitles_surface_stub;
-    private static final int texture_stub = R.id.texture_stub;
+//    private static final int video_surface_frame = R.id.video_surface_frame;
+//    private static final int surface_stub = R.id.surface_stub;
+//    private static final int subtitles_surface_stub = R.id.subtitles_surface_stub;
+//    private static final int texture_stub = R.id.texture_stub;
 
     private FrameLayout mVideoSurfaceFrame = null;
     private SurfaceView mVideoSurface = null;

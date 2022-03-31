@@ -20,6 +20,7 @@ import androidx.fragment.app.Fragment;
 import com.xontel.surveillancecameras.R;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
 import com.xontel.surveillancecameras.databinding.FragmentCameraBinding;
+import com.xontel.surveillancecameras.utils.StorageHelper;
 
 import org.jetbrains.annotations.NotNull;
 import org.videolan.libvlc.Media;
@@ -104,7 +105,7 @@ public class CameraFragment extends Fragment {
                 capturePhoto();
                 return true;
             case R.id.action_record_video:
-                startRecordingVideo();
+                mediaPlayer.startRecording();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -114,7 +115,7 @@ public class CameraFragment extends Fragment {
 
     private void initVlcPlayer() {
         mediaPlayer = new MediaPlayer(getContext());
-        mediaPlayer.setRecordingDirectory(getContext().getExternalFilesDirs(null)[1].getAbsolutePath());
+        mediaPlayer.setRecordingDirectory(StorageHelper.getMediaDirectory(getContext(), StorageHelper.VIDEOS_DIRECTORY_NAME).getAbsolutePath());
         mediaPlayer.attachViews(binding.vlcLayout);
         final Media media = new Media(mediaPlayer.getLibVLCInstance(), Uri.parse(cam.getUrl()));
         media.addCommonOptions();
@@ -225,39 +226,14 @@ public class CameraFragment extends Fragment {
 //        Log.v(TAG, "isRecording : " + isRecording);
     }
 
-    private void disableVideoRecordingView() {
-//        binding.llRecordPanel.setVisibility(View.GONE);
-//        mTimer.cancel();
-//        recordTime = 0;
-//        stopIndicatorAnimation();
-    }
-
-    private void startIndicatorAnimation() {
-//        objAnimator = ObjectAnimator.ofFloat(binding.ivRecordIndicator, "alpha", 0f, 1f);
-//        objAnimator.setDuration(200);
-//        objAnimator.setRepeatMode(ValueAnimator.REVERSE);
-//        objAnimator.setRepeatCount(Animation.INFINITE);
-//        objAnimator.start();
-    }
 
     private void stopIndicatorAnimation() {
 //        objAnimator.end();
     }
 
     public void capturePhoto() {
-//        if (videoHelper.getMediaPlayer().isPlaying() && videoHelper.getMediaPlayer().hasMedia()) {
-//            Bitmap surfaceBitmap = Bitmap.createBitmap(videoHelper.getVideoSurface().getWidth(), videoHelper.getVideoSurface().getHeight(), Bitmap.Config.ARGB_8888);
-//            PixelCopy.request(videoHelper.getVideoSurface(), surfaceBitmap, new PixelCopy.OnPixelCopyFinishedListener() {
-//                @Override
-//                public void onPixelCopyFinished(int copyResult) {
-//                    Log.v(TAG, copyResult + "");
-//                    savePhoto(surfaceBitmap);
-//                }
-//            }, new Handler());
-//        } else {
-//            Toast.makeText(getContext(), R.string.cant_take_photo, Toast.LENGTH_LONG).show();
-//        }
-
+        Bitmap bitmap = mediaPlayer.takeSnapShot(getContext());
+        savePhoto(bitmap);
     }
 
     private void savePhoto(Bitmap bitmap) {

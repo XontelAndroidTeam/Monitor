@@ -2,6 +2,7 @@ package com.xontel.surveillancecameras.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.storage.StorageManager;
 import android.util.Log;
@@ -24,10 +25,13 @@ import com.xontel.surveillancecameras.activities.MainActivity;
 import com.xontel.surveillancecameras.base.BaseViewHolder;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
 import com.xontel.surveillancecameras.fragments.GridFragment;
+import com.xontel.surveillancecameras.utils.StorageHelper;
 import com.xontel.surveillancecameras.utils.VideoHelper;
 
+import org.videolan.libvlc.Media;
 import org.videolan.libvlc.MediaPlayer;
 import org.videolan.libvlc.util.LoadingDots;
+import org.videolan.libvlc.util.VLCVideoLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +42,6 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
     private Context context;
     private int gridCount;
     private GridFragment gridFragment;
-    private LifecycleObservable lifecycleObservable;
     private List<VideoHelper> videoHelpers;
     private int camsCount;
     private static final int ITEM_CAM = 0;
@@ -60,12 +63,20 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
     public void onViewAttachedToWindow(@NonNull BaseViewHolder holder) {
         super.onViewAttachedToWindow(holder);
         Log.v("TAGGO","onViewAttachedToWindow" );
+        if(holder instanceof CamsViewHolder){
+            ((CamsViewHolder)holder).initVlcPlayer();
+        }
     }
 
     @Override
     public void onViewDetachedFromWindow(@NonNull BaseViewHolder holder) {
         super.onViewDetachedFromWindow(holder);
         Log.v("TAGGO","onViewDetachedFromWindow" );
+        if(holder instanceof CamsViewHolder){
+            ((CamsViewHolder)holder).mediaPlayer.stop();
+            ((CamsViewHolder)holder).mediaPlayer.detachViews();
+            ((CamsViewHolder)holder).mediaPlayer.release();
+        }
     }
 
     public CamsAdapter(GridFragment gridFragment, List<IpCam> cams, List<VideoHelper> videoHelpers, Context context, int camsCount, int gridCount) {
@@ -74,7 +85,6 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
         this.gridFragment = gridFragment;
         this.camsCount = camsCount;
         this.gridCount = gridCount;
-        lifecycleObservable = new LifecycleObservable();
         this.videoHelpers = videoHelpers;
     }
 
@@ -95,13 +105,11 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
     @Override
     public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Log.e("MainActivity", "onCreateViewHolder: " );
         View view;
         switch (viewType) {
             case ITEM_CAM:
                 view = LayoutInflater.from(context).inflate(R.layout.item_cam, parent, false);
                 GridLayoutManager.LayoutParams lp = (GridLayoutManager.LayoutParams) view.getLayoutParams();
-                Log.e("MainActivity_", parent.getMeasuredHeight()+"" );
                 lp.height = (parent.getMeasuredHeight() /  (int) Math.sqrt(gridCount)) - 10;
                 view.setLayoutParams(lp);
                 return new CamsViewHolder(view);
@@ -110,7 +118,6 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
             default:
                 view = LayoutInflater.from(context).inflate(R.layout.item_add_cam, parent, false);
                 GridLayoutManager.LayoutParams lp2 = (GridLayoutManager.LayoutParams) view.getLayoutParams();
-                Log.e("MainActivity_", parent.getMeasuredHeight()+"" );
                 lp2.height = (parent.getMeasuredHeight() / (int) Math.sqrt(gridCount)) - 10;
                 view.setLayoutParams(lp2);
                 return new AddCamViewHolder(view);
@@ -126,82 +133,33 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
     @Override
     public void onBindViewHolder(BaseViewHolder holder, int position) {
-        Log.v("TAGGO","onBindViewHolder" );
-        Log.e("MainActivity", "onBindViewHolder: " );
-        Log.e("GREAT_TAG", "position : " + position + " --- " + " type : " + holder.getClass().getSimpleName());
         holder.onBind(position);
     }
-
-    public void pauseAll() {
-        lifecycleObservable.lifecycleStatus(LifecycleObservable.ON_PAUSE);
-    }
-
-    public void resumeAll() {
-        lifecycleObservable.lifecycleStatus(LifecycleObservable.ON_RESUME);
-    }
-
 
     @Override
     public int getItemCount() {
         return gridCount;
     }
 
-    public class CamsViewHolder extends BaseViewHolder implements GridFragment.LifecycleCallbacks {
+    public class CamsViewHolder extends BaseViewHolder  {
         private static final int PLAY_HIK_STREAM_CODE = 1001;
         private IpCam ipCam;
         private TextView camName;
-        private TextView textError;
-        private VideoHelper videoHelper;
-        private FrameLayout frameLayout;
-        private LoadingDots loadingBar;
-        private FrameLayout mVideoSurfaceFrame;
-        private ViewStub stub;
-        private SurfaceView mSurfaceView;
+        private VLCVideoLayout vlcVideoLayout ;
+        private MediaPlayer mediaPlayer ;
 
 
         public CamsViewHolder(View itemView) {
             super(itemView);
-            // observe onPause to pause all together
-//            lifecycleObservable.addObserver(new Observer() {
-//                @Override
-//                public void update(Observable o, Object arg) {
-//                    //                int lifecycleStatus = ((LifecycleObservable) o).status;
-//                    if (((Integer) arg).intValue() == LifecycleObservable.ON_PAUSE) {
-//                        if (videoHelper != null) {
-//                            videoHelper.onStop();
-//                            videoHelper.onDestroy();
-//                        }
-//                    } else {
-//                        initVlcPlayer()
-//                    }
-//
-//                }
-//            });
-//            vlcVideoLayout = itemView.findViewById(R.id.video_layout);
-//            progressDialog = itemView.findViewById(R.id.loading_dialog);
-//            mSurfaceView = itemView.findViewById(R.id.surface_view);
-//            mVideoSurfaceFrame = itemView.findViewById(R.id.video_surface_frame);
-//            stub = itemView.findViewById(R.id.surface_stub);
-//            frameLayout = itemView.findViewById(R.id.video_surface_frame);
-//            camName = itemView.findViewById(R.id.tv_cam_name);
-//            textError = itemView.findViewById(R.id.tv_error);
-//            loadingBar = itemView.findViewById(R.id.loading);
+            vlcVideoLayout = itemView.findViewById(R.id.vlc_layout);
+            camName = itemView.findViewById(R.id.tv_cam_name);
         }
 
         @Override
         public void onBind(int position) {
             super.onBind(position);
-//            IpCam ipCam = cams.get(position);
-//            camName.setText(ipCam.getName());
-//            if (gridFragment.isResumed())
-//                new Handler().postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        initVlcPlayer();
-//                    }
-//                }, getAdapterPosition() * 10);
-//
-//          initHikPlayer();
+             ipCam = cams.get(position);
+            camName.setText(ipCam.getName());
             itemView.setOnClickListener(v -> {
                 Intent intent = new Intent(context, CamerasActivity.class);
                 ArrayList<IpCam> ipCams = new ArrayList<>();
@@ -209,6 +167,8 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
                 intent.putParcelableArrayListExtra(CamerasActivity.KEY_CAMERAS, ipCams);
                 context.startActivity(intent);
             });
+
+
 
         }
 
@@ -218,72 +178,19 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
         }
 
 
-//        private void initVlcPlayer() {
-//            try {
-//                ipCam = cams.get(getAdapterPosition());
-//                videoHelper = new VideoHelper(context, mVideoSurfaceFrame, stub, itemView);
-//                videoHelper.setVIDEO_URL(ipCam.getUrl());
-//                videoHelpers.add(videoHelper);
-//                videoHelper.getMediaPlayer().setEventListener(new MediaPlayer.EventListener() {
-//                    float buffered = 0.0f;
-//                    @Override
-//                    public void onEvent(MediaPlayer.Event event) {
-//                        Log.e("EVENT", MediaPlayer.Event.RecordChanged + "");
-//                        if (event.type == MediaPlayer.Event.Buffering) {
-//                            buffered = event.getBuffering();
-//                        }
-//                        if (buffered == 100.0) {
-//                            loadingBar.setVisibility(View.GONE);
-//                            Log.d("EVENT", event.type + "");
-//                        }
-//
-//                        if (event.type == MediaPlayer.Event.EncounteredError) {
-//                            Log.d("EVENT", event.type + "");
-//                            loadingBar.setVisibility(View.GONE);
-//                            textError.setVisibility(View.VISIBLE);
-//                            textError.setText(R.string.error_occurred);
-//                        }
-//                    }
-//                });
-//                videoHelper.onStart();
-//            }catch (Exception e){
-//                e.printStackTrace();
-//            }
-
-//        }
-
-//        private void initHikPlayer() {
-//            ipCam = cams.get(getAdapterPosition());
-//            HikUtil hikUtil = new HikUtil();
-//            Handler mHandler = new Handler(new Handler.Callback() {
-//                @Override
-//                public boolean handleMessage(Message msg) {
-//                    switch (msg.what) {
-//                        case PLAY_HIK_STREAM_CODE:
-//                            hikUtil.playOrStopStream();
-//                            break;
-//                        default:
-//                            break;
-//                    }
-//                    return false;
-//                }
-//            });
-//            HikUtil.initSDK();
-//            hikUtil.initView(mSurfaceView);
-//            Uri uri = Uri.parse(ipCam.getUrl());
-//            hikUtil.setDeviceData(uri.getHost(), uri.getPort() == -1 ? 8000 : uri.getPort(), uri.getUserInfo().split(":")[0], uri.getUserInfo().split(":")[1]);
-//            hikUtil.loginDevice(mHandler, PLAY_HIK_STREAM_CODE);
-//        }
-
-        private void hideProgressDialog() {
+        private void initVlcPlayer() {
+            mediaPlayer = new MediaPlayer(itemView.getContext());
+            mediaPlayer.attachViews(vlcVideoLayout);
+            final Media media = new Media(mediaPlayer.getLibVLCInstance(), Uri.parse(ipCam.getUrl()));
+            media.addCommonOptions();
+            mediaPlayer.setMedia(media);
+            media.release();
+            mediaPlayer.play();
 
         }
 
 
-        @Override
-        public void onResumed() {
-//            initVlcPlayer();
-        }
+
     }
 
     public class AddCamViewHolder extends BaseViewHolder {
@@ -306,17 +213,7 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
         }
     }
 
-    class LifecycleObservable extends java.util.Observable {
-        public static final int ON_PAUSE = 1;
-        public static final int ON_RESUME = 0;
-        public Integer status = ON_RESUME;
 
-        void lifecycleStatus(Integer status) {
-            this.status = status;
-            setChanged();
-            notifyObservers(status);
-        }
-    }
 
 
 }

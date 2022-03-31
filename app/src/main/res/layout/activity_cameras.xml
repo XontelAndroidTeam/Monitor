@@ -22,6 +22,7 @@
         android:layout_height="?attr/actionBarSize"
         android:gravity="center_vertical"
         android:orientation="horizontal"
+
         android:paddingHorizontal="16dp">
 
         <ImageView

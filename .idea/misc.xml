@@ -37,14 +37,16 @@
         <entry key="..\:/Users/A.Khadir/AndroidStudioProjects/Surveillancecameras/app/src/main/res/layout/fragment_camera.xml" value="0.264" />
         <entry key="..\:/Users/A.Khadir/AndroidStudioProjects/Surveillancecameras/app/src/main/res/layout/fragment_grid.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/A.Khadir/AndroidStudioProjects/Surveillancecameras/app/src/main/res/layout/item_add_cam.xml" value="0.29683698296836986" />
-        <entry key="..\:/Users/A.Khadir/AndroidStudioProjects/Surveillancecameras/app/src/main/res/layout/item_cam.xml" value="0.1" />
+        <entry key="..\:/Users/A.Khadir/AndroidStudioProjects/Surveillancecameras/app/src/main/res/layout/item_cam.xml" value="0.2" />
         <entry key="..\:/Users/A.Khadir/AndroidStudioProjects/Surveillancecameras/app/src/main/res/layout/item_media.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/A.Khadir/AndroidStudioProjects/Surveillancecameras/app/src/main/res/layout/live.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/A.Khadir/AndroidStudioProjects/Surveillancecameras/app/src/main/res/layout/progress_dialog.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/A.Khadir/AndroidStudioProjects/Surveillancecameras/app/src/main/res/menu/main_menu.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/A.Khadir/AndroidStudioProjects/Surveillancecameras/app/src/main/res/menu/selection_menu.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/A.Khadir/AndroidStudioProjects/Surveillancecameras/app/src/main/res/menu/toolbar_menu.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/A.Khadir/AndroidStudioProjects/Surveillancecameras/libvlc/res/layout/record_panel.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/A.Khadir/AndroidStudioProjects/Surveillancecameras/libvlc/res/layout/sound_controller.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/A.Khadir/AndroidStudioProjects/Surveillancecameras/libvlc/res/layout/texture_view.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/medo_/AndroidStudioProjects/live-cameras/app/src/main/res/drawable-mdpi/bordered_bg.xml" value="0.2703125" />
         <entry key="..\:/Users/medo_/AndroidStudioProjects/live-cameras/app/src/main/res/drawable/rounded_bg.xml" value="0.202734375" />
         <entry key="..\:/Users/medo_/AndroidStudioProjects/live-cameras/app/src/main/res/layout/activity_add_cam.xml" value="0.23143115942028986" />
