@@ -186,7 +186,6 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
             mediaPlayer.setMedia(media);
             media.release();
             mediaPlayer.play();
-
         }
 
 
@@ -196,7 +195,6 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
     public class AddCamViewHolder extends BaseViewHolder {
         public AddCamViewHolder(@NonNull View itemView) {
             super(itemView);
-
         }
 
         @Override
@@ -205,7 +203,6 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
             itemView.setOnClickListener(v -> {
                 ((MainActivity) context).addNewCam();
             });
-
         }
 
         @Override

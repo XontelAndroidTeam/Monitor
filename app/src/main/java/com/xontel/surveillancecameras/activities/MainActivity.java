@@ -2,30 +2,22 @@ package com.xontel.surveillancecameras.activities;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
-import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
-import android.database.DataSetObserver;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
 
 import com.skydoves.powerspinner.OnSpinnerItemSelectedListener;
 import com.xontel.surveillancecameras.R;
-import com.xontel.surveillancecameras.adapters.CamsAdapter;
-import com.xontel.surveillancecameras.adapters.GridAdapter;
+import com.xontel.surveillancecameras.ViewModels.MainViewModel;
 import com.xontel.surveillancecameras.adapters.PagerAdapter;
 import com.xontel.surveillancecameras.base.BaseActivity;
+import com.xontel.surveillancecameras.ViewModels.ViewModelProviderFactory;
 import com.xontel.surveillancecameras.databinding.ActivityMainBinding;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
-import com.xontel.surveillancecameras.fragments.CameraFragment;
 import com.xontel.surveillancecameras.fragments.GridFragment;
 import com.xontel.surveillancecameras.presenters.MainMvpPresenter;
 import com.xontel.surveillancecameras.presenters.MainMvpView;
@@ -52,12 +44,18 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
     @Inject
     MainMvpPresenter<MainMvpView> mPresenter;
 
+    @Inject
+    ViewModelProviderFactory providerFactory ;
+
+    private MainViewModel mainViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.e(TAG, "onCreate: " );
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         getActivityComponent().inject(this);
+        mainViewModel = new ViewModelProvider(this, providerFactory).get(MainViewModel.class);
         mPresenter.onAttach(this);
         setSupportActionBar(binding.toolbar);
         initUI();

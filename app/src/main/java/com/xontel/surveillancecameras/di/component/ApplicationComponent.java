@@ -6,6 +6,7 @@ import android.content.Context;
 import com.xontel.surveillancecameras.data.DataManager;
 import com.xontel.surveillancecameras.di.ApplicationContext;
 import com.xontel.surveillancecameras.di.module.ApplicationModule;
+import com.xontel.surveillancecameras.di.module.ViewModelModule;
 import com.xontel.surveillancecameras.root.MyApp;
 
 import javax.inject.Singleton;
@@ -18,7 +19,8 @@ import dagger.Component;
  * Email    : info@androidwave.com
  */
 @Singleton
-@Component(modules = ApplicationModule.class)
+@Component(modules = {ApplicationModule.class,
+        ViewModelModule.class})
 public interface ApplicationComponent {
 
     void inject(MyApp app);

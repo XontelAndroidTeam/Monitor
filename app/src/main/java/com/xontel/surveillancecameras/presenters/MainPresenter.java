@@ -117,8 +117,6 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V>
                     }
                     Log.e("error", error.getMessage() );
                     getMvpView().hideLoading();
-
-
                     handleApiError(error);
                 }));
     }

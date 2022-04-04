@@ -13,10 +13,13 @@ import android.view.MenuItem;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.xontel.surveillancecameras.R;
 import com.xontel.surveillancecameras.adapters.PagerAdapter;
 import com.xontel.surveillancecameras.base.BaseActivity;
+import com.xontel.surveillancecameras.base.BaseViewModel;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
 import com.xontel.surveillancecameras.databinding.ActivityCamerasBinding;
 import com.xontel.surveillancecameras.dialogs.CamDetailsDialog;
@@ -57,6 +60,7 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_cameras);
+        new ViewModelProvider(this, ).
         sharedPreferences = getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, MODE_PRIVATE);
         sharedPreferences.registerOnSharedPreferenceChangeListener(listener);
         setSupportActionBar(binding.toolbar);
