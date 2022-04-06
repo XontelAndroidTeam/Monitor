@@ -12,6 +12,7 @@ import com.xontel.surveillancecameras.root.MyApp;
 import javax.inject.Singleton;
 
 import dagger.Component;
+import dagger.android.support.AndroidSupportInjectionModule;
 
 /**
  * Created on : Jan 19, 2019
@@ -19,7 +20,8 @@ import dagger.Component;
  * Email    : info@androidwave.com
  */
 @Singleton
-@Component(modules = {ApplicationModule.class,
+@Component(modules = {
+        ApplicationModule.class,
         ViewModelModule.class})
 public interface ApplicationComponent {
 
@@ -27,9 +29,7 @@ public interface ApplicationComponent {
 
     @ApplicationContext
     Context context();
-
     Application application();
-
     DataManager getDataManager();
 //    @Component.Builder
 //    interface Builder {

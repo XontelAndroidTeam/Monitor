@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#000000</color>
+    <color name="dark_blue">#092547</color>
+    <dimen name="LoadingDots_dots_size_default">12dp</dimen>
+    <dimen name="LoadingDots_dots_space_default">2dp</dimen>
+    <dimen name="LoadingDots_jump_height_default">12dp</dimen>
+    <dimen name="vlc_error_text_size_default">32dp</dimen>
+    <string name="cant_take_photo">Can\'t take snapshot</string>
+    <string name="error_occurred_while_processing">An error occurred while processing</string>
+    <string name="no_media_available">No media available</string>
+    <string name="no_space_left">No space left on the storage media</string>
+    <string name="ok">Ok</string>
+    <string name="record_saved">Video recorded successfully</string>
+    <string name="record_stopped">Video recording has been stopped . no space left</string>
+    <string name="snapshot_taken">Snapshot taken successfully</string>
+    <string name="stop">Stop</string>
+    <declare-styleable name="CustomView">
+        <attr format="string" name="colour"/>
+        <attr format="string" name="pointerColour"/>
+    </declare-styleable>
+    <declare-styleable name="LoadingDots">
+        <attr format="boolean" name="LoadingDots_auto_play"/>
+
+        <attr format="color" name="LoadingDots_dots_color"/>
+        <attr format="integer" name="LoadingDots_dots_count"/>
+        <attr format="dimension" name="LoadingDots_dots_size"/>
+        <attr format="dimension" name="LoadingDots_dots_space"/>
+
+        <attr format="integer" name="LoadingDots_loop_duration"/>
+        <attr format="integer" name="LoadingDots_loop_start_delay"/>
+
+        <attr format="integer" name="LoadingDots_jump_duration"/>
+        <attr format="dimension" name="LoadingDots_jump_height"/>
+    </declare-styleable>
+    <declare-styleable name="vlc_attributes">
+        <attr format="dimension" name="vlc_error_text_size"/>
+        <attr format="boolean" name="vlc_enable_volume_control"/>
+    </declare-styleable>
+</resources>

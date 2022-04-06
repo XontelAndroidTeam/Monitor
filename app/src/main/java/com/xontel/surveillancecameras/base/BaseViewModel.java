@@ -51,6 +51,10 @@ public class BaseViewModel extends ViewModel {
         return errorMessage;
     }
 
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
+
     @Override
     protected void onCleared() {
         if (mCompositeDisposable != null) {

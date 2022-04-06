@@ -60,7 +60,6 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_cameras);
-        new ViewModelProvider(this, ).
         sharedPreferences = getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, MODE_PRIVATE);
         sharedPreferences.registerOnSharedPreferenceChangeListener(listener);
         setSupportActionBar(binding.toolbar);

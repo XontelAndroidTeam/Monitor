@@ -117,6 +117,7 @@
                     style="@style/status_bar_font"
                     android:layout_width="100dp"
                     app:spinner_arrow_show="true"
+                    app:spinner_popup_focusable="true"
                     app:spinner_popup_background="@color/dark_primary"
                     app:spinner_divider_show="true"
                     android:layout_height="match_parent"
@@ -144,7 +145,7 @@
             </LinearLayout>
         </androidx.appcompat.widget.Toolbar>
 
-        <androidx.viewpager.widget.ViewPager
+        <com.xontel.surveillancecameras.utils.ViewPagerWithEmptyView
             android:id="@+id/vp_slider"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -155,6 +156,14 @@
             app:layout_constraintBottom_toTopOf="@id/dots_indicator"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
+        <include android:id="@+id/pager_empty_view"
+            layout="@layout/no_cameras"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_width="wrap_content"/>
         <com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator
             android:id="@+id/dots_indicator"
             android:layout_width="wrap_content"

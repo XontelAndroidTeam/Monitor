@@ -40,29 +40,25 @@ import java.util.List;
 public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
     private List<IpCam> cams;
     private Context context;
-    private int gridCount;
-    private GridFragment gridFragment;
-    private List<VideoHelper> videoHelpers;
-    private int camsCount;
+    private List<MediaPlayer> mediaPlayers;
+    private int gridCount ;
     private static final int ITEM_CAM = 0;
     private static final int ITEM_ADD_CAM = 1;
 
     @Override
     public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
-        Log.v("TAGGO","onAttachedToRecyclerView" );
     }
 
     @Override
     public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onDetachedFromRecyclerView(recyclerView);
-        Log.v("TAGGO","onDetachedFromRecyclerView" );
+
     }
 
     @Override
     public void onViewAttachedToWindow(@NonNull BaseViewHolder holder) {
         super.onViewAttachedToWindow(holder);
-        Log.v("TAGGO","onViewAttachedToWindow" );
         if(holder instanceof CamsViewHolder){
             ((CamsViewHolder)holder).initVlcPlayer();
         }
@@ -71,7 +67,6 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
     @Override
     public void onViewDetachedFromWindow(@NonNull BaseViewHolder holder) {
         super.onViewDetachedFromWindow(holder);
-        Log.v("TAGGO","onViewDetachedFromWindow" );
         if(holder instanceof CamsViewHolder){
             ((CamsViewHolder)holder).mediaPlayer.stop();
             ((CamsViewHolder)holder).mediaPlayer.detachViews();
@@ -79,19 +74,13 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
         }
     }
 
-    public CamsAdapter(GridFragment gridFragment, List<IpCam> cams, List<VideoHelper> videoHelpers, Context context, int camsCount, int gridCount) {
+    public CamsAdapter(List<IpCam> cams, List<MediaPlayer> mediaPlayers, int gridCount , Context context) {
         this.cams = cams;
         this.context = context;
-        this.gridFragment = gridFragment;
-        this.camsCount = camsCount;
-        this.gridCount = gridCount;
-        this.videoHelpers = videoHelpers;
+        this.gridCount = gridCount ;
     }
 
 
-    public List<IpCam> getCams() {
-        return cams;
-    }
 
     public void addItems(List<IpCam> cams) {
         this.cams.clear();
@@ -141,8 +130,7 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
         return gridCount;
     }
 
-    public class CamsViewHolder extends BaseViewHolder  {
-        private static final int PLAY_HIK_STREAM_CODE = 1001;
+    public class CamsViewHolder extends BaseViewHolder{
         private IpCam ipCam;
         private TextView camName;
         private VLCVideoLayout vlcVideoLayout ;

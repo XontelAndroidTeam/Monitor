@@ -3,6 +3,7 @@ package com.xontel.surveillancecameras.activities;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 
@@ -32,15 +33,13 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAdapter.Callback*/ {
+public class MainActivity extends BaseActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String KEY_CURRENT_PAGE_INDEX = "current_page_index";
+    public static final int DEFAULT_GRID_COUNT = 4;
     private PagerAdapter pagerAdapter;
     private ActivityMainBinding binding;
-    private int gridCount;
     private int currentPageIndex ;
-    private List<IpCam> cams = new ArrayList<>();
-//    private List<MediaPlayer> mediaPlayers = new ArrayList<>();
     @Inject
     MainMvpPresenter<MainMvpView> mPresenter;
 
@@ -52,14 +51,12 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.e(TAG, "onCreate: " );
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         getActivityComponent().inject(this);
         mainViewModel = new ViewModelProvider(this, providerFactory).get(MainViewModel.class);
-        mPresenter.onAttach(this);
         setSupportActionBar(binding.toolbar);
+        mainViewModel.getAllCameras();
         initUI();
-        mPresenter.getAllCameras();
         if(savedInstanceState != null){
             currentPageIndex = savedInstanceState.getInt(KEY_CURRENT_PAGE_INDEX, 0);
         }
@@ -68,28 +65,23 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.e(TAG, "onDestroy: " );
-        mPresenter.onDetach();
 
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Log.e(TAG, "onPause: " );
         binding.spGridCount.dismiss();
     }
 
     @Override
     protected void onResume() {
-        Log.e(TAG, "onResume: " );
-        updateViewPager();
         super.onResume();
     }
 
-    public List<IpCam> getCams() {
-        return cams;
-    }
+//    public List<IpCam> getCams() {
+//        return cams;
+//    }
 
     @Override
     protected void setUp() {
@@ -98,30 +90,28 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
 
     @Override
     protected void onStop() {
-        Log.e(TAG, "onStop: " );
         super.onStop();
     }
 
     @Override
     protected void onStart() {
-        Log.e(TAG, "onStart: " );
         super.onStart();
     }
 
     private void initUI() {
-        gridCount = getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, MODE_PRIVATE).getInt(CommonUtils.KEY_GRID_COUNT, GridFragment.DEFAULT_GRID_COUNT);
-        binding.spGridCount.setText(String.valueOf(String.format("%d",gridCount)));
+        setupObservables();
+        // get the persisted value in shared preferences
+        mainViewModel.gridCount.postValue(getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, MODE_PRIVATE).getInt(CommonUtils.KEY_GRID_COUNT, DEFAULT_GRID_COUNT));
         binding.ivAddCam.setOnClickListener(v -> {
             addNewCam();
-
         });
         binding.ivSettings.setOnClickListener(v -> {
         showSettings();
         });
         binding.tvSlideShow.setOnClickListener(v -> {
-            if(cams.size() > 0 ) {
+            if(mainViewModel.ipCams.getValue().size() > 0 ) {
                 Intent intent = new Intent(MainActivity.this, CamerasActivity.class);
-                intent.putParcelableArrayListExtra(CamerasActivity.KEY_CAMERAS, (ArrayList) cams);
+                intent.putParcelableArrayListExtra(CamerasActivity.KEY_CAMERAS, (ArrayList) mainViewModel.ipCams.getValue());
                 intent.putExtra(CamerasActivity.KEY_SLIDE_SHOW, true);
                 startActivity(intent);
             }else{
@@ -131,19 +121,37 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
         binding.spGridCount.setOnSpinnerItemSelectedListener(new OnSpinnerItemSelectedListener<Object>() {
             @Override
             public void onItemSelected(int i, @Nullable Object o, int i1, Object t1) {
-                if(i != i1) {
-                    gridCount = Integer.parseInt((String) t1);/*(int) Math.pow(((((int) Math.sqrt(gridCount)) % 4) + 1), 2);*/
-                    Log.e("TAG", "gridCount: " + gridCount);
-                    binding.spGridCount.setText(String.valueOf(String.format("%d",gridCount)));
-                    getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, MODE_PRIVATE).edit().putInt(CommonUtils.KEY_GRID_COUNT, gridCount).apply();
-                    updateViewPager();
+                if(i != i1) { // take decision only when the value change
+                    int gridCount = Integer.parseInt((String) t1);
+                    mainViewModel.gridCount.postValue(gridCount);
                 }
             }
         });
         setupCamerasPager();
-//        setupCamsGrid();
     }
 
+    private void setupObservables() {
+        mainViewModel.getLoading().observe(this, loading -> {
+          if(loading){
+              showLoading();
+          }else{
+              hideLoading();
+          }
+        });
+        mainViewModel.getError().observe(this, error -> {
+            if(error){
+                showMessage(R.string.error_occurred_while_processing);
+            }
+        });
+        mainViewModel.ipCams.observe(this, ipCams -> {
+            updateViewPager();
+        });
+        mainViewModel.gridCount.observe(this, gridCount ->{
+            binding.spGridCount.setText(String.format("%d",gridCount));
+            getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, MODE_PRIVATE).edit().putInt(CommonUtils.KEY_GRID_COUNT, gridCount).apply();
+            updateViewPager();
+        });
+    }
 
 
     private void showSettings() {
@@ -151,32 +159,18 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
     }
 
     public void addNewCam() {
-        if (cams.size() < 32) {
+        if (mainViewModel.ipCams.getValue().size() < 32) {
             startActivity(new Intent(MainActivity.this, AddCamActivity.class));
         } else {
             showMessage(R.string.cameras_limit);
         }
     }
 
-    private void setupCamsGrid() {
-//        gridAdapter = new GridAdapter(this, new ArrayList<>());
-//        binding.simpleGridView.setAdapter(gridAdapter);
-//        populateCamsList();
-    }
 
-
-//    private void setupCamsList() {
-//        camsAdapter = new CamsAdapter(new ArrayList<>(), this, this);
-//        binding.rvCams.setAdapter(camsAdapter);
-//        binding.rvCams.setLayoutManager(new GridLayoutManager(this, 4));
-////        populateCamsList();
-
-    //    }
     private void setupCamerasPager() {
         pagerAdapter = new PagerAdapter(getSupportFragmentManager());
-        GridFragment gridFragment = new GridFragment();
-        pagerAdapter.addFragment(gridFragment);
         binding.vpSlider.setAdapter(pagerAdapter);
+        binding.vpSlider.setEmptyView(binding.pagerEmptyView.getRoot());
         binding.vpSlider.setOffscreenPageLimit(0);
         binding.dotsIndicator.setViewPager(binding.vpSlider);
         binding.vpSlider.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -205,61 +199,24 @@ public class MainActivity extends BaseActivity implements MainMvpView /*, CamsAd
     }
 
     private void updateViewPager() {
+        int gridCount = mainViewModel.gridCount.getValue();
+        int camsCount = mainViewModel.ipCams.getValue().size();
+        int numOfFragments = (int)Math.ceil(camsCount * 1.0 / gridCount);
 
-        if (cams.size() > 0) {
+        // recreate the fragments in view pager
+        if(pagerAdapter.getCount() != numOfFragments){ // a change in the view pager is neeeded
             pagerAdapter.getFragmentList().clear();
-            for (int i = 0; i < cams.size(); i += gridCount) {
-                List<IpCam> subCams = cams.subList(i, Math.min(cams.size(), i + gridCount));
-                Log.e("subCams", subCams.size() + "");
-                GridFragment gridFragment = GridFragment.newInstance(subCams, cams.size());
+            for (int i = 1; i <= numOfFragments; i ++) {
+                GridFragment gridFragment = GridFragment.newInstance(i);
                 pagerAdapter.addFragment(gridFragment);
             }
             pagerAdapter.notifyDataSetChanged();
-//            binding.vpSlider.setAdapter(pagerAdapter);
-//            binding.vpSlider.setOffscreenPageLimit(1);
             binding.vpSlider.setCurrentItem(currentPageIndex);
             binding.dotsIndicator.refreshDots();
-        } else {
-            setupCamerasPager();
         }
-
-
     }
 
-//    @Override
-//    public void onCamClicked(int position) {
-//
 
-//    }
-
-    @Override
-    public void onInsertingCamera() {
-
-    }
-
-    @Override
-    public void onUpdatingCamera() {
-
-    }
-
-    @Override
-    public void onDeletingCamera() {
-
-    }
-
-    @Override
-    public void onGettingCamera(IpCam response) {
-
-    }
-
-    @Override
-    public void onGettingAllCameras(List<IpCam> response) {
-        Log.e("cams number", response.size() + "");
-        cams.clear();
-        cams.addAll(response);
-        updateViewPager();
-
-    }
 
 
 
