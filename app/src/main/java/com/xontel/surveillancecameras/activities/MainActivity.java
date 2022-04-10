@@ -1,35 +1,28 @@
 package com.xontel.surveillancecameras.activities;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.viewpager.widget.ViewPager;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.viewpager.widget.ViewPager;
+
 import com.skydoves.powerspinner.OnSpinnerItemSelectedListener;
 import com.xontel.surveillancecameras.R;
 import com.xontel.surveillancecameras.ViewModels.MainViewModel;
+import com.xontel.surveillancecameras.ViewModels.ViewModelProviderFactory;
 import com.xontel.surveillancecameras.adapters.PagerAdapter;
 import com.xontel.surveillancecameras.base.BaseActivity;
-import com.xontel.surveillancecameras.ViewModels.ViewModelProviderFactory;
 import com.xontel.surveillancecameras.databinding.ActivityMainBinding;
-import com.xontel.surveillancecameras.data.db.model.IpCam;
 import com.xontel.surveillancecameras.fragments.GridFragment;
 import com.xontel.surveillancecameras.presenters.MainMvpPresenter;
 import com.xontel.surveillancecameras.presenters.MainMvpView;
 import com.xontel.surveillancecameras.utils.CommonUtils;
-//
-//import org.videolan.libvlc.LibVLC;
-//import org.videolan.libvlc.Media;
-//import org.videolan.libvlc.MediaPlayer;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -39,12 +32,12 @@ public class MainActivity extends BaseActivity {
     public static final int DEFAULT_GRID_COUNT = 4;
     private PagerAdapter pagerAdapter;
     private ActivityMainBinding binding;
-    private int currentPageIndex ;
+    private int currentPageIndex;
     @Inject
     MainMvpPresenter<MainMvpView> mPresenter;
 
     @Inject
-    ViewModelProviderFactory providerFactory ;
+    ViewModelProviderFactory providerFactory;
 
     private MainViewModel mainViewModel;
 
@@ -57,7 +50,7 @@ public class MainActivity extends BaseActivity {
         setSupportActionBar(binding.toolbar);
         mainViewModel.getAllCameras();
         initUI();
-        if(savedInstanceState != null){
+        if (savedInstanceState != null) {
             currentPageIndex = savedInstanceState.getInt(KEY_CURRENT_PAGE_INDEX, 0);
         }
     }
@@ -106,22 +99,22 @@ public class MainActivity extends BaseActivity {
             addNewCam();
         });
         binding.ivSettings.setOnClickListener(v -> {
-        showSettings();
+            showSettings();
         });
         binding.tvSlideShow.setOnClickListener(v -> {
-            if(mainViewModel.ipCams.getValue().size() > 0 ) {
+            if (mainViewModel.ipCams.getValue().size() > 0) {
                 Intent intent = new Intent(MainActivity.this, CamerasActivity.class);
                 intent.putParcelableArrayListExtra(CamerasActivity.KEY_CAMERAS, (ArrayList) mainViewModel.ipCams.getValue());
                 intent.putExtra(CamerasActivity.KEY_SLIDE_SHOW, true);
                 startActivity(intent);
-            }else{
+            } else {
                 showMessage(R.string.no_cameras_added_yet);
             }
         });
         binding.spGridCount.setOnSpinnerItemSelectedListener(new OnSpinnerItemSelectedListener<Object>() {
             @Override
             public void onItemSelected(int i, @Nullable Object o, int i1, Object t1) {
-                if(i != i1) { // take decision only when the value change
+                if (i != i1) { // take decision only when the value change
                     int gridCount = Integer.parseInt((String) t1);
                     mainViewModel.gridCount.postValue(gridCount);
                 }
@@ -132,22 +125,22 @@ public class MainActivity extends BaseActivity {
 
     private void setupObservables() {
         mainViewModel.getLoading().observe(this, loading -> {
-          if(loading){
-              showLoading();
-          }else{
-              hideLoading();
-          }
+            if (loading) {
+                showLoading();
+            } else {
+                hideLoading();
+            }
         });
         mainViewModel.getError().observe(this, error -> {
-            if(error){
+            if (error) {
                 showMessage(R.string.error_occurred_while_processing);
             }
         });
         mainViewModel.ipCams.observe(this, ipCams -> {
             updateViewPager();
         });
-        mainViewModel.gridCount.observe(this, gridCount ->{
-            binding.spGridCount.setText(String.format("%d",gridCount));
+        mainViewModel.gridCount.observe(this, gridCount -> {
+            binding.spGridCount.setText(String.format("%d", gridCount));
             getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, MODE_PRIVATE).edit().putInt(CommonUtils.KEY_GRID_COUNT, gridCount).apply();
             updateViewPager();
         });
@@ -181,7 +174,7 @@ public class MainActivity extends BaseActivity {
 
             @Override
             public void onPageSelected(int position) {
-                currentPageIndex = position ;
+                currentPageIndex = position;
             }
 
             @Override
@@ -201,23 +194,28 @@ public class MainActivity extends BaseActivity {
     private void updateViewPager() {
         int gridCount = mainViewModel.gridCount.getValue();
         int camsCount = mainViewModel.ipCams.getValue().size();
-        int numOfFragments = (int)Math.ceil(camsCount * 1.0 / gridCount);
-
+        int numOfFragments = (int) Math.ceil(camsCount * 1.0 / gridCount);
+        Log.v("TAG", "pages : "+pagerAdapter.getFragmentList().size()+"grid count : " + gridCount + "numOfFragments : " + numOfFragments);
         // recreate the fragments in view pager
-        if(pagerAdapter.getCount() != numOfFragments){ // a change in the view pager is neeeded
-            pagerAdapter.getFragmentList().clear();
-            for (int i = 1; i <= numOfFragments; i ++) {
-                GridFragment gridFragment = GridFragment.newInstance(i);
+        if (pagerAdapter.getCount() > numOfFragments) { // a change in the view pager is needed
+            for (int i = pagerAdapter.getCount() - 1; i >= numOfFragments; i--) {
+                Log.v("TAG", i+"");
+                pagerAdapter.destroyItem(binding.vpSlider, i, pagerAdapter.getItem(i));
+                pagerAdapter.removeFragment(i);
+            }
+        } else if(pagerAdapter.getCount() < numOfFragments){
+            numOfFragments = numOfFragments - pagerAdapter.getCount();
+            for (int i = 0 ; i < numOfFragments; i++) {
+                GridFragment gridFragment = GridFragment.newInstance(pagerAdapter.getFragmentList().size());
                 pagerAdapter.addFragment(gridFragment);
             }
-            pagerAdapter.notifyDataSetChanged();
-            binding.vpSlider.setCurrentItem(currentPageIndex);
-            binding.dotsIndicator.refreshDots();
         }
+
+        pagerAdapter.notifyDataSetChanged();
+        binding.vpSlider.setCurrentItem(currentPageIndex);
+        binding.dotsIndicator.refreshDots();
+
     }
-
-
-
 
 
 }

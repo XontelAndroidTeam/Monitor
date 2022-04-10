@@ -18,7 +18,6 @@ import com.xontel.surveillancecameras.ViewModels.MainViewModel;
 import com.xontel.surveillancecameras.adapters.CamsAdapter;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
 import com.xontel.surveillancecameras.databinding.FragmentGridBinding;
-import com.xontel.surveillancecameras.utils.VideoHelper;
 
 import org.jetbrains.annotations.NotNull;
 import org.videolan.libvlc.MediaPlayer;
@@ -53,8 +52,6 @@ public class GridFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-//        stopPlayers();
-        setupCamGrid();
 
     }
 
@@ -76,14 +73,19 @@ public class GridFragment extends Fragment {
         }
         mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
         gridCount = mainViewModel.gridCount.getValue();
-        ipCams = getIpCams();
+        updateIpCams();
     }
 
 
-    public List<IpCam> getIpCams() {
-        int leapLastIndex = fragmentOrder * gridCount;
-        Log.v("TAG", "grid count : "+ gridCount + "fragmentOrder : "+fragmentOrder);
-        return mainViewModel.ipCams.getValue().subList(leapLastIndex - gridCount, Math.min(leapLastIndex, mainViewModel.ipCams.getValue().size()));
+    public void updateIpCams() {
+//        try {
+            int leapLastIndex = fragmentOrder * gridCount;
+            Log.v("TAG", "grid count : " + gridCount + "fragmentOrder : " + fragmentOrder + " hash : " + hashCode());
+            ipCams.clear();
+            ipCams.addAll(mainViewModel.ipCams.getValue().subList(leapLastIndex - gridCount, Math.min(leapLastIndex, mainViewModel.ipCams.getValue().size())));
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
     }
 
 
@@ -118,20 +120,21 @@ public class GridFragment extends Fragment {
     private void setupObservables() {
         mainViewModel.gridCount.observe(getActivity(), newGridCount -> {
             gridCount = newGridCount;
-            ipCams = getIpCams();
-            updateGrid();
+            updateIpCams();
+            setupCamGrid();
         });
         mainViewModel.ipCams.observe(getActivity(), allIpCams -> {
-            ipCams = getIpCams();
-            updateGrid();
+            updateIpCams();
+           setupCamGrid();
         });
     }
 
     private void updateGrid() {
         int oldGridCount = ((GridLayoutManager) binding.rvGrid.getLayoutManager()).getSpanCount();
-        if (oldGridCount != gridCount)
+        if (oldGridCount != gridCount) {
             ((GridLayoutManager) binding.rvGrid.getLayoutManager()).setSpanCount((int) Math.sqrt(gridCount));
-        gridAdapter.addItems(ipCams);
+            gridAdapter.notifyDataSetChanged();
+        }
 
     }
 

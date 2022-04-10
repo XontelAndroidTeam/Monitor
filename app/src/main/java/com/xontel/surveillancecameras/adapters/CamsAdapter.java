@@ -38,7 +38,7 @@ import java.util.List;
 
 
 public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
-    private List<IpCam> cams;
+    private List<IpCam> ipCams;
     private Context context;
     private List<MediaPlayer> mediaPlayers;
     private int gridCount ;
@@ -74,8 +74,9 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
         }
     }
 
-    public CamsAdapter(List<IpCam> cams, List<MediaPlayer> mediaPlayers, int gridCount , Context context) {
-        this.cams = cams;
+
+    public CamsAdapter(List<IpCam> ipCams, List<MediaPlayer> mediaPlayers, int gridCount , Context context) {
+        this.ipCams = ipCams;
         this.context = context;
         this.gridCount = gridCount ;
     }
@@ -83,13 +84,13 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
 
     public void addItems(List<IpCam> cams) {
-        this.cams.clear();
-        this.cams.addAll(cams);
+        ipCams.clear();
+        ipCams.addAll(cams);
         notifyDataSetChanged();
     }
 
     public void addItem(IpCam cam) {
-        cams.add(cam);
+        ipCams.add(cam);
     }
 
     @Override
@@ -117,7 +118,7 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
     @Override
     public int getItemViewType(int position) {
-        return position < cams.size() ? ITEM_CAM : ITEM_ADD_CAM;
+        return position < ipCams.size() ? ITEM_CAM : ITEM_ADD_CAM;
     }
 
     @Override
@@ -146,12 +147,12 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
         @Override
         public void onBind(int position) {
             super.onBind(position);
-             ipCam = cams.get(position);
+             ipCam = ipCams.get(position);
             camName.setText(ipCam.getName());
             itemView.setOnClickListener(v -> {
                 Intent intent = new Intent(context, CamerasActivity.class);
                 ArrayList<IpCam> ipCams = new ArrayList<>();
-                ipCams.add(cams.get(getAdapterPosition()));
+                ipCams.add(ipCams.get(getAdapterPosition()));
                 intent.putParcelableArrayListExtra(CamerasActivity.KEY_CAMERAS, ipCams);
                 context.startActivity(intent);
             });
