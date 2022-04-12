@@ -34,7 +34,7 @@ public class GridFragment extends Fragment {
     private List<IpCam> ipCams = new ArrayList<>();
     private MainViewModel mainViewModel;
     private CamsAdapter gridAdapter;
-    private List<MediaPlayer> mediaPlayers;
+    private List<MediaPlayer> mediaPlayers = new ArrayList<>();
 
 
     public GridFragment() {
@@ -43,15 +43,14 @@ public class GridFragment extends Fragment {
 
 
     @Override
-    public void onResume() {
-//        gridAdapter.notifyDataSetChanged();
+    public void onResume(){
         super.onResume();
+        gridAdapter.notifyDataSetChanged();
     }
-
-
     @Override
     public void onPause() {
         super.onPause();
+        mainViewModel.resetPlayers();
 
     }
 
@@ -68,6 +67,7 @@ public class GridFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.v("TAG_", "created "+hashCode());
         if (getArguments() != null) {
             fragmentOrder = getArguments().getInt(KEY_ORDER);
         }
@@ -77,15 +77,13 @@ public class GridFragment extends Fragment {
     }
 
 
-    public void updateIpCams() {
-//        try {
-            int leapLastIndex = fragmentOrder * gridCount;
-            Log.v("TAG", "grid count : " + gridCount + "fragmentOrder : " + fragmentOrder + " hash : " + hashCode());
-            ipCams.clear();
-            ipCams.addAll(mainViewModel.ipCams.getValue().subList(leapLastIndex - gridCount, Math.min(leapLastIndex, mainViewModel.ipCams.getValue().size())));
-//        }catch (Exception e){
-//            e.printStackTrace();
-//        }
+
+    public void updateIpCams(){
+        int leapLastIndex = fragmentOrder * gridCount;
+        Log.v("TAG_", "grid count : " + gridCount + " fragmentOrder : " + fragmentOrder + " hash : " + hashCode());
+        ipCams.clear();
+        ipCams.addAll(mainViewModel.ipCams.getValue().subList(leapLastIndex - gridCount, Math.min(leapLastIndex, mainViewModel.ipCams.getValue().size())));
+
     }
 
 
@@ -93,6 +91,7 @@ public class GridFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
 
+//        Log.v("TAG_", "destroyed " + hashCode());
     }
 
 
@@ -113,19 +112,19 @@ public class GridFragment extends Fragment {
 
 
     private void initUI() {
-        setupCamGrid();
+        setupCamGrid(new ArrayList<>());
         setupObservables();
     }
 
     private void setupObservables() {
-        mainViewModel.gridCount.observe(getActivity(), newGridCount -> {
+        mainViewModel.gridCount.observe(getViewLifecycleOwner(), newGridCount -> {
             gridCount = newGridCount;
             updateIpCams();
-            setupCamGrid();
+            setupCamGrid(mainViewModel.mediaPlayersLiveData.getValue());
         });
-        mainViewModel.ipCams.observe(getActivity(), allIpCams -> {
+        mainViewModel.ipCams.observe(getViewLifecycleOwner(), allIpCams -> {
             updateIpCams();
-           setupCamGrid();
+            setupCamGrid(mainViewModel.mediaPlayersLiveData.getValue());
         });
     }
 
@@ -138,34 +137,11 @@ public class GridFragment extends Fragment {
 
     }
 
-    private void setupCamGrid() {
+    private void setupCamGrid(List<MediaPlayer> mediaPlayers) {
+        Log.v("TAG_", mediaPlayers.size()+"");
         binding.rvGrid.setLayoutManager(new GridLayoutManager(getContext(), (int) Math.sqrt(gridCount)));
-        gridAdapter = new CamsAdapter(ipCams, new ArrayList<>(), gridCount, getContext());
+        gridAdapter = new CamsAdapter(ipCams, mediaPlayers, gridCount, getContext());
         binding.rvGrid.setAdapter(gridAdapter);
     }
-
-
-//    private void startPlayers() {
-//        for (VideoHelper videoHelper : videoHelpers) {
-//            if (videoHelper != null) {
-//                videoHelper.onStart();
-//
-//            }
-//        }
-//    }
-//
-//
-//    private void stopPlayers() {
-//        for (int i = 0; i < videoHelpers.size(); i++) {
-//            VideoHelper videoHelper = videoHelpers.get(i);
-//            if (videoHelper != null){
-//                videoHelper.onStop();
-//                videoHelper.onDestroy();
-//            }
-//            videoHelper = null;
-//        }
-//
-//        videoHelpers.clear();
-//    }
 
 }

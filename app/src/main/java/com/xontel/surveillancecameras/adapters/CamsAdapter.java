@@ -3,16 +3,10 @@ package com.xontel.surveillancecameras.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Handler;
-import android.os.storage.StorageManager;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewStub;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -24,13 +18,9 @@ import com.xontel.surveillancecameras.activities.CamerasActivity;
 import com.xontel.surveillancecameras.activities.MainActivity;
 import com.xontel.surveillancecameras.base.BaseViewHolder;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
-import com.xontel.surveillancecameras.fragments.GridFragment;
-import com.xontel.surveillancecameras.utils.StorageHelper;
-import com.xontel.surveillancecameras.utils.VideoHelper;
 
 import org.videolan.libvlc.Media;
 import org.videolan.libvlc.MediaPlayer;
-import org.videolan.libvlc.util.LoadingDots;
 import org.videolan.libvlc.util.VLCVideoLayout;
 
 import java.util.ArrayList;
@@ -40,53 +30,33 @@ import java.util.List;
 public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
     private List<IpCam> ipCams;
     private Context context;
-    private List<MediaPlayer> mediaPlayers;
-    private int gridCount ;
+    private List<MediaPlayer> players;
+    private int gridCount;
     private static final int ITEM_CAM = 0;
     private static final int ITEM_ADD_CAM = 1;
 
-    @Override
-    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
-        super.onAttachedToRecyclerView(recyclerView);
-    }
 
-    @Override
-    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
-        super.onDetachedFromRecyclerView(recyclerView);
-
-    }
-
-    @Override
-    public void onViewAttachedToWindow(@NonNull BaseViewHolder holder) {
-        super.onViewAttachedToWindow(holder);
-        if(holder instanceof CamsViewHolder){
-            ((CamsViewHolder)holder).initVlcPlayer();
-        }
-    }
-
-    @Override
-    public void onViewDetachedFromWindow(@NonNull BaseViewHolder holder) {
-        super.onViewDetachedFromWindow(holder);
-        if(holder instanceof CamsViewHolder){
-            ((CamsViewHolder)holder).mediaPlayer.stop();
-            ((CamsViewHolder)holder).mediaPlayer.detachViews();
-            ((CamsViewHolder)holder).mediaPlayer.release();
-        }
-    }
-
-
-    public CamsAdapter(List<IpCam> ipCams, List<MediaPlayer> mediaPlayers, int gridCount , Context context) {
+    public CamsAdapter(List<IpCam> ipCams, List<MediaPlayer> mediaPlayers, int gridCount, Context context) {
         this.ipCams = ipCams;
         this.context = context;
-        this.gridCount = gridCount ;
+        this.gridCount = gridCount;
+        this.players = mediaPlayers;
     }
-
 
 
     public void addItems(List<IpCam> cams) {
         ipCams.clear();
         ipCams.addAll(cams);
         notifyDataSetChanged();
+    }
+
+
+    public List<MediaPlayer> getPlayers() {
+        return players;
+    }
+
+    public void setPlayers(List<MediaPlayer> players) {
+        this.players = players;
     }
 
     public void addItem(IpCam cam) {
@@ -100,7 +70,7 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
             case ITEM_CAM:
                 view = LayoutInflater.from(context).inflate(R.layout.item_cam, parent, false);
                 GridLayoutManager.LayoutParams lp = (GridLayoutManager.LayoutParams) view.getLayoutParams();
-                lp.height = (parent.getMeasuredHeight() /  (int) Math.sqrt(gridCount)) - 10;
+                lp.height = (parent.getMeasuredHeight() / (int) Math.sqrt(gridCount)) - 10;
                 view.setLayoutParams(lp);
                 return new CamsViewHolder(view);
 
@@ -117,6 +87,25 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
     }
 
     @Override
+    public void onViewAttachedToWindow(@NonNull BaseViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        Log.v("TAG_", "attached" + holder.getBindingAdapterPosition());
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(@NonNull BaseViewHolder holder) {
+        super.onViewDetachedFromWindow(holder);
+        Log.v("TAG_", "detached" + holder.getBindingAdapterPosition());
+    }
+
+    @Override
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView);
+        Log.v("TAG_", "detachedFromList");
+    }
+
+
+    @Override
     public int getItemViewType(int position) {
         return position < ipCams.size() ? ITEM_CAM : ITEM_ADD_CAM;
     }
@@ -131,11 +120,11 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
         return gridCount;
     }
 
-    public class CamsViewHolder extends BaseViewHolder{
+    public class CamsViewHolder extends BaseViewHolder {
         private IpCam ipCam;
         private TextView camName;
-        private VLCVideoLayout vlcVideoLayout ;
-        private MediaPlayer mediaPlayer ;
+        private VLCVideoLayout vlcVideoLayout;
+        private MediaPlayer mediaPlayer;
 
 
         public CamsViewHolder(View itemView) {
@@ -147,16 +136,17 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
         @Override
         public void onBind(int position) {
             super.onBind(position);
-             ipCam = ipCams.get(position);
+
+            ipCam = ipCams.get(position);
             camName.setText(ipCam.getName());
             itemView.setOnClickListener(v -> {
                 Intent intent = new Intent(context, CamerasActivity.class);
-                ArrayList<IpCam> ipCams = new ArrayList<>();
-                ipCams.add(ipCams.get(getAdapterPosition()));
-                intent.putParcelableArrayListExtra(CamerasActivity.KEY_CAMERAS, ipCams);
+                ArrayList<IpCam> cams = new ArrayList<>();
+                cams.add(ipCams.get(getAdapterPosition()));
+                intent.putParcelableArrayListExtra(CamerasActivity.KEY_CAMERAS, cams);
                 context.startActivity(intent);
             });
-
+            Log.v("TAG_", "bound" + getBindingAdapterPosition());
 
 
         }
@@ -168,15 +158,16 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
 
         private void initVlcPlayer() {
-            mediaPlayer = new MediaPlayer(itemView.getContext());
-            mediaPlayer.attachViews(vlcVideoLayout);
-            final Media media = new Media(mediaPlayer.getLibVLCInstance(), Uri.parse(ipCam.getUrl()));
-            media.addCommonOptions();
-            mediaPlayer.setMedia(media);
-            media.release();
-            mediaPlayer.play();
+            if(players.size() > 0) {
+                mediaPlayer = players.get(getBindingAdapterPosition());
+                mediaPlayer.attachViews(vlcVideoLayout);
+                final Media media = new Media(mediaPlayer.getLibVLCInstance(), Uri.parse(ipCam.getUrl()));
+                media.addCommonOptions();
+                mediaPlayer.setMedia(media);
+                media.release();
+                mediaPlayer.play();
+            }
         }
-
 
 
     }
@@ -192,14 +183,13 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
             itemView.setOnClickListener(v -> {
                 ((MainActivity) context).addNewCam();
             });
+            Log.v("TAG_", "bound" + getBindingAdapterPosition());
         }
 
         @Override
         protected void clear() {
         }
     }
-
-
 
 
 }

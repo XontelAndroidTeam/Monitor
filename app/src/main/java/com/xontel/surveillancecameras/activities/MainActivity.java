@@ -16,6 +16,7 @@ import com.xontel.surveillancecameras.ViewModels.MainViewModel;
 import com.xontel.surveillancecameras.ViewModels.ViewModelProviderFactory;
 import com.xontel.surveillancecameras.adapters.PagerAdapter;
 import com.xontel.surveillancecameras.base.BaseActivity;
+import com.xontel.surveillancecameras.data.DataManager;
 import com.xontel.surveillancecameras.databinding.ActivityMainBinding;
 import com.xontel.surveillancecameras.fragments.GridFragment;
 import com.xontel.surveillancecameras.presenters.MainMvpPresenter;
@@ -34,7 +35,7 @@ public class MainActivity extends BaseActivity {
     private ActivityMainBinding binding;
     private int currentPageIndex;
     @Inject
-    MainMvpPresenter<MainMvpView> mPresenter;
+    DataManager dataManager ;
 
     @Inject
     ViewModelProviderFactory providerFactory;
@@ -46,10 +47,10 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         getActivityComponent().inject(this);
-        mainViewModel = new ViewModelProvider(this, providerFactory).get(MainViewModel.class);
         setSupportActionBar(binding.toolbar);
-        mainViewModel.getAllCameras();
+        mainViewModel = new ViewModelProvider(this, providerFactory).get(MainViewModel.class);
         initUI();
+        mainViewModel.getAllCameras();
         if (savedInstanceState != null) {
             currentPageIndex = savedInstanceState.getInt(KEY_CURRENT_PAGE_INDEX, 0);
         }
@@ -64,7 +65,6 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        binding.spGridCount.dismiss();
     }
 
     @Override
@@ -93,8 +93,6 @@ public class MainActivity extends BaseActivity {
 
     private void initUI() {
         setupObservables();
-        // get the persisted value in shared preferences
-        mainViewModel.gridCount.postValue(getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, MODE_PRIVATE).getInt(CommonUtils.KEY_GRID_COUNT, DEFAULT_GRID_COUNT));
         binding.ivAddCam.setOnClickListener(v -> {
             addNewCam();
         });
@@ -111,6 +109,7 @@ public class MainActivity extends BaseActivity {
                 showMessage(R.string.no_cameras_added_yet);
             }
         });
+
         binding.spGridCount.setOnSpinnerItemSelectedListener(new OnSpinnerItemSelectedListener<Object>() {
             @Override
             public void onItemSelected(int i, @Nullable Object o, int i1, Object t1) {
@@ -141,7 +140,7 @@ public class MainActivity extends BaseActivity {
         });
         mainViewModel.gridCount.observe(this, gridCount -> {
             binding.spGridCount.setText(String.format("%d", gridCount));
-            getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, MODE_PRIVATE).edit().putInt(CommonUtils.KEY_GRID_COUNT, gridCount).apply();
+            dataManager.setGridCount(gridCount);
             updateViewPager();
         });
     }
@@ -195,18 +194,18 @@ public class MainActivity extends BaseActivity {
         int gridCount = mainViewModel.gridCount.getValue();
         int camsCount = mainViewModel.ipCams.getValue().size();
         int numOfFragments = (int) Math.ceil(camsCount * 1.0 / gridCount);
-        Log.v("TAG", "pages : "+pagerAdapter.getFragmentList().size()+"grid count : " + gridCount + "numOfFragments : " + numOfFragments);
+        Log.v("TAG_", "pages : "+pagerAdapter.getFragmentList().size()+" grid count : " + gridCount + " numOfFragments : " + numOfFragments);
         // recreate the fragments in view pager
         if (pagerAdapter.getCount() > numOfFragments) { // a change in the view pager is needed
             for (int i = pagerAdapter.getCount() - 1; i >= numOfFragments; i--) {
-                Log.v("TAG", i+"");
-                pagerAdapter.destroyItem(binding.vpSlider, i, pagerAdapter.getItem(i));
+                Log.v("TAG_", i+"");
+//                pagerAdapter.destroyItem(binding.vpSlider, i, pagerAdapter.getFragmentList().get(i));
                 pagerAdapter.removeFragment(i);
             }
         } else if(pagerAdapter.getCount() < numOfFragments){
             numOfFragments = numOfFragments - pagerAdapter.getCount();
             for (int i = 0 ; i < numOfFragments; i++) {
-                GridFragment gridFragment = GridFragment.newInstance(pagerAdapter.getFragmentList().size());
+                GridFragment gridFragment = GridFragment.newInstance(pagerAdapter.getFragmentList().size() + 1);
                 pagerAdapter.addFragment(gridFragment);
             }
         }

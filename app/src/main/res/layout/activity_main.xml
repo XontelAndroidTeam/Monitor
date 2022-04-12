@@ -158,6 +158,7 @@
             app:layout_constraintEnd_toEndOf="parent"/>
         <include android:id="@+id/pager_empty_view"
             layout="@layout/no_cameras"
+            android:visibility="gone"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

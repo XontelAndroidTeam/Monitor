@@ -34,8 +34,4 @@ public class RestApiManager implements RestApiHelper {
         return mService.getFeedList();
     }
 
-    @Override
-    public Single<TimeZoneResponse> getTimeZone() {
-        return mService.getTimeZoneByIP();
-    }
 }

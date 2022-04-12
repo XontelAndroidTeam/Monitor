@@ -40,14 +40,16 @@ org/videolan/libvlc/interfaces/IVLCObject.java
  org.videolan.libvlc.interfaces.IVLCObject
 org/videolan/libvlc/util/Extensions.java
  org.videolan.libvlc.util.Extensions
-org/videolan/BuildConfig.java
- org.videolan.BuildConfig
-org/videolan/libvlc/util/HWDecoderUtil.java
- org.videolan.libvlc.util.HWDecoderUtil
- org.videolan.libvlc.util.HWDecoderUtil$AudioOutput
- org.videolan.libvlc.util.HWDecoderUtil$AudioOutputBySOC
- org.videolan.libvlc.util.HWDecoderUtil$Decoder
- org.videolan.libvlc.util.HWDecoderUtil$DecoderBySOC
+org/videolan/libvlc/util/AndroidUtil.java
+ org.videolan.libvlc.util.AndroidUtil
+org/videolan/libvlc/util/DisplayManager.java
+ org.videolan.libvlc.util.DisplayManager
+ org.videolan.libvlc.util.DisplayManager$1
+ org.videolan.libvlc.util.DisplayManager$2
+ org.videolan.libvlc.util.DisplayManager$3
+ org.videolan.libvlc.util.DisplayManager$4
+ org.videolan.libvlc.util.DisplayManager$DisplayType
+ org.videolan.libvlc.util.DisplayManager$SecondaryDisplay
 org/videolan/libvlc/stubs/StubLibVLC.java
  org.videolan.libvlc.stubs.StubLibVLC
 org/videolan/libvlc/FactoryManager.java
@@ -60,10 +62,8 @@ org/videolan/libvlc/LibVLCFactory.java
 org/videolan/libvlc/RendererItem.java
  org.videolan.libvlc.RendererItem
  org.videolan.libvlc.RendererItem$Event
-org/videolan/libvlc/interfaces/IMediaList.java
- org.videolan.libvlc.interfaces.IMediaList
- org.videolan.libvlc.interfaces.IMediaList$Event
- org.videolan.libvlc.interfaces.IMediaList$EventListener
+org/videolan/libvlc/util/VLCVideoLayout.java
+ org.videolan.libvlc.util.VLCVideoLayout
 org/videolan/libvlc/util/RecordFlashingCircle.java
  org.videolan.libvlc.util.RecordFlashingCircle
 org/videolan/libvlc/util/Dumper.java
@@ -101,10 +101,25 @@ org/videolan/libvlc/interfaces/IMedia.java
  org.videolan.libvlc.interfaces.IMedia$VideoTrack
  org.videolan.libvlc.interfaces.IMedia$VideoTrack$Orientation
  org.videolan.libvlc.interfaces.IMedia$VideoTrack$Projection
-org/videolan/libvlc/stubs/StubMediaFactory.java
- org.videolan.libvlc.stubs.StubMediaFactory
-org/videolan/libvlc/Media.java
- org.videolan.libvlc.Media
+org/videolan/libvlc/MediaPlayer.java
+ org.videolan.libvlc.MediaPlayer
+ org.videolan.libvlc.MediaPlayer$1
+ org.videolan.libvlc.MediaPlayer$2
+ org.videolan.libvlc.MediaPlayer$3
+ org.videolan.libvlc.MediaPlayer$4
+ org.videolan.libvlc.MediaPlayer$5
+ org.videolan.libvlc.MediaPlayer$Chapter
+ org.videolan.libvlc.MediaPlayer$Equalizer
+ org.videolan.libvlc.MediaPlayer$Event
+ org.videolan.libvlc.MediaPlayer$EventListener
+ org.videolan.libvlc.MediaPlayer$Navigate
+ org.videolan.libvlc.MediaPlayer$Position
+ org.videolan.libvlc.MediaPlayer$ScaleType
+ org.videolan.libvlc.MediaPlayer$Title
+ org.videolan.libvlc.MediaPlayer$Title$Flags
+ org.videolan.libvlc.MediaPlayer$TrackDescription
+org/videolan/libvlc/util/VolumeControllerView.java
+ org.videolan.libvlc.util.VolumeControllerView
 org/videolan/libvlc/MediaDiscoverer.java
  org.videolan.libvlc.MediaDiscoverer
  org.videolan.libvlc.MediaDiscoverer$1
@@ -116,15 +131,15 @@ org/videolan/libvlc/interfaces/IVLCVout.java
  org.videolan.libvlc.interfaces.IVLCVout
  org.videolan.libvlc.interfaces.IVLCVout$Callback
  org.videolan.libvlc.interfaces.IVLCVout$OnNewVideoLayoutListener
-org/videolan/libvlc/VLCObject.java
- org.videolan.libvlc.VLCObject
- org.videolan.libvlc.VLCObject$1EventRunnable
-org/videolan/libvlc/RendererDiscoverer.java
- org.videolan.libvlc.RendererDiscoverer
- org.videolan.libvlc.RendererDiscoverer$1
- org.videolan.libvlc.RendererDiscoverer$Description
- org.videolan.libvlc.RendererDiscoverer$Event
- org.videolan.libvlc.RendererDiscoverer$EventListener
+org/videolan/libvlc/VideoHelper.java
+ org.videolan.libvlc.VideoHelper
+ org.videolan.libvlc.VideoHelper$1
+ org.videolan.libvlc.VideoHelper$2
+ org.videolan.libvlc.VideoHelper$2$1
+ org.videolan.libvlc.VideoHelper$3
+org/videolan/libvlc/util/LoadingDots.java
+ org.videolan.libvlc.util.LoadingDots
+ org.videolan.libvlc.util.LoadingDots$1
 org/videolan/libvlc/util/TimeCounter.java
  org.videolan.libvlc.util.TimeCounter
  org.videolan.libvlc.util.TimeCounter$1
@@ -153,43 +168,28 @@ org/videolan/libvlc/interfaces/IMediaFactory.java
  org.videolan.libvlc.interfaces.IMediaFactory
 org/videolan/libvlc/stubs/StubMedia.java
  org.videolan.libvlc.stubs.StubMedia
-org/videolan/libvlc/MediaPlayer.java
- org.videolan.libvlc.MediaPlayer
- org.videolan.libvlc.MediaPlayer$1
- org.videolan.libvlc.MediaPlayer$2
- org.videolan.libvlc.MediaPlayer$3
- org.videolan.libvlc.MediaPlayer$4
- org.videolan.libvlc.MediaPlayer$5
- org.videolan.libvlc.MediaPlayer$Chapter
- org.videolan.libvlc.MediaPlayer$Equalizer
- org.videolan.libvlc.MediaPlayer$Event
- org.videolan.libvlc.MediaPlayer$EventListener
- org.videolan.libvlc.MediaPlayer$Navigate
- org.videolan.libvlc.MediaPlayer$Position
- org.videolan.libvlc.MediaPlayer$ScaleType
- org.videolan.libvlc.MediaPlayer$Title
- org.videolan.libvlc.MediaPlayer$Title$Flags
- org.videolan.libvlc.MediaPlayer$TrackDescription
-org/videolan/libvlc/util/VolumeControllerView.java
- org.videolan.libvlc.util.VolumeControllerView
-org/videolan/libvlc/VideoHelper.java
- org.videolan.libvlc.VideoHelper
- org.videolan.libvlc.VideoHelper$1
- org.videolan.libvlc.VideoHelper$2
- org.videolan.libvlc.VideoHelper$2$1
- org.videolan.libvlc.VideoHelper$3
-org/videolan/libvlc/util/LoadingDots.java
- org.videolan.libvlc.util.LoadingDots
- org.videolan.libvlc.util.LoadingDots$1
-org/videolan/libvlc/util/AndroidUtil.java
- org.videolan.libvlc.util.AndroidUtil
-org/videolan/libvlc/util/DisplayManager.java
- org.videolan.libvlc.util.DisplayManager
- org.videolan.libvlc.util.DisplayManager$1
- org.videolan.libvlc.util.DisplayManager$2
- org.videolan.libvlc.util.DisplayManager$3
- org.videolan.libvlc.util.DisplayManager$4
- org.videolan.libvlc.util.DisplayManager$DisplayType
- org.videolan.libvlc.util.DisplayManager$SecondaryDisplay
-org/videolan/libvlc/util/VLCVideoLayout.java
- org.videolan.libvlc.util.VLCVideoLayout
+org/videolan/libvlc/RendererDiscoverer.java
+ org.videolan.libvlc.RendererDiscoverer
+ org.videolan.libvlc.RendererDiscoverer$1
+ org.videolan.libvlc.RendererDiscoverer$Description
+ org.videolan.libvlc.RendererDiscoverer$Event
+ org.videolan.libvlc.RendererDiscoverer$EventListener
+org/videolan/libvlc/util/HWDecoderUtil.java
+ org.videolan.libvlc.util.HWDecoderUtil
+ org.videolan.libvlc.util.HWDecoderUtil$AudioOutput
+ org.videolan.libvlc.util.HWDecoderUtil$AudioOutputBySOC
+ org.videolan.libvlc.util.HWDecoderUtil$Decoder
+ org.videolan.libvlc.util.HWDecoderUtil$DecoderBySOC
+org/videolan/BuildConfig.java
+ org.videolan.BuildConfig
+org/videolan/libvlc/interfaces/IMediaList.java
+ org.videolan.libvlc.interfaces.IMediaList
+ org.videolan.libvlc.interfaces.IMediaList$Event
+ org.videolan.libvlc.interfaces.IMediaList$EventListener
+org/videolan/libvlc/Media.java
+ org.videolan.libvlc.Media
+org/videolan/libvlc/VLCObject.java
+ org.videolan.libvlc.VLCObject
+ org.videolan.libvlc.VLCObject$1EventRunnable
+org/videolan/libvlc/stubs/StubMediaFactory.java
+ org.videolan.libvlc.stubs.StubMediaFactory

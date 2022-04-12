@@ -16,5 +16,4 @@ public interface RestApiHelper {
     Single<WrapperResponse<UserProfile>> doLoginApiCall(LoginRequest request);
 
     Single<WrapperResponse<List<FeedItem>>> getFeedList();
-    Single<TimeZoneResponse> getTimeZone();
 }

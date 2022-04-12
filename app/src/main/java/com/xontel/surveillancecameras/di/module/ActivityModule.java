@@ -32,7 +32,7 @@ public class ActivityModule {
     }
 
     @Provides
-    @ActivityContext
+//    @ActivityContext
     Context provideContext() {
         return mActivity;
     }

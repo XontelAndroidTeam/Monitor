@@ -768,6 +768,7 @@ public class MediaPlayer extends VLCObject<MediaPlayer.Event> {
     }
 
 
+
     public void mute(){
         volumeLevel = getVolume() ;
         setVolume(0);

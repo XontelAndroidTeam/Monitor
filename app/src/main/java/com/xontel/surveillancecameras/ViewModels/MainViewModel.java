@@ -1,5 +1,7 @@
 package com.xontel.surveillancecameras.ViewModels;
 
+import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
@@ -9,8 +11,10 @@ import com.xontel.surveillancecameras.activities.MainActivity;
 import com.xontel.surveillancecameras.base.BaseViewModel;
 import com.xontel.surveillancecameras.data.DataManager;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
+import com.xontel.surveillancecameras.root.AppConstant;
 import com.xontel.surveillancecameras.utils.rx.SchedulerProvider;
 
+import org.videolan.libvlc.Media;
 import org.videolan.libvlc.MediaPlayer;
 
 import java.util.ArrayList;
@@ -23,12 +27,31 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable;
 public class MainViewModel extends BaseViewModel {
     public static final String TAG = MainViewModel.class.getSimpleName();
     public MutableLiveData<List<IpCam>> ipCams = new MutableLiveData<>(new ArrayList<>());
-    public MutableLiveData<Integer> gridCount = new MutableLiveData<>(MainActivity.DEFAULT_GRID_COUNT);
-    public MutableLiveData<List<MediaPlayer>> mediaPlayers = new MutableLiveData<>();
+    public MutableLiveData<Integer> gridCount = new MutableLiveData<>(getDataManager().getGridCount());
+    public MutableLiveData<List<MediaPlayer>> mediaPlayersLiveData ;
+    private Context context ;
 
     @Inject
-    public MainViewModel(SchedulerProvider mSchedulerProvider, CompositeDisposable mCompositeDisposable, DataManager manager) {
+    public MainViewModel( Context context, SchedulerProvider mSchedulerProvider, CompositeDisposable mCompositeDisposable, DataManager manager) {
         super(mSchedulerProvider, mCompositeDisposable, manager);
+        this.context = context ;
+        mediaPlayersLiveData = new MutableLiveData<>(createMediaPlayers());
+    }
+
+    private List<MediaPlayer> createMediaPlayers() {
+        List<MediaPlayer> mediaPlayers = new ArrayList<>();
+        for(int i = 0; i < AppConstant.MAX_CAMS_IN_WINDOW; i ++){
+            mediaPlayers.add(new MediaPlayer(context));
+        }
+        return mediaPlayers;
+    }
+
+    public void resetPlayers(){
+        List<MediaPlayer> mediaPlayers = mediaPlayersLiveData.getValue() ;
+        for(int i = 0 ; i < mediaPlayers.size() ; i++){
+            mediaPlayers.get(i).stop();
+            mediaPlayers.get(i).detachViews();
+        }
     }
 
 

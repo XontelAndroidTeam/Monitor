@@ -51,17 +51,12 @@ public class BaseDataManager implements DataManager {
 
     @Override
     public void setUserLoggedOut() {
-        logoutUser();
+
     }
 
     @Override
     public void updateUserInfo(String accessToken, Long userId, LoggedInMode loggedInMode, String userName, String email, String profilePicPath) {
-        mPreferencesHelper.setAccessToken(accessToken);
-        mPreferencesHelper.setUserId(userId);
-        mPreferencesHelper.setUserLoggedIn(loggedInMode);
-        mPreferencesHelper.setUserName(userName);
-        mPreferencesHelper.setUserEmail(email);
-        mPreferencesHelper.setUserProfilePicUrl(profilePicPath);
+
     }
 
 
@@ -116,102 +111,17 @@ public class BaseDataManager implements DataManager {
     }
 
     @Override
-    public Single<TimeZoneResponse> getTimeZone() {
-        return mApiHelper.getTimeZone();
-    }
-
-    @Override
-    public int getUserLoggedInMode() {
-        return mPreferencesHelper.getUserLoggedInMode();
-    }
-
-    @Override
-    public void setUserLoggedIn(LoggedInMode mode) {
-        mPreferencesHelper.setUserLoggedIn(mode);
-    }
-
-    @Override
-    public Long getUserId() {
-        return mPreferencesHelper.getUserId();
-    }
-
-    @Override
-    public void setUserId(Long userId) {
-        mPreferencesHelper.setUserId(userId);
-    }
-
-    @Override
-    public String getUserName() {
-        return mPreferencesHelper.getUserName();
-    }
-
-    @Override
-    public void setUserName(String userName) {
-        mPreferencesHelper.setUserName(userName);
-    }
-
-    @Override
-    public String getUserEmail() {
-        return mPreferencesHelper.getUserEmail();
-    }
-
-    @Override
-    public void setUserEmail(String email) {
-        mPreferencesHelper.setUserEmail(email);
-    }
-
-    @Override
-    public String getUserProfilePicUrl() {
-        return mPreferencesHelper.getUserProfilePicUrl();
-    }
-
-    @Override
-    public void setUserProfilePicUrl(String profilePicUrl) {
-        mPreferencesHelper.setUserProfilePicUrl(profilePicUrl);
-    }
-
-    @Override
-    public String getAccessToken() {
-        return mPreferencesHelper.getAccessToken();
-    }
-
-    @Override
-    public void setAccessToken(String accessToken) {
-        mPreferencesHelper.getAccessToken();
-    }
-
-    @Override
-    public String getUserMobile() {
-        return mPreferencesHelper.getUserMobile();
-    }
-
-    @Override
-    public void setUserMobile(String mobileNumber) {
-        mPreferencesHelper.setUserMobile(mobileNumber);
-    }
-
-    @Override
-    public boolean isCoachMarkView() {
-        return mPreferencesHelper.isCoachMarkView();
-    }
-
-    @Override
-    public void setCoachMarkView(boolean isShowCoachMark) {
-        mPreferencesHelper.setCoachMarkView(isShowCoachMark);
-    }
-
-    @Override
-    public boolean isFirstTime() {
-        return mPreferencesHelper.isFirstTime();
-    }
-
-    @Override
     public void setFirstTime(boolean firstTime) {
-        mPreferencesHelper.setCoachMarkView(firstTime);
+        mPreferencesHelper.setFirstTime(firstTime);
     }
 
     @Override
-    public void logoutUser() {
-        mPreferencesHelper.logoutUser();
+    public void setGridCount(int gridCount) {
+        mPreferencesHelper.setGridCount(gridCount);
+    }
+
+    @Override
+    public int getGridCount() {
+        return mPreferencesHelper.getGridCount();
     }
 }
