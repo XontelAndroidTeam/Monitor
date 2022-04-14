@@ -786,6 +786,7 @@ public class MediaPlayer extends VLCObject<MediaPlayer.Event> {
     public void attachViews(@NonNull VLCVideoLayout surfaceFrame) {
         // disable subtitles and texture view
         mVideoHelper = new VideoHelper(this, surfaceFrame, null, false, true);
+        if(!getVLCVout().areViewsAttached())
         mVideoHelper.attachViews();
     }
 

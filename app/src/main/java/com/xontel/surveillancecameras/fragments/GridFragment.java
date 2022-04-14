@@ -22,6 +22,7 @@ import com.xontel.surveillancecameras.databinding.FragmentGridBinding;
 import org.jetbrains.annotations.NotNull;
 import org.videolan.libvlc.MediaPlayer;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +35,7 @@ public class GridFragment extends Fragment {
     private List<IpCam> ipCams = new ArrayList<>();
     private MainViewModel mainViewModel;
     private CamsAdapter gridAdapter;
+    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss.SSS");
     private List<MediaPlayer> mediaPlayers = new ArrayList<>();
 
 
@@ -44,13 +46,20 @@ public class GridFragment extends Fragment {
 
     @Override
     public void onResume(){
+        Log.v("TAG_", "onResume" + " NUMBER : "+fragmentOrder + " Time : "+ simpleDateFormat.format(System.currentTimeMillis()));
         super.onResume();
-        gridAdapter.notifyDataSetChanged();
+//        gridAdapter.setPlayers(mainViewModel.mediaPlayersLiveData.getValue());
+        mainViewModel.lifeCycleObservable.postValue(MainViewModel.ON_RESUME);
+//        gridAdapter.notifyDataSetChanged();
     }
     @Override
     public void onPause() {
+        Log.v("TAG_", "onPause" + " NUMBER : "+fragmentOrder + " Time : "+ simpleDateFormat.format(System.currentTimeMillis()));
         super.onPause();
-        mainViewModel.resetPlayers();
+        mainViewModel.lifeCycleObservable.postValue(MainViewModel.ON_PAUSE);
+//        gridAdapter.setPlayers(new ArrayList<>());
+//        gridAdapter.notifyDataSetChanged();
+//        mainViewModel.resetPlayers();
 
     }
 
@@ -67,10 +76,10 @@ public class GridFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.v("TAG_", "created "+hashCode());
         if (getArguments() != null) {
             fragmentOrder = getArguments().getInt(KEY_ORDER);
         }
+        Log.v("TAG_", "onCreate" + " NUMBER : "+fragmentOrder + " Time : "+ simpleDateFormat.format(System.currentTimeMillis()));
         mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
         gridCount = mainViewModel.gridCount.getValue();
         updateIpCams();
@@ -80,7 +89,6 @@ public class GridFragment extends Fragment {
 
     public void updateIpCams(){
         int leapLastIndex = fragmentOrder * gridCount;
-        Log.v("TAG_", "grid count : " + gridCount + " fragmentOrder : " + fragmentOrder + " hash : " + hashCode());
         ipCams.clear();
         ipCams.addAll(mainViewModel.ipCams.getValue().subList(leapLastIndex - gridCount, Math.min(leapLastIndex, mainViewModel.ipCams.getValue().size())));
 
@@ -89,11 +97,21 @@ public class GridFragment extends Fragment {
 
     @Override
     public void onDestroy() {
+        Log.v("TAG_", "onDestroy" + " NUMBER : "+fragmentOrder + " Time : "+ simpleDateFormat.format(System.currentTimeMillis()));
         super.onDestroy();
-
-//        Log.v("TAG_", "destroyed " + hashCode());
     }
 
+    @Override
+    public void onStart() {
+//        Log.v("TAG_", "onStart" + " NUMBER : "+fragmentOrder);
+        super.onStart();
+    }
+
+    @Override
+    public void onStop() {
+//        Log.v("TAG_", "onStop " + " NUMBER : "+fragmentOrder);
+        super.onStop();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -117,14 +135,9 @@ public class GridFragment extends Fragment {
     }
 
     private void setupObservables() {
-        mainViewModel.gridCount.observe(getViewLifecycleOwner(), newGridCount -> {
-            gridCount = newGridCount;
-            updateIpCams();
-            setupCamGrid(mainViewModel.mediaPlayersLiveData.getValue());
-        });
         mainViewModel.ipCams.observe(getViewLifecycleOwner(), allIpCams -> {
             updateIpCams();
-            setupCamGrid(mainViewModel.mediaPlayersLiveData.getValue());
+            gridAdapter.notifyDataSetChanged();
         });
     }
 
@@ -138,9 +151,8 @@ public class GridFragment extends Fragment {
     }
 
     private void setupCamGrid(List<MediaPlayer> mediaPlayers) {
-        Log.v("TAG_", mediaPlayers.size()+"");
         binding.rvGrid.setLayoutManager(new GridLayoutManager(getContext(), (int) Math.sqrt(gridCount)));
-        gridAdapter = new CamsAdapter(ipCams, mediaPlayers, gridCount, getContext());
+        gridAdapter = new CamsAdapter(ipCams, this, mainViewModel, gridCount, getContext());
         binding.rvGrid.setAdapter(gridAdapter);
     }
 

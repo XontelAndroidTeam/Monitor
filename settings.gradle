@@ -1,3 +1,4 @@
 rootProject.name = "Surveillance cameras"
 include ':app'
 include ':libvlc'
+include ':library'

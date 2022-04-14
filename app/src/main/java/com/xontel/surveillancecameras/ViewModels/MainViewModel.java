@@ -25,10 +25,16 @@ import javax.inject.Inject;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
 public class MainViewModel extends BaseViewModel {
+    public static final int ON_CREATE = 1 ;
+    public static final int ON_RESUME = 2 ;
+    public static final int ON_PAUSE = 3 ;
+    public static final int ON_DESTROY = 4 ;
+
     public static final String TAG = MainViewModel.class.getSimpleName();
     public MutableLiveData<List<IpCam>> ipCams = new MutableLiveData<>(new ArrayList<>());
     public MutableLiveData<Integer> gridCount = new MutableLiveData<>(getDataManager().getGridCount());
     public MutableLiveData<List<MediaPlayer>> mediaPlayersLiveData ;
+    public MutableLiveData<Integer> lifeCycleObservable = new MutableLiveData<>(0);
     private Context context ;
 
     @Inject
