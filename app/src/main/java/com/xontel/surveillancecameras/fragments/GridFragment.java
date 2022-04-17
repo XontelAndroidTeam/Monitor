@@ -44,22 +44,23 @@ public class GridFragment extends Fragment {
     }
 
 
+
+
+
     @Override
     public void onResume(){
         Log.v("TAG_", "onResume" + " NUMBER : "+fragmentOrder + " Time : "+ simpleDateFormat.format(System.currentTimeMillis()));
         super.onResume();
-//        gridAdapter.setPlayers(mainViewModel.mediaPlayersLiveData.getValue());
-        mainViewModel.lifeCycleObservable.postValue(MainViewModel.ON_RESUME);
-//        gridAdapter.notifyDataSetChanged();
+        gridAdapter.setPlayers(mainViewModel.mediaPlayersLiveData.getValue());
+        gridAdapter.notifyDataSetChanged();
     }
     @Override
     public void onPause() {
         Log.v("TAG_", "onPause" + " NUMBER : "+fragmentOrder + " Time : "+ simpleDateFormat.format(System.currentTimeMillis()));
         super.onPause();
-        mainViewModel.lifeCycleObservable.postValue(MainViewModel.ON_PAUSE);
-//        gridAdapter.setPlayers(new ArrayList<>());
-//        gridAdapter.notifyDataSetChanged();
-//        mainViewModel.resetPlayers();
+        gridAdapter.setPlayers(new ArrayList<>());
+        gridAdapter.notifyDataSetChanged();
+        mainViewModel.resetPlayers();
 
     }
 
@@ -152,7 +153,7 @@ public class GridFragment extends Fragment {
 
     private void setupCamGrid(List<MediaPlayer> mediaPlayers) {
         binding.rvGrid.setLayoutManager(new GridLayoutManager(getContext(), (int) Math.sqrt(gridCount)));
-        gridAdapter = new CamsAdapter(ipCams, this, mainViewModel, gridCount, getContext());
+        gridAdapter = new CamsAdapter(ipCams,new ArrayList<>(), gridCount, getContext());
         binding.rvGrid.setAdapter(gridAdapter);
     }
 

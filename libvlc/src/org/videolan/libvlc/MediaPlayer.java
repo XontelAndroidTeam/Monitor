@@ -727,6 +727,7 @@ public class MediaPlayer extends VLCObject<MediaPlayer.Event> {
     private static LibVLC createLibVlcObject(Context context) {
         final ArrayList<String> args = new ArrayList<>();
         args.add("-vvv");
+        args.add("--sout-transcode-fps=10");
 
         return new LibVLC(context, args);
     }
