@@ -1,0 +1,42 @@
+[
+    {
+        "merged": "C:\\Users\\A.Khadir\\AndroidStudioProjects\\Surveillancecameras\\libvlc\\build\\intermediates\\res\\merged\\release\\drawable\\notification_icon_background.xml",
+        "source": "C:\\Users\\A.Khadir\\.gradle\\caches\\transforms-2\\files-2.1\\01f7372912348c6c0969511271a466dd\\core-1.7.0\\res\\drawable\\notification_icon_background.xml"
+    },
+    {
+        "merged": "C:\\Users\\A.Khadir\\AndroidStudioProjects\\Surveillancecameras\\libvlc\\build\\intermediates\\res\\merged\\release\\drawable\\notification_bg_low.xml",
+        "source": "C:\\Users\\A.Khadir\\.gradle\\caches\\transforms-2\\files-2.1\\01f7372912348c6c0969511271a466dd\\core-1.7.0\\res\\drawable\\notification_bg_low.xml"
+    },
+    {
+        "merged": "C:\\Users\\A.Khadir\\AndroidStudioProjects\\Surveillancecameras\\libvlc\\build\\intermediates\\res\\merged\\release\\drawable\\ic_baseline_circle_24.xml",
+        "source": "C:\\Users\\A.Khadir\\AndroidStudioProjects\\Surveillancecameras\\libvlc\\res\\drawable\\ic_baseline_circle_24.xml"
+    },
+    {
+        "merged": "C:\\Users\\A.Khadir\\AndroidStudioProjects\\Surveillancecameras\\libvlc\\build\\intermediates\\res\\merged\\release\\drawable\\ic_baseline_volume_up_24.xml",
+        "source": "C:\\Users\\A.Khadir\\AndroidStudioProjects\\Surveillancecameras\\libvlc\\res\\drawable\\ic_baseline_volume_up_24.xml"
+    },
+    {
+        "merged": "C:\\Users\\A.Khadir\\AndroidStudioProjects\\Surveillancecameras\\libvlc\\build\\intermediates\\res\\merged\\release\\drawable\\rounded_bg.xml",
+        "source": "C:\\Users\\A.Khadir\\AndroidStudioProjects\\Surveillancecameras\\libvlc\\res\\drawable\\rounded_bg.xml"
+    },
+    {
+        "merged": "C:\\Users\\A.Khadir\\AndroidStudioProjects\\Surveillancecameras\\libvlc\\build\\intermediates\\res\\merged\\release\\drawable\\loading_dots_dot.xml",
+        "source": "C:\\Users\\A.Khadir\\AndroidStudioProjects\\Surveillancecameras\\libvlc\\res\\drawable\\loading_dots_dot.xml"
+    },
+    {
+        "merged": "C:\\Users\\A.Khadir\\AndroidStudioProjects\\Surveillancecameras\\libvlc\\build\\intermediates\\res\\merged\\release\\drawable\\ic_baseline_pause_24.xml",
+        "source": "C:\\Users\\A.Khadir\\AndroidStudioProjects\\Surveillancecameras\\libvlc\\res\\drawable\\ic_baseline_pause_24.xml"
+    },
+    {
+        "merged": "C:\\Users\\A.Khadir\\AndroidStudioProjects\\Surveillancecameras\\libvlc\\build\\intermediates\\res\\merged\\release\\drawable\\ic_baseline_volume_off_24.xml",
+        "source": "C:\\Users\\A.Khadir\\AndroidStudioProjects\\Surveillancecameras\\libvlc\\res\\drawable\\ic_baseline_volume_off_24.xml"
+    },
+    {
+        "merged": "C:\\Users\\A.Khadir\\AndroidStudioProjects\\Surveillancecameras\\libvlc\\build\\intermediates\\res\\merged\\release\\drawable\\notification_bg.xml",
+        "source": "C:\\Users\\A.Khadir\\.gradle\\caches\\transforms-2\\files-2.1\\01f7372912348c6c0969511271a466dd\\core-1.7.0\\res\\drawable\\notification_bg.xml"
+    },
+    {
+        "merged": "C:\\Users\\A.Khadir\\AndroidStudioProjects\\Surveillancecameras\\libvlc\\build\\intermediates\\res\\merged\\release\\drawable\\notification_tile_bg.xml",
+        "source": "C:\\Users\\A.Khadir\\.gradle\\caches\\transforms-2\\files-2.1\\01f7372912348c6c0969511271a466dd\\core-1.7.0\\res\\drawable\\notification_tile_bg.xml"
+    }
+]

@@ -1,0 +1,82 @@
+{
+    "logs": [
+        {
+            "outputFile": "C:\\Users\\A.Khadir\\AndroidStudioProjects\\Surveillancecameras\\libvlc\\build\\intermediates\\res\\merged\\release\\values-ar\\values-ar.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\A.Khadir\\AndroidStudioProjects\\Surveillancecameras\\libvlc\\res\\values-ar\\strings.xml",
+                    "from": {
+                        "startLines": "4,2,3,6,7,10,8,5,11,9",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "209,57,141,352,421,595,459,283,658,555",
+                        "endColumns": "72,82,66,67,36,61,94,67,88,38",
+                        "endOffsets": "277,135,203,415,453,652,549,346,742,589"
+                    },
+                    "to": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,12",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "55,128,211,278,346,383,445,540,608,798",
+                        "endColumns": "72,82,66,67,36,61,94,67,88,38",
+                        "endOffsets": "123,206,273,341,378,440,535,603,692,832"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\A.Khadir\\.gradle\\caches\\transforms-2\\files-2.1\\01f7372912348c6c0969511271a466dd\\core-1.7.0\\res\\values-ar\\values-ar.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "100",
+                        "endOffsets": "151"
+                    },
+                    "to": {
+                        "startLines": "11",
+                        "startColumns": "4",
+                        "startOffsets": "697",
+                        "endColumns": "100",
+                        "endOffsets": "793"
+                    }
+                }
+            ]
+        },
+        {
+            "outputFile": "C:\\Users\\A.Khadir\\AndroidStudioProjects\\Surveillancecameras\\libvlc\\build\\intermediates\\incremental\\mergeReleaseResources\\merged.dir\\values-ar\\values-ar.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\A.Khadir\\AndroidStudioProjects\\Surveillancecameras\\libvlc\\res\\values-ar\\strings.xml",
+                    "from": {
+                        "startLines": "4,2,3,6,7,10,8,5,11,9",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "209,57,141,352,421,595,459,283,658,555",
+                        "endColumns": "72,82,66,67,36,61,94,67,88,38",
+                        "endOffsets": "277,135,203,415,453,652,549,346,742,589"
+                    },
+                    "to": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,12",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "55,128,211,278,346,383,445,540,608,798",
+                        "endColumns": "72,82,66,67,36,61,94,67,88,38",
+                        "endOffsets": "123,206,273,341,378,440,535,603,692,832"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\A.Khadir\\.gradle\\caches\\transforms-2\\files-2.1\\01f7372912348c6c0969511271a466dd\\core-1.7.0\\res\\values-ar\\values-ar.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "100",
+                        "endOffsets": "151"
+                    },
+                    "to": {
+                        "startLines": "11",
+                        "startColumns": "4",
+                        "startOffsets": "697",
+                        "endColumns": "100",
+                        "endOffsets": "793"
+                    }
+                }
+            ]
+        }
+    ]
+}
