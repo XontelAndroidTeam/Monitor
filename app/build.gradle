@@ -15,10 +15,9 @@ android {
     }
     compileSdkVersion 31
     buildToolsVersion "30.0.3"
-
     defaultConfig {
         applicationId "com.xontel.surveillancecameras"
-        minSdkVersion 27
+        minSdkVersion 23
         targetSdkVersion 27
         versionCode 6
         versionName "1.4"

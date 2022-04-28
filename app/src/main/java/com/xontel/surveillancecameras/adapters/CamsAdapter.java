@@ -141,6 +141,7 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
             super(itemView);
             vlcVideoLayout = itemView.findViewById(R.id.vlc_layout);
             camName = itemView.findViewById(R.id.tv_cam_name);
+//            rtspSurfaceView = itemView.findViewById(R.id.svVideo);
 //            mainViewModel.lifeCycleObservable.observe(lifecycleOwner, new Observer<Integer>() {
 //                @Override
 //                public void onChanged(Integer state) {
@@ -173,6 +174,7 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
             camName.setText(ipCam.getName());
 //            initEasyPlayer();
             initVlcPlayer();
+//            initRtspPlayer();
             itemView.setOnClickListener(v -> {
                 Intent intent = new Intent(context, CamerasActivity.class);
                 ArrayList<IpCam> cams = new ArrayList<>();
@@ -181,7 +183,6 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
                 context.startActivity(intent);
             });
 //            Log.v("TAG_", "bound" + getBindingAdapterPosition());
-
             isBound = true;
         }
 
@@ -198,11 +199,14 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
             final Media media = new Media(mediaPlayer.getLibVLCInstance(), Uri.parse(ipCam.getUrl()));
             media.setHWDecoderEnabled(true, true);
             media.addCommonOptions();
-
             mediaPlayer.setMedia(media);
             media.release();
             mediaPlayer.play();
             }
+        }
+        private void initRtspPlayer(){
+//            rtspSurfaceView.init(Uri.parse("rtsp://192.168.1.123/Streaming/Channels/302"), "admin", "X0nPAssw0rd_000");
+//            rtspSurfaceView.start(true, true);
         }
 
         private void initEasyPlayer() {

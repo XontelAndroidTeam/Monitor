@@ -13,9 +13,7 @@ import android.view.View;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
-import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DataSource;
@@ -71,7 +69,6 @@ public class MediaViewerActivity extends BaseActivity {
             @Override
             public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                     binding.ivImagePreview.setImageBitmap(resource);
-
             }
         });
         binding.ivImagePreview.setVisibility(View.VISIBLE);
@@ -80,15 +77,15 @@ public class MediaViewerActivity extends BaseActivity {
 
     private void showVideo(){
 
-        simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(this);
-        binding.videoPlayer.setPlayer(simpleExoPlayer);
-        binding.videoPlayer.setKeepScreenOn(true);
-        DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(this, "cameras");
-        MediaSource mediaSource = new ExtractorMediaSource.Factory(dataSourceFactory)
-                .createMediaSource(Uri.fromFile(new File(mediaFilePath)));
-        simpleExoPlayer.prepare(mediaSource);
-        simpleExoPlayer.setPlayWhenReady(false);
-        binding.videoPlayer.setVisibility(View.VISIBLE);
+//        simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(this);
+//        binding.videoPlayer.setPlayer(simpleExoPlayer);
+//        binding.videoPlayer.setKeepScreenOn(true);
+//        DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(this, "cameras");
+//        MediaSource mediaSource = new ExtractorMediaSource.Factory(dataSourceFactory)
+//                .createMediaSource(Uri.fromFile(new File(mediaFilePath)));
+//        simpleExoPlayer.prepare(mediaSource);
+//        simpleExoPlayer.setPlayWhenReady(false);
+//        binding.videoPlayer.setVisibility(View.VISIBLE);
     }
 
     @Override

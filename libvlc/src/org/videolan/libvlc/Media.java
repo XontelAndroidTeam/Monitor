@@ -433,14 +433,12 @@ public class Media extends VLCObject<IMedia.Event> implements IMedia {
     public String getMeta(int id, boolean force) {
         if (id < 0 || id >= Meta.MAX)
             return null;
-
         if (!force) synchronized (this) {
             if (mNativeMetas[id] != null)
                 return mNativeMetas[id];
             if (isReleased())
                 return null;
         }
-
         final String meta = nativeGetMeta(id);
         synchronized (this) {
             mNativeMetas[id] = meta;
@@ -525,19 +523,19 @@ public class Media extends VLCObject<IMedia.Event> implements IMedia {
 
 
     public void addCommonOptions(){
-        addOption(":network-caching=500");
-        addOption(":clock-jitter=0");
-        addOption(":clock-synchro=0");
-        addOption(":rtsp-caching=0");
+        addOption(":network-caching=2000");
+//        addOption(":clock-jitter=0");
+//        addOption(":clock-synchro=0");
+//        addOption(":rtsp-caching=0");
         addOption("--rtsp-tcp");
-        addOption("--live-caching=0");
-        addOption("--file-caching=0");
+//        addOption("--live-caching=0");
+//        addOption("--file-caching=0");
         addOption("--drop-late-frames");
         addOption("--skip-frames");
-        addOption("--disc-caching=3000");
-        addOption("--sout-mux-caching=0");
-        addOption("--h264-fps=2");
-        addOption("--sout-transcode-fps=10");
+//        addOption("--disc-caching=3000");
+//        addOption("--sout-mux-caching=0");
+//        addOption("--h264-fps=0");
+//        addOption("--sout-transcode-fps=10");
 
 
 
