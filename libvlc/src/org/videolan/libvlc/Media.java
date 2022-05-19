@@ -523,7 +523,7 @@ public class Media extends VLCObject<IMedia.Event> implements IMedia {
 
 
     public void addCommonOptions(){
-        addOption(":network-caching=2000");
+        addOption(":network-caching=500");
 //        addOption(":clock-jitter=0");
 //        addOption(":clock-synchro=0");
 //        addOption(":rtsp-caching=0");

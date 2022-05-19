@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
+import android.view.SurfaceView;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,8 @@ import com.xontel.surveillancecameras.activities.CamerasActivity;
 import com.xontel.surveillancecameras.activities.MainActivity;
 import com.xontel.surveillancecameras.base.BaseViewHolder;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
+import com.xontel.surveillancecameras.utils.HIKSinglePlayer;
+import com.xontel.surveillancecameras.utils.HikUtil;
 
 import org.easydarwin.video.EasyPlayerClient;
 import org.videolan.libvlc.Media;
@@ -32,16 +35,20 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
     private List<IpCam> ipCams;
     private Context context;
     private int gridCount;
+    private int logId ;
+    private int channelsNum ;
     private List<MediaPlayer> players;
     private static final int ITEM_CAM = 0;
     private static final int ITEM_ADD_CAM = 1;
+    private static final int ITEM_HIK_CAM = 2;
 
 
-    public CamsAdapter(List<IpCam> ipCams, List<MediaPlayer> mediaPlayers, int gridCount, Context context) {
+    public CamsAdapter(List<IpCam> ipCams, int channelsNum, List<MediaPlayer> mediaPlayers, int gridCount, Context context) {
         this.ipCams = ipCams;
         this.context = context;
         this.gridCount = gridCount;
         this.players = mediaPlayers;
+        this.channelsNum = channelsNum;
     }
 
     public List<MediaPlayer> getPlayers() {
@@ -81,6 +88,12 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 //                lp.height = (parent.getMeasuredHeight() / (int) Math.sqrt(gridCount)) - 10;
 //                view.setLayoutParams(lp);
                 return new CamsViewHolder(view);
+            case ITEM_HIK_CAM:
+                view = LayoutInflater.from(context).inflate(R.layout.item_hik_cam, parent, false);
+//                GridLayoutManager.LayoutParams lp = (GridLayoutManager.LayoutParams) view.getLayoutParams();
+//                lp.height = (parent.getMeasuredHeight() / (int) Math.sqrt(gridCount)) - 10;
+//                view.setLayoutParams(lp);
+                return new HikVisionViewHolder(view);
 
             case ITEM_ADD_CAM:
             default:
@@ -115,7 +128,7 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
     @Override
     public int getItemViewType(int position) {
-        return position < ipCams.size() ? ITEM_CAM : ITEM_ADD_CAM;
+        return ITEM_HIK_CAM/*position < ipCams.size() ? ITEM_CAM : ITEM_ADD_CAM*/;
     }
 
     @Override
@@ -126,6 +139,10 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
     @Override
     public int getItemCount() {
         return gridCount;
+    }
+
+    public void setLogId(int logId) {
+        this.logId = logId;
     }
 
     public class CamsViewHolder extends BaseViewHolder {
@@ -240,6 +257,39 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
                 ((MainActivity) context).addNewCam();
             });
 //            Log.v("TAG_", "bound" + getBindingAdapterPosition());
+        }
+
+        @Override
+        protected void clear() {
+        }
+    }
+    public class HikVisionViewHolder extends BaseViewHolder {
+        TextView camName ; 
+        SurfaceView surfaceView ;
+        HikUtil hikUtil;
+        public HikVisionViewHolder(@NonNull View itemView) {
+            super(itemView);
+            camName = itemView.findViewById(R.id.tv_cam_name);
+            surfaceView = itemView.findViewById(R.id.hik_layout);
+
+        }
+
+        @Override
+        public void onBind(int position) {
+            super.onBind(position);
+            initHikPlayer();
+//            Log.v("TAG_", "bound" + getBindingAdapterPosition());
+        }
+
+        private void initHikPlayer() {
+            HIKSinglePlayer hikSinglePlayer = new HIKSinglePlayer(getBindingAdapterPosition()+1, logId, HIKSinglePlayer.HIK_SUB_STREAM_CODE);
+            hikSinglePlayer.initView(surfaceView);
+            hikSinglePlayer.playOrStopStream();
+//            HikUtil.initSDK();
+//            hikUtil = new HikUtil();
+//            hikUtil.initView(surfaceView);
+//            hikUtil.setDeviceData("192.168.1.123", 8000, "admin", "X0nPAssw0rd_000");
+//            hikUtil.loginDevice( );
         }
 
         @Override

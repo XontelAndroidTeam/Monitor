@@ -76,7 +76,6 @@ public class MediaViewerActivity extends BaseActivity {
     }
 
     private void showVideo(){
-
 //        simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(this);
 //        binding.videoPlayer.setPlayer(simpleExoPlayer);
 //        binding.videoPlayer.setKeepScreenOn(true);

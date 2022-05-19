@@ -1,10 +1,13 @@
 package com.xontel.surveillancecameras.fragments;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,6 +21,9 @@ import com.xontel.surveillancecameras.ViewModels.MainViewModel;
 import com.xontel.surveillancecameras.adapters.CamsAdapter;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
 import com.xontel.surveillancecameras.databinding.FragmentGridBinding;
+import com.xontel.surveillancecameras.utils.HIKDevice;
+import com.xontel.surveillancecameras.utils.HIKDeviceType;
+import com.xontel.surveillancecameras.utils.HikUtil;
 
 import org.jetbrains.annotations.NotNull;
 import org.videolan.libvlc.MediaPlayer;
@@ -35,6 +41,7 @@ public class GridFragment extends Fragment {
     private List<IpCam> ipCams = new ArrayList<>();
     private MainViewModel mainViewModel;
     private CamsAdapter gridAdapter;
+    private int logId = -1;
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss.SSS");
     private List<MediaPlayer> mediaPlayers = new ArrayList<>();
 
@@ -51,7 +58,8 @@ public class GridFragment extends Fragment {
     public void onResume(){
         Log.v("TAG_", "onResume" + " NUMBER : "+fragmentOrder + " Time : "+ simpleDateFormat.format(System.currentTimeMillis()));
         super.onResume();
-        gridAdapter.setPlayers(mainViewModel.mediaPlayersLiveData.getValue());
+//        gridAdapter.setPlayers(mainViewModel.mediaPlayersLiveData.getValue());
+        gridAdapter.setLogId(logId);
         gridAdapter.notifyDataSetChanged();
     }
     @Override
@@ -83,6 +91,31 @@ public class GridFragment extends Fragment {
         Log.v("TAG_", "onCreate" + " NUMBER : "+fragmentOrder + " Time : "+ simpleDateFormat.format(System.currentTimeMillis()));
         mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
         gridCount = mainViewModel.gridCount.getValue();
+        HikUtil.initSDK();
+        HikUtil.loginDevice(new HIKDevice("192.168.1.123", 8000, "admin", "X0nPAssw0rd_000", HIKDeviceType.DVR), new HikUtil.HikInterface() {
+            @Override
+            public void onLogInSuccess(int id) {
+                logId = id ;
+
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getContext(), "logId : "+logId , Toast.LENGTH_SHORT).show();
+                        gridAdapter.setLogId(logId);
+                        gridAdapter.notifyDataSetChanged();
+
+                    }
+                });
+
+
+            }
+
+            @Override
+            public void onLogInFailed() {
+             Log.v("TAGGG", "login failed");
+
+            }
+        });
         updateIpCams();
     }
 
@@ -144,7 +177,7 @@ public class GridFragment extends Fragment {
 
     private void updateGrid() {
         int oldGridCount = ((GridLayoutManager) binding.rvGrid.getLayoutManager()).getSpanCount();
-        if (oldGridCount != gridCount) {
+        if (oldGridCount != gridCount){
             ((GridLayoutManager) binding.rvGrid.getLayoutManager()).setSpanCount((int) Math.sqrt(gridCount));
             gridAdapter.notifyDataSetChanged();
         }
@@ -153,7 +186,7 @@ public class GridFragment extends Fragment {
 
     private void setupCamGrid(List<MediaPlayer> mediaPlayers) {
         binding.rvGrid.setLayoutManager(new GridLayoutManager(getContext(), (int) Math.sqrt(gridCount)));
-        gridAdapter = new CamsAdapter(ipCams,new ArrayList<>(), gridCount, getContext());
+        gridAdapter = new CamsAdapter(ipCams,0, new ArrayList<>(), gridCount, getContext());
         binding.rvGrid.setAdapter(gridAdapter);
     }
 

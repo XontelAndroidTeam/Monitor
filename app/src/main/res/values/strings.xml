@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Security cameras</string>
+    <string name="app_name">Monitor</string>
     <string name="settings">Settings</string>
     <string name="slide_show">Slide show</string>
     <string name="add_camera">Add new camera</string>
@@ -58,6 +58,7 @@
     <string name="no_media_yet">No media yet</string>
     <string name="card">card</string>
     <string name="nothing_selected">Nothing selected</string>
+    <string name="login_failed">Login failed</string>
 
 
 </resources>

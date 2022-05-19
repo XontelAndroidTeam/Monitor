@@ -50,7 +50,6 @@ public class MainActivity extends BaseActivity {
         setSupportActionBar(binding.toolbar);
         mainViewModel = new ViewModelProvider(this, providerFactory).get(MainViewModel.class);
         initUI();
-        mainViewModel.getAllCameras();
         if (savedInstanceState != null) {
             currentPageIndex = savedInstanceState.getInt(KEY_CURRENT_PAGE_INDEX, 0);
         }

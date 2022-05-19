@@ -42,6 +42,7 @@ public class MainViewModel extends BaseViewModel {
         super(mSchedulerProvider, mCompositeDisposable, manager);
         this.context = context ;
         mediaPlayersLiveData = new MutableLiveData<>(createMediaPlayers());
+        getAllCameras();
     }
 
     private List<MediaPlayer> createMediaPlayers() {

@@ -11,7 +11,7 @@
         android:layout_margin="4dp"
         android:backgroundTint="@color/black_color"
         app:cardCornerRadius="10dp"
-        app:layout_constraintDimensionRatio="1200:550"
+        app:layout_constraintDimensionRatio="H,1200:550"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">

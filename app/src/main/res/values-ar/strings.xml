@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">كاميرات IP</string>
+    <string name="app_name">المراقب</string>
     <string name="settings">الإعدادات</string>
     <string name="slide_show">عرض الشرائح</string>
     <string name="add_camera">أضف كاميرا</string>
@@ -57,4 +57,5 @@
     <string name="card">بطاقة</string>
     <string name="cam_details">تفاصيل الكاميرا</string>
     <string name="nothing_selected">لم يتم اختيار اي عنصر</string>
+    <string name="login_failed">فشل تسجيل الدخول</string>
 </resources>
