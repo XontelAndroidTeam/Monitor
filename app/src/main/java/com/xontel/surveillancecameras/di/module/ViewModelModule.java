@@ -3,7 +3,8 @@ package com.xontel.surveillancecameras.di.module;
 
 import androidx.lifecycle.ViewModel;
 
-import com.xontel.surveillancecameras.ViewModels.MainViewModel;
+import com.xontel.surveillancecameras.viewModels.MainViewModel;
+import com.xontel.surveillancecameras.viewModels.SettingViewModel;
 import com.xontel.surveillancecameras.di.ViewModelKey;
 
 import dagger.Binds;
@@ -16,4 +17,9 @@ public abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(MainViewModel.class)
     public abstract ViewModel bindMainViewModel(MainViewModel mainViewModel);
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SettingViewModel.class)
+    public abstract ViewModel bindSettingViewModel(SettingViewModel settingViewModel);
 }

@@ -20,7 +20,6 @@ public class BaseViewModel extends ViewModel {
     private String errorMessage ;
 
 
-    @Inject
     public BaseViewModel(SchedulerProvider mSchedulerProvider, CompositeDisposable mCompositeDisposable, DataManager manager) {
         this.mSchedulerProvider = mSchedulerProvider;
         this.mCompositeDisposable = mCompositeDisposable;

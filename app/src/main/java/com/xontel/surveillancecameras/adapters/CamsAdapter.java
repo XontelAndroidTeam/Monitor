@@ -18,12 +18,10 @@ import com.xontel.surveillancecameras.activities.MainActivity;
 import com.xontel.surveillancecameras.base.BaseViewHolder;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
 
-import org.easydarwin.video.EasyPlayerClient;
 import org.videolan.libvlc.Media;
 import org.videolan.libvlc.MediaPlayer;
 import org.videolan.libvlc.util.VLCVideoLayout;
 
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,7 +74,7 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
         View view;
         switch (viewType) {
             case ITEM_CAM:
-                view = LayoutInflater.from(context).inflate(R.layout.item_cam, parent, false);
+                view = LayoutInflater.from(context).inflate(R.layout.item_live_media, parent, false);
 //                GridLayoutManager.LayoutParams lp = (GridLayoutManager.LayoutParams) view.getLayoutParams();
 //                lp.height = (parent.getMeasuredHeight() / (int) Math.sqrt(gridCount)) - 10;
 //                view.setLayoutParams(lp);
@@ -210,18 +208,18 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
         }
 
         private void initEasyPlayer() {
-            EasyPlayerClient client = new EasyPlayerClient(itemView.getContext(), "", textureView, null, new EasyPlayerClient.I420DataCallback() {
-                @Override
-                public void onI420Data(ByteBuffer buffer) {
-
-                }
-
-                @Override
-                public void onPcmData(byte[] pcm) {
-
-                }
-            });
-            client.play(ipCam.getUrl());
+//            EasyPlayerClient client = new EasyPlayerClient(itemView.getContext(), "", textureView, null, new EasyPlayerClient.I420DataCallback() {
+//                @Override
+//                public void onI420Data(ByteBuffer buffer) {
+//
+//                }
+//
+//                @Override
+//                public void onPcmData(byte[] pcm) {
+//
+//                }
+//            });
+//            client.play(ipCam.getUrl());
 
         }
 

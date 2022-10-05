@@ -22,7 +22,6 @@ int attr fontStyle 0x0
 int attr fontVariationSettings 0x0
 int attr fontWeight 0x0
 int attr keylines 0x0
-int attr lStar 0x0
 int attr layout_anchor 0x0
 int attr layout_anchorGravity 0x0
 int attr layout_behavior 0x0
@@ -150,10 +149,6 @@ int id icon 0x0
 int id icon_group 0x0
 int id info 0x0
 int id italic 0x0
-int id item1 0x0
-int id item2 0x0
-int id item3 0x0
-int id item4 0x0
 int id iv_sound 0x0
 int id left 0x0
 int id line1 0x0
@@ -202,7 +197,6 @@ int id timer 0x0
 int id title 0x0
 int id top 0x0
 int id tv_error 0x0
-int id view_tree_lifecycle_owner 0x0
 int id volume_controller 0x0
 int integer cancel_button_image_alpha 0x0
 int integer status_bar_notification_info_maxnum 0x0
@@ -228,8 +222,6 @@ int layout sound_controller 0x0
 int layout surface_view 0x0
 int layout texture_view 0x0
 int layout vlc_video_layout 0x0
-int menu example_menu 0x0
-int menu example_menu2 0x0
 int string cant_take_photo 0x0
 int string error_occurred_while_processing 0x0
 int string no_media_available 0x0
@@ -257,12 +249,10 @@ int style Widget_Support_CoordinatorLayout 0x0
 int[] styleable Capability { 0x0, 0x0 }
 int styleable Capability_queryPatterns 0
 int styleable Capability_shortcutMatchRequired 1
-int[] styleable ColorStateListItem { 0x0, 0x101031f, 0x10101a5, 0x1010647, 0x0 }
+int[] styleable ColorStateListItem { 0x0, 0x101031f, 0x10101a5 }
 int styleable ColorStateListItem_alpha 0
 int styleable ColorStateListItem_android_alpha 1
 int styleable ColorStateListItem_android_color 2
-int styleable ColorStateListItem_android_lStar 3
-int styleable ColorStateListItem_lStar 4
 int[] styleable CoordinatorLayout { 0x0, 0x0 }
 int styleable CoordinatorLayout_keylines 0
 int styleable CoordinatorLayout_statusBarBackground 1

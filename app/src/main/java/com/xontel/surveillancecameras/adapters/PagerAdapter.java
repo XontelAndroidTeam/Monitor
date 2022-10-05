@@ -1,19 +1,10 @@
 package com.xontel.surveillancecameras.adapters;
 
-import android.graphics.Camera;
-import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.xontel.surveillancecameras.data.db.model.IpCam;
-import com.xontel.surveillancecameras.fragments.CameraFragment;
 
 import org.jetbrains.annotations.NotNull;
 

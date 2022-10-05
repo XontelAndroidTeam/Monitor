@@ -124,4 +124,36 @@ public class BaseDataManager implements DataManager {
     public int getGridCount() {
         return mPreferencesHelper.getGridCount();
     }
+
+    @Override
+    public void setAutoSlideShow(boolean autoSlideShow) {
+        mPreferencesHelper.setAutoSlideShow(autoSlideShow);
+    }
+
+    @Override
+    public boolean getAutoSlideShow() {
+        return mPreferencesHelper.getAutoSlideShow();
+    }
+
+    @Override
+    public void setSlideShowInterval(int slideShowInterval) {
+        mPreferencesHelper.setSlideShowInterval(slideShowInterval);
+    }
+
+    @Override
+    public int getSlideShowInterval() {
+        return mPreferencesHelper.getSlideShowInterval();
+    }
+
+    @Override
+    public void setStorageMedia(int storageMedia) {
+        mPreferencesHelper.setStorageMedia(storageMedia);
+    }
+
+    @Override
+    public int getStorageMedia() {
+        return mPreferencesHelper.getStorageMedia();
+    }
+
+
 }

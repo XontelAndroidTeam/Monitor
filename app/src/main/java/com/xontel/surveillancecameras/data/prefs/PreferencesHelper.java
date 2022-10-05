@@ -7,4 +7,13 @@ public interface PreferencesHelper {
     void setGridCount(int gridCount);
     int getGridCount();
 
+    void setAutoSlideShow(boolean autoSlideShow);
+    boolean getAutoSlideShow();
+
+    void setSlideShowInterval(int slideShowInterval);
+    int getSlideShowInterval();
+
+    void setStorageMedia(int storageMedia);
+    int getStorageMedia();
+
 }

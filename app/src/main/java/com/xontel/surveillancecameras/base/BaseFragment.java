@@ -7,9 +7,15 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 import com.xontel.surveillancecameras.di.component.ActivityComponent;
+import com.xontel.surveillancecameras.di.component.DaggerFragmentComponent;
+import com.xontel.surveillancecameras.di.component.FragmentComponent;
+import com.xontel.surveillancecameras.di.module.FragmentModule;
+import com.xontel.surveillancecameras.root.MyApp;
 import com.xontel.surveillancecameras.utils.CommonUtils;
 
 
@@ -19,7 +25,7 @@ import com.xontel.surveillancecameras.utils.CommonUtils;
  * Email    : info@androidwave.com
  */
 public abstract class BaseFragment extends Fragment implements MvpView {
-
+    FragmentComponent fragmentComponent ;
     protected static ProgressDialog mProgressDialog;
     private BaseActivity mActivity;
 
@@ -27,6 +33,14 @@ public abstract class BaseFragment extends Fragment implements MvpView {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(false);
+        fragmentComponent = DaggerFragmentComponent.builder()
+                .fragmentModule(new FragmentModule(((AppCompatActivity)getActivity())))
+                .applicationComponent(((MyApp) getBaseActivity().getApplication()).getComponent())
+                .build();
+    }
+
+    public FragmentComponent getFragmentComponent() {
+        return fragmentComponent;
     }
 
     @Override

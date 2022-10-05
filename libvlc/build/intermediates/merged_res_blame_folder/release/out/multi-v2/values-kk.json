@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "C:\\Users\\A.Khadir\\AndroidStudioProjects\\Surveillancecameras\\libvlc\\build\\intermediates\\res\\merged\\release\\values-kk\\values-kk.xml",
+            "outputFile": "D:\\projects\\AndroidStudioProjects\\live-cameras\\libvlc\\build\\intermediates\\res\\merged\\release\\values-kk\\values-kk.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\A.Khadir\\.gradle\\caches\\transforms-2\\files-2.1\\01f7372912348c6c0969511271a466dd\\core-1.7.0\\res\\values-kk\\values-kk.xml",
+                    "source": "C:\\Users\\medo_\\.gradle\\caches\\transforms-2\\files-2.1\\89f1e14fc94ff45f764a80fa68af5c9f\\core-1.6.0\\res\\values-kk\\values-kk.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
@@ -16,10 +16,10 @@
             ]
         },
         {
-            "outputFile": "C:\\Users\\A.Khadir\\AndroidStudioProjects\\Surveillancecameras\\libvlc\\build\\intermediates\\incremental\\mergeReleaseResources\\merged.dir\\values-kk\\values-kk.xml",
+            "outputFile": "D:\\projects\\AndroidStudioProjects\\live-cameras\\libvlc\\build\\intermediates\\incremental\\mergeReleaseResources\\merged.dir\\values-kk\\values-kk.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\A.Khadir\\.gradle\\caches\\transforms-2\\files-2.1\\01f7372912348c6c0969511271a466dd\\core-1.7.0\\res\\values-kk\\values-kk.xml",
+                    "source": "C:\\Users\\medo_\\.gradle\\caches\\transforms-2\\files-2.1\\89f1e14fc94ff45f764a80fa68af5c9f\\core-1.6.0\\res\\values-kk\\values-kk.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",

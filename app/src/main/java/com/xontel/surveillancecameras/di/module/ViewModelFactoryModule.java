@@ -3,7 +3,7 @@ package com.xontel.surveillancecameras.di.module;
 
 import androidx.lifecycle.ViewModelProvider;
 
-import com.xontel.surveillancecameras.ViewModels.ViewModelProviderFactory;
+import com.xontel.surveillancecameras.viewModels.ViewModelProviderFactory;
 
 import dagger.Binds;
 import dagger.Module;

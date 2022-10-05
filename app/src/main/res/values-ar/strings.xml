@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">كاميرات IP</string>
+    <string name="app_name">المراقب</string>
     <string name="settings">الإعدادات</string>
     <string name="slide_show">عرض الشرائح</string>
-    <string name="add_camera">أضف كاميرا</string>
+    <string name="add_camera">أضف كاميرا جديدة</string>
+    <string name="add_camera_">اضف كاميرا</string>
     <string name="click_to_add">إضغط للإضافة</string>
     <string name="auto_preview">عرض تلقائي</string>
     <string name="slide_show_interval">مدة عرض الشرائح</string>
@@ -57,4 +58,16 @@
     <string name="card">بطاقة</string>
     <string name="cam_details">تفاصيل الكاميرا</string>
     <string name="nothing_selected">لم يتم اختيار اي عنصر</string>
+    <string name="monitor">المراقب</string>
+    <string name="camera_monitor">Camera monitor</string>
+    <string name="saved_media">الوسائط المحفوظة</string>
+    <string name="title">العنوان</string>
+    <string name="back">رجوع</string>
+    <string name="camera_name">اسم الكاميرا</string>
+    <string name="camera_info">معلومات الكاميرا</string>
+    <string name="add_first_cam">Add your first cam</string>
+    <string name="add">أضف</string>
+    <string name="seconds">ثوان</string>
+    <string name="seconds_formated">%d ثوان</string>
+    <string name="devices">الأجهرة</string>
 </resources>

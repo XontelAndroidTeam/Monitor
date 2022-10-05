@@ -1,15 +1,22 @@
 package com.xontel.surveillancecameras.di.component;
 
 
+import com.xontel.surveillancecameras.di.PerFragment;
+import com.xontel.surveillancecameras.di.module.FragmentModule;
 import com.xontel.surveillancecameras.di.module.ViewModelModule;
-import com.xontel.surveillancecameras.fragments.GridFragment;
+import com.xontel.surveillancecameras.fragments.SettingsFragment;
 
 import dagger.Component;
 
-@Component(modules = {
-        ViewModelModule.class
 
+
+import dagger.Component;
+
+@PerFragment
+@Component(dependencies = ApplicationComponent.class, modules = {
+        FragmentModule.class,
+        ViewModelModule.class
 })
 public interface FragmentComponent {
-    void inject(GridFragment gridFragment);
+    void inject(SettingsFragment settingsFragment);
 }

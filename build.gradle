@@ -19,6 +19,7 @@ allprojects {
         maven { url 'https://jitpack.io' }
         google()
         mavenCentral()
+        mavenLocal()
         maven { url "https://dl.bintray.com/videolan/Android"}
             jcenter() // Warning: this repository is going to shut down soon
     }

@@ -1,22 +1,22 @@
 [
     {
-        "merged": "C:\\Users\\A.Khadir\\AndroidStudioProjects\\Surveillancecameras\\libvlc\\build\\intermediates\\res\\merged\\release\\drawable-mdpi-v4\\notification_bg_low_normal.9.png",
-        "source": "C:\\Users\\A.Khadir\\.gradle\\caches\\transforms-2\\files-2.1\\01f7372912348c6c0969511271a466dd\\core-1.7.0\\res\\drawable-mdpi-v4\\notification_bg_low_normal.9.png"
+        "merged": "D:\\projects\\AndroidStudioProjects\\live-cameras\\libvlc\\build\\intermediates\\res\\merged\\release\\drawable-mdpi-v4\\notification_bg_low_normal.9.png",
+        "source": "C:\\Users\\medo_\\.gradle\\caches\\transforms-2\\files-2.1\\89f1e14fc94ff45f764a80fa68af5c9f\\core-1.6.0\\res\\drawable-mdpi-v4\\notification_bg_low_normal.9.png"
     },
     {
-        "merged": "C:\\Users\\A.Khadir\\AndroidStudioProjects\\Surveillancecameras\\libvlc\\build\\intermediates\\res\\merged\\release\\drawable-mdpi-v4\\notification_bg_low_pressed.9.png",
-        "source": "C:\\Users\\A.Khadir\\.gradle\\caches\\transforms-2\\files-2.1\\01f7372912348c6c0969511271a466dd\\core-1.7.0\\res\\drawable-mdpi-v4\\notification_bg_low_pressed.9.png"
+        "merged": "D:\\projects\\AndroidStudioProjects\\live-cameras\\libvlc\\build\\intermediates\\res\\merged\\release\\drawable-mdpi-v4\\notify_panel_notification_icon_bg.png",
+        "source": "C:\\Users\\medo_\\.gradle\\caches\\transforms-2\\files-2.1\\89f1e14fc94ff45f764a80fa68af5c9f\\core-1.6.0\\res\\drawable-mdpi-v4\\notify_panel_notification_icon_bg.png"
     },
     {
-        "merged": "C:\\Users\\A.Khadir\\AndroidStudioProjects\\Surveillancecameras\\libvlc\\build\\intermediates\\res\\merged\\release\\drawable-mdpi-v4\\notification_bg_normal_pressed.9.png",
-        "source": "C:\\Users\\A.Khadir\\.gradle\\caches\\transforms-2\\files-2.1\\01f7372912348c6c0969511271a466dd\\core-1.7.0\\res\\drawable-mdpi-v4\\notification_bg_normal_pressed.9.png"
+        "merged": "D:\\projects\\AndroidStudioProjects\\live-cameras\\libvlc\\build\\intermediates\\res\\merged\\release\\drawable-mdpi-v4\\notification_bg_normal.9.png",
+        "source": "C:\\Users\\medo_\\.gradle\\caches\\transforms-2\\files-2.1\\89f1e14fc94ff45f764a80fa68af5c9f\\core-1.6.0\\res\\drawable-mdpi-v4\\notification_bg_normal.9.png"
     },
     {
-        "merged": "C:\\Users\\A.Khadir\\AndroidStudioProjects\\Surveillancecameras\\libvlc\\build\\intermediates\\res\\merged\\release\\drawable-mdpi-v4\\notify_panel_notification_icon_bg.png",
-        "source": "C:\\Users\\A.Khadir\\.gradle\\caches\\transforms-2\\files-2.1\\01f7372912348c6c0969511271a466dd\\core-1.7.0\\res\\drawable-mdpi-v4\\notify_panel_notification_icon_bg.png"
+        "merged": "D:\\projects\\AndroidStudioProjects\\live-cameras\\libvlc\\build\\intermediates\\res\\merged\\release\\drawable-mdpi-v4\\notification_bg_low_pressed.9.png",
+        "source": "C:\\Users\\medo_\\.gradle\\caches\\transforms-2\\files-2.1\\89f1e14fc94ff45f764a80fa68af5c9f\\core-1.6.0\\res\\drawable-mdpi-v4\\notification_bg_low_pressed.9.png"
     },
     {
-        "merged": "C:\\Users\\A.Khadir\\AndroidStudioProjects\\Surveillancecameras\\libvlc\\build\\intermediates\\res\\merged\\release\\drawable-mdpi-v4\\notification_bg_normal.9.png",
-        "source": "C:\\Users\\A.Khadir\\.gradle\\caches\\transforms-2\\files-2.1\\01f7372912348c6c0969511271a466dd\\core-1.7.0\\res\\drawable-mdpi-v4\\notification_bg_normal.9.png"
+        "merged": "D:\\projects\\AndroidStudioProjects\\live-cameras\\libvlc\\build\\intermediates\\res\\merged\\release\\drawable-mdpi-v4\\notification_bg_normal_pressed.9.png",
+        "source": "C:\\Users\\medo_\\.gradle\\caches\\transforms-2\\files-2.1\\89f1e14fc94ff45f764a80fa68af5c9f\\core-1.6.0\\res\\drawable-mdpi-v4\\notification_bg_normal_pressed.9.png"
     }
 ]
