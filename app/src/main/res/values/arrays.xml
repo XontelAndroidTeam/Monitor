@@ -5,8 +5,6 @@
         <item>10 seconds</item>
         <item>15 seconds</item>
         <item>20 seconds</item>
-        <item>25 seconds</item>
-        <item>30 seconds</item>
     </string-array>
 
     <string-array name="grid_count">
@@ -16,7 +14,7 @@
         <item>16</item>
     </string-array>
     <string-array name="save_to">
-        <item>internal storage</item>
-        <item>memory card</item>
+        <item>Internal storage</item>
+        <item>Memory card</item>
     </string-array>
 </resources>

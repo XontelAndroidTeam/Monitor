@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@id/monitorFragment"
+    android:id="@+id/nav"
+    >
+
+    <fragment
+        android:id="@+id/monitorFragment"
+        android:name="com.xontel.surveillancecameras.fragments.GridFragment"
+        android:label="@string/monitor"
+        tools:layout="@layout/fragment_camera"/>
+    <fragment
+        android:id="@+id/slideShowFragment"
+        android:name="com.xontel.surveillancecameras.fragments.SlideShowFragment"
+        android:label="@string/slide_show"
+        tools:layout="@layout/fragment_slide_show"/>
+    <fragment
+        android:id="@+id/savedMediaFragment"
+        android:name="com.xontel.surveillancecameras.fragments.SavedMediaFragment"
+        android:label="@string/saved_media"
+        tools:layout="@layout/fragment_saved_media"/>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.xontel.surveillancecameras.fragments.SettingsFragment"
+        android:label="@string/settings"
+        tools:layout="@layout/fragment_settings"/>
+
+</navigation>

@@ -4,6 +4,7 @@ package com.xontel.surveillancecameras.di.component;
 import com.xontel.surveillancecameras.activities.AddCamActivity;
 import com.xontel.surveillancecameras.activities.CamerasActivity;
 import com.xontel.surveillancecameras.activities.MainActivity;
+import com.xontel.surveillancecameras.activities.SettingsActivity;
 import com.xontel.surveillancecameras.di.PerActivity;
 import com.xontel.surveillancecameras.di.module.ActivityModule;
 import com.xontel.surveillancecameras.di.module.ViewModelModule;
@@ -27,4 +28,8 @@ public interface ActivityComponent {
     void inject(AddCamActivity addCamActivity);
 
     void inject(CamerasActivity camerasActivity);
+
+    void inject(SettingsActivity settingsActivity);
+
+
 }

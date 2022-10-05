@@ -2,13 +2,11 @@ package com.xontel.surveillancecameras.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.xontel.surveillancecameras.R;
@@ -47,7 +45,7 @@ public class GridAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        view = inflater.inflate(R.layout.item_cam, null); // inflate the layout
+        view = inflater.inflate(R.layout.item_live_media, null); // inflate the layout
 //        MjpegView mjpegView = view.findViewById(R.id.mjpeg_view);
         TextView camName = view.findViewById(R.id.tv_cam_name);
         TextView textError = view.findViewById(R.id.tv_error);

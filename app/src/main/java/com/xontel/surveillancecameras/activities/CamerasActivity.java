@@ -13,18 +13,15 @@ import android.view.MenuItem;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.xontel.surveillancecameras.R;
 import com.xontel.surveillancecameras.adapters.PagerAdapter;
 import com.xontel.surveillancecameras.base.BaseActivity;
-import com.xontel.surveillancecameras.base.BaseViewModel;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
 import com.xontel.surveillancecameras.databinding.ActivityCamerasBinding;
 import com.xontel.surveillancecameras.dialogs.CamDetailsDialog;
 import com.xontel.surveillancecameras.dialogs.SettingsDialog;
-import com.xontel.surveillancecameras.fragments.CameraFragment;
+import com.xontel.surveillancecameras.fragments.CamPreviewFragment;
 import com.xontel.surveillancecameras.presenters.MainMvpPresenter;
 import com.xontel.surveillancecameras.presenters.MainMvpView;
 import com.xontel.surveillancecameras.utils.CommonUtils;
@@ -225,8 +222,8 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
     private void setupCamerasPager() {
         pagerAdapter = new PagerAdapter(getSupportFragmentManager());
         for (IpCam ipCam : cams) {
-            CameraFragment cameraFragment = CameraFragment.newInstance(ipCam);
-            pagerAdapter.addFragment(cameraFragment);
+            CamPreviewFragment camPreviewFragment = CamPreviewFragment.newInstance(ipCam);
+            pagerAdapter.addFragment(camPreviewFragment);
         }
         binding.vpSlider.setAdapter(pagerAdapter);
         binding.vpSlider.setOffscreenPageLimit(0);

@@ -14,13 +14,12 @@
     <application
         android:name=".root.MyApp"
         android:allowBackup="true"
-        android:largeHeap="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/mainTheme"
-        >
+        android:theme="@style/mainTheme">
         <activity
             android:name=".activities.MediaViewerActivity"
             android:exported="true" />
@@ -28,8 +27,12 @@
             android:name=".activities.SavedMediaActivity"
             android:exported="true" />
         <activity android:name=".activities.CamerasActivity" />
-        <activity android:name=".activities.AddCamActivity" />
-        <activity android:name=".activities.SettingsActivity" />
+        <activity android:name=".activities.AddCamActivity" >
+
+        </activity>
+        <activity android:name=".activities.SettingsActivity" >
+
+        </activity>
         <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -37,12 +40,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <receiver android:name=".utils.StorageBroadcastReceiver" >
+
+        <receiver android:name=".utils.StorageBroadcastReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_EJECT" />
                 <action android:name="android.intent.action.MEDIA_REMOVED" />
                 <action android:name="android.intent.action.MEDIA_MOUNTED" />
                 <action android:name="android.intent.action.MEDIA_BAD_REMOVAL" />
+
                 <data android:scheme="file" />
             </intent-filter>
         </receiver>

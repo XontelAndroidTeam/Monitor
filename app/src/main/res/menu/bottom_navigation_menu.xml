@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/monitorFragment"
+        android:enabled="true"
+        android:icon="@drawable/ic_camera_monitor"
+        android:title="@string/monitor"/>
+    <item
+        android:id="@+id/slideShowFragment"
+        android:enabled="true"
+        android:icon="@drawable/ic_slide_show"
+        android:title="@string/slide_show"/>
+    <item
+        android:id="@+id/savedMediaFragment"
+        android:enabled="true"
+        android:icon="@drawable/ic_saved_media"
+        android:title="@string/saved_media"/>
+    <item
+        android:id="@+id/settingsFragment"
+        android:enabled="true"
+        android:icon="@drawable/ic_settings"
+        android:title="@string/settings"/>
+
+</menu>

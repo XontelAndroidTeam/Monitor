@@ -7,10 +7,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ArrayAdapter;
 
 import com.skydoves.powerspinner.OnSpinnerItemSelectedListener;
 import com.xontel.surveillancecameras.R;
 import com.xontel.surveillancecameras.base.BaseActivity;
+import com.xontel.surveillancecameras.customObservers.SettingObservable;
 import com.xontel.surveillancecameras.databinding.ActivitySettingsBinding;
 import com.xontel.surveillancecameras.utils.CommonUtils;
 import com.xontel.surveillancecameras.utils.SDCardObservable;
@@ -23,45 +26,69 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.inject.Inject;
+
 public class SettingsActivity extends BaseActivity implements Observer {
     public static final String TAG = SettingsActivity.class.getSimpleName();
     private ActivitySettingsBinding binding ;
-    private  SharedPreferences sharedPreferences ;
-    public static final int INTERNAL_STORAGE = 0 ;
-    public static final int SDCARD_STORAGE = 1 ;
-    public static final int USB_STORAGE = 2;
+    @Inject
+     SettingObservable mSettingObservable ;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_settings);
-        sharedPreferences = getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE);
-        SDCardObservable.getInstance().addObserver(this);
-        initUI();
+        getActivityComponent().inject(this);
+//        SDCardObservable.getInstance().addObserver(this);
+        setUp();
     }
 
     @Override
     protected void setUp() {
+        setupToolbar();
+        setupDropDowns();
+
 
     }
 
     private void initUI() {
-        binding.ivBack.setOnClickListener(v->{
-            hitBack();
-        });
-        binding.llShowMedia.setOnClickListener(v -> {
-            openDefaultMediaFolder();
-        });
-        binding.swAutoPreview.setChecked(sharedPreferences.getBoolean(CommonUtils.KEY_AUTO_PREVIEW, true));
-        binding.swAutoPreview.setOnCheckedChangeListener((v, isChecked)->{
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean(CommonUtils.KEY_AUTO_PREVIEW, isChecked);
-            editor.apply();
-        });
+//        binding.ivBack.setOnClickListener(v->{
+//            hitBack();
+//        });
+//        binding.llShowMedia.setOnClickListener(v -> {
+//            openDefaultMediaFolder();
+//        });
+//        binding.swAutoPreview.setChecked(sharedPreferences.getBoolean(CommonUtils.KEY_AUTO_PREVIEW, true));
+//        binding.swAutoPreview.setOnCheckedChangeListener((v, isChecked)->{
+//            SharedPreferences.Editor editor = sharedPreferences.edit();
+//            editor.putBoolean(CommonUtils.KEY_AUTO_PREVIEW, isChecked);
+//            editor.apply();
+//        });
+//
+//        setupIntervalsSpinner();
+//        setupGridCountSpinner();
 
-        setupIntervalsSpinner();
-        setupGridCountSpinner();
+    }
+    private void setupToolbar() {
+        setSupportActionBar(binding.toolbarLayout.toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        setToolbarTitle(R.string.settings);
+        enableBackBtn();
+    }
 
+    private void enableBackBtn() {
+        binding.toolbarLayout.tvBack.setVisibility(View.VISIBLE);
+        binding.toolbarLayout.tvBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
+    }
+
+    public void setToolbarTitle(int titleResId){
+        binding.toolbarLayout.tvTitle.setText(titleResId);
     }
 
     private void openDefaultMediaFolder() {
@@ -69,26 +96,39 @@ public class SettingsActivity extends BaseActivity implements Observer {
     }
 
     private void setupStorageSpinner() {
-        List<String> volNames = StorageHelper.getVolumesNamesList(this);
-        binding.spSaveTo.setItems(volNames);
-        binding.spSaveTo.setSpinnerPopupHeight(StorageHelper.getVolumesNamesList(this).size() * 46); // work around a bug in this library
-        int storageChoiceType =  StorageHelper.getSavedStorageType(this);
-        int storageChoiceIndex = getIndexFromStorageType(storageChoiceType, volNames);
+//        List<String> volNames = StorageHelper.getVolumesNamesList(this);
+//        binding.spSaveTo.setItems(volNames);
+//        binding.spSaveTo.setSpinnerPopupHeight(StorageHelper.getVolumesNamesList(this).size() * 46); // work around a bug in this library
+//        int storageChoiceType =  StorageHelper.getSavedStorageType(this);
+//        int storageChoiceIndex = getIndexFromStorageType(storageChoiceType, volNames);
 
 //        if(!CommonUtils.hasSDCard(this)){
 //            storageChoiceIndex = INTERNAL_STORAGE;
 //            binding.spSaveTo.setEnabled(false);
 //        }
-        binding.spSaveTo.selectItemByIndex(storageChoiceIndex);
-        binding.spSaveTo.setOnSpinnerItemSelectedListener(new OnSpinnerItemSelectedListener<String>() {
-            @Override
-            public void onItemSelected(int i, @Nullable String s, int i1, String t1) {
+//        binding.spSaveTo.selectItemByIndex(storageChoiceIndex);
+//        binding.spSaveTo.setOnSpinnerItemSelectedListener(new OnSpinnerItemSelectedListener<String>() {
+//            @Override
+//            public void onItemSelected(int i, @Nullable String s, int i1, String t1) {
 //                SharedPreferences.Editor editor = sharedPreferences.edit();
 //                editor.putInt(CommonUtils.KEY_MEDIA_STORAGE, i1);
 //                editor.apply();
-                StorageHelper.saveStorageType(SettingsActivity.this, t1);
-            }
-        });
+//                StorageHelper.saveStorageType(SettingsActivity.this, t1);
+//            }
+//        });
+    }
+
+    private void setupDropDowns() {
+        ArrayAdapter mediaDirsDropDownAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_dropdown_item,
+                getResources().getStringArray(R.array.save_to));
+        ArrayAdapter intervalsDirsDropDownAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_dropdown_item,
+                getResources().getStringArray(R.array.intervals));
+        binding.mediaFilter.setAdapter(mediaDirsDropDownAdapter);
+        binding.slideShowFilter.setAdapter(intervalsDirsDropDownAdapter);
+        binding.setData(mSettingObservable);
+        binding.setLifecycleOwner(this);
     }
 
     private int getIndexFromStorageType(int storageChoiceType, List<String> volNames) {
@@ -103,49 +143,49 @@ public class SettingsActivity extends BaseActivity implements Observer {
 
 
     private void setupIntervalsSpinner() {
-        int intervalChoiceIndex = sharedPreferences.getInt(CommonUtils.KEY_SLIDE_INTERVAL_INDEX, 0);
-        binding.spSlideShowInterval.selectItemByIndex(intervalChoiceIndex);
-        binding.spSlideShowInterval.setOnSpinnerItemSelectedListener(new OnSpinnerItemSelectedListener<String>() {
-            @Override
-            public void onItemSelected(int i, @Nullable String s, int i1, String t1) {
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putInt(CommonUtils.KEY_SLIDE_INTERVAL_INDEX, i1);
-                editor.apply();
-            }
-        });
+//        int intervalChoiceIndex = sharedPreferences.getInt(CommonUtils.KEY_SLIDE_INTERVAL_INDEX, 0);
+//        binding.spSlideShowInterval.selectItemByIndex(intervalChoiceIndex);
+//        binding.spSlideShowInterval.setOnSpinnerItemSelectedListener(new OnSpinnerItemSelectedListener<String>() {
+//            @Override
+//            public void onItemSelected(int i, @Nullable String s, int i1, String t1) {
+//                SharedPreferences.Editor editor = sharedPreferences.edit();
+//                editor.putInt(CommonUtils.KEY_SLIDE_INTERVAL_INDEX, i1);
+//                editor.apply();
+//            }
+//        });
     }
 
     private void setupGridCountSpinner() {
-        int gridCount = sharedPreferences.getInt(CommonUtils.KEY_GRID_COUNT, 4);
+        int gridCount = 0 /*sharedPreferences.getInt(CommonUtils.KEY_GRID_COUNT, 4)*/;
         Log.d("TAG", "setupGridCountSpinner: "+gridCount);
         String [] gridValues = getResources().getStringArray(R.array.grid_count);
         List<String> gridValuesList = Arrays.asList(gridValues);
         int gridCountIndex = gridValuesList.indexOf(String.valueOf(gridCount)) ;
         Log.d("TAG", "setupGridCountSpinner: "+gridCountIndex);
-        binding.spGridCount.selectItemByIndex(gridCountIndex);
-        binding.spGridCount.setOnSpinnerItemSelectedListener(new OnSpinnerItemSelectedListener<String>() {
-            @Override
-            public void onItemSelected(int i, @Nullable String s, int i1, String t1) {
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putInt(CommonUtils.KEY_GRID_COUNT, Integer.parseInt(t1));
-                editor.apply();
-            }
-        });
+//        binding.spGridCount.selectItemByIndex(gridCountIndex);
+//        binding.spGridCount.setOnSpinnerItemSelectedListener(new OnSpinnerItemSelectedListener<String>() {
+//            @Override
+//            public void onItemSelected(int i, @Nullable String s, int i1, String t1) {
+//                SharedPreferences.Editor editor = sharedPreferences.edit();
+//                editor.putInt(CommonUtils.KEY_GRID_COUNT, Integer.parseInt(t1));
+//                editor.apply();
+//            }
+//        });
     }
 
     @Override
     protected void onResume() {
-        setupStorageSpinner();
+//        setupStorageSpinner();
         super.onResume();
     }
 
     @Override
     public void update(Observable o, Object arg) {
-        if(((String)arg).equals(Intent.ACTION_MEDIA_MOUNTED)){
-            Log.v(TAG, "SDCard inserted"+ getExternalFilesDirs(null).length);
-        }else{
-            Log.v(TAG, "SDCard ejected"+ getExternalFilesDirs(null).length);
-        }
-        setupStorageSpinner();
+//        if(((String)arg).equals(Intent.ACTION_MEDIA_MOUNTED)){
+//            Log.v(TAG, "SDCard inserted"+ getExternalFilesDirs(null).length);
+//        }else{
+//            Log.v(TAG, "SDCard ejected"+ getExternalFilesDirs(null).length);
+//        }
+//        setupStorageSpinner();
     }
 }

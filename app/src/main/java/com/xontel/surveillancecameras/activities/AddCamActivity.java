@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.BaseInputConnection;
 import android.widget.EditText;
@@ -38,13 +39,37 @@ public class AddCamActivity extends BaseActivity implements MainMvpView {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_add_cam);
         getActivityComponent().inject(this);
+        setupToolbar();
         mPresenter.onAttach(this);
+
+
         if(getIntent().hasExtra(KEY_CAMERA)){
-            binding.tvTitle.setText(R.string.edit_camera);
+            binding.toolbarLayout.tvTitle.setText(R.string.edit_camera);
             editedCam = getIntent().getParcelableExtra(KEY_CAMERA);
             fillFieldsWithData();
         }
         initUI();
+    }
+
+    private void setupToolbar() {
+        setSupportActionBar(binding.toolbarLayout.toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        setToolbarTitle(R.string.add_camera);
+        enableBackBtn();
+    }
+
+    private void enableBackBtn() {
+        binding.toolbarLayout.tvBack.setVisibility(View.VISIBLE);
+        binding.toolbarLayout.tvBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
+    }
+
+    public void setToolbarTitle(int titleResId){
+        binding.toolbarLayout.tvTitle.setText(titleResId);
     }
 
     private void fillFieldsWithData() {
@@ -68,25 +93,25 @@ public class AddCamActivity extends BaseActivity implements MainMvpView {
     }
 
     private void initUI() {
-        binding.ivBack.setOnClickListener(v-> {
+        binding.toolbarLayout.tvBack.setOnClickListener(v-> {
           hitBack();
         });
 
-        binding.btnSubmit.setOnClickListener(v->{
-            if(isNotEmpty(binding.etName , binding.ilName) && isNotEmpty(binding.etUrl , binding.ilUrl) && isNotEmpty(binding.etDescription , binding.ilDescription)){
-               String url =  binding.etUrl.getText().toString();
-               String name =  binding.etName.getText().toString();
-                String description = binding.etDescription.getText().toString();
-                if(editedCam == null) {
-                    mPresenter.createCamera(new IpCam(url, name , description ));
-                }else{
-                    editedCam.setUrl(url);
-                    editedCam.setName(name);
-                    editedCam.setDescription(description);
-                    mPresenter.updateCamera(editedCam);
-                }
-            }
-        });
+//        binding.btnSubmit.setOnClickListener(v->{
+//            if(isNotEmpty(binding.etName , binding.ilName) && isNotEmpty(binding.etUrl , binding.ilUrl) && isNotEmpty(binding.etDescription , binding.ilDescription)){
+//               String url =  binding.etUrl.getText().toString();
+//               String name =  binding.etName.getText().toString();
+//                String description = binding.etDescription.getText().toString();
+//                if(editedCam == null) {
+//                    mPresenter.createCamera(new IpCam(url, name , description ));
+//                }else{
+//                    editedCam.setUrl(url);
+//                    editedCam.setName(name);
+//                    editedCam.setDescription(description);
+//                    mPresenter.updateCamera(editedCam);
+//                }
+//            }
+//        });
     }
 
     boolean isNotEmpty(EditText editText, TextInputLayout textInputLayout){
@@ -101,7 +126,7 @@ public class AddCamActivity extends BaseActivity implements MainMvpView {
 
     @Override
     public void onInsertingCamera() {
-        binding.ivBack.performClick();
+        binding.toolbarLayout.tvBack.performClick();
     }
 
     @Override

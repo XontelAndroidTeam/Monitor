@@ -23,7 +23,6 @@ attr fontStyle
 attr fontVariationSettings
 attr fontWeight
 attr keylines
-attr lStar
 attr layout_anchor
 attr layout_anchorGravity
 attr layout_behavior
@@ -151,10 +150,6 @@ id icon
 id icon_group
 id info
 id italic
-id item1
-id item2
-id item3
-id item4
 id iv_sound
 id left
 id line1
@@ -203,7 +198,6 @@ id timer
 id title
 id top
 id tv_error
-id view_tree_lifecycle_owner
 id volume_controller
 integer cancel_button_image_alpha
 integer status_bar_notification_info_maxnum
@@ -229,8 +223,6 @@ layout sound_controller
 layout surface_view
 layout texture_view
 layout vlc_video_layout
-menu example_menu
-menu example_menu2
 string cant_take_photo
 string error_occurred_while_processing
 string no_media_available
@@ -256,7 +248,7 @@ style Widget_Compat_NotificationActionContainer
 style Widget_Compat_NotificationActionText
 style Widget_Support_CoordinatorLayout
 styleable Capability queryPatterns shortcutMatchRequired
-styleable ColorStateListItem alpha android_alpha android_color android_lStar lStar
+styleable ColorStateListItem alpha android_alpha android_color
 styleable CoordinatorLayout keylines statusBarBackground
 styleable CoordinatorLayout_Layout android_layout_gravity layout_anchor layout_anchorGravity layout_behavior layout_dodgeInsetEdges layout_insetEdge layout_keyline
 styleable CustomView colour pointerColour

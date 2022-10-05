@@ -1,165 +1,243 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
+        android:focusable="true" android:focusableInTouchMode="true"
         tools:context=".activities.SettingsActivity">
 
-        <RelativeLayout
-            android:id="@+id/ll_upper_bar"
+        <include
+            android:id="@+id/toolbar_layout"
+            layout="@layout/custom_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/appbar_color"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingHorizontal="16dp"
+            android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <ImageView
-                android:id="@+id/iv_back"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_alignParentStart="true"
-                android:src="@drawable/ic_back" />
-
-            <TextView
-                android:id="@+id/tv_title"
-                style="@style/status_bar_font"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_toEndOf="@+id/iv_back"
-                android:gravity="center_vertical"
-                android:text="@string/add_camera" />
-        </RelativeLayout>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:orientation="vertical">
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="100dp"
+            android:layout_marginVertical="60dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar_layout">
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleType="fitXY"
+                android:src="@drawable/add_cam_illustration" />
 
             <LinearLayout
-                android:id="@+id/ll_new_camera"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="32dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingHorizontal="50dp">
-
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:background="@color/white"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="24dp">
                 <TextView
-                    android:layout_width="220dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/name"
-                    android:textColor="@color/white"
-                    android:textSize="34sp" />
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/il_name"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content">
-
+                    android:layout_gravity="center"
+                    android:layout_marginVertical="8dp"
+                    style="@style/settingsLabel"
+                    android:text="@string/camera_info" />
+               
                     <EditText
                         android:id="@+id/et_name"
                         android:layout_width="match_parent"
-                        android:layout_height="60dp"
-                        android:maxLines="1"
-                        android:inputType="text"
-                        android:background="@drawable/bordered_bg" />
-                </com.google.android.material.textfield.TextInputLayout>
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="8dp"
+                        android:hint="@string/camera_name"
+                        style="@style/editTextStyle"/>
+                
 
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ll_auto_preview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="32dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingHorizontal="50dp">
-
-                <TextView
-                    android:layout_width="220dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/url"
-                    android:textColor="@color/white"
-                    android:textSize="34sp" />
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/il_url"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content">
+                
 
                     <EditText
                         android:id="@+id/et_url"
                         android:layout_width="match_parent"
-                        android:layout_height="60dp"
-                        android:maxLines="1"
-                        android:inputType="text"
-                        android:background="@drawable/bordered_bg" />
-                </com.google.android.material.textfield.TextInputLayout>
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="8dp"
+                        android:hint="@string/url"
+                        style="@style/editTextStyle"
+                        />
+                
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ll_slide_show"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="32dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingHorizontal="50dp">
-
-                <TextView
-                    android:layout_width="220dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/description"
-                    android:textColor="@color/white"
-                    android:textSize="34sp" />
-
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/il_description"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content">
-
+                
                     <EditText
                         android:id="@+id/et_description"
                         android:layout_width="match_parent"
-                        android:layout_height="60dp"
-                        android:maxLines="1"
-                        android:inputType="text"
-                        android:background="@drawable/bordered_bg"
-                        />
-                </com.google.android.material.textfield.TextInputLayout>
+                        android:layout_height="150dp"
+                        style="@style/editTextStyle"
+                        android:hint="@string/description"
+                        android:gravity="top|start"
+                        android:layout_marginVertical="8dp"
+                        android:padding="16dp"
+                        android:inputType="textMultiLine"
+                        android:maxLines="4"
+                        android:minLines="4"
+                        android:textColor="@color/black_color" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:layout_marginVertical="8dp"
+                    android:orientation="horizontal">
+
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_cancel"
+                        android:layout_width="150dp"
+                        android:layout_height="50dp"
+                        android:text="@string/cancel"
+                        app:background="@color/white"
+                        app:backgroundTint="@color/white"
+                        android:stateListAnimator="@null"
+                        app:cornerRadius="5dp"
+                        android:layout_marginHorizontal="16dp"
+                        android:textAllCaps="false"
+                        android:textColor="@color/primary_color"
+                        android:textSize="17dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_save"
+                        android:layout_width="150dp"
+                        android:layout_height="80dp"
+                        android:text="@string/add_camera_"
+                        app:backgroundTint="@color/primary_color"
+                        app:cornerRadius="10dp"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textSize="17dp" />
+                </LinearLayout>
+
 
             </LinearLayout>
+            <!--            <LinearLayout-->
+            <!--                android:id="@+id/ll_new_camera"-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:visibility="gone"-->
+            <!--                android:layout_marginVertical="32dp"-->
+            <!--                android:gravity="center_vertical"-->
+            <!--                android:orientation="horizontal"-->
+            <!--                android:paddingHorizontal="50dp">-->
 
-            <Button
-                android:id="@+id/btn_submit"
-                android:layout_width="150dp"
-                android:layout_height="80dp"
-                android:layout_gravity="center_horizontal"
-                android:background="@color/white"
-                android:text="@string/submit"
-                android:textAllCaps="false"
-                android:textColor="@color/black_color"
-                android:textSize="18dp"
-                android:textStyle="bold" />
+            <!--                <TextView-->
+            <!--                    android:layout_width="220dp"-->
+            <!--                    android:layout_height="wrap_content"-->
+            <!--                    android:text="@string/name"-->
+            <!--                    android:textColor="@color/white"-->
+            <!--                    android:textSize="34sp" />-->
+
+            <!--                <com.google.android.material.textfield.TextInputLayout-->
+            <!--                    android:id="@+id/il_name"-->
+            <!--                    android:layout_width="0dp"-->
+            <!--                    android:layout_height="wrap_content"-->
+            <!--                    android:layout_weight="1">-->
+
+            <!--                    <EditText-->
+            <!--                        android:id="@+id/et_name"-->
+            <!--                        android:layout_width="match_parent"-->
+            <!--                        android:layout_height="60dp"-->
+            <!--                        android:background="@drawable/bordered_bg"-->
+            <!--                        android:inputType="text"-->
+            <!--                        android:maxLines="1" />-->
+            <!--                </com.google.android.material.textfield.TextInputLayout>-->
+
+
+            <!--            </LinearLayout>-->
+
+            <!--            <LinearLayout-->
+            <!--                android:id="@+id/ll_auto_preview"-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_marginVertical="32dp"-->
+            <!--                android:gravity="center_vertical"-->
+            <!--                android:orientation="horizontal"-->
+            <!--                android:paddingHorizontal="50dp">-->
+
+            <!--                <TextView-->
+            <!--                    android:layout_width="220dp"-->
+            <!--                    android:layout_height="wrap_content"-->
+            <!--                    android:text="@string/url"-->
+            <!--                    android:textColor="@color/white"-->
+            <!--                    android:textSize="34sp" />-->
+
+            <!--                <com.google.android.material.textfield.TextInputLayout-->
+            <!--                    android:id="@+id/il_url"-->
+            <!--                    android:layout_width="0dp"-->
+            <!--                    android:layout_height="wrap_content"-->
+            <!--                    android:layout_weight="1">-->
+
+            <!--                    <EditText-->
+            <!--                        android:id="@+id/et_url"-->
+            <!--                        android:layout_width="match_parent"-->
+            <!--                        android:layout_height="60dp"-->
+            <!--                        android:background="@drawable/bordered_bg"-->
+            <!--                        android:inputType="text"-->
+            <!--                        android:maxLines="1" />-->
+            <!--                </com.google.android.material.textfield.TextInputLayout>-->
+
+            <!--            </LinearLayout>-->
+
+            <!--            <LinearLayout-->
+            <!--                android:id="@+id/ll_slide_show"-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_marginVertical="32dp"-->
+            <!--                android:gravity="center_vertical"-->
+            <!--                android:orientation="horizontal"-->
+            <!--                android:paddingHorizontal="50dp">-->
+
+            <!--                <TextView-->
+            <!--                    android:layout_width="220dp"-->
+            <!--                    android:layout_height="wrap_content"-->
+            <!--                    android:text="@string/description"-->
+            <!--                    android:textColor="@color/white"-->
+            <!--                    android:textSize="34sp" />-->
+
+
+            <!--                <com.google.android.material.textfield.TextInputLayout-->
+            <!--                    android:id="@+id/il_description"-->
+            <!--                    android:layout_width="0dp"-->
+            <!--                    android:layout_height="wrap_content"-->
+            <!--                    android:layout_weight="1">-->
+
+            <!--                    <EditText-->
+            <!--                        android:id="@+id/et_description"-->
+            <!--                        android:layout_width="match_parent"-->
+            <!--                        android:layout_height="60dp"-->
+            <!--                        android:background="@drawable/bordered_bg"-->
+            <!--                        android:inputType="text"-->
+            <!--                        android:maxLines="1" />-->
+            <!--                </com.google.android.material.textfield.TextInputLayout>-->
+
+            <!--            </LinearLayout>-->
+
+            <!--            <Button-->
+            <!--                android:id="@+id/btn_submit"-->
+            <!--                android:layout_width="150dp"-->
+            <!--                android:layout_height="80dp"-->
+            <!--                android:layout_gravity="center_horizontal"-->
+            <!--                android:background="@color/white"-->
+            <!--                android:text="@string/submit"-->
+            <!--                android:textAllCaps="false"-->
+            <!--                android:textColor="@color/black_color"-->
+            <!--                android:textSize="18dp"-->
+            <!--                android:textStyle="bold" />-->
         </LinearLayout>
 
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
