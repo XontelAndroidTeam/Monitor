@@ -3,7 +3,7 @@ package com.xontel.surveillancecameras.di.component;
 
 import com.xontel.surveillancecameras.activities.AddCamActivity;
 import com.xontel.surveillancecameras.activities.CamerasActivity;
-import com.xontel.surveillancecameras.activities.MainActivity;
+import com.xontel.surveillancecameras.activities.HomeActivity;
 import com.xontel.surveillancecameras.activities.SettingsActivity;
 import com.xontel.surveillancecameras.di.PerActivity;
 import com.xontel.surveillancecameras.di.module.ActivityModule;
@@ -23,7 +23,7 @@ import dagger.Component;
 
 })
 public interface ActivityComponent {
-    void inject(MainActivity mainActivity);
+    void inject(HomeActivity homeActivity);
 
     void inject(AddCamActivity addCamActivity);
 

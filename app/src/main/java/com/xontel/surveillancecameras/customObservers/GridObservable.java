@@ -32,6 +32,10 @@ public class GridObservable extends BaseObservable {
         return String.valueOf(mDataManager.getGridCount());
     }
 
+    public int getValue() {
+        return mDataManager.getGridCount();
+    }
+
 
 
     public void setGridCount(String stringValue) {

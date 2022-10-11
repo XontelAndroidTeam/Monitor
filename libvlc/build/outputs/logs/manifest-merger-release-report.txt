@@ -1,29 +1,29 @@
 -- Merging decision tree log ---
 manifest
-ADDED from D:\projects\AndroidStudioProjects\live-cameras\libvlc\AndroidManifest.xml:2:1-4:12
-INJECTED from D:\projects\AndroidStudioProjects\live-cameras\libvlc\AndroidManifest.xml:2:1-4:12
-INJECTED from D:\projects\AndroidStudioProjects\live-cameras\libvlc\AndroidManifest.xml:2:1-4:12
+ADDED from /home/khidr/StudioProjects/live-cameras/libvlc/AndroidManifest.xml:2:1-4:12
+INJECTED from /home/khidr/StudioProjects/live-cameras/libvlc/AndroidManifest.xml:2:1-4:12
+INJECTED from /home/khidr/StudioProjects/live-cameras/libvlc/AndroidManifest.xml:2:1-4:12
 	package
-		ADDED from D:\projects\AndroidStudioProjects\live-cameras\libvlc\AndroidManifest.xml:3:7-29
-		INJECTED from D:\projects\AndroidStudioProjects\live-cameras\libvlc\AndroidManifest.xml
-		INJECTED from D:\projects\AndroidStudioProjects\live-cameras\libvlc\AndroidManifest.xml
+		ADDED from /home/khidr/StudioProjects/live-cameras/libvlc/AndroidManifest.xml:3:7-29
+		INJECTED from /home/khidr/StudioProjects/live-cameras/libvlc/AndroidManifest.xml
+		INJECTED from /home/khidr/StudioProjects/live-cameras/libvlc/AndroidManifest.xml
 	android:versionName
-		ADDED from D:\projects\AndroidStudioProjects\live-cameras\libvlc\AndroidManifest.xml:3:54-81
+		ADDED from /home/khidr/StudioProjects/live-cameras/libvlc/AndroidManifest.xml:3:54-81
 	xmlns:android
-		ADDED from D:\projects\AndroidStudioProjects\live-cameras\libvlc\AndroidManifest.xml:2:11-69
+		ADDED from /home/khidr/StudioProjects/live-cameras/libvlc/AndroidManifest.xml:2:11-69
 	android:versionCode
-		ADDED from D:\projects\AndroidStudioProjects\live-cameras\libvlc\AndroidManifest.xml:3:30-53
+		ADDED from /home/khidr/StudioProjects/live-cameras/libvlc/AndroidManifest.xml:3:30-53
 uses-sdk
-INJECTED from D:\projects\AndroidStudioProjects\live-cameras\libvlc\AndroidManifest.xml reason: use-sdk injection requested
-INJECTED from D:\projects\AndroidStudioProjects\live-cameras\libvlc\AndroidManifest.xml
-INJECTED from D:\projects\AndroidStudioProjects\live-cameras\libvlc\AndroidManifest.xml
-INJECTED from D:\projects\AndroidStudioProjects\live-cameras\libvlc\AndroidManifest.xml
-INJECTED from D:\projects\AndroidStudioProjects\live-cameras\libvlc\AndroidManifest.xml
+INJECTED from /home/khidr/StudioProjects/live-cameras/libvlc/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /home/khidr/StudioProjects/live-cameras/libvlc/AndroidManifest.xml
+INJECTED from /home/khidr/StudioProjects/live-cameras/libvlc/AndroidManifest.xml
+INJECTED from /home/khidr/StudioProjects/live-cameras/libvlc/AndroidManifest.xml
+INJECTED from /home/khidr/StudioProjects/live-cameras/libvlc/AndroidManifest.xml
 	android:targetSdkVersion
-		INJECTED from D:\projects\AndroidStudioProjects\live-cameras\libvlc\AndroidManifest.xml
-		ADDED from D:\projects\AndroidStudioProjects\live-cameras\libvlc\AndroidManifest.xml
-		INJECTED from D:\projects\AndroidStudioProjects\live-cameras\libvlc\AndroidManifest.xml
+		INJECTED from /home/khidr/StudioProjects/live-cameras/libvlc/AndroidManifest.xml
+		ADDED from /home/khidr/StudioProjects/live-cameras/libvlc/AndroidManifest.xml
+		INJECTED from /home/khidr/StudioProjects/live-cameras/libvlc/AndroidManifest.xml
 	android:minSdkVersion
-		INJECTED from D:\projects\AndroidStudioProjects\live-cameras\libvlc\AndroidManifest.xml
-		ADDED from D:\projects\AndroidStudioProjects\live-cameras\libvlc\AndroidManifest.xml
-		INJECTED from D:\projects\AndroidStudioProjects\live-cameras\libvlc\AndroidManifest.xml
+		INJECTED from /home/khidr/StudioProjects/live-cameras/libvlc/AndroidManifest.xml
+		ADDED from /home/khidr/StudioProjects/live-cameras/libvlc/AndroidManifest.xml
+		INJECTED from /home/khidr/StudioProjects/live-cameras/libvlc/AndroidManifest.xml

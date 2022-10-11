@@ -20,7 +20,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:keepScreenOn="true"
-            tools:context=".activities.MainActivity">
+            tools:context=".activities.HomeActivity">
 
             <include
                 android:id="@+id/home"

@@ -5,11 +5,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
+import androidx.databinding.Observable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.xontel.surveillancecameras.R;
@@ -18,6 +21,7 @@ import com.xontel.surveillancecameras.viewModels.MainViewModel;
 import com.xontel.surveillancecameras.adapters.CamsAdapter;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
 import com.xontel.surveillancecameras.databinding.FragmentGridBinding;
+import com.xontel.surveillancecameras.viewModels.ViewModelProviderFactory;
 
 import org.jetbrains.annotations.NotNull;
 import org.videolan.libvlc.MediaPlayer;
@@ -25,6 +29,8 @@ import org.videolan.libvlc.MediaPlayer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 public class GridFragment extends BaseFragment {
 
@@ -37,6 +43,9 @@ public class GridFragment extends BaseFragment {
     private CamsAdapter gridAdapter;
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss.SSS");
     private List<MediaPlayer> mediaPlayers = new ArrayList<>();
+
+    @Inject
+    ViewModelProviderFactory providerFactory;
 
 
     public GridFragment() {
@@ -77,13 +86,14 @@ public class GridFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getFragmentComponent().inject(this);
+        mainViewModel = new ViewModelProvider(getActivity(), providerFactory).get(MainViewModel.class);
         if (getArguments() != null) {
             fragmentOrder = getArguments().getInt(KEY_ORDER);
         }
         Log.v("TAG_", "onCreate" + " NUMBER : "+fragmentOrder + " Time : "+ simpleDateFormat.format(System.currentTimeMillis()));
-//        mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
-//        gridCount = mainViewModel.gridCount.getValue();
-//        updateIpCams();
+        gridCount = mainViewModel.getGridObservable().getValue();
+        updateIpCams();
     }
 
 
@@ -118,7 +128,7 @@ public class GridFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_grid, container, false);
+        binding = FragmentGridBinding.inflate(inflater);
         return binding.getRoot();
     }
 
@@ -134,21 +144,29 @@ public class GridFragment extends BaseFragment {
             updateIpCams();
             gridAdapter.notifyDataSetChanged();
         });
+        mainViewModel.getGridObservable().addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
+            @Override
+            public void onPropertyChanged(Observable sender, int propertyId) {
+                Toast.makeText(getContext(), "ttttttttttt", Toast.LENGTH_LONG).show();
+                updateGrid();
+            }
+        });
     }
 
     private void updateGrid() {
-//        int oldGridCount = ((GridLayoutManager) binding.rvGrid.getLayoutManager()).getSpanCount();
-//        if (oldGridCount != gridCount) {
-//            ((GridLayoutManager) binding.rvGrid.getLayoutManager()).setSpanCount((int) Math.sqrt(gridCount));
-//            gridAdapter.notifyDataSetChanged();
-//        }
+        int oldGridCount = ((GridLayoutManager) binding.rvGrid.getLayoutManager()).getSpanCount();
+        if (oldGridCount != gridCount) {
+            gridCount = mainViewModel.getGridObservable().getValue();
+            ((GridLayoutManager) binding.rvGrid.getLayoutManager()).setSpanCount((int) Math.sqrt(gridCount));
+            gridAdapter.notifyDataSetChanged();
+        }
 
     }
 
     private void setupCamGrid(List<MediaPlayer> mediaPlayers) {
-//        binding.rvGrid.setLayoutManager(new GridLayoutManager(getContext(), (int) Math.sqrt(gridCount)));
-//        gridAdapter = new CamsAdapter(ipCams,new ArrayList<>(), gridCount, getContext());
-//        binding.rvGrid.setAdapter(gridAdapter);
+        binding.rvGrid.setLayoutManager(new GridLayoutManager(getContext(), (int) Math.sqrt(gridCount)));
+        gridAdapter = new CamsAdapter(ipCams,new ArrayList<>(), gridCount, getContext());
+        binding.rvGrid.setAdapter(gridAdapter);
     }
 
 }

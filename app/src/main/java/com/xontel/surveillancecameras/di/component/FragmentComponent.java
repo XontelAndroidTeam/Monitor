@@ -4,6 +4,7 @@ package com.xontel.surveillancecameras.di.component;
 import com.xontel.surveillancecameras.di.PerFragment;
 import com.xontel.surveillancecameras.di.module.FragmentModule;
 import com.xontel.surveillancecameras.di.module.ViewModelModule;
+import com.xontel.surveillancecameras.fragments.GridFragment;
 import com.xontel.surveillancecameras.fragments.SettingsFragment;
 
 import dagger.Component;
@@ -19,4 +20,5 @@ import dagger.Component;
 })
 public interface FragmentComponent {
     void inject(SettingsFragment settingsFragment);
+    void inject(GridFragment gridFragment);
 }

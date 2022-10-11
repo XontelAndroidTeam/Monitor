@@ -15,10 +15,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.xontel.surveillancecameras.R;
 import com.xontel.surveillancecameras.activities.CamerasActivity;
-import com.xontel.surveillancecameras.activities.MainActivity;
+import com.xontel.surveillancecameras.activities.HomeActivity;
 import com.xontel.surveillancecameras.base.BaseViewHolder;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
-import com.xontel.surveillancecameras.utils.HIKSinglePlayer;
 import com.xontel.surveillancecameras.utils.HikUtil;
 
 import org.videolan.libvlc.Media;
@@ -41,7 +40,7 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
     private static final int ITEM_HIK_CAM = 2;
 
 
-    public CamsAdapter(List <IpCam> ipCams, int channelsNum, List<MediaPlayer> mediaPlayers, int gridCount, Context context) {
+    public CamsAdapter(List <IpCam> ipCams, List<MediaPlayer> mediaPlayers, int gridCount, Context context) {
         this.ipCams = ipCams;
         this.context = context;
         this.gridCount = gridCount;
@@ -252,7 +251,7 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
         public void onBind(int position) {
             super.onBind(position);
             itemView.setOnClickListener(v -> {
-                ((MainActivity) context).addNewCam();
+                ((HomeActivity) context).addNewCam();
             });
 //            Log.v("TAG_", "bound" + getBindingAdapterPosition());
         }
