@@ -2,7 +2,11 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
-
+    <data>
+        <variable
+            name="data"
+            type="com.xontel.surveillancecameras.customObservers.GridObservable" />
+    </data>
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBar"
         android:layout_width="match_parent"
@@ -45,9 +49,9 @@
 
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/slide_show_interval_drop_down"
+                    android:id="@+id/grid_drop_down"
                     style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
-                    android:layout_width="100dp"
+                    android:layout_width="90dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="24dp"
                     app:boxBackgroundColor="@color/drop_down_color"
@@ -58,11 +62,11 @@
                     app:boxStrokeWidth="0dp"
                     android:showDividers="end"
                     app:boxStrokeWidthFocused="0dp"
-                    app:endIconDrawable="@drawable/ic_baseline_keyboard_arrow_down_24"
-                    app:endIconTint="@color/black">
+                    app:endIconDrawable="@drawable/ic_grid"
+                    app:endIconTint="@color/primary_color">
 
                     <AutoCompleteTextView
-                        android:id="@+id/slide_show_filter"
+                        android:id="@+id/grid_filter"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@null"
@@ -75,6 +79,7 @@
                         android:textSize="16sp"
                         android:textAlignment="viewStart"
                         android:textColor="@color/black"
+                        android:text="@={data.gridCount}"
                         tools:ignore="LabelFor" />
                 </com.google.android.material.textfield.TextInputLayout>
                 <ImageView

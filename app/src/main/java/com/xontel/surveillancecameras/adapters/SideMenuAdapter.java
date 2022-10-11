@@ -11,9 +11,6 @@ import android.widget.TextView;
 
 import com.xontel.surveillancecameras.R;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class SideMenuAdapter extends BaseAdapter {
     private int[] labelsIds = {
             R.string.monitor,
@@ -37,10 +34,10 @@ public class SideMenuAdapter extends BaseAdapter {
     }
 
 
-    public void setSelectedItemIndex(int selectedItemIndex) {
-        this.selectedItemIndex = selectedItemIndex;
-        mClickCallback.onItemClicked();
-    }
+//    public void setSelectedItemIndex(int selectedItemIndex) {
+//        this.selectedItemIndex = selectedItemIndex;
+//        mClickCallback.onItemClicked(labelsIds[i]);
+//    }
 
 
     @Override
@@ -79,7 +76,7 @@ public class SideMenuAdapter extends BaseAdapter {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mClickCallback.onItemClicked();
+                mClickCallback.onItemClicked(labelsIds[i]);
                 selectedItemIndex = i;
                 notifyDataSetChanged();
             }
@@ -88,6 +85,6 @@ public class SideMenuAdapter extends BaseAdapter {
     }
 
     public interface ClickCallback {
-        void onItemClicked();
+        void onItemClicked(int labelsId);
     }
 }

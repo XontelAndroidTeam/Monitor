@@ -4,6 +4,7 @@ import com.xontel.surveillancecameras.data.utils.LoggedInMode;
 
 public interface PreferencesHelper {
     void setFirstTime(boolean firstTime);
+
     void setGridCount(int gridCount);
     int getGridCount();
 
@@ -15,5 +16,6 @@ public interface PreferencesHelper {
 
     void setStorageMedia(int storageMedia);
     int getStorageMedia();
+
 
 }

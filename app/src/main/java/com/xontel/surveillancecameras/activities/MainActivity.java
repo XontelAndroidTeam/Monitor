@@ -2,27 +2,22 @@ package com.xontel.surveillancecameras.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.viewpager.widget.ViewPager;
 
-import com.skydoves.powerspinner.OnSpinnerItemSelectedListener;
 import com.xontel.surveillancecameras.R;
 import com.xontel.surveillancecameras.adapters.SideMenuAdapter;
+import com.xontel.surveillancecameras.customObservers.GridObservable;
+import com.xontel.surveillancecameras.customObservers.SettingObservable;
 import com.xontel.surveillancecameras.viewModels.MainViewModel;
 import com.xontel.surveillancecameras.viewModels.ViewModelProviderFactory;
 import com.xontel.surveillancecameras.adapters.PagerAdapter;
 import com.xontel.surveillancecameras.base.BaseActivity;
 import com.xontel.surveillancecameras.data.DataManager;
 import com.xontel.surveillancecameras.databinding.ActivityMainBinding;
-import com.xontel.surveillancecameras.fragments.GridFragment;
-
-import java.util.ArrayList;
 
 import javax.inject.Inject;
 
@@ -34,6 +29,12 @@ public class MainActivity extends BaseActivity {
     private PagerAdapter pagerAdapter;
     private ActivityMainBinding binding;
     private int currentPageIndex;
+
+
+    @Inject
+    GridObservable mGridObservable ;
+
+
     @Inject
     DataManager dataManager;
 
@@ -59,13 +60,33 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void setUp() {
         setupToolbar();
-        setupSideMenu();
+        setupGridDropDown();
+    }
+
+    private void setupGridDropDown() {
+        ArrayAdapter gridDropDownAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_dropdown_item,
+                getResources().getStringArray(R.array.grid_count));
+        binding.toolbarLayout.gridFilter.setAdapter(gridDropDownAdapter);
+        binding.toolbarLayout.setData(mGridObservable);
+        binding.setLifecycleOwner(this);
     }
 
     private void setupSideMenu() {
         SideMenuAdapter sideMenuAdapter = new SideMenuAdapter(this, new SideMenuAdapter.ClickCallback() {
             @Override
-            public void onItemClicked() {
+            public void onItemClicked(int labelsId) {
+                switch (labelsId){
+                    case R.string.devices:
+                        startActivity(new Intent(MainActivity.this, DevicesActivity.class));
+                        break;
+                    case R.string.saved_media:
+                        startActivity(new Intent(MainActivity.this, SavedMediaActivity.class));
+                        break;
+                    case R.string.settings:
+                        startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+                        break;
+                }
 
             }
         });
@@ -82,6 +103,12 @@ public class MainActivity extends BaseActivity {
     }
 
     private void setupToolbarActions() {
+        binding.home.pagerEmptyView.btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, AddCamActivity.class));
+            }
+        });
         binding.toolbarLayout.ivAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -124,6 +151,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        setupSideMenu();
     }
 
 //    public List<IpCam> getCams() {

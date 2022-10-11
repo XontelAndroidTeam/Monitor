@@ -21,18 +21,17 @@
         android:supportsRtl="true"
         android:theme="@style/mainTheme">
         <activity
+            android:name=".activities.DevicesActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.MediaViewerActivity"
             android:exported="true" />
         <activity
             android:name=".activities.SavedMediaActivity"
             android:exported="true" />
         <activity android:name=".activities.CamerasActivity" />
-        <activity android:name=".activities.AddCamActivity" >
-
-        </activity>
-        <activity android:name=".activities.SettingsActivity" >
-
-        </activity>
+        <activity android:name=".activities.AddCamActivity"></activity>
+        <activity android:name=".activities.SettingsActivity"></activity>
         <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

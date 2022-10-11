@@ -41,7 +41,7 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
     private static final int ITEM_HIK_CAM = 2;
 
 
-    public CamsAdapter(List<IpCam> ipCams, int channelsNum, List<MediaPlayer> mediaPlayers, int gridCount, Context context) {
+    public CamsAdapter(List <IpCam> ipCams, int channelsNum, List<MediaPlayer> mediaPlayers, int gridCount, Context context) {
         this.ipCams = ipCams;
         this.context = context;
         this.gridCount = gridCount;
@@ -280,9 +280,9 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
         }
 
         private void initHikPlayer() {
-            HIKSinglePlayer hikSinglePlayer = new HIKSinglePlayer(getBindingAdapterPosition()+1, logId, HIKSinglePlayer.HIK_SUB_STREAM_CODE);
-            hikSinglePlayer.initView(surfaceView);
-            hikSinglePlayer.playOrStopStream();
+//            HIKSinglePlayer hikSinglePlayer = new HIKSinglePlayer(getBindingAdapterPosition()+1, logId, HIKSinglePlayer.HIK_SUB_STREAM_CODE);
+//            hikSinglePlayer.initView(surfaceView);
+//            hikSinglePlayer.playOrStopStream();
 //            HikUtil.initSDK();
 //            hikUtil = new HikUtil();
 //            hikUtil.initView(surfaceView);
