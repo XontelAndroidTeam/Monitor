@@ -683,39 +683,39 @@ public class MediaPlayer extends VLCObject<MediaPlayer.Event> {
      * @param context activity context
      */
     public MediaPlayer(Context context) {
-        super(createLibVlcObject(context));
-        this.context = context;
-        this.libVLC = (LibVLC) getLibVLC();
-        nativeNewFromLibVlc(libVLC, mWindow);
-        Dialog.setCallbacks(libVLC, new Dialog.Callbacks() {
-            @Override
-            public void onDisplay(Dialog.ErrorMessage dialog) {
-                if (recording && dialog.getText().toLowerCase().contains("no space")) {
-                    AndroidUtil.showAlertDialog(context, R.string.no_space_left, R.string.record_stopped);
-                    stopRecording();
+            super(createLibVlcObject(context));
+            this.context = context;
+            this.libVLC = (LibVLC) getLibVLC();
+            nativeNewFromLibVlc(libVLC, mWindow);
+            Dialog.setCallbacks(libVLC, new Dialog.Callbacks() {
+                @Override
+                public void onDisplay(Dialog.ErrorMessage dialog) {
+                    if (recording && dialog.getText().toLowerCase().contains("no space")) {
+                        AndroidUtil.showAlertDialog(context, R.string.no_space_left, R.string.record_stopped);
+                        stopRecording();
+                    }
                 }
-            }
 
-            @Override
-            public void onDisplay(Dialog.LoginDialog dialog) {
-            }
+                @Override
+                public void onDisplay(Dialog.LoginDialog dialog) {
+                }
 
-            @Override
-            public void onDisplay(Dialog.QuestionDialog dialog) {
-            }
+                @Override
+                public void onDisplay(Dialog.QuestionDialog dialog) {
+                }
 
-            @Override
-            public void onDisplay(Dialog.ProgressDialog dialog) {
-            }
+                @Override
+                public void onDisplay(Dialog.ProgressDialog dialog) {
+                }
 
-            @Override
-            public void onCanceled(Dialog dialog) {
-            }
+                @Override
+                public void onCanceled(Dialog dialog) {
+                }
 
-            @Override
-            public void onProgressUpdate(Dialog.ProgressDialog dialog) {
-            }
-        });
+                @Override
+                public void onProgressUpdate(Dialog.ProgressDialog dialog) {
+                }
+            });
     }
 
 

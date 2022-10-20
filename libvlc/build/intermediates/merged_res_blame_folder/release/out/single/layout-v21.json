@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "/home/khidr/StudioProjects/live-cameras/libvlc/build/intermediates/res/merged/release/layout-v21/notification_action.xml",
+        "source": "/home/khidr/.gradle/caches/transforms-2/files-2.1/89f1e14fc94ff45f764a80fa68af5c9f/core-1.6.0/res/layout-v21/notification_action.xml"
+    },
+    {
+        "merged": "/home/khidr/StudioProjects/live-cameras/libvlc/build/intermediates/res/merged/release/layout-v21/notification_action_tombstone.xml",
+        "source": "/home/khidr/.gradle/caches/transforms-2/files-2.1/89f1e14fc94ff45f764a80fa68af5c9f/core-1.6.0/res/layout-v21/notification_action_tombstone.xml"
+    },
+    {
+        "merged": "/home/khidr/StudioProjects/live-cameras/libvlc/build/intermediates/res/merged/release/layout-v21/notification_template_custom_big.xml",
+        "source": "/home/khidr/.gradle/caches/transforms-2/files-2.1/89f1e14fc94ff45f764a80fa68af5c9f/core-1.6.0/res/layout-v21/notification_template_custom_big.xml"
+    },
+    {
+        "merged": "/home/khidr/StudioProjects/live-cameras/libvlc/build/intermediates/res/merged/release/layout-v21/notification_template_icon_group.xml",
+        "source": "/home/khidr/.gradle/caches/transforms-2/files-2.1/89f1e14fc94ff45f764a80fa68af5c9f/core-1.6.0/res/layout-v21/notification_template_icon_group.xml"
+    }
+]

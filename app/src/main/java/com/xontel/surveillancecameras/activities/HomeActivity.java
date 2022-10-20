@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
+import androidx.databinding.Observable;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 
@@ -184,6 +185,13 @@ public class HomeActivity extends BaseActivity {
         });
         mainViewModel.ipCams.observe(this, ipCams -> {
             updateViewPager();
+        });
+
+        mainViewModel.getGridObservable().addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
+            @Override
+            public void onPropertyChanged(Observable sender, int propertyId) {
+                updateViewPager();
+            }
         });
 //        mainViewModel.gridCount.observe(this, gridCount -> {
 //            binding.spGridCount.setText(String.format("%d", gridCount));

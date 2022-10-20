@@ -42,7 +42,6 @@ public class GridFragment extends BaseFragment {
     private MainViewModel mainViewModel;
     private CamsAdapter gridAdapter;
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss.SSS");
-    private List<MediaPlayer> mediaPlayers = new ArrayList<>();
 
     @Inject
     ViewModelProviderFactory providerFactory;
@@ -67,9 +66,9 @@ public class GridFragment extends BaseFragment {
     public void onPause() {
 //        Log.v("TAG_", "onPause" + " NUMBER : "+fragmentOrder + " Time : "+ simpleDateFormat.format(System.currentTimeMillis()));
         super.onPause();
-//        gridAdapter.setPlayers(new ArrayList<>());
-//        gridAdapter.notifyDataSetChanged();
-//        mainViewModel.resetPlayers();
+        gridAdapter.setPlayers(new ArrayList<>());
+        gridAdapter.notifyDataSetChanged();
+        mainViewModel.resetPlayers();
 
     }
 
@@ -143,13 +142,6 @@ public class GridFragment extends BaseFragment {
         mainViewModel.ipCams.observe(getViewLifecycleOwner(), allIpCams -> {
             updateIpCams();
             gridAdapter.notifyDataSetChanged();
-        });
-        mainViewModel.getGridObservable().addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
-            @Override
-            public void onPropertyChanged(Observable sender, int propertyId) {
-                Toast.makeText(getContext(), "ttttttttttt", Toast.LENGTH_LONG).show();
-                updateGrid();
-            }
         });
     }
 

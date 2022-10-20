@@ -242,7 +242,7 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
             timer.scheduleAtFixedRate(new TimerTask() {
                 @Override
                 public void run() {
-                    Log.e("TAG", System.currentTimeMillis() + "");
+//                    Log.e("TAG", System.currentTimeMillis() + "");
                     selectedPage = binding.vpSlider.getCurrentItem();
                     if (selectedPage <= pagerAdapter.getCount()) {
                         selectedPage = (selectedPage + 1) % pagerAdapter.getCount();

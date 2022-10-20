@@ -125,7 +125,7 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
     @Override
     public int getItemViewType(int position) {
-        return ITEM_HIK_CAM/*position < ipCams.size() ? ITEM_CAM : ITEM_ADD_CAM*/;
+        return position < ipCams.size() ? ITEM_CAM : ITEM_ADD_CAM;
     }
 
     @Override

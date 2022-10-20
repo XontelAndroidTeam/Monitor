@@ -1,0 +1,42 @@
+[
+    {
+        "merged": "/home/khidr/StudioProjects/live-cameras/libvlc/build/intermediates/res/merged/release/drawable/loading_dots_dot.xml",
+        "source": "/home/khidr/StudioProjects/live-cameras/libvlc/res/drawable/loading_dots_dot.xml"
+    },
+    {
+        "merged": "/home/khidr/StudioProjects/live-cameras/libvlc/build/intermediates/res/merged/release/drawable/ic_baseline_volume_off_24.xml",
+        "source": "/home/khidr/StudioProjects/live-cameras/libvlc/res/drawable/ic_baseline_volume_off_24.xml"
+    },
+    {
+        "merged": "/home/khidr/StudioProjects/live-cameras/libvlc/build/intermediates/res/merged/release/drawable/notification_bg_low.xml",
+        "source": "/home/khidr/.gradle/caches/transforms-2/files-2.1/89f1e14fc94ff45f764a80fa68af5c9f/core-1.6.0/res/drawable/notification_bg_low.xml"
+    },
+    {
+        "merged": "/home/khidr/StudioProjects/live-cameras/libvlc/build/intermediates/res/merged/release/drawable/notification_bg.xml",
+        "source": "/home/khidr/.gradle/caches/transforms-2/files-2.1/89f1e14fc94ff45f764a80fa68af5c9f/core-1.6.0/res/drawable/notification_bg.xml"
+    },
+    {
+        "merged": "/home/khidr/StudioProjects/live-cameras/libvlc/build/intermediates/res/merged/release/drawable/notification_icon_background.xml",
+        "source": "/home/khidr/.gradle/caches/transforms-2/files-2.1/89f1e14fc94ff45f764a80fa68af5c9f/core-1.6.0/res/drawable/notification_icon_background.xml"
+    },
+    {
+        "merged": "/home/khidr/StudioProjects/live-cameras/libvlc/build/intermediates/res/merged/release/drawable/ic_baseline_volume_up_24.xml",
+        "source": "/home/khidr/StudioProjects/live-cameras/libvlc/res/drawable/ic_baseline_volume_up_24.xml"
+    },
+    {
+        "merged": "/home/khidr/StudioProjects/live-cameras/libvlc/build/intermediates/res/merged/release/drawable/ic_baseline_pause_24.xml",
+        "source": "/home/khidr/StudioProjects/live-cameras/libvlc/res/drawable/ic_baseline_pause_24.xml"
+    },
+    {
+        "merged": "/home/khidr/StudioProjects/live-cameras/libvlc/build/intermediates/res/merged/release/drawable/ic_baseline_circle_24.xml",
+        "source": "/home/khidr/StudioProjects/live-cameras/libvlc/res/drawable/ic_baseline_circle_24.xml"
+    },
+    {
+        "merged": "/home/khidr/StudioProjects/live-cameras/libvlc/build/intermediates/res/merged/release/drawable/notification_tile_bg.xml",
+        "source": "/home/khidr/.gradle/caches/transforms-2/files-2.1/89f1e14fc94ff45f764a80fa68af5c9f/core-1.6.0/res/drawable/notification_tile_bg.xml"
+    },
+    {
+        "merged": "/home/khidr/StudioProjects/live-cameras/libvlc/build/intermediates/res/merged/release/drawable/rounded_bg.xml",
+        "source": "/home/khidr/StudioProjects/live-cameras/libvlc/res/drawable/rounded_bg.xml"
+    }
+]

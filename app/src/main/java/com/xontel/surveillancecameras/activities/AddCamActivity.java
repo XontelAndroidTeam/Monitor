@@ -97,27 +97,31 @@ public class AddCamActivity extends BaseActivity implements MainMvpView {
           hitBack();
         });
 
-//        binding.btnSubmit.setOnClickListener(v->{
-//            if(isNotEmpty(binding.etName , binding.ilName) && isNotEmpty(binding.etUrl , binding.ilUrl) && isNotEmpty(binding.etDescription , binding.ilDescription)){
-//               String url =  binding.etUrl.getText().toString();
-//               String name =  binding.etName.getText().toString();
-//                String description = binding.etDescription.getText().toString();
-//                if(editedCam == null) {
-//                    mPresenter.createCamera(new IpCam(url, name , description ));
-//                }else{
-//                    editedCam.setUrl(url);
-//                    editedCam.setName(name);
-//                    editedCam.setDescription(description);
-//                    mPresenter.updateCamera(editedCam);
-//                }
-//            }
-//        });
+        binding.btnCancel.setOnClickListener(v-> {
+            hitBack();
+        });
+
+        binding.btnSave.setOnClickListener(v->{
+            if(isNotEmpty(binding.etName ) && isNotEmpty(binding.etUrl ) && isNotEmpty(binding.etDescription )){
+               String url =  binding.etUrl.getText().toString();
+               String name =  binding.etName.getText().toString();
+                String description = binding.etDescription.getText().toString();
+                if(editedCam == null) {
+                    mPresenter.createCamera(new IpCam(url, name , description ));
+                }else{
+                    editedCam.setUrl(url);
+                    editedCam.setName(name);
+                    editedCam.setDescription(description);
+                    mPresenter.updateCamera(editedCam);
+                }
+            }
+        });
     }
 
-    boolean isNotEmpty(EditText editText, TextInputLayout textInputLayout){
+    boolean isNotEmpty(EditText editText){
         if(editText.getText().toString().isEmpty() ){
-            textInputLayout.setErrorEnabled(false);
-            textInputLayout.setError(getString(R.string.empty_field));
+//            editText.setErrorEnabled(false);
+            editText.setError(getString(R.string.empty_field));
             return false;
         }else{
             return true;
