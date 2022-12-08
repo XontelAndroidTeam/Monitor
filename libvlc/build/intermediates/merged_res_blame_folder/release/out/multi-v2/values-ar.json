@@ -1,16 +1,16 @@
 {
     "logs": [
         {
-            "outputFile": "/home/khidr/StudioProjects/live-cameras/libvlc/build/intermediates/res/merged/release/values-ar/values-ar.xml",
+            "outputFile": "D:\\projects\\AndroidStudioProjects\\live-cameras\\libvlc\\build\\intermediates\\incremental\\mergeReleaseResources\\merged.dir\\values-ar\\values-ar.xml",
             "map": [
                 {
-                    "source": "/home/khidr/StudioProjects/live-cameras/libvlc/res/values-ar/strings.xml",
+                    "source": "D:\\projects\\AndroidStudioProjects\\live-cameras\\libvlc\\res\\values-ar\\strings.xml",
                     "from": {
                         "startLines": "4,2,3,6,7,10,8,5,11,9",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4",
-                        "startOffsets": "205,55,138,346,414,585,451,278,647,546",
+                        "startOffsets": "209,57,141,352,421,595,459,283,658,555",
                         "endColumns": "72,82,66,67,36,61,94,67,88,38",
-                        "endOffsets": "273,133,200,409,446,642,541,341,731,580"
+                        "endOffsets": "277,135,203,415,453,652,549,346,742,589"
                     },
                     "to": {
                         "startLines": "2,3,4,5,6,7,8,9,10,12",
@@ -21,7 +21,7 @@
                     }
                 },
                 {
-                    "source": "/home/khidr/.gradle/caches/transforms-2/files-2.1/89f1e14fc94ff45f764a80fa68af5c9f/core-1.6.0/res/values-ar/values-ar.xml",
+                    "source": "C:\\Users\\medo_\\.gradle\\caches\\transforms-2\\files-2.1\\89f1e14fc94ff45f764a80fa68af5c9f\\core-1.6.0\\res\\values-ar\\values-ar.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
@@ -40,16 +40,16 @@
             ]
         },
         {
-            "outputFile": "/home/khidr/StudioProjects/live-cameras/libvlc/build/intermediates/incremental/mergeReleaseResources/merged.dir/values-ar/values-ar.xml",
+            "outputFile": "D:\\projects\\AndroidStudioProjects\\live-cameras\\libvlc\\build\\intermediates\\res\\merged\\release\\values-ar\\values-ar.xml",
             "map": [
                 {
-                    "source": "/home/khidr/StudioProjects/live-cameras/libvlc/res/values-ar/strings.xml",
+                    "source": "D:\\projects\\AndroidStudioProjects\\live-cameras\\libvlc\\res\\values-ar\\strings.xml",
                     "from": {
                         "startLines": "4,2,3,6,7,10,8,5,11,9",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4",
-                        "startOffsets": "205,55,138,346,414,585,451,278,647,546",
+                        "startOffsets": "209,57,141,352,421,595,459,283,658,555",
                         "endColumns": "72,82,66,67,36,61,94,67,88,38",
-                        "endOffsets": "273,133,200,409,446,642,541,341,731,580"
+                        "endOffsets": "277,135,203,415,453,652,549,346,742,589"
                     },
                     "to": {
                         "startLines": "2,3,4,5,6,7,8,9,10,12",
@@ -60,7 +60,7 @@
                     }
                 },
                 {
-                    "source": "/home/khidr/.gradle/caches/transforms-2/files-2.1/89f1e14fc94ff45f764a80fa68af5c9f/core-1.6.0/res/values-ar/values-ar.xml",
+                    "source": "C:\\Users\\medo_\\.gradle\\caches\\transforms-2\\files-2.1\\89f1e14fc94ff45f764a80fa68af5c9f\\core-1.6.0\\res\\values-ar\\values-ar.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",

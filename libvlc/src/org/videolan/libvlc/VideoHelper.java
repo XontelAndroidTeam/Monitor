@@ -56,8 +56,8 @@ class VideoHelper implements IVLCVout.OnNewVideoLayoutListener {
     private LinearLayout recordPanel ;
     private ImageView stopRecord ;
     private TimeCounter timeCounter ;
-    private TextView timerText ;
-    private ImageView btnSound ;
+    private TextView timerText;
+    private ImageView btnSound;
     private VolumeControllerView volumeControllerView ;
 
     private final Handler mHandler = new Handler();

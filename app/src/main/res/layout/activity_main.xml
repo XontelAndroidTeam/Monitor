@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.andr oid.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-
         <include
-            android:id="@+id/toolbar_layout"
-            layout="@layout/home_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:id="@+id/appBar"
+            layout="@layout/custom_toolbar"/>
 
         <androidx.drawerlayout.widget.DrawerLayout
             android:id="@+id/drawer"

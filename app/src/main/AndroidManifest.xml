@@ -30,9 +30,10 @@
             android:name=".activities.SavedMediaActivity"
             android:exported="true" />
         <activity android:name=".activities.CamerasActivity" />
-        <activity android:name=".activities.AddCamActivity"></activity>
-        <activity android:name=".activities.SettingsActivity"></activity>
-        <activity android:name=".activities.HomeActivity">
+        <activity android:name=".activities.AddCamActivity" android:label="@string/add_camera"></activity>
+        <activity android:name=".activities.SettingsActivity" android:label="@string/settings"></activity>
+        <activity android:name=".activities.HomeActivity"
+            android:theme="@style/homeTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

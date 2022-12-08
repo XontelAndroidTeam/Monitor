@@ -9,6 +9,7 @@ import androidx.databinding.BindingAdapter;
 import androidx.databinding.InverseBindingAdapter;
 import androidx.databinding.InverseBindingListener;
 
+import com.google.android.material.textfield.TextInputLayout;
 import com.xontel.surveillancecameras.R;
 
 public class SharedPreferencesPropertyWrapper {
@@ -25,11 +26,25 @@ public class SharedPreferencesPropertyWrapper {
         }
     }
 
+    @BindingAdapter("android:text")
+    public static void setChoice(DropDown view, String newValue) {
+        String currentValue = view.getText();
+        // Important to break potential infinite loops.
+        if (currentValue != newValue) {
+            view.setText(newValue);
+        }
+    }
+
 
 
     @InverseBindingAdapter(attribute = "android:text", event =   "android:textAttrChanged")
     public static String getChoice(AutoCompleteTextView view) {
         return view.getText().toString();
+
+    }
+    @InverseBindingAdapter(attribute = "android:text", event =   "android:textAttrChanged")
+    public static String getChoice(DropDown view) {
+        return view.getText();
 
     }
 
@@ -39,6 +54,22 @@ public class SharedPreferencesPropertyWrapper {
     public static void setListeners(AutoCompleteTextView view, final InverseBindingListener attrChange) {
         // Set a listener for click, focus, touch, etc.
         view.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                attrChange.onChange();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+    }
+
+    @BindingAdapter("android:textAttrChanged")
+    public static void setListeners(DropDown view, final InverseBindingListener attrChange) {
+        // Set a listener for click, focus, touch, etc.
+        view.getAutoCompleteTextView().setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 attrChange.onChange();

@@ -90,7 +90,7 @@ public class CamPreviewFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-//        initUI();
+        initUI();
     }
 
     @Override
@@ -278,7 +278,7 @@ public class CamPreviewFragment extends Fragment {
 //        }
 //        mTimer = new Timer();
         super.onResume();
-//        mediaPlayer.play();
+        mediaPlayer.play();
 
     }
 
@@ -291,7 +291,7 @@ public class CamPreviewFragment extends Fragment {
 //            mTimer = null;
 //        }
         super.onPause();
-//        mediaPlayer.stop();
+        mediaPlayer.stop();
     }
 
 }

@@ -3,24 +3,30 @@ package com.xontel.surveillancecameras.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.Observable;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 
+import com.google.android.material.textfield.TextInputLayout;
 import com.xontel.surveillancecameras.R;
 import com.xontel.surveillancecameras.adapters.SideMenuAdapter;
-import com.xontel.surveillancecameras.customObservers.GridObservable;
 import com.xontel.surveillancecameras.fragments.GridFragment;
+import com.xontel.surveillancecameras.utils.DropDown;
 import com.xontel.surveillancecameras.viewModels.MainViewModel;
 import com.xontel.surveillancecameras.viewModels.ViewModelProviderFactory;
 import com.xontel.surveillancecameras.adapters.PagerAdapter;
 import com.xontel.surveillancecameras.base.BaseActivity;
-import com.xontel.surveillancecameras.data.DataManager;
 import com.xontel.surveillancecameras.databinding.ActivityMainBinding;
 
 import javax.inject.Inject;
@@ -32,8 +38,6 @@ public class HomeActivity extends BaseActivity {
     private PagerAdapter pagerAdapter;
     private ActivityMainBinding binding;
     private int currentPageIndex;
-
-
 
 
     @Inject
@@ -56,86 +60,85 @@ public class HomeActivity extends BaseActivity {
 
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_add:
+                addNewCam();
+                return true;
+            case android.R.id.home:
+                toggleSideMenu();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     protected void setUp() {
-        setupToolbar();
+        super.setUp();
         setupGridDropDown();
-        setupObservables();
-        setupCamerasPager();
-    }
-
-    private void setupGridDropDown() {
-        ArrayAdapter gridDropDownAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_dropdown_item,
-                getResources().getStringArray(R.array.grid_count));
-        binding.toolbarLayout.gridFilter.setAdapter(gridDropDownAdapter);
-        binding.toolbarLayout.setData(mainViewModel.getGridObservable());
-        binding.setLifecycleOwner(this);
-    }
-
-    private void setupSideMenu() {
-        SideMenuAdapter sideMenuAdapter = new SideMenuAdapter(this, new SideMenuAdapter.ClickCallback() {
-            @Override
-            public void onItemClicked(int labelsId) {
-                switch (labelsId){
-                    case R.string.devices:
-                        startActivity(new Intent(HomeActivity.this, DevicesActivity.class));
-                        break;
-                    case R.string.saved_media:
-                        startActivity(new Intent(HomeActivity.this, SavedMediaActivity.class));
-                        break;
-                    case R.string.settings:
-                        startActivity(new Intent(HomeActivity.this, SettingsActivity.class));
-                        break;
-                }
-
-            }
-        });
-        binding.sideMenu.setAdapter(sideMenuAdapter);
-    }
-
-
-    private void setupToolbar() {
-        setSupportActionBar(binding.toolbarLayout.toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        setToolbarTitle(R.string.monitor);
-        setupToolbarActions();
-
-    }
-
-    private void setupToolbarActions() {
         binding.home.pagerEmptyView.btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(HomeActivity.this, AddCamActivity.class));
             }
         });
-        binding.toolbarLayout.ivAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(HomeActivity.this, AddCamActivity.class));
-            }
-        });
-        binding.toolbarLayout.ivMenu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (binding.drawer.isOpen())
+        setupObservables();
+        setupCamerasPager();
+    }
+
+    private void setupGridDropDown() {
+        TextInputLayout child = (TextInputLayout) getLayoutInflater().inflate(R.layout.drop_down, null);
+        binding.appBar.llCustomView.addView(child);
+        ArrayAdapter gridDropDownAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_dropdown_item,
+                getResources().getStringArray(R.array.grid_count));
+        AutoCompleteTextView autoCompleteTextView = child.findViewById(R.id.slide_show_filter);
+        autoCompleteTextView.setAdapter(gridDropDownAdapter);
+        autoCompleteTextView.setText(mainViewModel.getGridObservable().getGridCount());
+        binding.setLifecycleOwner(this);
+    }
+
+    private void setupSideMenu() {
+        SideMenuAdapter sideMenuAdapter = new SideMenuAdapter(this, labelsId -> {
+            switch (labelsId) {
+                case R.string.monitor:
                     binding.drawer.close();
-                else
-                    binding.drawer.open();
+                    break;
+                case R.string.devices:
+                    navigateToActivity(DevicesActivity.class);
+                    break;
+                case R.string.saved_media:
+                    navigateToActivity(SavedMediaActivity.class);
+                    break;
+                case R.string.settings:
+                    navigateToActivity(SettingsActivity.class);
+                    break;
             }
+
         });
-        binding.toolbarLayout.ivAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(HomeActivity.this, AddCamActivity.class));
-            }
-        });
+        binding.sideMenu.setAdapter(sideMenuAdapter);
+    }
+
+    private void navigateToActivity(Class classZ) {
+        binding.drawer.close();
+        startActivity(new Intent(this, classZ));
     }
 
 
-    public void setToolbarTitle(int titleResId) {
-        binding.toolbarLayout.tvTitle.setText(titleResId);
+    private void toggleSideMenu() {
+        if (binding.drawer.isOpen())
+            binding.drawer.close();
+        else
+            binding.drawer.open();
     }
+
 
     @Override
     protected void onDestroy() {
@@ -208,6 +211,7 @@ public class HomeActivity extends BaseActivity {
     public void addNewCam() {
         if (mainViewModel.ipCams.getValue().size() < 32) {
             startActivity(new Intent(HomeActivity.this, AddCamActivity.class));
+
         } else {
             showMessage(R.string.cameras_limit);
         }
@@ -249,25 +253,25 @@ public class HomeActivity extends BaseActivity {
         int gridCount = mainViewModel.getGridObservable().getValue();
         int camsCount = mainViewModel.ipCams.getValue().size();
         int numOfFragments = (int) Math.ceil(camsCount * 1.0 / gridCount);
-        Log.v("TAG_", "pages : "+pagerAdapter.getFragmentList().size()+" grid count : " + gridCount + " numOfFragments : " + numOfFragments);
-        // recreate the fragments in view pager
+        Log.v("TAG_", "pages : " + pagerAdapter.getFragmentList().size() + " grid count : " + gridCount + " numOfFragments : " + numOfFragments);
+//         recreate the fragments in view pager
         if (pagerAdapter.getCount() > numOfFragments) { // a change in the view pager is needed
             for (int i = pagerAdapter.getCount() - 1; i >= numOfFragments; i--) {
-                Log.v("TAG_", i+"");
+                Log.v("TAG_", i + "");
                 pagerAdapter.destroyItem(binding.home.vpSlider, i, pagerAdapter.getFragmentList().get(i));
                 pagerAdapter.removeFragment(i);
             }
-        } else if(pagerAdapter.getCount() < numOfFragments){
+        } else if (pagerAdapter.getCount() < numOfFragments) {
             numOfFragments = numOfFragments - pagerAdapter.getCount();
-            for (int i = 0 ; i < numOfFragments; i++) {
+            for (int i = 0; i < numOfFragments; i++) {
                 GridFragment gridFragment = GridFragment.newInstance(pagerAdapter.getFragmentList().size() + 1);
                 pagerAdapter.addFragment(gridFragment);
+                pagerAdapter.notifyDataSetChanged();
+                binding.home.vpSlider.setCurrentItem(currentPageIndex);
+                binding.home.dotsIndicator.refreshDots();
             }
         }
 
-        pagerAdapter.notifyDataSetChanged();
-        binding.home.vpSlider.setCurrentItem(currentPageIndex);
-        binding.home.dotsIndicator.refreshDots();
 
     }
 

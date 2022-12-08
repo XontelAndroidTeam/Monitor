@@ -76,7 +76,7 @@ public class MainViewModel extends BaseViewModel {
                     getLoading().postValue(false);
                     ipCams.postValue(response);
                 }, error -> {
-                    Log.e("error", error.getMessage() );
+                    Log.e(TAG, error.getMessage() );
                     getLoading().postValue(false);
                     getError().postValue(true);
                     setErrorMessage(error.getMessage());

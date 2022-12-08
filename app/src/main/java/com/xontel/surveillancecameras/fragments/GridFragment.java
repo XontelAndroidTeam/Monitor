@@ -57,14 +57,14 @@ public class GridFragment extends BaseFragment {
 
     @Override
     public void onResume(){
-//        Log.v("TAG_", "onResume" + " NUMBER : "+fragmentOrder + " Time : "+ simpleDateFormat.format(System.currentTimeMillis()));
+        Log.v("TAG_", "onResume" + " NUMBER : "+fragmentOrder + " Time : "+ simpleDateFormat.format(System.currentTimeMillis()));
         super.onResume();
-//        gridAdapter.setPlayers(mainViewModel.mediaPlayersLiveData.getValue());
-//        gridAdapter.notifyDataSetChanged();
+        gridAdapter.setPlayers(mainViewModel.mediaPlayers);
+        gridAdapter.notifyDataSetChanged();
     }
     @Override
     public void onPause() {
-//        Log.v("TAG_", "onPause" + " NUMBER : "+fragmentOrder + " Time : "+ simpleDateFormat.format(System.currentTimeMillis()));
+        Log.v("TAG_", "onPause" + " NUMBER : "+fragmentOrder + " Time : "+ simpleDateFormat.format(System.currentTimeMillis()));
         super.onPause();
         gridAdapter.setPlayers(new ArrayList<>());
         gridAdapter.notifyDataSetChanged();
@@ -113,13 +113,13 @@ public class GridFragment extends BaseFragment {
 
     @Override
     public void onStart() {
-//        Log.v("TAG_", "onStart" + " NUMBER : "+fragmentOrder);
+        Log.v("TAG_", "onStart" + " NUMBER : "+fragmentOrder);
         super.onStart();
     }
 
     @Override
     public void onStop() {
-//        Log.v("TAG_", "onStop " + " NUMBER : "+fragmentOrder);
+        Log.v("TAG_", "onStop " + " NUMBER : "+fragmentOrder);
         super.onStop();
     }
 
@@ -143,6 +143,14 @@ public class GridFragment extends BaseFragment {
             updateIpCams();
             gridAdapter.notifyDataSetChanged();
         });
+
+//        mainViewModel.mGridObservable.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
+//            @Override
+//            public void onPropertyChanged(Observable sender, int propertyId) {
+//                updateIpCams();
+//            }
+//        });
+
     }
 
     private void updateGrid() {
@@ -150,6 +158,7 @@ public class GridFragment extends BaseFragment {
         if (oldGridCount != gridCount) {
             gridCount = mainViewModel.getGridObservable().getValue();
             ((GridLayoutManager) binding.rvGrid.getLayoutManager()).setSpanCount((int) Math.sqrt(gridCount));
+            gridAdapter.setGridCount(gridCount);
             gridAdapter.notifyDataSetChanged();
         }
 

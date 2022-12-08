@@ -54,7 +54,7 @@
     <string name="media_details">التفاصيل</string>
     <string name="deleting">يقوم بالحذف</string>
     <string name="file_delete_error">"خطأ اثناء المسح : "</string>
-    <string name="no_media_yet">لا توجد وسائط</string>
+    <string name="no_media_yet">لا توجد وسائط محفوظة لديك</string>
     <string name="card">بطاقة</string>
     <string name="cam_details">تفاصيل الكاميرا</string>
     <string name="nothing_selected">لم يتم اختيار اي عنصر</string>

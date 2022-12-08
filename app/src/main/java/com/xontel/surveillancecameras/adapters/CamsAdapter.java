@@ -3,6 +3,7 @@ package com.xontel.surveillancecameras.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SurfaceView;
 import android.view.TextureView;
@@ -18,6 +19,7 @@ import com.xontel.surveillancecameras.activities.CamerasActivity;
 import com.xontel.surveillancecameras.activities.HomeActivity;
 import com.xontel.surveillancecameras.base.BaseViewHolder;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
+import com.xontel.surveillancecameras.utils.HIKSinglePlayer;
 import com.xontel.surveillancecameras.utils.HikUtil;
 
 import org.videolan.libvlc.Media;
@@ -32,20 +34,17 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
     private List<IpCam> ipCams;
     private Context context;
     private int gridCount;
-    private int logId ;
-    private int channelsNum ;
     private List<MediaPlayer> players;
     private static final int ITEM_CAM = 0;
     private static final int ITEM_ADD_CAM = 1;
     private static final int ITEM_HIK_CAM = 2;
 
 
-    public CamsAdapter(List <IpCam> ipCams, List<MediaPlayer> mediaPlayers, int gridCount, Context context) {
+    public CamsAdapter(List<IpCam> ipCams, List<MediaPlayer> mediaPlayers, int gridCount, Context context) {
         this.ipCams = ipCams;
         this.context = context;
         this.gridCount = gridCount;
         this.players = mediaPlayers;
-        this.channelsNum = channelsNum;
     }
 
     public List<MediaPlayer> getPlayers() {
@@ -54,6 +53,10 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
     public void setPlayers(List<MediaPlayer> players) {
         this.players = players;
+    }
+
+    public void setGridCount(int gridCount) {
+        this.gridCount = gridCount;
     }
 
     public void addItems(List<IpCam> cams) {
@@ -130,6 +133,8 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
     @Override
     public void onBindViewHolder(BaseViewHolder holder, int position) {
+        Log.e("TAGGG", "position : " + position
+                + " code : " + holder.hashCode() + (position == 15 ? "\n ============================ \n" : ""));
         holder.onBind(position);
     }
 
@@ -138,11 +143,8 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
         return gridCount;
     }
 
-    public void setLogId(int logId) {
-        this.logId = logId;
-    }
 
-    public class CamsViewHolder extends BaseViewHolder {
+    public class CamsViewHolder extends BaseViewHolder implements View.OnClickListener {
         private IpCam ipCam;
         private TextView camName;
         private VLCVideoLayout vlcVideoLayout;
@@ -155,48 +157,15 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
             super(itemView);
             vlcVideoLayout = itemView.findViewById(R.id.vlc_layout);
             camName = itemView.findViewById(R.id.tv_cam_name);
-//            rtspSurfaceView = itemView.findViewById(R.id.svVideo);
-//            mainViewModel.lifeCycleObservable.observe(lifecycleOwner, new Observer<Integer>() {
-//                @Override
-//                public void onChanged(Integer state) {
-//                    switch (state) {
-//                        case MainViewModel
-//                                .ON_RESUME:
-//                            Log.v("TAG_1", "resumed");
-//                            if (isBound)
-//                                initVlcPlayer();
-//                            break;
-//                        case MainViewModel
-//                                .ON_PAUSE:
-//                            if (isBound) {
-//                                Log.v("TAG_1", "paused");
-//                                mediaPlayer.stop();
-//                                mediaPlayer.detachViews();
-//                            }
-//                            break;
-//                    }
-//                }
-//            });
-//            textureView = itemView.findViewById(R.id.video_view);
         }
 
         @Override
         public void onBind(int position) {
             super.onBind(position);
-
             ipCam = ipCams.get(position);
             camName.setText(ipCam.getName());
-//            initEasyPlayer();
             initVlcPlayer();
-//            initRtspPlayer();
-            itemView.setOnClickListener(v -> {
-                Intent intent = new Intent(context, CamerasActivity.class);
-                ArrayList<IpCam> cams = new ArrayList<>();
-                cams.add(ipCams.get(getAdapterPosition()));
-                intent.putParcelableArrayListExtra(CamerasActivity.KEY_CAMERAS, cams);
-                context.startActivity(intent);
-            });
-//            Log.v("TAG_", "bound" + getBindingAdapterPosition());
+            itemView.setOnClickListener(this);
             isBound = true;
         }
 
@@ -207,63 +176,55 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
 
         private void initVlcPlayer() {
-            if(players.size() > 0){
-            mediaPlayer = players.get(getBindingAdapterPosition());
-            mediaPlayer.attachViews(vlcVideoLayout);
-            final Media media = new Media(mediaPlayer.getLibVLCInstance(), Uri.parse(ipCam.getUrl()));
-            media.setHWDecoderEnabled(true, true);
-            media.addCommonOptions();
-            mediaPlayer.setMedia(media);
-            media.release();
-            mediaPlayer.play();
+            if (players.size() > 0) {
+                mediaPlayer = players.get(getBindingAdapterPosition());
+                mediaPlayer.attachViews(vlcVideoLayout);
+                final Media media = new Media(mediaPlayer.getLibVLCInstance(), Uri.parse(ipCam.getUrl()));
+                media.setHWDecoderEnabled(true, true);
+                media.addCommonOptions();
+                mediaPlayer.setMedia(media);
+                media.release();
+                mediaPlayer.play();
             }
         }
-        private void initRtspPlayer(){
-//            rtspSurfaceView.init(Uri.parse("rtsp://192.168.1.123/Streaming/Channels/302"), "admin", "X0nPAssw0rd_000");
-//            rtspSurfaceView.start(true, true);
+
+
+        @Override
+        public void onClick(View view) {
+            Intent intent = new Intent(context, CamerasActivity.class);
+            ArrayList<IpCam> cams = new ArrayList<>();
+            cams.add(ipCams.get(getAdapterPosition()));
+            intent.putParcelableArrayListExtra(CamerasActivity.KEY_CAMERAS, cams);
+            context.startActivity(intent);
         }
-
-        private void initEasyPlayer() {
-//            EasyPlayerClient client = new EasyPlayerClient(itemView.getContext(), "", textureView, null, new EasyPlayerClient.I420DataCallback() {
-//                @Override
-//                public void onI420Data(ByteBuffer buffer) {
-//
-//                }
-//
-//                @Override
-//                public void onPcmData(byte[] pcm) {
-//
-//                }
-//            });
-//            client.play(ipCam.getUrl());
-
-        }
-
-
     }
 
-    public class AddCamViewHolder extends BaseViewHolder {
+    public class AddCamViewHolder extends BaseViewHolder implements View.OnClickListener {
         public AddCamViewHolder(@NonNull View itemView) {
             super(itemView);
+            itemView.setOnClickListener(this);
         }
 
         @Override
         public void onBind(int position) {
             super.onBind(position);
-            itemView.setOnClickListener(v -> {
-                ((HomeActivity) context).addNewCam();
-            });
-//            Log.v("TAG_", "bound" + getBindingAdapterPosition());
         }
 
         @Override
         protected void clear() {
         }
+
+        @Override
+        public void onClick(View view) {
+            ((HomeActivity) context).addNewCam();
+        }
     }
+
     public class HikVisionViewHolder extends BaseViewHolder {
-        TextView camName ; 
-        SurfaceView surfaceView ;
+        TextView camName;
+        SurfaceView surfaceView;
         HikUtil hikUtil;
+
         public HikVisionViewHolder(@NonNull View itemView) {
             super(itemView);
             camName = itemView.findViewById(R.id.tv_cam_name);
@@ -279,14 +240,14 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
         }
 
         private void initHikPlayer() {
-//            HIKSinglePlayer hikSinglePlayer = new HIKSinglePlayer(getBindingAdapterPosition()+1, logId, HIKSinglePlayer.HIK_SUB_STREAM_CODE);
-//            hikSinglePlayer.initView(surfaceView);
-//            hikSinglePlayer.playOrStopStream();
-//            HikUtil.initSDK();
-//            hikUtil = new HikUtil();
+            HIKSinglePlayer hikSinglePlayer = new HIKSinglePlayer(getBindingAdapterPosition()+1, logId, HIKSinglePlayer.HIK_SUB_STREAM_CODE);
+            hikSinglePlayer.initView(surfaceView);
+            hikSinglePlayer.playOrStopStream();
+            HikUtil.initSDK();
+            hikUtil = new HikUtil();
 //            hikUtil.initView(surfaceView);
 //            hikUtil.setDeviceData("192.168.1.123", 8000, "admin", "X0nPAssw0rd_000");
-//            hikUtil.loginDevice( );
+//            hikUtil.loginDevice();
         }
 
         @Override

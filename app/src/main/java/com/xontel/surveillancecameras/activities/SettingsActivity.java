@@ -71,24 +71,22 @@ public class SettingsActivity extends BaseActivity implements Observer {
 
     }
     private void setupToolbar() {
-        setSupportActionBar(binding.toolbarLayout.toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        setToolbarTitle(R.string.settings);
-        enableBackBtn();
+
+
     }
 
     private void enableBackBtn() {
-        binding.toolbarLayout.tvBack.setVisibility(View.VISIBLE);
-        binding.toolbarLayout.tvBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
+//        binding.toolbarLayout.tvBack.setVisibility(View.VISIBLE);
+//        binding.toolbarLayout.tvBack.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                onBackPressed();
+//            }
+//        });
     }
 
     public void setToolbarTitle(int titleResId){
-        binding.toolbarLayout.tvTitle.setText(titleResId);
+//        binding.toolbarLayout.tvTitle.setText(titleResId);
     }
 
     private void openDefaultMediaFolder() {
@@ -126,7 +124,7 @@ public class SettingsActivity extends BaseActivity implements Observer {
                 android.R.layout.simple_spinner_dropdown_item,
                 getResources().getStringArray(R.array.intervals));
         binding.mediaFilter.setAdapter(mediaDirsDropDownAdapter);
-        binding.slideShowFilter.setAdapter(intervalsDirsDropDownAdapter);
+        binding.slideShowIntervalDropDown.setAdapter(intervalsDirsDropDownAdapter);
         binding.setData(mSettingObservable);
         binding.setLifecycleOwner(this);
     }

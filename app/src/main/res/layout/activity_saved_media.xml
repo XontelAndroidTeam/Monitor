@@ -9,42 +9,14 @@
         tools:context=".activities.DisplaySettingsActivity">
         <!--        <include-->
         <!--            layout="@layout/saver_clock"/>-->
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+        <include
+            android:id="@+id/toolbar_layout"
+            layout="@layout/custom_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/appbar_color"
-            app:contentInsetStart="0dp"
-            app:contentInsetEnd="0dp"
-            app:layout_constraintTop_toTopOf="parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-            <LinearLayout
-                android:id="@+id/ll_upper_bar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingHorizontal="16dp">
-
-                <ImageView
-                    android:id="@+id/iv_back"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_alignParentStart="true"
-                    android:src="@drawable/ic_back" />
-
-                <TextView
-                    android:id="@+id/tv_title"
-                    style="@style/status_bar_font"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
-                    android:layout_toEndOf="@+id/iv_back"
-                    android:gravity="center_vertical"
-                    android:text="@string/photos" />
-            </LinearLayout>
-        </androidx.appcompat.widget.Toolbar>
+            app:layout_constraintTop_toTopOf="parent" />
 
 
         <com.xontel.surveillancecameras.utils.EmptyIndicatorRecyclerView
@@ -52,23 +24,34 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:scrollbars="vertical"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toolbar"
-            app:layout_constraintBottom_toBottomOf="parent"/>
-        <TextView
-            android:id="@+id/tv_empty"
-            style="@style/status_bar_font"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:gravity="center_vertical"
-            android:text="@string/no_media_yet"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            />
+            app:layout_constraintTop_toBottomOf="@id/toolbar_layout" />
 
+        <LinearLayout
+            android:id="@+id/ll_empty_indicator"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar_layout">
+
+            <ImageView
+                android:layout_width="400dp"
+                android:layout_height="400dp"
+                android:src="@drawable/empty_container" />
+
+            <TextView
+                android:id="@+id/tv_empty"
+                style="@style/status_bar_font"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/no_media_yet"
+                android:textSize="28dp"/>
+        </LinearLayout>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

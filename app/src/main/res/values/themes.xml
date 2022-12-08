@@ -3,23 +3,31 @@
     <style name="mainTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Disable animations between activities -->
         <!-- Primary brand color. -->
-        <item name="android:windowAnimationStyle">@null</item>
         <item name="android:windowBackground">@color/default_bg</item>
-        <item name="android:colorPrimary">@color/primary_color</item>
-        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorOnPrimary">@color/accent_color</item>
         <item name="actionModeBackground">@color/primary_color</item>
-        <item name="android:colorPrimaryDark">@color/primary_dark_color</item>
+        <item name="navigationIcon">@drawable/ic_baseline_arrow_back_ios_new_24</item>
+        <item name="titleCentered">true</item>
+        <item name="android:colorPrimaryDark">@color/accent_color</item>
+        <item name="android:windowAnimationStyle">@style/CustomActivityAnimation</item>
 
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/white</item>
         <item name="android:actionModeCloseDrawable">@drawable/ic_baseline_close_24</item>
-        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorPrimary">@color/black_color</item>
         <item name="android:textColorSecondary">@color/grey_color</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="android:textColorHint">@color/light_grey_color</item>
         <item name="android:colorBackground">@color/white_color</item>
         <item name="android:fontFamily">@font/cairo_regular</item>
         <item name="android:textColorPrimaryInverse">@color/white_color</item>
+    </style>
+
+
+    <style name="homeTheme" parent="@style/mainTheme">
+        <item name="navigationIcon">@drawable/ic_baseline_menu_24</item>
+
     </style>
 
 <!--    <style name="Theme.App.Starting" parent="Theme.SplashScreen">-->
@@ -103,6 +111,14 @@
         <item name="android:textColor">@color/black_color</item>
         <item name="android:textSize">20dp</item>
     </style>
+
+    <style name="CustomActivityAnimation" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/slide_in_right</item>
+        <item name="android:activityOpenExitAnimation">@anim/slide_out_left</item>
+        <item name="android:activityCloseEnterAnimation">@anim/slide_in_left</item>
+        <item name="android:activityCloseExitAnimation">@anim/slide_out_right</item>
+    </style>
+
 
 
 

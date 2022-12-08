@@ -40,23 +40,19 @@ public class SavedMediaActivity extends BaseActivity implements Observer, MediaA
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_saved_media);
-        setSupportActionBar(binding.toolbar);
         SDCardObservable.getInstance().addObserver(this);
-        binding.ivBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hitBack();
-            }
-        });
 
     }
+
+
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.selection_menu, menu);
         menu.findItem(R.id.action_select_all).setVisible(false);
         return true;
-
     }
 
     private void setupProgressDialog() {
@@ -221,7 +217,7 @@ public class SavedMediaActivity extends BaseActivity implements Observer, MediaA
 
     private void setupMediaList() {
         mediaAdapter = new MediaAdapter(this, mediaFiles, this);
-        binding.rvMedia.setEmptyView(binding.tvEmpty);
+        binding.rvMedia.setEmptyView(binding.llEmptyIndicator);
         binding.rvMedia.setAdapter(mediaAdapter)    ;
         binding.rvMedia.setLayoutManager(new GridLayoutManager(this, 4));
     }

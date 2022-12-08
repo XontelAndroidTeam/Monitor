@@ -25,29 +25,12 @@
                 app:titleCentered="true"
                 app:titleTextColor="@color/black">
 
-                <ImageView
-                    android:id="@+id/iv_menu"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@drawable/ic_baseline_menu_24" />
-
-                <TextView
-                    android:id="@+id/tv_title"
-                    style="@style/status_bar_font"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:textColor="@color/black"
-                    tools:text="@string/title" />
-
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end|center_vertical"
                     android:gravity="center"
                     android:orientation="horizontal">
-
-
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/grid_drop_down"
                         style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
@@ -82,11 +65,6 @@
                             android:text="@={data.gridCount}"
                             tools:ignore="LabelFor" />
                     </com.google.android.material.textfield.TextInputLayout>
-                    <ImageView
-                        android:id="@+id/iv_add"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:src="@drawable/ic_baseline_add_24" />
                 </LinearLayout>
             </com.google.android.material.appbar.MaterialToolbar>
         </com.google.android.material.appbar.AppBarLayout>

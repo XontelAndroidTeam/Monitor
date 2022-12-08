@@ -39,7 +39,6 @@ public class SideMenuAdapter extends BaseAdapter {
 //        mClickCallback.onItemClicked(labelsIds[i]);
 //    }
 
-
     @Override
     public int getCount() {
         return 4;
@@ -73,13 +72,10 @@ public class SideMenuAdapter extends BaseAdapter {
             icon.setImageTintList(ColorStateList.valueOf(mContext.getResources().getColor(R.color.primary_color)));
             label.setTextColor(mContext.getResources().getColor(R.color.black));
         }
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mClickCallback.onItemClicked(labelsIds[i]);
-                selectedItemIndex = i;
-                notifyDataSetChanged();
-            }
+        view.setOnClickListener(view1 -> {
+            mClickCallback.onItemClicked(labelsIds[i]);
+            selectedItemIndex = i;
+            notifyDataSetChanged();
         });
         return view;
     }

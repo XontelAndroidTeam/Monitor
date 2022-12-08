@@ -39,37 +39,19 @@ public class AddCamActivity extends BaseActivity implements MainMvpView {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_add_cam);
         getActivityComponent().inject(this);
-        setupToolbar();
         mPresenter.onAttach(this);
 
 
         if(getIntent().hasExtra(KEY_CAMERA)){
-            binding.toolbarLayout.tvTitle.setText(R.string.edit_camera);
             editedCam = getIntent().getParcelableExtra(KEY_CAMERA);
             fillFieldsWithData();
         }
-        initUI();
+        setUp();
     }
 
-    private void setupToolbar() {
-        setSupportActionBar(binding.toolbarLayout.toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        setToolbarTitle(R.string.add_camera);
-        enableBackBtn();
-    }
-
-    private void enableBackBtn() {
-        binding.toolbarLayout.tvBack.setVisibility(View.VISIBLE);
-        binding.toolbarLayout.tvBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
-    }
 
     public void setToolbarTitle(int titleResId){
-        binding.toolbarLayout.tvTitle.setText(titleResId);
+//        binding.toolbarLayout.tvTitle.setText(titleResId);
     }
 
     private void fillFieldsWithData() {
@@ -82,6 +64,11 @@ public class AddCamActivity extends BaseActivity implements MainMvpView {
     }
 
     @Override
+    public void finish() {
+        super.finish();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         mPresenter.onDetach();
@@ -89,14 +76,7 @@ public class AddCamActivity extends BaseActivity implements MainMvpView {
 
     @Override
     protected void setUp() {
-
-    }
-
-    private void initUI() {
-        binding.toolbarLayout.tvBack.setOnClickListener(v-> {
-          hitBack();
-        });
-
+        super.setUp();
         binding.btnCancel.setOnClickListener(v-> {
             hitBack();
         });
@@ -130,7 +110,7 @@ public class AddCamActivity extends BaseActivity implements MainMvpView {
 
     @Override
     public void onInsertingCamera() {
-        binding.toolbarLayout.tvBack.performClick();
+        onBackPressed();
     }
 
     @Override

@@ -6,43 +6,13 @@
     android:layout_width="match_parent"
     android:keepScreenOn="true"
     android:layout_height="match_parent">
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/appbar_color"
-        app:contentInsetStart="0dp"
-        app:contentInsetEnd="0dp"
+
+    <include
+        android:id="@+id/appBar"
+        layout="@layout/custom_toolbar"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-    <LinearLayout
-        android:id="@+id/ll_upper_bar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-
-        android:paddingHorizontal="16dp">
-
-        <ImageView
-            android:id="@+id/iv_back"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignParentStart="true"
-            android:src="@drawable/ic_back" />
-
-        <TextView
-            android:id="@+id/tv_title"
-            style="@style/status_bar_font"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_toEndOf="@+id/iv_back"
-            android:gravity="center_vertical"
-            android:text="@string/cameras" />
-    </LinearLayout>
-    </androidx.appcompat.widget.Toolbar>
+        app:layout_constraintEnd_toEndOf="parent"/>
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/vp_slider"
         android:layout_width="match_parent"
@@ -50,7 +20,7 @@
         android:layout_marginBottom="16dp"
         android:background="@color/black_color"
         app:layout_constraintBottom_toTopOf="@id/dots_indicator"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintTop_toBottomOf="@id/appBar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
     <com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator

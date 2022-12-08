@@ -7,17 +7,22 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.snackbar.Snackbar;
 import com.xontel.surveillancecameras.R;
 import com.xontel.surveillancecameras.di.component.ActivityComponent;
@@ -35,8 +40,6 @@ import static android.content.pm.PackageManager.GET_META_DATA;
  * Email    : info@androidwave.com
  */
 public abstract class BaseActivity extends AppCompatActivity implements MvpView, BaseFragment.Callback {
-
-
     private ProgressDialog mProgressDialog;
 
     private ActivityComponent mActivityComponent;
@@ -45,14 +48,16 @@ public abstract class BaseActivity extends AppCompatActivity implements MvpView,
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTheme(R.style.mainTheme);
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         mActivityComponent = DaggerActivityComponent.builder()
                 .activityModule(new ActivityModule(this))
                 .applicationComponent(((MyApp) getApplication()).getComponent())
                 .build();
-
     }
+
+
+
+
 
     public ActivityComponent getActivityComponent() {
         return mActivityComponent;
@@ -65,10 +70,12 @@ public abstract class BaseActivity extends AppCompatActivity implements MvpView,
             requestPermissions(permissions, requestCode);
         }
     }
-    public void hitBack(){
+
+    public void hitBack() {
         hideKeyboard();
         onBackPressed();
     }
+
 
     @TargetApi(Build.VERSION_CODES.M)
     public boolean hasPermission(String permission) {
@@ -81,6 +88,12 @@ public abstract class BaseActivity extends AppCompatActivity implements MvpView,
     public void showLoading() {
         hideLoading();
         mProgressDialog = CommonUtils.showLoadingDialog(this);
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+
     }
 
     @Override
@@ -170,9 +183,21 @@ public abstract class BaseActivity extends AppCompatActivity implements MvpView,
     }
 
     @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                hitBack();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void openLoginActivity() {
     }
 
-    protected abstract void setUp();
+    protected  void setUp(){
+        setSupportActionBar(findViewById(R.id.toolbar));
+    }
 }
 

@@ -23,4 +23,6 @@
         <attr name="vlc_enable_volume_control" format="boolean"/>
     </declare-styleable>
 
+
+
 </resources>

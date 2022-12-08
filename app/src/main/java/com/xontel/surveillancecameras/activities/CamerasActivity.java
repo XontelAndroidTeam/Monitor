@@ -59,14 +59,14 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_cameras);
         sharedPreferences = getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, MODE_PRIVATE);
         sharedPreferences.registerOnSharedPreferenceChangeListener(listener);
-        setSupportActionBar(binding.toolbar);
+//        setSupportActionBar(binding.toolbar);
         cams = getIntent().getParcelableArrayListExtra(KEY_CAMERAS);
         if (getIntent().hasExtra(KEY_SLIDE_SHOW)) {
-            binding.tvTitle.setText(R.string.slide_show);
+//            binding.tvTitle.setText(R.string.slide_show);
             isSlideShow = true;
         } else {
             try {
-                binding.tvTitle.setText(cams.get(0).getName());
+//                binding.tvTitle.setText(cams.get(0).getName());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -74,7 +74,7 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
         }
         getActivityComponent().inject(this);
         mPresenter.onAttach(this);
-        initUI();
+        setUp();
     }
 
     @Override
@@ -88,10 +88,6 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
         }
     }
 
-    @Override
-    protected void setUp() {
-
-    }
 
     public Menu getOptionMenu() {
         return optionMenu;
@@ -213,10 +209,9 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
                 .show();
     }
 
-    private void initUI() {
-        binding.ivBack.setOnClickListener(v -> {
-           hitBack();
-        });
+    @Override
+    public void setUp() {
+        super.setUp();
     }
 
     private void setupCamerasPager() {
