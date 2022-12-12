@@ -3,6 +3,8 @@ package com.xontel.surveillancecameras.fragments;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,9 +19,15 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
+import com.hikvision.netsdk.HCNetSDK;
+import com.hikvision.netsdk.NET_DVR_IPPARACFG_V40;
 import com.xontel.surveillancecameras.R;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
 import com.xontel.surveillancecameras.databinding.FragmentCameraBinding;
+import com.xontel.surveillancecameras.utils.HIKDevice;
+import com.xontel.surveillancecameras.utils.HIKDeviceType;
+import com.xontel.surveillancecameras.utils.HIKSinglePlayer;
+import com.xontel.surveillancecameras.utils.HikUtil;
 import com.xontel.surveillancecameras.utils.StorageHelper;
 
 import org.jetbrains.annotations.NotNull;
@@ -29,6 +37,8 @@ import org.videolan.libvlc.MediaPlayer;
 public class CamPreviewFragment extends Fragment {
     public static final String TAG = CamPreviewFragment.class.getSimpleName();
     private MediaPlayer mediaPlayer;
+    private HIKSinglePlayer hikSinglePlayer ;
+    private int logId;
     //    private LibVLC libVLC;
 //    private VideoHelper videoHelper;
 //    private boolean isRecording = false;
@@ -115,7 +125,7 @@ public class CamPreviewFragment extends Fragment {
 
     private void initVlcPlayer() {
         mediaPlayer = new MediaPlayer(getContext());
-        mediaPlayer.setRecordingDirectory(StorageHelper.getMediaDirectory(getContext(), StorageHelper.VIDEOS_DIRECTORY_NAME).getAbsolutePath());
+//        mediaPlayer.setRecordingDirectory(StorageHelper.getMediaDirectory(getContext(), StorageHelper.VIDEOS_DIRECTORY_NAME).getAbsolutePath());
         mediaPlayer.attachViews(binding.vlcLayout);
         final Media media = new Media(mediaPlayer.getLibVLCInstance(), Uri.parse(cam.getUrl()));
         media.addCommonOptions();
@@ -159,7 +169,45 @@ public class CamPreviewFragment extends Fragment {
 //            stopRecordingVideo();
 //        });
 
-        initVlcPlayer();
+//        initVlcPlayer();
+        initHikPlayer();
+    }
+
+    private void initHikPlayer() {
+        HikUtil.initSDK();
+        HikUtil.loginDevice(new HIKDevice("192.168.1.123", 8000, "admin", "X0nPAssw0rd_000", HIKDeviceType.DVR), new HikUtil.HikInterface() {
+            @Override
+            public void onLogInSuccess(int id) {
+                logId = id ;
+
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getContext(), "logId : "+logId , Toast.LENGTH_SHORT).show();
+                        openCams();
+
+                    }
+                });
+
+
+            }
+
+            @Override
+            public void onLogInFailed() {
+                Log.v("TAGGG", "login failed");
+
+            }
+        });
+    }
+
+    private void openCams() {
+        NET_DVR_IPPARACFG_V40 ipParaCfg = new NET_DVR_IPPARACFG_V40();
+
+        // UserId, Command, ChannelNo., Out
+        HCNetSDK.getInstance().NET_DVR_GetDVRConfig( logId, HCNetSDK.NET_DVR_GET_IPPARACFG_V40, 0, ipParaCfg );
+        hikSinglePlayer = new HIKSinglePlayer(3, logId, HIKSinglePlayer.HIK_SUB_STREAM_CODE);
+        hikSinglePlayer.initView(binding.surfaceView);
+        hikSinglePlayer.playOrStopStream();
     }
 
     private void showSuccessMessage() {
@@ -278,7 +326,7 @@ public class CamPreviewFragment extends Fragment {
 //        }
 //        mTimer = new Timer();
         super.onResume();
-        mediaPlayer.play();
+//        mediaPlayer.play();
 
     }
 

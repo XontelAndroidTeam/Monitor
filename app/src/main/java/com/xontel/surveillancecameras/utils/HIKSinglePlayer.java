@@ -12,11 +12,13 @@ import com.hikvision.netsdk.RealPlayCallBack;
 
 import org.MediaPlayer.PlayM4.Player;
 
+
 public class HIKSinglePlayer {
     public static final String TAG = HIKSinglePlayer.class.getSimpleName();
     public static final int HIK_MAIN_STREAM_CODE = 0;      //主码流
     public static final int HIK_SUB_STREAM_CODE = 1;
     private SurfaceView mSurfaceView;
+    private boolean stopPlayback = false;
     private  int m_iPort = -1;
     private int playId = -1 ;
     private  int m_iPlaybackID = -1;
@@ -81,7 +83,7 @@ public class HIKSinglePlayer {
         }
         if (playId < 0) {   //播放
 
-            RealPlayCallBack fRealDataCallBack = getRealPlayerCbf();
+            RealPlayCallBack fRealDataCallBack = getRealPlayerCbf()/* realplayCallback*/;
             if (fRealDataCallBack == null) {
                 Log.e(TAG, "fRealDataCallBack object is failed!");
                 return;
@@ -182,25 +184,148 @@ public class HIKSinglePlayer {
                 Log.v("TAGGG", "framerate" + Player.getInstance().getCurrentFrameNum(m_iPort)+"");
             }
         } else {
-            if (!Player.getInstance().inputData(m_iPort, pDataBuffer, iDataSize)) {
-
-//		    		Log.e(TAG, "inputData failed with: " + Player.getInstance().getLastError(m_iPort));
-                for (int i = 0; i < 4000 && m_iPlaybackID >= 0; i++) {
-                    if (!Player.getInstance().inputData(m_iPort, pDataBuffer, iDataSize))
-                        Log.e(TAG, "input stream data failed: " + Player.getInstance().getLastError(m_iPort));
-                    else
+            if (!Player.getInstance().inputData(m_iPort, pDataBuffer,
+                    iDataSize)) {
+                // Log.e(TAG, "inputData failed with: " +
+                // playerInstance.getLastError(playPort));
+                for (int i = 0; i < 4000 && playId >= 0
+                        && !stopPlayback; i++) {
+                    if (Player.getInstance().inputData(m_iPort,
+                            pDataBuffer, iDataSize)) {
                         break;
+
+                    }
+
+                    if (i % 100 == 0) {
+                        Log.e(TAG, "inputData failed with: "
+                                + Player.getInstance()
+                                .getLastError(m_iPort) + ", i:" + i);
+                    }
                     try {
                         Thread.sleep(10);
                     } catch (InterruptedException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
-
                     }
                 }
             }
 
         }
 
+    }
+
+
+    private RealPlayCallBack realplayCallback = new RealPlayCallBack() {
+
+        @Override
+        public void fRealDataCallBack(int handle, int dataType, byte[] buffer, int bufferSize) {
+            System.out.println( String.format( "fRealDataCallBack{ handle : %s, dataType : %s, bufferSize : %s }",
+                    handle, dataType, bufferSize ) );
+
+            int i = 0;
+
+            switch ( dataType ) {
+                case HCNetSDK.NET_DVR_SYSHEAD:
+
+                    if ( -1 == (m_iPort = Player.getInstance().getPort() ) ) {
+                        System.out.println( "Can't get play port!" );
+
+                        return;
+                    }
+
+                    if ( 0 < bufferSize ) {
+                        if ( openPlayer( buffer, bufferSize ) ) {
+                            System.out.println( "Open player successfully." );
+                        } else {
+                            System.out.println( "Open player failed." );
+                        }
+                    }
+
+                    break;
+
+                case HCNetSDK.NET_DVR_STREAMDATA:
+                case HCNetSDK.NET_DVR_STD_VIDEODATA:
+                case HCNetSDK.NET_DVR_STD_AUDIODATA:
+
+                    if ( 0 < bufferSize && -1 != m_iPort ) {
+
+                        try {
+                            for (i = 0; i < 400; i++) {
+                                if ( Player.getInstance().inputData( m_iPort, buffer,
+                                        bufferSize ) ) {
+                                    System.out.println( "Played successfully." );
+                                    break;
+                                }
+
+                                System.out.println( "Playing failed." );
+                                Thread.sleep( 10 );
+                            }
+                        } catch (Exception e) {
+
+                        }
+
+                        if ( i == 400 ) {
+                            System.out.println( "inputData failed" );
+                        }
+
+//					if ( Player.getInstance().inputData( playPort, buffer, bufferSize ) ) {
+//						System.out.println( "Played successfully." );
+//					} else {
+//						System.out.println( "Playing failed." );
+//					}
+                    }
+
+//				if ( -1 != playPort ) {
+//					// closing the player
+//				}
+//
+//				if ( openPlayer( buffer, bufferSize ) ) {
+//
+//				}
+            }
+
+            //if ( -1 == playPort ) return;
+
+            //Player.getInstance().inputData( playPort, buffer, bufferSize );
+        }
+    };
+
+    private boolean openPlayer(byte[] buffer, int bufferSize) {
+
+//		do {
+//			playPort = Player.getInstance().getPort();
+//
+//		} while ( -1 == playPort );
+
+        if ( ! Player.getInstance().setStreamOpenMode(m_iPort, Player.STREAM_FILE ) ) {
+            System.out.println( "The player set stream mode failed!" );
+            return false;
+        }
+
+        if ( ! Player.getInstance().openStream( m_iPort, buffer, bufferSize, 2 * 1024 * 1024/*PLAYING_BUFFER_SIZE*/ ) ) {
+            Player.getInstance().freePort( m_iPort );
+            m_iPort = -1;
+
+            return false;
+        }
+
+//		Player.getInstance().setStreamOpenMode( playPort, 0 );
+        System.out.println( "We are using " + mSurfaceView.getHolder() + " as a Displayer." );
+
+        if ( ! Player.getInstance().play( m_iPort, mSurfaceView.getHolder() ) ) {
+            Player.getInstance().closeStream( m_iPort );
+            Player.getInstance().freePort( m_iPort );
+
+            m_iPort = -1;
+
+            return false;
+        }
+
+        return true;
+    }
+
+    public void catchErrorIfNecessary() {
+        int code = HCNetSDK.getInstance().NET_DVR_GetLastError();
+        if ( 0 != code ) System.out.println( "Error: " + code );
     }
 }

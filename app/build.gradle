@@ -17,8 +17,8 @@ android {
     buildToolsVersion "30.0.3"
     defaultConfig {
         applicationId "com.xontel.surveillancecameras"
-        minSdkVersion 23
-        targetSdkVersion 27
+        minSdkVersion 22
+        targetSdkVersion 22
         versionCode 7
         versionName "1.5"
 
@@ -37,10 +37,13 @@ android {
 //        exclude 'lib/armeabi-v7a/libvlcjni.so'
     }
     ndkVersion '22.1.7171670'
-    sourceSets{
-        main {
-            jni.srcDirs = ['libs'] // This prevents the auto generation of Android.mk
-        }
+//    sourceSets{
+//        main {
+//            jni.srcDirs = ['libs'] // This prevents the auto generation of Android.mk
+//        }
+//    }
+    sourceSets.main {
+        jniLibs.srcDirs = ['libs']
     }
     dataBinding {
         enabled = true

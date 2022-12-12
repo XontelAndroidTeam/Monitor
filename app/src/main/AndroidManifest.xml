@@ -32,7 +32,7 @@
         <activity android:name=".activities.CamerasActivity" />
         <activity android:name=".activities.AddCamActivity" android:label="@string/add_camera"></activity>
         <activity android:name=".activities.SettingsActivity" android:label="@string/settings"></activity>
-        <activity android:name=".activities.HomeActivity"
+        <activity  android:exported="true" android:name=".activities.HomeActivity"
             android:theme="@style/homeTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -41,7 +41,7 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".utils.StorageBroadcastReceiver">
+        <receiver  android:exported="true" android:name=".utils.StorageBroadcastReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_EJECT" />
                 <action android:name="android.intent.action.MEDIA_REMOVED" />

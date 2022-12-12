@@ -240,11 +240,9 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
         }
 
         private void initHikPlayer() {
-            HIKSinglePlayer hikSinglePlayer = new HIKSinglePlayer(getBindingAdapterPosition()+1, logId, HIKSinglePlayer.HIK_SUB_STREAM_CODE);
-            hikSinglePlayer.initView(surfaceView);
-            hikSinglePlayer.playOrStopStream();
-            HikUtil.initSDK();
-            hikUtil = new HikUtil();
+//            HIKSinglePlayer hikSinglePlayer = new HIKSinglePlayer(getBindingAdapterPosition()+1, logId, HIKSinglePlayer.HIK_SUB_STREAM_CODE);
+//            hikSinglePlayer.initView(surfaceView);
+//            hikSinglePlayer.playOrStopStream();
 //            hikUtil.initView(surfaceView);
 //            hikUtil.setDeviceData("192.168.1.123", 8000, "admin", "X0nPAssw0rd_000");
 //            hikUtil.loginDevice();
