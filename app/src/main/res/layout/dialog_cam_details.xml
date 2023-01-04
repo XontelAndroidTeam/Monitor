@@ -6,7 +6,6 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="600dp"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/primary_dark_color"
         android:layout_gravity="center"
         app:cardCornerRadius="20dp"
         app:cardElevation="2dp">
@@ -20,31 +19,30 @@
             android:padding="24dp">
 
             <TextView
-                style="@style/status_bar_font"
+                style="@style/dialog_label_style"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
-                android:textColor="@color/white"
                 android:text="@string/cam_details"
                 android:textAlignment="viewStart"
+                android:visibility="gone"
                 android:textSize="24sp" />
 
 
             <TextView
-                style="@style/status_bar_font"
+                style="@style/dialog_label_style"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:layout_marginTop="8dp"
                 android:text="@string/name"
-                android:textColor="@color/white"
                 android:textAlignment="viewStart"
                 android:textSize="20sp" />
             <TextView
                 android:id="@+id/tv_cam_name"
-                style="@style/status_bar_font"
+                style="@style/dialog_text_style"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
@@ -52,24 +50,22 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 tools:text="dsfsdfsddfdfsdfsdggdfgdfgdfgdfgdfgdfgdfgfdgdfgfdgddfdsffffffffffffffffffffffffffff"
-                android:textColor="@color/grey_color"
-                android:textAlignment="viewStart"
-                android:textSize="20sp" />
+                android:textAlignment="viewStart" />
 
             <TextView
-                style="@style/status_bar_font"
+                style="@style/dialog_label_style"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:layout_marginTop="8dp"
                 android:text="@string/url"
-                android:textColor="@color/white"
+                
                 android:textAlignment="viewStart"
                 android:textSize="20sp" />
             <TextView
                 android:id="@+id/tv_cam_url"
-                style="@style/status_bar_font"
+                style="@style/dialog_text_style"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
@@ -77,47 +73,46 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 tools:text="http://192.168.1.152:8080/video.cgi"
-                android:textColor="@color/grey_color"
                 android:textAlignment="viewStart"
-                android:textSize="20sp" />
+                />
 
             <TextView
-                style="@style/status_bar_font"
+                style="@style/dialog_label_style"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:layout_marginTop="8dp"
                 android:text="@string/description"
-                android:textColor="@color/white"
+                
                 android:textAlignment="viewStart"
                 android:textSize="20sp" />
             <TextView
                 android:id="@+id/tv_cam_desc"
-                style="@style/status_bar_font"
+                style="@style/dialog_text_style"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:layout_marginTop="8dp"
                 tools:text="dsfsdfsddfdfsdfsdfdsffdsdgdfgdfgdfgdfgdfgdfgdffffffffffffffffffffffffffff"
-                android:textColor="@color/grey_color"
                 android:layout_marginEnd="16dp"
                 android:textAlignment="viewStart"
-                android:textSize="20sp" />
+                />
 
 
 
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_ok"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
                     android:layout_marginVertical="24dp"
-                    android:background="@color/accent_color"
+                    app:backgroundTint="@color/accent_color"
+                    android:textColor="@color/white"
                     android:text="@string/ok"
-                    android:textColor="@color/white" />
+                     />
         </LinearLayout>
         </ScrollView>
     </androidx.cardview.widget.CardView>

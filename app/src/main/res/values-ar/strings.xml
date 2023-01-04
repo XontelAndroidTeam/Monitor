@@ -71,4 +71,11 @@
     <string name="seconds_formated">%d ثوان</string>
     <string name="devices">الأجهرة</string>
     <string name="login_failed">فشل تسجيل الدخول</string>
+    <string name="device_info">معلومات الجهاز</string>
+    <string name="add_device"></string>
+    <string name="ip_address">عنوان IP</string>
+    <string name="username">اسم المستخدم</string>
+    <string name="password">كلمة المرور</string>
+    <string name="invalid_ip">Invalid ip address</string>
+    <string name="invalid_url">Invalid url</string>
 </resources>

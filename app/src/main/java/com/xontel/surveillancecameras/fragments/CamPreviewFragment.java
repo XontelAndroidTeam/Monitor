@@ -169,35 +169,35 @@ public class CamPreviewFragment extends Fragment {
 //            stopRecordingVideo();
 //        });
 
-//        initVlcPlayer();
-        initHikPlayer();
+        initVlcPlayer();
+//        initHikPlayer();
     }
 
     private void initHikPlayer() {
-        HikUtil.initSDK();
-        HikUtil.loginDevice(new HIKDevice("192.168.1.123", 8000, "admin", "X0nPAssw0rd_000", HIKDeviceType.DVR), new HikUtil.HikInterface() {
-            @Override
-            public void onLogInSuccess(int id) {
-                logId = id ;
-
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(getContext(), "logId : "+logId , Toast.LENGTH_SHORT).show();
-                        openCams();
-
-                    }
-                });
-
-
-            }
-
-            @Override
-            public void onLogInFailed() {
-                Log.v("TAGGG", "login failed");
-
-            }
-        });
+//        HikUtil.initSDK();
+//        HikUtil.loginDevice(new HIKDevice("192.168.1.123", 8000, "admin", "X0nPAssw0rd_000", HIKDeviceType.DVR), new HikUtil.HikInterface() {
+//            @Override
+//            public void onLogInSuccess(int id) {
+//                logId = id ;
+//
+//                new Handler(Looper.getMainLooper()).post(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        Toast.makeText(getContext(), "logId : "+logId , Toast.LENGTH_SHORT).show();
+//                        openCams();
+//
+//                    }
+//                });
+//
+//
+//            }
+//
+//            @Override
+//            public void onLogInFailed() {
+//                Log.v("TAGGG", "login failed");
+//
+//            }
+//        });
     }
 
     private void openCams() {
@@ -326,7 +326,7 @@ public class CamPreviewFragment extends Fragment {
 //        }
 //        mTimer = new Timer();
         super.onResume();
-//        mediaPlayer.play();
+        mediaPlayer.play();
 
     }
 

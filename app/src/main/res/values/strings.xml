@@ -72,6 +72,13 @@
     <string name="seconds_formated">%d seconds</string>
     <string name="devices">Devices</string>
     <string name="login_failed">Login failed</string>
+    <string name="device_info">Device info</string>
+    <string name="add_device">Add device</string>
+    <string name="ip_address">ip address</string>
+    <string name="username">username</string>
+    <string name="password">password</string>
+    <string name="invalid_ip">Invalid ip address</string>
+    <string name="invalid_url">Invalid url</string>
 
 
 </resources>

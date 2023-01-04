@@ -86,7 +86,7 @@ public class HomeActivity extends BaseActivity {
         binding.home.pagerEmptyView.btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(HomeActivity.this, AddCamActivity.class));
+                startActivity(new Intent(HomeActivity.this, AddNewDeviceActivity.class));
             }
         });
         setupObservables();

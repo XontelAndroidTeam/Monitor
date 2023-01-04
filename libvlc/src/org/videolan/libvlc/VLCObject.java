@@ -149,6 +149,8 @@ abstract class VLCObject<T extends AbstractVLCEvent> implements IVLCObject<T> {
      */
     protected abstract void onReleaseNative();
 
+
+
     /* JNI */
     @SuppressWarnings("unused") /* Used from JNI */
     private long mInstance = 0;

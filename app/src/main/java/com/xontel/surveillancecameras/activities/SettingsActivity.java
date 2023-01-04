@@ -46,7 +46,7 @@ public class SettingsActivity extends BaseActivity implements Observer {
 
     @Override
     protected void setUp() {
-        setupToolbar();
+        super.setUp();
         setupDropDowns();
 
 
@@ -68,10 +68,6 @@ public class SettingsActivity extends BaseActivity implements Observer {
 //
 //        setupIntervalsSpinner();
 //        setupGridCountSpinner();
-
-    }
-    private void setupToolbar() {
-
 
     }
 
@@ -127,6 +123,7 @@ public class SettingsActivity extends BaseActivity implements Observer {
         binding.slideShowIntervalDropDown.setAdapter(intervalsDirsDropDownAdapter);
         binding.setData(mSettingObservable);
         binding.setLifecycleOwner(this);
+
     }
 
     private int getIndexFromStorageType(int storageChoiceType, List<String> volNames) {

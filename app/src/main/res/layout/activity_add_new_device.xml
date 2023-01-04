@@ -12,9 +12,9 @@
         <include
             android:id="@+id/_app_bar"
             layout="@layout/custom_toolbar"
-  app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
 
         <LinearLayout
             android:layout_width="0dp"
@@ -53,19 +53,41 @@
                         android:layout_gravity="center"
                         android:layout_marginVertical="8dp"
                         style="@style/settingsLabel"
-                        android:text="@string/camera_info" />
+                        android:text="@string/device_info" />
                     <include
                         android:id="@+id/drop_down"
                         layout="@layout/drop_down"
                         android:layout_width="200dp"
                         android:layout_height="wrap_content"/>
                 </LinearLayout>
-
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/name_input_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:theme="@style/materialTextInputStyle"
+                    android:layout_marginVertical="8dp"
+                    app:boxStrokeWidth="0dp"
+                    app:boxStrokeWidthFocused="0dp"
+                    android:hint="@string/name">
+                    <com.xontel.surveillancecameras.utils.NormalTextField
+                        android:id="@+id/et_name"
+                        style="@style/editTextStyle"
+                        android:maxLength="20"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        />
+                </com.google.android.material.textfield.TextInputLayout>
+                    <include
+                        android:id="@+id/cam_fields"
+                        layout="@layout/cam_fields"
+                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"/>
                 <include
-                    android:id="@+id/fields"
+                    android:id="@+id/device_fields"
                     layout="@layout/device_fields"
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent"/>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -77,7 +99,7 @@
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_cancel"
                         android:layout_width="150dp"
-                        android:layout_height="50dp"
+                        android:layout_height="80dp"
                         android:text="@string/cancel"
                         app:background="@color/white"
                         app:backgroundTint="@color/white"
@@ -92,7 +114,7 @@
                         android:id="@+id/btn_save"
                         android:layout_width="150dp"
                         android:layout_height="80dp"
-                        android:text="@string/add_camera_"
+                        android:text="@string/add"
                         app:backgroundTint="@color/primary_color"
                         app:cornerRadius="10dp"
                         android:textAllCaps="false"

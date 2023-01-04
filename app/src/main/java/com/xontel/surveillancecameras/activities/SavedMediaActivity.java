@@ -41,6 +41,7 @@ public class SavedMediaActivity extends BaseActivity implements Observer, MediaA
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_saved_media);
         SDCardObservable.getInstance().addObserver(this);
+        setUp();
 
     }
 
@@ -225,7 +226,7 @@ public class SavedMediaActivity extends BaseActivity implements Observer, MediaA
 
     @Override
     protected void setUp() {
-
+        super.setUp();
     }
 
 

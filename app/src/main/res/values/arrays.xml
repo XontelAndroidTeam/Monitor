@@ -13,6 +13,13 @@
         <item>9</item>
         <item>16</item>
     </string-array>
+    <string-array name="device_type">
+        <item>HikVision</item>
+        <item>Dahua</item>
+        <item>Other</item>
+    </string-array>
+
+
     <string-array name="save_to">
         <item>Internal storage</item>
         <item>Memory card</item>

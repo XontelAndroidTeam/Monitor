@@ -21,18 +21,32 @@
         android:supportsRtl="true"
         android:theme="@style/mainTheme">
         <activity
+            android:name=".activities.AddNewDeviceActivity"
+            android:label="@string/add_device">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".activities.DevicesActivity"
-            android:exported="false" />
+            android:label="@string/devices" />
         <activity
             android:name=".activities.MediaViewerActivity"
             android:exported="true" />
         <activity
             android:name=".activities.SavedMediaActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:label="@string/saved_media" />
         <activity android:name=".activities.CamerasActivity" />
-        <activity android:name=".activities.AddCamActivity" android:label="@string/add_camera"></activity>
-        <activity android:name=".activities.SettingsActivity" android:label="@string/settings"></activity>
-        <activity  android:exported="true" android:name=".activities.HomeActivity"
+        <activity
+            android:name=".activities.AddCamActivity"
+            android:label="@string/add_camera" />
+        <activity
+            android:name=".activities.SettingsActivity"
+            android:label="@string/settings" />
+        <activity
+            android:name=".activities.HomeActivity"
+            android:exported="true"
             android:theme="@style/homeTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -41,7 +55,9 @@
             </intent-filter>
         </activity>
 
-        <receiver  android:exported="true" android:name=".utils.StorageBroadcastReceiver">
+        <receiver
+            android:name=".utils.StorageBroadcastReceiver"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_EJECT" />
                 <action android:name="android.intent.action.MEDIA_REMOVED" />

@@ -1,19 +1,24 @@
 package com.xontel.surveillancecameras.activities;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.databinding.DataBindingUtil;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.xontel.surveillancecameras.R;
 import com.xontel.surveillancecameras.adapters.PagerAdapter;
 import com.xontel.surveillancecameras.base.BaseActivity;
@@ -37,6 +42,8 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
     public static final String KEY_CAMERAS = "cameras";
     public static final String KEY_SLIDE_SHOW = "slide_show";
     private static final int REQUEST_CODE_EDIT_CAM = 44;
+    private static final long TIME_TO_HIDE_BTNS = 5000;
+    private static final long ANIMATION_DURATION = 300;
     private Menu optionMenu ;
     int slideInterval;
     int selectedPage;
@@ -51,6 +58,15 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
     SharedPreferences.OnSharedPreferenceChangeListener listener = (sharedPreferences, key) -> {
         setupSliderSettings();
     };
+    private  Runnable btnsRemovalRunnable = new Runnable() {
+        @Override
+        public void run() {
+            hideButtons();
+        }
+    };
+    private Handler btnsHandler = new Handler();
+
+    private boolean isBtnsShown = true;
 
 
     @Override
@@ -59,17 +75,10 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_cameras);
         sharedPreferences = getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, MODE_PRIVATE);
         sharedPreferences.registerOnSharedPreferenceChangeListener(listener);
-//        setSupportActionBar(binding.toolbar);
         cams = getIntent().getParcelableArrayListExtra(KEY_CAMERAS);
         if (getIntent().hasExtra(KEY_SLIDE_SHOW)) {
-//            binding.tvTitle.setText(R.string.slide_show);
             isSlideShow = true;
         } else {
-            try {
-//                binding.tvTitle.setText(cams.get(0).getName());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
             isSlideShow = false;
         }
         getActivityComponent().inject(this);
@@ -89,49 +98,7 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
     }
 
 
-    public Menu getOptionMenu() {
-        return optionMenu;
-    }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        optionMenu = menu ;
-        if(!isSlideShow) {
-            getMenuInflater().inflate(R.menu.toolbar_menu, menu);
-            return true;
-        }else{
-            return false;
-        }
-
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
-        switch (item.getItemId()) {
-            case R.id.action_delete:
-                deleteCam();
-                return true;
-            case R.id.action_edit:
-                editCam();
-                return true;
-            case R.id.action_share:
-                shareCam();
-                return true;
-            case R.id.action_details:
-                showCamDetails();
-                return true;
-//            case R.id.action_settings:
-//                showSettings();
-//                return true;
-            case R.id.action_capture_photo:
-                return false;
-            case R.id.action_record_video:
-                return false;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
 
 
 
@@ -191,13 +158,13 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
 
     private void deleteCam() {
         int camPosition = binding.vpSlider.getCurrentItem();
-        new AlertDialog.Builder(this)
-                .setTitle(Html.fromHtml("<font color='#fff'>" + getString(R.string.delete_camera) + "</font>"))
-                .setMessage(Html.fromHtml("<font color='#fff'>" + getString(R.string.are_you_sure_delete) + "</font>"))
+        new MaterialAlertDialogBuilder(this, R.style.AlertDialogTheme)
+                .setTitle(R.string.delete_camera)
+                .setMessage(R.string.are_you_sure_delete)
 
                 // Specifying a listener allows you to take an action before dismissing the dialog.
                 // The dialog is automatically dismissed when a dialog button is clicked.
-                .setPositiveButton(Html.fromHtml("<font color='#fff'>" + getString(android.R.string.yes) + "</font>"), new DialogInterface.OnClickListener() {
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         // Continue with delete operation
                         mPresenter.deleteCamera(cams.get(camPosition));
@@ -205,13 +172,63 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
                 })
 
                 // A null listener allows the button to dismiss the dialog and take no further action.
-                .setNegativeButton(Html.fromHtml("<font color='#fff'>" + getString(android.R.string.no) + "</font>"), null)
+                .setNegativeButton(android.R.string.no, null)
                 .show();
     }
 
     @Override
     public void setUp() {
         super.setUp();
+        binding.btnBack.setOnClickListener(view -> onBackPressed());
+        binding.btnDetails.setOnClickListener(view -> showCamDetails());
+        binding.btnShare.setOnClickListener(view -> shareCam());
+        binding.btnEdit.setOnClickListener(view -> editCam());
+        binding.btnDelete.setOnClickListener(view -> deleteCam());
+        binding.tvCamName.setText(cams.get(0).getName());
+        binding.vpSlider.setOnTouchListener((view, motionEvent) -> {
+            showButtons();
+            scheduleHidingBtns();
+            return true;
+        });
+
+    }
+
+
+    private void scheduleHidingBtns() {
+        btnsHandler.removeCallbacks(btnsRemovalRunnable);//add this
+        btnsHandler.postDelayed(btnsRemovalRunnable, TIME_TO_HIDE_BTNS);
+    }
+
+    private void hideButtons() {
+        if(isBtnsShown) {
+            binding.llBtns.animate()
+                    .alpha(0.0f)
+                    .translationY(-100)
+                    .setDuration(ANIMATION_DURATION)
+                    .setListener(null);
+            binding.dotsIndicator.animate()
+                    .alpha(0.0f)
+                    .translationY(100)
+                    .setDuration(ANIMATION_DURATION)
+                    .setListener(null);
+            isBtnsShown = false;
+        }
+    }
+
+    private void showButtons() {
+        if(!isBtnsShown) {
+            binding.llBtns.animate()
+                    .alpha(1.0f)
+                    .translationY(0)
+                    .setDuration(ANIMATION_DURATION)
+                    .setListener(null);
+            binding.dotsIndicator.animate()
+                    .alpha(1.0f)
+                    .translationY(0)
+                    .setDuration(ANIMATION_DURATION)
+                    .setListener(null);
+            isBtnsShown = true;
+        }
     }
 
     private void setupCamerasPager() {
@@ -264,6 +281,8 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
     @Override
     protected void onResume() {
         super.onResume();
+        showButtons();
+        scheduleHidingBtns();
         setupCamerasPager();
     }
 
