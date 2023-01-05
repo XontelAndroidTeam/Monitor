@@ -55,12 +55,12 @@ public class AddCamActivity extends BaseActivity implements MainMvpView {
     }
 
     private void fillFieldsWithData() {
-        binding.fields.etName.setText(editedCam.getName());
-        binding.fields.etName.setSelection(binding.fields.etName.getText().length());
+        binding.etName.setText(editedCam.getName());
+        binding.etName.setSelection(binding.etName.getText().length());
         binding.fields.etUrl.setText(editedCam.getUrl());
         binding.fields.etUrl.setSelection(binding.fields.etUrl.getText().length());
-        binding.fields.etDescription.setText(editedCam.getDescription());
-        binding.fields.etDescription.setSelection(binding.fields.etDescription.getText().length());
+        binding.etDescription.setText(editedCam.getDescription());
+        binding.etDescription.setSelection(binding.etDescription.getText().length());
     }
 
     @Override
@@ -82,10 +82,10 @@ public class AddCamActivity extends BaseActivity implements MainMvpView {
         });
 
         binding.btnSave.setOnClickListener(v->{
-            if(isNotEmpty(binding.fields.etName ) && isNotEmpty(binding.fields.etUrl ) && isNotEmpty(binding.fields.etDescription )){
+            if(isNotEmpty(binding.etName ) && isNotEmpty(binding.fields.etUrl ) && isNotEmpty(binding.etDescription )){
                String url =  binding.fields.etUrl.getText().toString();
-               String name =  binding.fields.etName.getText().toString();
-                String description = binding.fields.etDescription.getText().toString();
+               String name =  binding.etName.getText().toString();
+                String description = binding.etDescription.getText().toString();
                 if(editedCam == null) {
                     mPresenter.createCamera(new IpCam(url, name , description ));
                 }else{

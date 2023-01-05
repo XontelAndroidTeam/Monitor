@@ -62,12 +62,12 @@ public abstract class TextField extends TextInputEditText {
 
             }
         })).debounce(3, TimeUnit.SECONDS)
-                .map(ipAddress-> Patterns.IP_ADDRESS.matcher(ipAddress).matches())
+                .map(text -> isPatternMatched())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        isIPAddress-> {
-                            if(!isIPAddress){
+                        isPatternMatched-> {
+                            if(!isPatternMatched){
                                 showError();
                             }
                         }
@@ -79,6 +79,11 @@ public abstract class TextField extends TextInputEditText {
 
     public boolean isValid(){
         return !getText().toString().isEmpty() ;
+    }
+
+
+    public void validate(){
+
     }
 
 

@@ -60,12 +60,50 @@
                         android:layout_width="200dp"
                         android:layout_height="wrap_content"/>
                 </LinearLayout>
-
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/name_input_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:theme="@style/materialTextInputStyle"
+                    android:layout_marginVertical="8dp"
+                    app:boxStrokeWidth="0dp"
+                    app:boxStrokeWidthFocused="0dp"
+                    android:hint="@string/name">
+                    <com.xontel.surveillancecameras.utils.NormalTextField
+                        android:id="@+id/et_name"
+                        style="@style/editTextStyle"
+                        android:maxLength="20"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        />
+                </com.google.android.material.textfield.TextInputLayout>
                 <include
                     android:id="@+id/fields"
-                    layout="@layout/device_fields"
+                    layout="@layout/cam_fields"
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent"/>
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/description_input_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="8dp"
+                    android:theme="@style/materialTextInputStyle"
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    app:boxStrokeWidth="0dp"
+                    app:boxStrokeWidthFocused="0dp"
+                    android:hint="@string/description">
+                    <com.xontel.surveillancecameras.utils.NormalTextField
+                        android:id="@+id/et_description"
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp"
+                        style="@style/editTextStyle"
+                        android:gravity="top|start"
+                        android:inputType="textMultiLine"
+                        android:maxLines="4"
+                        android:minLines="4"
+                        />
+                </com.google.android.material.textfield.TextInputLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

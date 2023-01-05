@@ -36,9 +36,7 @@ public class AddNewDeviceActivity extends BaseActivity implements AdapterView.On
 
     private void fillFieldsWithData() {
         binding.etName.setText(mCamDevice.getName());
-
         deviceType = mCamDevice.getType();
-
         if(deviceType == CamDeviceType.OTHER.getValue()){
            bindCamFields();
         }else{
@@ -73,17 +71,17 @@ public class AddNewDeviceActivity extends BaseActivity implements AdapterView.On
 
         binding.btnSave.setOnClickListener(v->{
             if(validateFields()){
-                String url =  binding.fields.etUrl.getText().toString();
-                String name =  binding.etName.getText().toString();
-                String description = binding.fields.etDescription.getText().toString();
-                if(editedCam == null) {
-                    mPresenter.createCamera(new IpCam(url, name , description ));
-                }else{
-                    editedCam.setUrl(url);
-                    editedCam.setName(name);
-                    editedCam.setDescription(description);
-                    mPresenter.updateCamera(editedCam);
-                }
+//                String url =  binding.fields.etUrl.getText().toString();
+//                String name =  binding.etName.getText().toString();
+//                String description = binding.fields.etDescription.getText().toString();
+//                if(editedCam == null) {
+//                    mPresenter.createCamera(new IpCam(url, name , description ));
+//                }else{
+//                    editedCam.setUrl(url);
+//                    editedCam.setName(name);
+//                    editedCam.setDescription(description);
+//                    mPresenter.updateCamera(editedCam);
+//                }
             }
         });
     }
@@ -101,19 +99,14 @@ public class AddNewDeviceActivity extends BaseActivity implements AdapterView.On
 
     private void refreshView() {
         boolean isCam = deviceType == CamDeviceType.OTHER.getValue() ;
-            changeFieldsVisibility(isCam);
-    }
-
-    private void changeFieldsVisibility(boolean isCam) {
-        binding.camFields.urlInputLayout.setVisibility(isCam ? View.VISIBLE : View.GONE);
-        binding.deviceFields.ipInputLayout.setVisibility(!isCam ? View.VISIBLE : View.GONE);
-        binding.deviceFields.usernameInputLayout.setVisibility(isCam ? View.VISIBLE : View.GONE);
-        binding.deviceFields.passwordInputLayout.setVisibility(isCam ? View.VISIBLE : View.GONE);
+        binding.camFields.getRoot().setVisibility(isCam ? View.VISIBLE : View.GONE );
+        binding.deviceFields.getRoot().setVisibility(!isCam ? View.VISIBLE : View.GONE );
     }
 
 
 
-    private void setupDeviceTypeDropDown() {
+
+    private void setupDeviceTypeDropDown(){
         String[] types = getResources().getStringArray(R.array.device_type);
         ArrayAdapter typesDropDownAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_dropdown_item, types
