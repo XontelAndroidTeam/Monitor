@@ -5,6 +5,7 @@ import android.content.res.ColorStateList;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.ViewGroup;
 
@@ -18,16 +19,24 @@ import java.util.concurrent.TimeUnit;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.ObservableEmitter;
 import io.reactivex.rxjava3.core.ObservableOnSubscribe;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
-public abstract class TextField extends TextInputEditText {
+public abstract class TextField extends TextInputEditText implements TextWatcher, ObservableOnSubscribe<String> {
+    public static final String TAG = TextField.class.getSimpleName();
     private Context mContext;
+    private ObservableEmitter<String> mEmitter ;
 
     public TextField(@NonNull Context context) {
         super(context);
         this.mContext = context;
         init();
+    }
+
+    @Override
+    public void subscribe(@NonNull ObservableEmitter<String> emitter) throws Throwable {
+        this.mEmitter = emitter;
     }
 
     public TextField(@NonNull Context context, @Nullable AttributeSet attrs) {
@@ -43,25 +52,8 @@ public abstract class TextField extends TextInputEditText {
     }
 
     private void init(){
-        Observable.create((ObservableOnSubscribe<String>) emitter -> addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                clearErrorMessage();
-                if(charSequence.length() != 0 ){
-                    emitter.onNext(charSequence.toString());
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        })).debounce(3, TimeUnit.SECONDS)
+        Observable.create(this)
+                .debounce(3, TimeUnit.SECONDS)
                 .map(text -> isPatternMatched())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -87,11 +79,6 @@ public abstract class TextField extends TextInputEditText {
     }
 
 
-    @Override
-    public void setVisibility(int visibility) {
-        super.setVisibility(visibility);
-        if(visibility == GONE) getText().clear();
-    }
 
     public void setText(String text){
         super.setText(text);
@@ -104,12 +91,36 @@ public abstract class TextField extends TextInputEditText {
     public abstract int getErrorMessageStringId();
 
     private void clearErrorMessage() {
-        ((TextInputLayout) ((ViewGroup) this.getParent()).getParent()).setErrorEnabled(false);
+        ViewGroup viewGroup = ((ViewGroup) this.getParent());
+        if(viewGroup != null){
+            ((TextInputLayout) viewGroup.getParent()).setErrorEnabled(false);
+        }
     }
 
     private void showError() {
-        ((TextInputLayout) ((ViewGroup) this.getParent()).getParent()).setError(mContext.getString(getErrorMessageStringId()));
+        ViewGroup viewGroup = ((ViewGroup) this.getParent());
+        if(viewGroup != null) {
+            ((TextInputLayout) viewGroup.getParent()).setError(mContext.getString(getErrorMessageStringId()));
+        }
     }
 
 
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+        Log.v(TAG, s.toString());
+        clearErrorMessage();
+        if(s.length() !=0){
+            mEmitter.onNext(s.toString());
+        }
+    }
+
+    @Override
+    public void afterTextChanged(Editable editable) {
+
+    }
 }
