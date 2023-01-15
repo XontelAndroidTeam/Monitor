@@ -5,25 +5,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.databinding.DataBindingUtil;
-import androidx.databinding.Observable;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.xontel.surveillancecameras.R;
 import com.xontel.surveillancecameras.base.BaseFragment;
+import com.xontel.surveillancecameras.databinding.FragmentMonitorBinding;
 import com.xontel.surveillancecameras.viewModels.MainViewModel;
 import com.xontel.surveillancecameras.adapters.CamsAdapter;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
-import com.xontel.surveillancecameras.databinding.FragmentGridBinding;
+import com.xontel.surveillancecameras.databinding.FragmentMonitorBinding;
 import com.xontel.surveillancecameras.viewModels.ViewModelProviderFactory;
 
-import org.jetbrains.annotations.NotNull;
 import org.videolan.libvlc.MediaPlayer;
 
 import java.text.SimpleDateFormat;
@@ -32,10 +26,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class GridFragment extends BaseFragment {
+public class MonitorFragment extends BaseFragment {
 
     public static final String KEY_ORDER = "order";
-    private FragmentGridBinding binding;
+    private FragmentMonitorBinding binding;
     private int gridCount;
     private int fragmentOrder;
     private List<IpCam> ipCams = new ArrayList<>();
@@ -47,7 +41,7 @@ public class GridFragment extends BaseFragment {
     ViewModelProviderFactory providerFactory;
 
 
-    public GridFragment() {
+    public MonitorFragment() {
         // Required empty public constructor
     }
 
@@ -73,8 +67,8 @@ public class GridFragment extends BaseFragment {
     }
 
 
-    public static GridFragment newInstance(int fragmentOrder) {
-        GridFragment fragment = new GridFragment();
+    public static MonitorFragment newInstance(int fragmentOrder) {
+        MonitorFragment fragment = new MonitorFragment();
         Bundle args = new Bundle();
         args.putInt(KEY_ORDER, fragmentOrder);
         fragment.setArguments(args);
@@ -85,6 +79,7 @@ public class GridFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requireActivity().setTitle(R.string.monitor);
         getFragmentComponent().inject(this);
         mainViewModel = new ViewModelProvider(getActivity(), providerFactory).get(MainViewModel.class);
         if (getArguments() != null) {
@@ -92,7 +87,7 @@ public class GridFragment extends BaseFragment {
         }
         Log.v("TAG_", "onCreate" + " NUMBER : "+fragmentOrder + " Time : "+ simpleDateFormat.format(System.currentTimeMillis()));
         gridCount = mainViewModel.getGridObservable().getValue();
-        updateIpCams();
+//        updateIpCams();
     }
 
 
@@ -127,20 +122,19 @@ public class GridFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        binding = FragmentGridBinding.inflate(inflater);
+        binding = FragmentMonitorBinding.inflate(inflater);
         return binding.getRoot();
     }
 
     @Override
     protected void setUp(View view) {
-
         setupCamGrid(new ArrayList<>());
         setupObservables();
     }
 
     private void setupObservables() {
         mainViewModel.ipCams.observe(getViewLifecycleOwner(), allIpCams -> {
-            updateIpCams();
+//            updateIpCams();
             gridAdapter.notifyDataSetChanged();
         });
 
@@ -150,6 +144,7 @@ public class GridFragment extends BaseFragment {
 //                updateIpCams();
 //            }
 //        });
+
 
     }
 

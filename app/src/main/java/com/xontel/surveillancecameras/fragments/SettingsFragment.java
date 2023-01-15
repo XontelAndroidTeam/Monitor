@@ -45,6 +45,7 @@ public class SettingsFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requireActivity().setTitle(R.string.settings);
         getFragmentComponent().inject(this);
         mSettingViewModel = new ViewModelProvider(this, mViewModelProviderFactory).get(SettingViewModel.class);
         mMainViewModel = new ViewModelProvider(requireActivity(), mViewModelProviderFactory).get(MainViewModel.class);

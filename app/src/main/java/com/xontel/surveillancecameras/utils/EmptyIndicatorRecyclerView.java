@@ -9,27 +9,25 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class EmptyIndicatorRecyclerView extends RecyclerView {
-    private View emptyView;
+        private View emptyView;
 
-    private AdapterDataObserver emptyObserver = new AdapterDataObserver() {
-
-
-        @Override
-        public void onChanged() {
-            Adapter<?> adapter =  getAdapter();
-            if(adapter != null && emptyView != null) {
-                if(adapter.getItemCount() == 0) {
-                    emptyView.setVisibility(View.VISIBLE);
-                    EmptyIndicatorRecyclerView.this.setVisibility(View.GONE);
+        private AdapterDataObserver emptyObserver = new AdapterDataObserver() {
+            @Override
+            public void onChanged() {
+                Adapter<?> adapter =  getAdapter();
+                if(adapter != null && emptyView != null) {
+                    if(adapter.getItemCount() == 0) {
+                        emptyView.setVisibility(View.VISIBLE);
+                        EmptyIndicatorRecyclerView.this.setVisibility(View.GONE);
+                    }
+                    else {
+                        emptyView.setVisibility(View.GONE);
+                        EmptyIndicatorRecyclerView.this.setVisibility(View.VISIBLE);
+                    }
                 }
-                else {
-                    emptyView.setVisibility(View.GONE);
-                    EmptyIndicatorRecyclerView.this.setVisibility(View.VISIBLE);
-                }
+
             }
-
-        }
-    };
+        };
     public EmptyIndicatorRecyclerView(@NonNull Context context) {
         super(context);
     }

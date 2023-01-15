@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.andr oid.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,11 +19,14 @@
             android:keepScreenOn="true"
             tools:context=".activities.HomeActivity">
 
-            <include
-                android:id="@+id/home"
-                layout="@layout/home_content"
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/nav_host_fragment"
+                android:name="androidx.navigation.fragment.NavHostFragment"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="match_parent"
+                app:defaultNavHost="true"
+                app:navGraph="@navigation/nav"
+                tools:layout="@layout/activity_settings" />
 
             <com.google.android.material.navigation.NavigationView
                 android:id="@+id/nav_view"
@@ -31,14 +34,13 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="start"
                 android:fitsSystemWindows="true"
-                app:menu="@menu/side_menu">
-
-                <ListView
-                    android:id="@+id/side_menu"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </com.google.android.material.navigation.NavigationView>
-
+                app:itemIconSize="50dp"
+                app:itemBackground="@drawable/drawer_selected_item"
+                app:itemTextColor="@color/nav_item_text_color"
+                app:itemIconTint="@color/nav_item_icon_color"
+                android:theme="@style/NavigationTheme"
+                app:itemTextAppearance="@style/navDrawerTextStyle"
+                app:menu="@menu/side_menu"/>
         </androidx.drawerlayout.widget.DrawerLayout>
     </LinearLayout>
 </layout>

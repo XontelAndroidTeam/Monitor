@@ -1,4 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <item
+        android:id="@+id/monitorFragment"
+        android:checkable="true"
+        android:icon="@drawable/ic_baseline_video_cam_24"
+        android:title="@string/monitor"/>
+    <item
+        android:id="@+id/deviceFragment"
+        android:icon="@drawable/ic_baseline_devices_24"
+        android:checkable="true"
+        android:title="@string/devices" />
+    <item
+        android:id="@+id/savedMediaFragment"
+        android:icon="@drawable/ic_saved_media"
+        android:checkable="true"
+        android:title="@string/saved_media" />
+    <item
+        android:id="@+id/settingsFragment"
+        android:icon="@drawable/ic_settings"
+        android:checkable="true"
+        android:title="@string/settings" />
 </menu>

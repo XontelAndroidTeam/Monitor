@@ -77,23 +77,23 @@ public class SavedMediaActivity extends BaseActivity implements Observer, MediaA
     }
 
 
-    @Override
-    protected void onResume() {
-        initUI();
-        super.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        endSelectionMode();
-        super.onPause();
-    }
-
-    public void endSelectionMode() {
-        if (actionMode != null) {
-            actionMode.finish();
+        @Override
+        protected void onResume() {
+            initUI();
+            super.onResume();
         }
-    }
+
+        @Override
+        protected void onPause() {
+            endSelectionMode();
+            super.onPause();
+        }
+
+        public void endSelectionMode() {
+            if (actionMode != null) {
+                actionMode.finish();
+            }
+        }
 
 
     public void startSelectionMode() {

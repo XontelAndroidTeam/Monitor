@@ -79,6 +79,8 @@
     <string name="password">password</string>
     <string name="invalid_ip">Invalid ip address</string>
     <string name="invalid_url">Invalid url</string>
+    <string name="device_list">Device list</string>
+    <string name="no_devices">No devices added yet</string>
 
 
 </resources>

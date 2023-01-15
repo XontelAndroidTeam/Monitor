@@ -8,14 +8,14 @@
 
     <fragment
         android:id="@+id/monitorFragment"
-        android:name="com.xontel.surveillancecameras.fragments.GridFragment"
+        android:name="com.xontel.surveillancecameras.fragments.MonitorFragment"
         android:label="@string/monitor"
         tools:layout="@layout/fragment_camera"/>
     <fragment
-        android:id="@+id/slideShowFragment"
-        android:name="com.xontel.surveillancecameras.fragments.SlideShowFragment"
-        android:label="@string/slide_show"
-        tools:layout="@layout/fragment_slide_show"/>
+        android:id="@+id/deviceFragment"
+        android:name="com.xontel.surveillancecameras.fragments.DevicesFragment"
+        android:label="@string/devices"
+        tools:layout="@layout/fragment_devices"/>
     <fragment
         android:id="@+id/savedMediaFragment"
         android:name="com.xontel.surveillancecameras.fragments.SavedMediaFragment"
