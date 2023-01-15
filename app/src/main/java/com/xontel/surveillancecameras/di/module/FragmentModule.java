@@ -5,6 +5,10 @@ import android.content.Context;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.xontel.surveillancecameras.di.PerActivity;
+import com.xontel.surveillancecameras.presenters.MainDeviceMvpPresenter;
+import com.xontel.surveillancecameras.presenters.MainDeviceMvpView;
+import com.xontel.surveillancecameras.presenters.MainDevicePresenter;
 import com.xontel.surveillancecameras.utils.rx.AppSchedulerProvider;
 import com.xontel.surveillancecameras.utils.rx.SchedulerProvider;
 
@@ -41,5 +45,10 @@ public class FragmentModule {
     @Provides
     SchedulerProvider provideSchedulerProvider() {
         return new AppSchedulerProvider();
+    }
+
+    @Provides
+    MainDeviceMvpPresenter<MainDeviceMvpView> provideDeviceMainPresenter(MainDevicePresenter<MainDeviceMvpView> presenter) {
+        return presenter;
     }
 }

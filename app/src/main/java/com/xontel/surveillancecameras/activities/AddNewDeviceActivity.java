@@ -2,30 +2,44 @@ package com.xontel.surveillancecameras.activities;
 
 import androidx.databinding.DataBindingUtil;
 
+import android.hardware.camera2.CameraDevice;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 
 import com.xontel.surveillancecameras.R;
+import com.xontel.surveillancecameras.adapters.DevicesAdapter;
 import com.xontel.surveillancecameras.base.BaseActivity;
 import com.xontel.surveillancecameras.data.db.model.CamDevice;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
 import com.xontel.surveillancecameras.databinding.ActivityAddNewDeviceBinding;
+import com.xontel.surveillancecameras.presenters.MainDeviceMvpPresenter;
+import com.xontel.surveillancecameras.presenters.MainDeviceMvpView;
+import com.xontel.surveillancecameras.presenters.MainMvpPresenter;
+import com.xontel.surveillancecameras.presenters.MainMvpView;
 import com.xontel.surveillancecameras.utils.CamDeviceType;
 
-public class AddNewDeviceActivity extends BaseActivity implements AdapterView.OnItemClickListener {
+import java.util.List;
+
+import javax.inject.Inject;
+
+public class AddNewDeviceActivity extends BaseActivity implements MainDeviceMvpView, AdapterView.OnItemClickListener {
     public static final String KEY_DEVICE = "device";
     private ActivityAddNewDeviceBinding binding ;
     private int deviceType = CamDeviceType.OTHER.getValue();
     private boolean isEditMode = false;
     private CamDevice mCamDevice;
+    @Inject
+    MainDeviceMvpPresenter<MainDeviceMvpView> mPresenter ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_add_new_device);
         getActivityComponent().inject(this);
+        mPresenter.onAttach(this);
         if(getIntent().hasExtra(KEY_DEVICE)){
             mCamDevice = getIntent().getParcelableExtra(KEY_DEVICE);
             isEditMode = true;
@@ -71,17 +85,16 @@ public class AddNewDeviceActivity extends BaseActivity implements AdapterView.On
 
         binding.btnSave.setOnClickListener(v->{
             if(validateFields()){
-//                String url =  binding.fields.etUrl.getText().toString();
-//                String name =  binding.etName.getText().toString();
-//                String description = binding.fields.etDescription.getText().toString();
-//                if(editedCam == null) {
-//                    mPresenter.createCamera(new IpCam(url, name , description ));
-//                }else{
-//                    editedCam.setUrl(url);
-//                    editedCam.setName(name);
-//                    editedCam.setDescription(description);
-//                    mPresenter.updateCamera(editedCam);
-//                }
+                String deviceName = binding.etName.getText().toString();
+                String url = binding.camFields.etUrl.getText().toString();
+                String ip = binding.deviceFields.etIp.getText().toString();
+                String userName = binding.deviceFields.etUsername.getText().toString();
+                String password = binding.deviceFields.etPassword.getText().toString();
+                if (mCamDevice == null){
+                    mPresenter.createDevice(new CamDevice(deviceName,userName,password,ip,deviceType,url ,null));
+                }else{
+                    mPresenter.updateDevice(new CamDevice(deviceName,userName,password,ip,deviceType,url ,null));
+                }
             }
         });
     }
@@ -124,4 +137,27 @@ public class AddNewDeviceActivity extends BaseActivity implements AdapterView.On
         deviceType = position;
         refreshView();
     }
+
+    @Override
+    public void onInsertingDevice() {hitBack();}
+
+    @Override
+    public void onUpdatingDevice() {hitBack();}
+
+    @Override
+    public void onDeletingDevice() {
+
+    }
+
+    @Override
+    public void onGettingDevice(CamDevice response) {
+
+    }
+
+    @Override
+    public void onGettingAllDevices(List<CamDevice> response) {
+
+    }
+
+
 }

@@ -3,6 +3,7 @@ package com.xontel.surveillancecameras.data;
 import android.content.Context;
 
 import com.xontel.surveillancecameras.data.db.AppDatabase;
+import com.xontel.surveillancecameras.data.db.model.CamDevice;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
 import com.xontel.surveillancecameras.data.db.model.User;
 import com.xontel.surveillancecameras.data.network.RestApiHelper;
@@ -63,6 +64,46 @@ public class BaseDataManager implements DataManager {
     @Override
     public Flowable<List<IpCam>> getAll() {
         return mDatabase.camDao().getAll();
+    }
+
+    @Override
+    public Flowable<List<CamDevice>> getDevicesAll() {
+        return mDatabase.mDevicesDao().getDevicesAll();
+    }
+
+    @Override
+    public Single<Long> insertCamDevice(CamDevice mCamDevice) {
+        return mDatabase.mDevicesDao().insertCamDevice(mCamDevice);
+    }
+
+    @Override
+    public Single<List<Long>> insertAllCamDevice(CamDevice... mCamDevicesList) {
+        return mDatabase.mDevicesDao().insertAllCamDevice(mCamDevicesList);
+    }
+
+    @Override
+    public Single<Integer> deleteCamDevice(CamDevice mCamDevice) {
+        return mDatabase.mDevicesDao().deleteCamDevice(mCamDevice);
+    }
+
+    @Override
+    public Single<Integer> updateCamDevice(CamDevice mCamDevice) {
+        return mDatabase.mDevicesDao().updateCamDevice(mCamDevice);
+    }
+
+    @Override
+    public Single<CamDevice> getCamDeviceById(int id) {
+        return mDatabase.mDevicesDao().getCamDeviceById(id);
+    }
+
+    @Override
+    public Single<List<CamDevice>> loadAllDevicesByIds(int[] cameraIds) {
+        return mDatabase.mDevicesDao().loadAllDevicesByIds(cameraIds);
+    }
+
+    @Override
+    public Single<CamDevice> findDeviceByName(String name) {
+        return mDatabase.mDevicesDao().findDeviceByName(name);
     }
 
     @Override

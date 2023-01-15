@@ -81,6 +81,7 @@
     <string name="invalid_url">Invalid url</string>
     <string name="device_list">Device list</string>
     <string name="no_devices">No devices added yet</string>
+    <string name="update">Update</string>
 
 
 </resources>

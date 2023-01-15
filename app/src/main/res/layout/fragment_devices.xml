@@ -26,7 +26,11 @@
             android:background="@color/white"
             android:layout_height="match_parent"
             android:orientation="vertical">
-            <include layout="@layout/item_add"/>
+
+            <include
+                android:id="@+id/addDevice"
+                layout="@layout/item_add"/>
+
             <TextView
                 android:id="@+id/tv_title"
                 android:layout_width="match_parent"
@@ -52,6 +56,7 @@
             android:padding="24dp"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -70,6 +75,7 @@
                         android:layout_width="200dp"
                         android:layout_height="wrap_content"/>
                 </LinearLayout>
+
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/name_input_layout"
                     android:layout_width="match_parent"
@@ -87,16 +93,17 @@
                         android:layout_height="wrap_content"
                         />
                 </com.google.android.material.textfield.TextInputLayout>
+
                 <include
                     android:id="@+id/cam_fields"
                     layout="@layout/cam_fields"
                     android:visibility="gone"
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent"/>
+
                 <include
                     android:id="@+id/device_fields"
                     layout="@layout/device_fields"
-
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent"/>
 
@@ -123,10 +130,10 @@
                         android:textSize="17dp" />
 
                     <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btn_save"
+                        android:id="@+id/btn_update"
                         android:layout_width="150dp"
                         android:layout_height="80dp"
-                        android:text="@string/add"
+                        android:text="@string/update"
                         app:backgroundTint="@color/primary_color"
                         app:cornerRadius="10dp"
                         android:textAllCaps="false"

@@ -4,8 +4,10 @@ import android.content.Context;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.xontel.surveillancecameras.di.ActivityContext;
 import com.xontel.surveillancecameras.di.PerActivity;
+import com.xontel.surveillancecameras.presenters.MainDeviceMvpPresenter;
+import com.xontel.surveillancecameras.presenters.MainDeviceMvpView;
+import com.xontel.surveillancecameras.presenters.MainDevicePresenter;
 import com.xontel.surveillancecameras.presenters.MainMvpPresenter;
 import com.xontel.surveillancecameras.presenters.MainMvpView;
 import com.xontel.surveillancecameras.presenters.MainPresenter;
@@ -59,6 +61,12 @@ public class ActivityModule {
     @Provides
     @PerActivity
     MainMvpPresenter<MainMvpView> provideMainPresenter(MainPresenter<MainMvpView> presenter) {
+        return presenter;
+    }
+
+    @Provides
+    @PerActivity
+    MainDeviceMvpPresenter<MainDeviceMvpView> provideDeviceMainPresenter(MainDevicePresenter<MainDeviceMvpView> presenter) {
         return presenter;
     }
 

@@ -225,7 +225,7 @@ public class HomeActivity extends BaseActivity {
 
     public void addNewCam() {
         if (mainViewModel.ipCams.getValue().size() < 32) {
-            startActivity(new Intent(HomeActivity.this, AddCamActivity.class));
+            startActivity(new Intent(HomeActivity.this, AddNewDeviceActivity.class));
 
         } else {
             showMessage(R.string.cameras_limit);

@@ -19,7 +19,7 @@ import static androidx.room.OnConflictStrategy.REPLACE;
 @Dao
 public interface DevicesDao {
     @Query("SELECT * FROM devices")
-    Flowable<List<CamDevice>> getAll();
+    Flowable<List<CamDevice>> getDevicesAll();
 
     @Insert(onConflict = REPLACE)
     Single<Long> insertCamDevice(CamDevice mCamDevice);
@@ -38,8 +38,8 @@ public interface DevicesDao {
 
 
     @Query("SELECT * FROM devices WHERE id IN (:cameraIds)")
-    Single<List<CamDevice>> loadAllByIds(int[] cameraIds);
+    Single<List<CamDevice>> loadAllDevicesByIds(int[] cameraIds);
 
     @Query("SELECT * FROM devices WHERE name LIKE :name")
-    Single<CamDevice> findByName(String name);
+    Single<CamDevice> findDeviceByName(String name);
 }
