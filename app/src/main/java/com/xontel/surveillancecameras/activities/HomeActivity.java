@@ -30,6 +30,8 @@ import com.xontel.surveillancecameras.adapters.PagerAdapter;
 import com.xontel.surveillancecameras.base.BaseActivity;
 import com.xontel.surveillancecameras.databinding.ActivityMainBinding;
 
+import java.util.ArrayList;
+
 import javax.inject.Inject;
 
 public class HomeActivity extends BaseActivity {
@@ -60,6 +62,7 @@ public class HomeActivity extends BaseActivity {
     }
 
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
@@ -70,9 +73,6 @@ public class HomeActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_add:
-                addNewCam();
-                return false;
             case android.R.id.home:
                 toggleSideMenu();
                 return true;
@@ -94,6 +94,8 @@ public class HomeActivity extends BaseActivity {
         setupObservables();
         setupCamerasPager();
     }
+
+
 
     private void setupNavigation() {
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);

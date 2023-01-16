@@ -29,7 +29,9 @@ public class CamDevice implements Parcelable{
     private String description ;
 
 
-    public CamDevice(String name, String userName, String password, String ip, int type, String url, String description) {
+
+    public CamDevice(int id,String name, String userName, String password, String ip, int type, String url, String description) {
+        this.id = id;
         this.name = name;
         this.userName = userName;
         this.password = password;
@@ -142,4 +144,17 @@ public class CamDevice implements Parcelable{
         parcel.writeString(description);
     }
 
+    @Override
+    public String toString() {
+        return "CamDevice{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", userName='" + userName + '\'' +
+                ", password='" + password + '\'' +
+                ", ip='" + ip + '\'' +
+                ", type=" + type +
+                ", url='" + url + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }

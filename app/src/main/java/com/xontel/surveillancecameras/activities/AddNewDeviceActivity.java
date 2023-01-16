@@ -91,9 +91,9 @@ public class AddNewDeviceActivity extends BaseActivity implements MainDeviceMvpV
                 String userName = binding.deviceFields.etUsername.getText().toString();
                 String password = binding.deviceFields.etPassword.getText().toString();
                 if (mCamDevice == null){
-                    mPresenter.createDevice(new CamDevice(deviceName,userName,password,ip,deviceType,url ,null));
+                    mPresenter.createDevice(new CamDevice(0,deviceName,userName,password,ip,deviceType,url ,null));
                 }else{
-                    mPresenter.updateDevice(new CamDevice(deviceName,userName,password,ip,deviceType,url ,null));
+                    mPresenter.updateDevice(new CamDevice(0,deviceName,userName,password,ip,deviceType,url ,null));
                 }
             }
         });

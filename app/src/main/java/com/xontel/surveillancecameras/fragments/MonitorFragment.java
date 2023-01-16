@@ -1,15 +1,20 @@
 package com.xontel.surveillancecameras.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.xontel.surveillancecameras.R;
+import com.xontel.surveillancecameras.activities.AddCamActivity;
+import com.xontel.surveillancecameras.activities.AddNewDeviceActivity;
 import com.xontel.surveillancecameras.base.BaseFragment;
 import com.xontel.surveillancecameras.databinding.FragmentMonitorBinding;
 import com.xontel.surveillancecameras.viewModels.MainViewModel;
@@ -45,10 +50,6 @@ public class MonitorFragment extends BaseFragment {
         // Required empty public constructor
     }
 
-
-
-
-
     @Override
     public void onResume(){
         Log.v("TAG_", "onResume" + " NUMBER : "+fragmentOrder + " Time : "+ simpleDateFormat.format(System.currentTimeMillis()));
@@ -82,6 +83,7 @@ public class MonitorFragment extends BaseFragment {
         requireActivity().setTitle(R.string.monitor);
         getFragmentComponent().inject(this);
         mainViewModel = new ViewModelProvider(getActivity(), providerFactory).get(MainViewModel.class);
+        setHasOptionsMenu(true);
         if (getArguments() != null) {
             fragmentOrder = getArguments().getInt(KEY_ORDER);
         }
@@ -90,6 +92,16 @@ public class MonitorFragment extends BaseFragment {
 //        updateIpCams();
     }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_add:{
+                requireActivity().startActivity(new Intent(requireContext(), AddCamActivity.class));
+                return true;}
+            default: return super.onOptionsItemSelected(item);
+        }
+
+    }
 
 
     public void updateIpCams(){
@@ -164,5 +176,6 @@ public class MonitorFragment extends BaseFragment {
         gridAdapter = new CamsAdapter(ipCams,new ArrayList<>(), gridCount, getContext());
         binding.rvGrid.setAdapter(gridAdapter);
     }
+
 
 }

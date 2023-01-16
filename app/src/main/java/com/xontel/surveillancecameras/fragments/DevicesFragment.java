@@ -35,10 +35,12 @@ import java.util.List;
 import javax.inject.Inject;
 
 
-public class DevicesFragment extends BaseFragment implements MainDeviceMvpView, DevicesAdapter.ClickListener, AdapterView.OnItemClickListener {
+public class DevicesFragment extends BaseFragment implements MainDeviceMvpView, DevicesAdapter.ClickListener {
     private FragmentDevicesBinding binding;
     private DevicesAdapter mDevicesAdapter ;
     private int deviceType = CamDeviceType.OTHER.getValue();
+    private int currentSelectedItemIndex = 0 ;
+    private CamDevice currentSelectedData;
     @Inject
     MainDeviceMvpPresenter<MainDeviceMvpView> mPresenter ;
 
@@ -65,18 +67,24 @@ public class DevicesFragment extends BaseFragment implements MainDeviceMvpView, 
         }
     }
 
+
     @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-         inflater.inflate(R.menu.main_menu, menu);
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_add:{
+                requireActivity().startActivity(new Intent(requireContext(),AddNewDeviceActivity.class));
+                return true;}
+            default: return super.onOptionsItemSelected(item);
+        }
+
     }
-
-
 
     @Override
     protected void setUp(View view) {
     }
 
     private void setSelectedData(CamDevice data){
+        currentSelectedData = data;
         String[] types = getResources().getStringArray(R.array.device_type);
         binding.etName.setText(data.getName());
         binding.dropDown.slideShowFilter.setText(types[data.getType()], false);
@@ -89,17 +97,6 @@ public class DevicesFragment extends BaseFragment implements MainDeviceMvpView, 
         }
     }
 
-    private void setupDeviceTypeDropDown(){
-        String[] types = getResources().getStringArray(R.array.device_type);
-        ArrayAdapter typesDropDownAdapter = new ArrayAdapter<String>(requireContext(),
-                android.R.layout.simple_spinner_dropdown_item, types
-        );
-        binding.dropDown.slideShowFilter.setAdapter(typesDropDownAdapter);
-        binding.dropDown.slideShowFilter.setText(types[CamDeviceType.OTHER.getValue()], false);
-        binding.dropDown.slideShowFilter.setOnItemClickListener(this);
-        typesDropDownAdapter.notifyDataSetChanged();
-        binding.setLifecycleOwner(this);
-    }
 
     private void refreshView() {
         boolean isCam = deviceType == CamDeviceType.OTHER.getValue() ;
@@ -110,7 +107,7 @@ public class DevicesFragment extends BaseFragment implements MainDeviceMvpView, 
     private void setupDevicesList() {
         mDevicesAdapter = new DevicesAdapter(getContext(), new ArrayList<>(), this);
         binding.rvDevices.setLayoutManager(new LinearLayoutManager(getContext()));
-//        binding.rvDevices.setEmptyView(binding.noDevices.getRoot());
+        binding.rvDevices.setEmptyView(binding.noDevices.getRoot());
         binding.rvDevices.setRoot(binding.root);
         binding.rvDevices.setAdapter(mDevicesAdapter);
         mDevicesAdapter.notifyDataSetChanged();
@@ -124,12 +121,14 @@ public class DevicesFragment extends BaseFragment implements MainDeviceMvpView, 
 
         setupDevicesList();
 
-        setupDeviceTypeDropDown();
+        binding.setLifecycleOwner(this);
+
 
         binding.addDevice.setOnClickListener(view -> requireActivity().startActivity(new Intent(requireContext(),AddNewDeviceActivity.class)));
 
-
         binding.btnUpdate.setOnClickListener(view -> updateCurrentData());
+
+        binding.btnDelete.setOnClickListener(view -> deleteCurrentData());
 
         mPresenter.getAllDevices();
 
@@ -143,8 +142,10 @@ public class DevicesFragment extends BaseFragment implements MainDeviceMvpView, 
         String ip = binding.deviceFields.etIp.getText().toString();
         String userName = binding.deviceFields.etUsername.getText().toString();
         String password = binding.deviceFields.etPassword.getText().toString();
-        mPresenter.updateDevice(new CamDevice(deviceName,userName,password,ip,deviceType,url ,null));
+        mPresenter.updateDevice(new CamDevice(currentSelectedData.getId(),deviceName,userName,password,ip,deviceType,url ,null));
     }
+
+    private void deleteCurrentData(){ mPresenter.deleteDevice(currentSelectedData); }
 
 
     @Override
@@ -154,32 +155,35 @@ public class DevicesFragment extends BaseFragment implements MainDeviceMvpView, 
     public void onUpdatingDevice() {}
 
     @Override
-    public void onDeletingDevice() {}
+    public void onDeletingDevice() {
+        Log.i("TATZ", "onDeletingDevice: ");
+        currentSelectedItemIndex = 0;
+        mDevicesAdapter.setCurrentSelectedItem(currentSelectedItemIndex);
+    }
 
     @Override
     public void onGettingDevice(CamDevice response) {}
 
     @Override
     public void onGettingAllDevices(List<CamDevice> response) {
-        Log.i("TAGGGG", "onGettingAllDevices: ");
-        if (!response.isEmpty() ){
+        Log.i("TATZ", "onGettingAllDevices: "+response);
+        if ( response != null && !response.isEmpty() ){
             mDevicesAdapter.setList(response);
-            setSelectedData(response.get(0));
-            deviceType = response.get(0).getType() ;
+            setSelectedData(response.get(currentSelectedItemIndex));
+            deviceType = response.get(currentSelectedItemIndex).getType() ;
             refreshView();
+        }else{
+            if (currentSelectedData != null){ mDevicesAdapter.clearList(); }
         }
     }
 
     @Override
-    public void onItemClicked(CamDevice data) {
+    public void onItemClicked(CamDevice data,int position) {
         deviceType = data.getType() ;
+        currentSelectedItemIndex = position;
         refreshView();
         setSelectedData(data);
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        deviceType = i;
-        refreshView();
-    }
+
 }

@@ -28,10 +28,10 @@ public interface DevicesDao {
     Single<List<Long>> insertAllCamDevice(CamDevice... mCamDevicesList);
 
     @Delete
-    Single<Integer> deleteCamDevice(CamDevice mCamDevice);
+    Integer deleteCamDevice(CamDevice mCamDevice);
 
     @Update
-    Single<Integer> updateCamDevice(CamDevice mCamDevice);
+    void updateCamDevice(CamDevice mCamDevice);
 
     @Query("SELECT * FROM devices WHERE id = :id")
     Single<CamDevice> getCamDeviceById(int id);

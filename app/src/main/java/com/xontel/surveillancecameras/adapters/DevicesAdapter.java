@@ -1,6 +1,7 @@
 package com.xontel.surveillancecameras.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,13 +61,24 @@ public class DevicesAdapter extends RecyclerView.Adapter<DevicesAdapter.DeviceVi
 
        rowData.setOnClickListener(view -> {
            selectedItemPosition = position ;
-           mClickListener.onItemClicked(data);
+           mClickListener.onItemClicked(data,position);
            notifyDataSetChanged();
        });
     }
 
     public void setList(List<CamDevice> data){
         mDeviceList = data;
+        notifyDataSetChanged();
+    }
+
+    public void setCurrentSelectedItem(int position){
+        selectedItemPosition = position;
+        notifyDataSetChanged();
+    }
+
+    public void clearList(){
+        mDeviceList.clear();
+        selectedItemPosition = 0;
         notifyDataSetChanged();
     }
 
@@ -83,6 +95,6 @@ public class DevicesAdapter extends RecyclerView.Adapter<DevicesAdapter.DeviceVi
     }
 
     public interface ClickListener{
-        void onItemClicked(CamDevice data );
+        void onItemClicked(CamDevice data,int position );
     }
 }

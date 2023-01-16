@@ -82,13 +82,13 @@ public class BaseDataManager implements DataManager {
     }
 
     @Override
-    public Single<Integer> deleteCamDevice(CamDevice mCamDevice) {
-        return mDatabase.mDevicesDao().deleteCamDevice(mCamDevice);
+    public Integer deleteCamDevice(CamDevice mCamDevice) {
+       return   mDatabase.mDevicesDao().deleteCamDevice(mCamDevice);
     }
 
     @Override
-    public Single<Integer> updateCamDevice(CamDevice mCamDevice) {
-        return mDatabase.mDevicesDao().updateCamDevice(mCamDevice);
+    public void updateCamDevice(CamDevice mCamDevice) {
+         mDatabase.mDevicesDao().updateCamDevice(mCamDevice);
     }
 
     @Override

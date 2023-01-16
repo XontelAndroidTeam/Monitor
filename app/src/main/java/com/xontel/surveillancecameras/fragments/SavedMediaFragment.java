@@ -47,8 +47,6 @@ public class SavedMediaFragment extends BaseFragment implements MediaAdapter.Cli
 
 
 
-
-
     @Override
     public void onResume() {
         super.onResume();
@@ -237,7 +235,7 @@ public class SavedMediaFragment extends BaseFragment implements MediaAdapter.Cli
     private void setupMediaList() {
         mediaAdapter = new MediaAdapter(getContext(), new ArrayList<>(), this);
         binding.rvMedia.setEmptyView(binding.llEmptyIndicator);
-        binding.rvMedia.setAdapter(mediaAdapter)    ;
+        binding.rvMedia.setAdapter(mediaAdapter);
         binding.rvMedia.setLayoutManager(new GridLayoutManager(getContext(), 4));
     }
 
