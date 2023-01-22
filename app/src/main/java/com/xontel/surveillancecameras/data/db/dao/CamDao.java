@@ -17,6 +17,7 @@ import io.reactivex.rxjava3.core.Single;
 import static androidx.room.OnConflictStrategy.REPLACE;
 @Dao
 public interface CamDao {
+    /*
     @Query("SELECT * FROM camera")
     Flowable<List<IpCam>> getAll();
 
@@ -41,4 +42,6 @@ public interface CamDao {
 
     @Query("SELECT * FROM camera WHERE name LIKE :name")
     Single<IpCam> findByName(String name);
+
+     */
 }

@@ -68,7 +68,7 @@ public class MainViewModel extends BaseViewModel {
 
     public void getAllCameras(){
         getLoading().postValue(true);
-        getCompositeDisposable().add(getDataManager()
+       /* getCompositeDisposable().add(getDataManager()
                 .getAll()
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
@@ -81,5 +81,7 @@ public class MainViewModel extends BaseViewModel {
                     getError().postValue(true);
                     setErrorMessage(error.getMessage());
                 }));
+
+        */
     }
 }

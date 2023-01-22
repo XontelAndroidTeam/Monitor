@@ -55,11 +55,11 @@ public class AddCamActivity extends BaseActivity implements MainMvpView {
     }
 
     private void fillFieldsWithData() {
-        binding.etName.setText(editedCam.getName());
+      //  binding.etName.setText(editedCam.getName());
         binding.etName.setSelection(binding.etName.getText().length());
-        binding.fields.etUrl.setText(editedCam.getUrl());
+      //  binding.fields.etUrl.setText(editedCam.getUrl());
         binding.fields.etUrl.setSelection(binding.fields.etUrl.getText().length());
-        binding.etDescription.setText(editedCam.getDescription());
+      //  binding.etDescription.setText(editedCam.getDescription());
         binding.etDescription.setSelection(binding.etDescription.getText().length());
     }
 
@@ -87,11 +87,11 @@ public class AddCamActivity extends BaseActivity implements MainMvpView {
                String name =  binding.etName.getText().toString();
                 String description = binding.etDescription.getText().toString();
                 if(editedCam == null) {
-                    mPresenter.createCamera(new IpCam(url, name , description ));
+                  //  mPresenter.createCamera(new IpCam(url, name , description ));
                 }else{
-                    editedCam.setUrl(url);
-                    editedCam.setName(name);
-                    editedCam.setDescription(description);
+                 //   editedCam.setUrl(url);
+                 //   editedCam.setName(name);
+                 //   editedCam.setDescription(description);
                     mPresenter.updateCamera(editedCam);
                 }
             }
@@ -116,7 +116,7 @@ public class AddCamActivity extends BaseActivity implements MainMvpView {
     @Override
     public void onUpdatingCamera() {
         Intent resultIntent = new Intent();
-        resultIntent.putExtra(CamerasActivity.KEY_CAMERAS, editedCam);
+      //  resultIntent.putExtra(CamerasActivity.KEY_CAMERAS, editedCam);
         setResult(Activity.RESULT_OK, resultIntent);
         hitBack();
     }

@@ -25,6 +25,7 @@ import com.xontel.surveillancecameras.adapters.DevicesAdapter;
 import com.xontel.surveillancecameras.base.BaseFragment;
 import com.xontel.surveillancecameras.data.db.model.CamDevice;
 import com.xontel.surveillancecameras.databinding.FragmentDevicesBinding;
+import com.xontel.surveillancecameras.hikvision.HIKDevice;
 import com.xontel.surveillancecameras.presenters.MainDeviceMvpPresenter;
 import com.xontel.surveillancecameras.presenters.MainDeviceMvpView;
 import com.xontel.surveillancecameras.utils.CamDeviceType;
@@ -40,7 +41,7 @@ public class DevicesFragment extends BaseFragment implements MainDeviceMvpView, 
     private DevicesAdapter mDevicesAdapter ;
     private int deviceType = CamDeviceType.OTHER.getValue();
     private int currentSelectedItemIndex = 0 ;
-    private CamDevice currentSelectedData;
+    private HIKDevice currentSelectedData;
     @Inject
     MainDeviceMvpPresenter<MainDeviceMvpView> mPresenter ;
 
@@ -88,17 +89,17 @@ public class DevicesFragment extends BaseFragment implements MainDeviceMvpView, 
     protected void setUp(View view) {
     }
 
-    private void setSelectedData(CamDevice data){
+    private void setSelectedData(HIKDevice data){
         currentSelectedData = data;
         String[] types = getResources().getStringArray(R.array.device_type);
         binding.etName.setText(data.getName());
-        binding.dropDown.slideShowFilter.setText(types[data.getType()], false);
-        if (data.getType() == CamDeviceType.OTHER.getValue()){
+        binding.dropDown.slideShowFilter.setText(types[data.getDeviceType()], false);
+        if (data.getDeviceType() == CamDeviceType.OTHER.getValue()){
           binding.camFields.etUrl.setText(data.getUrl());
         }else{
-            binding.deviceFields.etIp.setText(data.getIp());
+            binding.deviceFields.etIp.setText(data.getIpAddress());
             binding.deviceFields.etUsername.setText(data.getUserName());
-            binding.deviceFields.etPassword.setText(data.getPassword());
+            binding.deviceFields.etPassword.setText(data.getPassWord());
         }
     }
 
@@ -152,7 +153,7 @@ public class DevicesFragment extends BaseFragment implements MainDeviceMvpView, 
         String ip = binding.deviceFields.etIp.getText().toString();
         String userName = binding.deviceFields.etUsername.getText().toString();
         String password = binding.deviceFields.etPassword.getText().toString();
-        mPresenter.updateDevice(new CamDevice(currentSelectedData.getId(),deviceName,userName,password,ip,deviceType,url ,null));
+        mPresenter.updateDevice(new HIKDevice(currentSelectedData.getId(),deviceName,userName,password,ip,deviceType,url));
     }
 
     private void deleteCurrentData(){ mPresenter.deleteDevice(currentSelectedData); }
@@ -171,14 +172,14 @@ public class DevicesFragment extends BaseFragment implements MainDeviceMvpView, 
     }
 
     @Override
-    public void onGettingDevice(CamDevice response) {}
+    public void onGettingDevice(HIKDevice response) {}
 
     @Override
-    public void onGettingAllDevices(List<CamDevice> response) {
+    public void onGettingAllDevices(List<HIKDevice> response) {
         if ( response != null && !response.isEmpty() ){
             mDevicesAdapter.setList(response);
             setSelectedData(response.get(currentSelectedItemIndex));
-            deviceType = response.get(currentSelectedItemIndex).getType() ;
+            deviceType = response.get(currentSelectedItemIndex).getDeviceType() ;
             refreshView();
         }else{
             if (currentSelectedData != null){ mDevicesAdapter.clearList(); }
@@ -186,8 +187,8 @@ public class DevicesFragment extends BaseFragment implements MainDeviceMvpView, 
     }
 
     @Override
-    public void onItemClicked(CamDevice data,int position) {
-        deviceType = data.getType() ;
+    public void onItemClicked(HIKDevice data,int position) {
+        deviceType = data.getDeviceType() ;
         currentSelectedItemIndex = position;
         refreshView();
         setSelectedData(data);

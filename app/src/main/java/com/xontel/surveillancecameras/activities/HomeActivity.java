@@ -58,8 +58,8 @@ public class HomeActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         getActivityComponent().inject(this);
-        mainViewModel = new ViewModelProvider(this, providerFactory).get(MainViewModel.class);
-        mainViewModel.getAllCameras();
+//        mainViewModel = new ViewModelProvider(this, providerFactory).get(MainViewModel.class);
+//        mainViewModel.getAllCameras();
         setUp();
 //        if (savedInstanceState != null) {
 //            currentPageIndex = savedInstanceState.getInt(KEY_CURRENT_PAGE_INDEX, 0);
@@ -96,7 +96,7 @@ public class HomeActivity extends BaseActivity {
 //            }
 //        });
         setupObservables();
-        setupCamerasPager();
+//        setupCamerasPager();
     }
 
 
@@ -195,6 +195,7 @@ public class HomeActivity extends BaseActivity {
 
 
     private void setupObservables() {
+        /*
         mainViewModel.getLoading().observe(this, loading -> {
             if (loading) {
                 showLoading();
@@ -208,13 +209,13 @@ public class HomeActivity extends BaseActivity {
             }
         });
         mainViewModel.ipCams.observe(this, ipCams -> {
-            updateViewPager();
+//            updateViewPager();
         });
 
         mainViewModel.getGridObservable().addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
             @Override
             public void onPropertyChanged(Observable sender, int propertyId) {
-                updateViewPager();
+//                updateViewPager();
             }
         });
 //        mainViewModel.gridCount.observe(this, gridCount -> {
@@ -222,6 +223,8 @@ public class HomeActivity extends BaseActivity {
 //            dataManager.setGridCount(gridCount);
 //            updateViewPager();
 //        });
+
+         */
     }
 
 
@@ -270,31 +273,31 @@ public class HomeActivity extends BaseActivity {
         outState.putInt(KEY_CURRENT_PAGE_INDEX, currentPageIndex);
     }
 
-    private void updateViewPager() {
-        int gridCount = mainViewModel.getGridObservable().getValue();
-        int camsCount = mainViewModel.ipCams.getValue().size();
-        int numOfFragments = (int) Math.ceil(camsCount * 1.0 / gridCount);
-        Log.v("TAG_", "pages : " + pagerAdapter.getFragmentList().size() + " grid count : " + gridCount + " numOfFragments : " + numOfFragments);
-//         recreate the fragments in view pager
-        if (pagerAdapter.getCount() > numOfFragments) { // a change in the view pager is needed
-            for (int i = pagerAdapter.getCount() - 1; i >= numOfFragments; i--) {
-                Log.v("TAG_", i + "");
-//                pagerAdapter.destroyItem(binding.home.vpSlider, i, pagerAdapter.getFragmentList().get(i));
-                pagerAdapter.removeFragment(i);
-            }
-        } else if (pagerAdapter.getCount() < numOfFragments) {
-            numOfFragments = numOfFragments - pagerAdapter.getCount();
-            for (int i = 0; i < numOfFragments; i++) {
-                MonitorFragment gridFragment = MonitorFragment.newInstance(pagerAdapter.getFragmentList().size() + 1);
-                pagerAdapter.addFragment(gridFragment);
-                pagerAdapter.notifyDataSetChanged();
-//                binding.home.vpSlider.setCurrentItem(currentPageIndex);
-//                binding.home.dotsIndicator.refreshDots();
-            }
-        }
-
-
-    }
+//    private void updateViewPager() {
+//        int gridCount = mainViewModel.getGridObservable().getValue();
+//        int camsCount = mainViewModel.ipCams.getValue().size();
+//        int numOfFragments = (int) Math.ceil(camsCount * 1.0 / gridCount);
+//        Log.v("TAG_", "pages : " + pagerAdapter.getFragmentList().size() + " grid count : " + gridCount + " numOfFragments : " + numOfFragments);
+////         recreate the fragments in view pager
+//        if (pagerAdapter.getCount() > numOfFragments) { // a change in the view pager is needed
+//            for (int i = pagerAdapter.getCount() - 1; i >= numOfFragments; i--) {
+//                Log.v("TAG_", i + "");
+////                pagerAdapter.destroyItem(binding.home.vpSlider, i, pagerAdapter.getFragmentList().get(i));
+//                pagerAdapter.removeFragment(i);
+//            }
+//        } else if (pagerAdapter.getCount() < numOfFragments) {
+//            numOfFragments = numOfFragments - pagerAdapter.getCount();
+//            for (int i = 0; i < numOfFragments; i++) {
+//                MonitorFragment gridFragment = MonitorFragment.newInstance(pagerAdapter.getFragmentList().size() + 1);
+//                pagerAdapter.addFragment(gridFragment);
+//                pagerAdapter.notifyDataSetChanged();
+////                binding.home.vpSlider.setCurrentItem(currentPageIndex);
+////                binding.home.dotsIndicator.refreshDots();
+//            }
+//        }
+//
+//
+//    }
 
 
 }

@@ -13,6 +13,7 @@
         <entry key="..\:/Users/01/AndroidStudioProjects/Monitor/app/src/main/res/layout/cam_fields.xml" value="0.10208333333333333" />
         <entry key="..\:/Users/01/AndroidStudioProjects/Monitor/app/src/main/res/layout/custom_toolbar.xml" value="0.10208333333333333" />
         <entry key="..\:/Users/01/AndroidStudioProjects/Monitor/app/src/main/res/layout/device_fields.xml" value="0.18" />
+        <entry key="..\:/Users/01/AndroidStudioProjects/Monitor/app/src/main/res/layout/dialog_delete_progress.xml" value="0.25" />
         <entry key="..\:/Users/01/AndroidStudioProjects/Monitor/app/src/main/res/layout/drop_down.xml" value="0.18" />
         <entry key="..\:/Users/01/AndroidStudioProjects/Monitor/app/src/main/res/layout/fragment_camera.xml" value="0.1" />
         <entry key="..\:/Users/01/AndroidStudioProjects/Monitor/app/src/main/res/layout/fragment_devices.xml" value="0.17" />
@@ -22,6 +23,7 @@
         <entry key="..\:/Users/01/AndroidStudioProjects/Monitor/app/src/main/res/layout/item_add.xml" value="0.10208333333333333" />
         <entry key="..\:/Users/01/AndroidStudioProjects/Monitor/app/src/main/res/layout/item_add_cam.xml" value="0.2" />
         <entry key="..\:/Users/01/AndroidStudioProjects/Monitor/app/src/main/res/layout/item_device.xml" value="0.20416666666666666" />
+        <entry key="..\:/Users/01/AndroidStudioProjects/Monitor/app/src/main/res/layout/item_hik_cam.xml" value="0.1" />
         <entry key="..\:/Users/01/AndroidStudioProjects/Monitor/app/src/main/res/layout/item_live_media.xml" value="0.1" />
         <entry key="..\:/Users/01/AndroidStudioProjects/Monitor/app/src/main/res/menu/main_menu.xml" value="0.10208333333333333" />
         <entry key="..\:/Users/01/AndroidStudioProjects/Monitor/app/src/main/res/menu/side_menu.xml" value="0.18" />

@@ -8,103 +8,62 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import com.xontel.surveillancecameras.utils.CamDeviceType;
 import com.xontel.surveillancecameras.utils.VideoHelper;
 
 
-@Entity(tableName = "camera")
-public class IpCam implements Parcelable  {
-        @PrimaryKey(autoGenerate = true)
-        private int id;
-        @ColumnInfo(name = "url")
-        private String url;
-        @ColumnInfo(name = "name")
-        private String name;
-        @ColumnInfo(name = "description")
-        private String description ;
-        @Ignore
-        private VideoHelper videoHelper ;
+public class IpCam{
+    private int realPlayId = -1;
+    private int channel = 0 ;
+    private int playPort = -1 ;
+    private int deviceId;
+    private int type ;
 
 
-        public IpCam(String url, String name, String description) {
-            this.url = url;
-            this.name = name;
-            this.description = description;
-        }
-
-        @Ignore
-        public IpCam() {
-        }
+    public IpCam(int channel, int deviceId, int type) {
+        this.channel = channel;
+        this.deviceId = deviceId;
+        this.type = type;
+    }
 
 
-        public VideoHelper getVideoHelper() {
-            return videoHelper;
-        }
+    public int getRealPlayId() {
+        return realPlayId;
+    }
 
-        public void setMediaPlayer(VideoHelper videoHelper) {
-            this.videoHelper = videoHelper;
-        }
+    public void setRealPlayId(int realPlayId) {
+        this.realPlayId = realPlayId;
+    }
 
-        protected IpCam(Parcel in) {
-            id = in.readInt();
-            url = in.readString();
-            name = in.readString();
-            description = in.readString();
-        }
+    public int getChannel() {
+        return channel;
+    }
 
-        public static final Creator<IpCam> CREATOR = new Creator<IpCam>() {
-            @Override
-            public IpCam createFromParcel(Parcel in) {
-                return new IpCam(in);
-            }
+    public void setChannel(int channel) {
+        this.channel = channel;
+    }
 
-            @Override
-            public IpCam[] newArray(int size) {
-                return new IpCam[size];
-            }
-        };
+    public int getPlayPort() {
+        return playPort;
+    }
 
-        public int getId() {
-            return id;
-        }
+    public void setPlayPort(int playPort) {
+        this.playPort = playPort;
+    }
 
-        public void setId(int id) {
-            this.id = id;
-        }
+    public int getDeviceId() {
+        return deviceId;
+    }
 
-        public String getUrl() {
-            return url;
-        }
+    public void setDeviceId(int deviceId) {
+        this.deviceId = deviceId;
+    }
 
-        public void setUrl(String url) {
-            this.url = url;
-        }
+    public int getType() {
+        return type;
+    }
 
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getDescription() {
-            return description;
-        }
-
-        public void setDescription(String description) {
-            this.description = description;
-        }
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel parcel, int i) {
-            parcel.writeInt(id);
-            parcel.writeString(url);
-            parcel.writeString(name);
-            parcel.writeString(description);
-        }
+    public void setType(int type) {
+        this.type = type;
+    }
 }

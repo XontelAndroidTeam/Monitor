@@ -36,9 +36,9 @@ public class CamDetailsDialog extends Dialog {
     }
 
     private void initUI() {
-        binding.tvCamName.setText(ipCam.getName());
-        binding.tvCamUrl.setText(ipCam.getUrl());
-        binding.tvCamDesc.setText(ipCam.getDescription());
+      //  binding.tvCamName.setText(ipCam.getName());
+     //   binding.tvCamUrl.setText(ipCam.getUrl());
+     //   binding.tvCamDesc.setText(ipCam.getDescription());
         binding.btnOk.setOnClickListener(v->{
             dismiss();
         });

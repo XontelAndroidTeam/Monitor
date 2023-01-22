@@ -19,8 +19,7 @@ import com.xontel.surveillancecameras.activities.CamerasActivity;
 import com.xontel.surveillancecameras.activities.HomeActivity;
 import com.xontel.surveillancecameras.base.BaseViewHolder;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
-import com.xontel.surveillancecameras.utils.HIKSinglePlayer;
-import com.xontel.surveillancecameras.utils.HikUtil;
+import com.xontel.surveillancecameras.hikvision.HikUtil;
 
 import org.videolan.libvlc.Media;
 import org.videolan.libvlc.MediaPlayer;
@@ -163,8 +162,8 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
         public void onBind(int position) {
             super.onBind(position);
             ipCam = ipCams.get(position);
-            camName.setText(ipCam.getName());
-            initVlcPlayer();
+            // camName.setText(ipCam.getName());
+//            initVlcPlayer();
             itemView.setOnClickListener(this);
             isBound = true;
         }
@@ -179,11 +178,11 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
             if (players.size() > 0) {
                 mediaPlayer = players.get(getBindingAdapterPosition());
                 mediaPlayer.attachViews(vlcVideoLayout);
-                final Media media = new Media(mediaPlayer.getLibVLCInstance(), Uri.parse(ipCam.getUrl()));
-                media.setHWDecoderEnabled(true, true);
-                media.addCommonOptions();
-                mediaPlayer.setMedia(media);
-                media.release();
+             //   final Media media = new Media(mediaPlayer.getLibVLCInstance(), Uri.parse(ipCam.getUrl()));
+             //   media.setHWDecoderEnabled(true, true);
+              //  media.addCommonOptions();
+              //  mediaPlayer.setMedia(media);
+              //  media.release();
                 mediaPlayer.play();
             }
         }
@@ -194,7 +193,7 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
             Intent intent = new Intent(context, CamerasActivity.class);
             ArrayList<IpCam> cams = new ArrayList<>();
             cams.add(ipCams.get(getAdapterPosition()));
-            intent.putParcelableArrayListExtra(CamerasActivity.KEY_CAMERAS, cams);
+          //  intent.putParcelableArrayListExtra(CamerasActivity.KEY_CAMERAS, cams);
             context.startActivity(intent);
         }
     }

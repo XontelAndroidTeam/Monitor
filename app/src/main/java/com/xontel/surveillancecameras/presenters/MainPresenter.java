@@ -23,7 +23,7 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V>
     @Override
     public void createCamera(IpCam ipCam) {
         getMvpView().showLoading();
-        getCompositeDisposable().add(getDataManager()
+      /*  getCompositeDisposable().add(getDataManager()
                 .insertIpCam(ipCam)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
@@ -42,13 +42,15 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V>
                     handleApiError(error);
                 }));
 
+
+       */
     }
 
     @Override
     public void updateCamera(IpCam ipCam) {
 
         getMvpView().showLoading();
-        getCompositeDisposable().add(getDataManager()
+      /*  getCompositeDisposable().add(getDataManager()
                 .updateIpCam(ipCam)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
@@ -68,13 +70,15 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V>
 
                     handleApiError(error);
                 }));
+
+       */
     }
 
     @Override
     public void deleteCamera(IpCam ipCam) {
 
         getMvpView().showLoading();
-        getCompositeDisposable().add(getDataManager()
+       /* getCompositeDisposable().add(getDataManager()
                 .deleteIpCam(ipCam)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
@@ -94,12 +98,14 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V>
 
                     handleApiError(error);
                 }));
+
+        */
     }
 
     @Override
     public void getAllCameras() {
         getMvpView().showLoading();
-        getCompositeDisposable().add(getDataManager()
+     /*   getCompositeDisposable().add(getDataManager()
                 .getAll()
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
@@ -117,12 +123,14 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V>
                     getMvpView().hideLoading();
                     handleApiError(error);
                 }));
+
+      */
     }
 
     @Override
     public void getCameraById(int id) {
         getMvpView().showLoading();
-        getCompositeDisposable().add(getDataManager()
+        /*getCompositeDisposable().add(getDataManager()
                 .getIpCamById(id)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
@@ -142,5 +150,7 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V>
 
                     handleApiError(error);
                 }));
+
+         */
     }
 }

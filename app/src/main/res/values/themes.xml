@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="mainTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <style name="mainTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Disable animations between activities -->
         <!-- Primary brand color. -->
         <item name="android:windowBackground">@color/default_bg</item>

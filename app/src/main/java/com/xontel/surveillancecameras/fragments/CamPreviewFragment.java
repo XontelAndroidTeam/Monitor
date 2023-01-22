@@ -3,8 +3,6 @@ package com.xontel.surveillancecameras.fragments;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,10 +22,7 @@ import com.hikvision.netsdk.NET_DVR_IPPARACFG_V40;
 import com.xontel.surveillancecameras.R;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
 import com.xontel.surveillancecameras.databinding.FragmentCameraBinding;
-import com.xontel.surveillancecameras.utils.HIKDevice;
-import com.xontel.surveillancecameras.utils.HIKDeviceType;
-import com.xontel.surveillancecameras.utils.HIKSinglePlayer;
-import com.xontel.surveillancecameras.utils.HikUtil;
+import com.xontel.surveillancecameras.hikvision.HIKSinglePlayer;
 import com.xontel.surveillancecameras.utils.StorageHelper;
 
 import org.jetbrains.annotations.NotNull;
@@ -67,7 +62,7 @@ public class CamPreviewFragment extends Fragment {
     public static CamPreviewFragment newInstance(IpCam cam) {
         CamPreviewFragment fragment = new CamPreviewFragment();
         Bundle args = new Bundle();
-        args.putParcelable(KEY_CAM_INFO, cam);
+     //   args.putParcelable(KEY_CAM_INFO, cam);
         fragment.setArguments(args);
         return fragment;
     }
@@ -128,10 +123,10 @@ public class CamPreviewFragment extends Fragment {
         //TODO put the videos public dir
         mediaPlayer.setRecordingDirectory(StorageHelper.getMediaDirectory(getContext(), StorageHelper.VIDEOS_DIRECTORY_NAME).getAbsolutePath());
         mediaPlayer.attachViews(binding.vlcLayout);
-        final Media media = new Media(mediaPlayer.getLibVLCInstance(), Uri.parse(cam.getUrl()));
-        media.addCommonOptions();
-        mediaPlayer.setMedia(media);
-        media.release();
+      //  final Media media = new Media(mediaPlayer.getLibVLCInstance(), Uri.parse(cam.getUrl()));
+       // media.addCommonOptions();
+     //   mediaPlayer.setMedia(media);
+     //   media.release();
 //        videoHelper = new VideoHelper(getContext(), binding.videoSurfaceFrame, binding.surfaceStub.getViewStub(), binding.getRoot());
 //        videoHelper.setVIDEO_URL(cam.getUrl());
 //
@@ -170,7 +165,7 @@ public class CamPreviewFragment extends Fragment {
 //            stopRecordingVideo();
 //        });
 
-        initVlcPlayer();
+//        initVlcPlayer();
 //        initHikPlayer();
     }
 

@@ -9,7 +9,7 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 
-@Entity(tableName = "devices")
+@Entity(tableName = "devicesCams")
 public class CamDevice implements Parcelable{
     @PrimaryKey(autoGenerate = true)
     private int id;

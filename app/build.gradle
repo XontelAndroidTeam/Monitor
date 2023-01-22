@@ -24,7 +24,9 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         ndk {
-            abiFilters "armeabi-v7a", "x86"
+
+                abiFilters "armeabi"
+
             //"armeabi-v7a-v7a", "x86", "armeabi-v7a", "mips"
 
         }
@@ -120,11 +122,7 @@ dependencies {
     implementation "androidx.navigation:navigation-fragment:2.4.2"
     implementation "androidx.navigation:navigation-ui:2.4.2"
 
-
-    // hik
-    implementation files('libs/AudioEngineSDK.jar')
-    implementation files('libs/HCNetSDK.jar')
-    implementation files('libs/PlayerSDK.jar')
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
 
 
 

@@ -18,6 +18,10 @@ import com.xontel.surveillancecameras.R;
 import com.xontel.surveillancecameras.activities.AddCamActivity;
 import com.xontel.surveillancecameras.base.BaseFragment;
 import com.xontel.surveillancecameras.databinding.FragmentMonitorBinding;
+import com.xontel.surveillancecameras.hikvision.HIKDevice;
+import com.xontel.surveillancecameras.hikvision.HikUtil;
+import com.xontel.surveillancecameras.presenters.MainDeviceMvpPresenter;
+import com.xontel.surveillancecameras.presenters.MainDeviceMvpView;
 import com.xontel.surveillancecameras.viewModels.MainViewModel;
 import com.xontel.surveillancecameras.adapters.CamsAdapter;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
@@ -31,17 +35,19 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class MonitorFragment extends BaseFragment {
-
+public class MonitorFragment extends BaseFragment implements MainDeviceMvpView {
+    public static final String TAG = MonitorFragment.class.getSimpleName();
     public static final String KEY_ORDER = "order";
     private FragmentMonitorBinding binding;
     private int gridCount;
     private int fragmentOrder;
     private List<IpCam> ipCams = new ArrayList<>();
+    private List<HIKDevice> hikDevices = new ArrayList<>();
     private MainViewModel mainViewModel;
     private CamsAdapter gridAdapter;
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss.SSS");
-
+    @Inject
+    MainDeviceMvpPresenter<MainDeviceMvpView> mPresenter ;
     @Inject
     ViewModelProviderFactory providerFactory;
 
@@ -52,18 +58,14 @@ public class MonitorFragment extends BaseFragment {
 
     @Override
     public void onResume(){
-        Log.v("TAG_", "onResume" + " NUMBER : "+fragmentOrder + " Time : "+ simpleDateFormat.format(System.currentTimeMillis()));
         super.onResume();
-        gridAdapter.setPlayers(mainViewModel.mediaPlayers);
-        gridAdapter.notifyDataSetChanged();
+
     }
     @Override
     public void onPause() {
-        Log.v("TAG_", "onPause" + " NUMBER : "+fragmentOrder + " Time : "+ simpleDateFormat.format(System.currentTimeMillis()));
+
         super.onPause();
-        gridAdapter.setPlayers(new ArrayList<>());
-        gridAdapter.notifyDataSetChanged();
-        mainViewModel.resetPlayers();
+
 
     }
 
@@ -83,13 +85,19 @@ public class MonitorFragment extends BaseFragment {
         requireActivity().setTitle(R.string.monitor);
         getFragmentComponent().inject(this);
         mainViewModel = new ViewModelProvider(getActivity(), providerFactory).get(MainViewModel.class);
+        mPresenter.onAttach(this);
         setHasOptionsMenu(true);
         if (getArguments() != null) {
             fragmentOrder = getArguments().getInt(KEY_ORDER);
         }
+        getAllDevices();
         Log.v("TAG_", "onCreate" + " NUMBER : "+fragmentOrder + " Time : "+ simpleDateFormat.format(System.currentTimeMillis()));
         gridCount = mainViewModel.getGridObservable().getValue();
 //        updateIpCams();
+    }
+
+    private void getAllDevices() {
+        mPresenter.getAllDevices();
     }
 
     @Override
@@ -184,4 +192,41 @@ public class MonitorFragment extends BaseFragment {
     }
 
 
+    @Override
+    public void onInsertingDevice() {
+
+    }
+
+    @Override
+    public void onUpdatingDevice() {
+
+    }
+
+    @Override
+    public void onDeletingDevice() {
+
+    }
+
+    @Override
+    public void onGettingDevice(HIKDevice response) {
+
+    }
+
+    @Override
+    public void onGettingAllDevices(List<HIKDevice> response) {
+        if ( response != null && !response.isEmpty() ){
+            hikDevices.clear();
+            ipCams.clear();
+            hikDevices.addAll(response);
+            extractDevices();
+        }
+    }
+
+    private void extractDevices() {
+        for (HIKDevice hikDevice:hikDevices){
+            HikUtil.extractCamsFromDevice(hikDevice);
+            ipCams.addAll(hikDevice.getCams());
+            Log.v(TAG, "Cams num : " + ipCams.size());
+        }
+    }
 }

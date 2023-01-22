@@ -22,15 +22,15 @@
             android:layout_height="match_parent"
             app:vlc_enable_volume_control="false"
             app:vlc_error_text_size="15dp" />
-        <!--        <TextureView-->
-        <!--            android:id="@+id/video_view"-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="match_parent"/>-->
-        <!--        <com.alexvas.rtsp.widget.RtspSurfaceView-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="match_parent"-->
-        <!--            android:id="@+id/svVideo" />-->
-
+                <TextureView
+                    android:id="@+id/video_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+<!--                <com.alexvas.rtsp.widget.RtspSurfaceView-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:id="@+id/svVideo" />-->
+<!---->
         <TextView
             android:id="@+id/tv_cam_name"
             android:layout_width="match_parent"

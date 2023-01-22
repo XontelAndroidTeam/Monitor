@@ -6,6 +6,7 @@ import com.xontel.surveillancecameras.base.BasePresenter;
 import com.xontel.surveillancecameras.base.MvpView;
 import com.xontel.surveillancecameras.data.DataManager;
 import com.xontel.surveillancecameras.data.db.model.CamDevice;
+import com.xontel.surveillancecameras.hikvision.HIKDevice;
 import com.xontel.surveillancecameras.utils.rx.SchedulerProvider;
 
 import java.util.concurrent.Callable;
@@ -28,7 +29,7 @@ public class MainDevicePresenter<V extends MainDeviceMvpView & MvpView> extends 
     }
 
     @Override
-    public void createDevice(CamDevice device) {
+    public void createDevice(HIKDevice device) {
         getMvpView().showLoading();
         getCompositeDisposable().add(getDataManager()
                 .insertCamDevice(device)
@@ -52,7 +53,7 @@ public class MainDevicePresenter<V extends MainDeviceMvpView & MvpView> extends 
     }
 
     @Override
-    public void updateDevice(CamDevice device) {
+    public void updateDevice(HIKDevice device) {
         getCompositeDisposable().add(
         Single.create(sub -> getDataManager().updateCamDevice(device))
                 .subscribeOn(Schedulers.io())
@@ -61,7 +62,7 @@ public class MainDevicePresenter<V extends MainDeviceMvpView & MvpView> extends 
     }
 
     @Override
-    public void deleteDevice(CamDevice device) {
+    public void deleteDevice(HIKDevice device) {
         getMvpView().showLoading();
         getCompositeDisposable().add(
         Single.fromCallable((Callable<Object>) () -> {

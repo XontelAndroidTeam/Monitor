@@ -79,4 +79,5 @@
     <string name="invalid_ip">Invalid ip address</string>
     <string name="invalid_url">Invalid url</string>
     <string name="no_devices">No devices added yet</string>
+    <string name="init_sdk_init_error">Error starting HCNetSDK</string>
 </resources>

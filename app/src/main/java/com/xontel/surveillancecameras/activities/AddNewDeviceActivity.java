@@ -15,6 +15,7 @@ import com.xontel.surveillancecameras.base.BaseActivity;
 import com.xontel.surveillancecameras.data.db.model.CamDevice;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
 import com.xontel.surveillancecameras.databinding.ActivityAddNewDeviceBinding;
+import com.xontel.surveillancecameras.hikvision.HIKDevice;
 import com.xontel.surveillancecameras.presenters.MainDeviceMvpPresenter;
 import com.xontel.surveillancecameras.presenters.MainDeviceMvpView;
 import com.xontel.surveillancecameras.presenters.MainMvpPresenter;
@@ -84,20 +85,26 @@ public class AddNewDeviceActivity extends BaseActivity implements MainDeviceMvpV
         });
 
         binding.btnSave.setOnClickListener(v->{
-            if(validateFields()){
+            if(validateFields() ){
                 String deviceName = binding.etName.getText().toString();
                 String url = binding.camFields.etUrl.getText().toString();
                 String ip = binding.deviceFields.etIp.getText().toString();
                 String userName = binding.deviceFields.etUsername.getText().toString();
                 String password = binding.deviceFields.etPassword.getText().toString();
-                if (mCamDevice == null){
-                    mPresenter.createDevice(new CamDevice(0,deviceName,userName,password,ip,deviceType,url ,null));
+                HIKDevice hikDevice = new HIKDevice(0,deviceName,userName,password,ip,deviceType,url );
+                if (hikDevice.isLoginValid()) {
+                    if (mCamDevice == null) {
+                        mPresenter.createDevice(hikDevice);
+                    } else {
+                        mPresenter.updateDevice(new HIKDevice(0, deviceName, userName, password, ip, deviceType, url));
+                    }
                 }else{
-                    mPresenter.updateDevice(new CamDevice(0,deviceName,userName,password,ip,deviceType,url ,null));
+                    showMessage(this.getString(R.string.Cant_LOGIN));
                 }
             }
         });
     }
+
 
     private boolean validateFields() {
         if(deviceType == CamDeviceType.OTHER.getValue()){
@@ -150,12 +157,12 @@ public class AddNewDeviceActivity extends BaseActivity implements MainDeviceMvpV
     }
 
     @Override
-    public void onGettingDevice(CamDevice response) {
+    public void onGettingDevice(HIKDevice response) {
 
     }
 
     @Override
-    public void onGettingAllDevices(List<CamDevice> response) {
+    public void onGettingAllDevices(List<HIKDevice> response) {
 
     }
 

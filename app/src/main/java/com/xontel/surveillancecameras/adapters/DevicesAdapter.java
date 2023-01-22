@@ -16,17 +16,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.xontel.surveillancecameras.R;
 import com.xontel.surveillancecameras.data.db.dao.DevicesDao;
 import com.xontel.surveillancecameras.data.db.model.CamDevice;
+import com.xontel.surveillancecameras.hikvision.HIKDevice;
 
 import java.util.List;
 
 public class DevicesAdapter extends RecyclerView.Adapter<DevicesAdapter.DeviceViewHolder> {
-    private List<CamDevice> mDeviceList ;
+    private List<HIKDevice> mDeviceList ;
     private Context mContext ;
     private ClickListener mClickListener;
     private int selectedItemPosition = 0;
 
 
-    public DevicesAdapter(Context context, List<CamDevice> deviceList, ClickListener clickListener) {
+    public DevicesAdapter(Context context, List<HIKDevice> deviceList, ClickListener clickListener) {
         mContext = context;
         mDeviceList = deviceList;
         mClickListener = clickListener;
@@ -40,7 +41,7 @@ public class DevicesAdapter extends RecyclerView.Adapter<DevicesAdapter.DeviceVi
 
     @Override
     public void onBindViewHolder(@NonNull DeviceViewHolder holder, int position) {
-       CamDevice data = mDeviceList.get(position);
+       HIKDevice data = mDeviceList.get(position);
         RelativeLayout rowData = holder.itemView.findViewById(R.id.rowData);
         TextView title = holder.itemView.findViewById(R.id.tv_title);
         TextView ipOrUrl = holder.itemView.findViewById(R.id.tv_desc);
@@ -57,7 +58,7 @@ public class DevicesAdapter extends RecyclerView.Adapter<DevicesAdapter.DeviceVi
            ipOrUrl.setTextColor(ContextCompat.getColor(mContext,R.color.black_color));
        }
        title.setText(data.getName());
-       ipOrUrl.setText( data.getIp().isEmpty() ? data.getUrl() : data.getIp()  );
+       ipOrUrl.setText( data.getIpAddress().isEmpty() ? data.getUrl() : data.getIpAddress()  );
 
        rowData.setOnClickListener(view -> {
            selectedItemPosition = position ;
@@ -66,7 +67,7 @@ public class DevicesAdapter extends RecyclerView.Adapter<DevicesAdapter.DeviceVi
        });
     }
 
-    public void setList(List<CamDevice> data){
+    public void setList(List<HIKDevice> data){
         mDeviceList = data;
         notifyDataSetChanged();
     }
@@ -95,6 +96,6 @@ public class DevicesAdapter extends RecyclerView.Adapter<DevicesAdapter.DeviceVi
     }
 
     public interface ClickListener{
-        void onItemClicked(CamDevice data,int position );
+        void onItemClicked(HIKDevice data,int position );
     }
 }

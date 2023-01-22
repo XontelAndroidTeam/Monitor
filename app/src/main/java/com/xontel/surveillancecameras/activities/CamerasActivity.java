@@ -81,7 +81,7 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
 //        } else {
 //            isSlideShow = false;
 //        }
-        cams.add(new IpCam("rtsp://admin:X0nPAssw0rd_000@192.168.1.123/Streaming/Channels/1", "camera", ""));
+        //cams.add(new IpCam("rtsp://admin:X0nPAssw0rd_000@192.168.1.123/Streaming/Channels/1", "camera", ""));
         getActivityComponent().inject(this);
         mPresenter.onAttach(this);
         setUp();
@@ -119,14 +119,14 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
         Intent i = new Intent(Intent.ACTION_SEND);
         i.setType("text/plain");
         i.putExtra(Intent.EXTRA_SUBJECT, "Sharing URL");
-        i.putExtra(Intent.EXTRA_TEXT, cams.get(camPosition).getUrl());
+      //  i.putExtra(Intent.EXTRA_TEXT, cams.get(camPosition).getUrl());
         startActivity(Intent.createChooser(i, getString(R.string.share_url)));
     }
 
     private void editCam() {
         int camPosition = binding.vpSlider.getCurrentItem();
         Intent intent = new Intent(this, AddCamActivity.class);
-        intent.putExtra(AddCamActivity.KEY_CAMERA, cams.get(camPosition));
+        //intent.putExtra(AddCamActivity.KEY_CAMERA, cams.get(camPosition));
         startActivityForResult(intent, REQUEST_CODE_EDIT_CAM);
     }
 
@@ -150,10 +150,10 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
 
     private void replaceCamById(IpCam ipCam) {
         for (int i = 0; i < cams.size(); i++) {
-            if (ipCam.getId() == cams.get(i).getId()) {
-                cams.set(i, ipCam);
-                break;
-            }
+          //  if (ipCam.getId() == cams.get(i).getId()) {
+          //      cams.set(i, ipCam);
+           //     break;
+          //  }
         }
     }
 
@@ -185,7 +185,7 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
         binding.btnShare.setOnClickListener(view -> shareCam());
         binding.btnEdit.setOnClickListener(view -> editCam());
         binding.btnDelete.setOnClickListener(view -> deleteCam());
-        binding.tvCamName.setText(cams.get(0).getName());
+        //binding.tvCamName.setText(cams.get(0).getName());
         binding.vpSlider.setOnTouchListener((view, motionEvent) -> {
             showButtons();
             scheduleHidingBtns();

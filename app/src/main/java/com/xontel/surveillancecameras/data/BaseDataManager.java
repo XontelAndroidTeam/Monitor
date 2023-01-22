@@ -15,6 +15,7 @@ import com.xontel.surveillancecameras.data.network.pojo.WrapperResponse;
 import com.xontel.surveillancecameras.data.prefs.PreferencesHelper;
 import com.xontel.surveillancecameras.data.utils.LoggedInMode;
 import com.xontel.surveillancecameras.di.ApplicationContext;
+import com.xontel.surveillancecameras.hikvision.HIKDevice;
 
 import java.util.List;
 
@@ -62,84 +63,46 @@ public class BaseDataManager implements DataManager {
 
 
     @Override
-    public Flowable<List<IpCam>> getAll() {
-        return mDatabase.camDao().getAll();
-    }
-
-    @Override
-    public Flowable<List<CamDevice>> getDevicesAll() {
+    public Flowable<List<HIKDevice>> getDevicesAll() {
         return mDatabase.mDevicesDao().getDevicesAll();
     }
 
     @Override
-    public Single<Long> insertCamDevice(CamDevice mCamDevice) {
+    public Single<Long> insertCamDevice(HIKDevice mCamDevice) {
         return mDatabase.mDevicesDao().insertCamDevice(mCamDevice);
     }
 
     @Override
-    public Single<List<Long>> insertAllCamDevice(CamDevice... mCamDevicesList) {
+    public Single<List<Long>> insertAllCamDevice(HIKDevice... mCamDevicesList) {
         return mDatabase.mDevicesDao().insertAllCamDevice(mCamDevicesList);
     }
 
     @Override
-    public Integer deleteCamDevice(CamDevice mCamDevice) {
+    public Integer deleteCamDevice(HIKDevice mCamDevice) {
        return   mDatabase.mDevicesDao().deleteCamDevice(mCamDevice);
     }
 
     @Override
-    public void updateCamDevice(CamDevice mCamDevice) {
+    public void updateCamDevice(HIKDevice mCamDevice) {
          mDatabase.mDevicesDao().updateCamDevice(mCamDevice);
     }
 
     @Override
-    public Single<CamDevice> getCamDeviceById(int id) {
+    public Single<HIKDevice> getCamDeviceById(int id) {
         return mDatabase.mDevicesDao().getCamDeviceById(id);
     }
 
     @Override
-    public Single<List<CamDevice>> loadAllDevicesByIds(int[] cameraIds) {
+    public Single<List<HIKDevice>> loadAllDevicesByIds(int[] cameraIds) {
         return mDatabase.mDevicesDao().loadAllDevicesByIds(cameraIds);
     }
 
     @Override
-    public Single<CamDevice> findDeviceByName(String name) {
+    public Single<HIKDevice> findDeviceByName(String name) {
         return mDatabase.mDevicesDao().findDeviceByName(name);
     }
 
-    @Override
-    public Single<Long> insertIpCam(IpCam mIpCam) {
-        return mDatabase.camDao().insertIpCam(mIpCam);
-    }
 
-    @Override
-    public Single<List<Long>> insertAllIpCam(IpCam... mIpCamsList) {
-        return mDatabase.camDao().insertAllIpCam(mIpCamsList);
-    }
-
-    @Override
-    public Single<Integer> deleteIpCam(IpCam mIpCam) {
-        return mDatabase.camDao().deleteIpCam(mIpCam);
-    }
-
-    @Override
-    public Single<Integer> updateIpCam(IpCam mIpCam) {
-        return mDatabase.camDao().updateIpCam(mIpCam);
-    }
-
-    @Override
-    public Single<IpCam> getIpCamById(int id) {
-        return mDatabase.camDao().getIpCamById(id);
-    }
-
-    @Override
-    public Single<List<IpCam>> loadAllByIds(int[] cameraIds) {
-        return mDatabase.camDao().loadAllByIds(cameraIds);
-    }
-
-    @Override
-    public Single<IpCam> findByName(String name) {
-        return mDatabase.camDao().findByName(name);
-    }
 
     @Override
     public Single<WrapperResponse<UserProfile>> doLoginApiCall(LoginRequest request) {

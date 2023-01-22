@@ -52,6 +52,7 @@ public class GridAdapter extends BaseAdapter {
 //        ImageView placeholder = view.findViewById(R.id.player_surface_frame);
 
         IpCam ipCam = cams.get(i);
+        /*
         if(ipCam.getUrl() == null){ // not set yet
             camName.setText("");
 //            mjpegView.setVisibility(View.GONE);
@@ -72,10 +73,11 @@ public class GridAdapter extends BaseAdapter {
                 Intent intent = new Intent(context, CamerasActivity.class);
                 ArrayList<IpCam> cams = new ArrayList<>();
                 cams.add(this.cams.get(i));
-                intent.putParcelableArrayListExtra(CamerasActivity.KEY_CAMERAS, cams);
+               // intent.putParcelableArrayListExtra(CamerasActivity.KEY_CAMERAS, cams);
                 context.startActivity(intent);
             });
         }
+        */
         return view;
     }
 
