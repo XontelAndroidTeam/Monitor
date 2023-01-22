@@ -67,6 +67,11 @@ public class DevicesFragment extends BaseFragment implements MainDeviceMvpView, 
         }
     }
 
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.main_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -123,7 +128,12 @@ public class DevicesFragment extends BaseFragment implements MainDeviceMvpView, 
 
         binding.setLifecycleOwner(this);
 
-
+        binding.dropDown.gridDropDown.setEndIconActivated(false);
+        binding.dropDown.gridDropDown.setEndIconCheckable(false);
+        binding.dropDown.gridDropDown.setEndIconOnClickListener(null);
+        binding.dropDown.slideShowFilter.setClickable(false);
+        binding.dropDown.slideShowFilter.setEnabled(false);
+        
         binding.addDevice.setOnClickListener(view -> requireActivity().startActivity(new Intent(requireContext(),AddNewDeviceActivity.class)));
 
         binding.btnUpdate.setOnClickListener(view -> updateCurrentData());
@@ -156,7 +166,6 @@ public class DevicesFragment extends BaseFragment implements MainDeviceMvpView, 
 
     @Override
     public void onDeletingDevice() {
-        Log.i("TATZ", "onDeletingDevice: ");
         currentSelectedItemIndex = 0;
         mDevicesAdapter.setCurrentSelectedItem(currentSelectedItemIndex);
     }
@@ -166,7 +175,6 @@ public class DevicesFragment extends BaseFragment implements MainDeviceMvpView, 
 
     @Override
     public void onGettingAllDevices(List<CamDevice> response) {
-        Log.i("TATZ", "onGettingAllDevices: "+response);
         if ( response != null && !response.isEmpty() ){
             mDevicesAdapter.setList(response);
             setSelectedData(response.get(currentSelectedItemIndex));

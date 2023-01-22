@@ -46,9 +46,6 @@ public class SavedMediaActivity extends BaseActivity implements Observer, MediaA
     }
 
 
-
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.selection_menu, menu);
@@ -198,6 +195,7 @@ public class SavedMediaActivity extends BaseActivity implements Observer, MediaA
             if (videos != null)
                 mediaFiles.addAll(Arrays.asList(videos));
         }
+
         Collections.sort(mediaFiles, (file1, file2) -> {
             long k = file1.lastModified() - file2.lastModified();
             if (k > 0) {
@@ -208,6 +206,7 @@ public class SavedMediaActivity extends BaseActivity implements Observer, MediaA
                 return -1;
             }
         });
+
         mediaAdapter.notifyDataSetChanged();
     }
 

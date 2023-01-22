@@ -1,7 +1,12 @@
 package com.xontel.surveillancecameras.activities;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -62,11 +67,10 @@ public class HomeActivity extends BaseActivity {
     }
 
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.main_menu, menu);
+       // MenuInflater menuInflater = getMenuInflater();
+     //   menuInflater.inflate(R.menu.main_menu, menu);
         return true;
     }
 
@@ -227,7 +231,7 @@ public class HomeActivity extends BaseActivity {
 
     public void addNewCam() {
         if (mainViewModel.ipCams.getValue().size() < 32) {
-            startActivity(new Intent(HomeActivity.this, AddNewDeviceActivity.class));
+            startActivity(new Intent(HomeActivity.this, AddCamActivity.class));
 
         } else {
             showMessage(R.string.cameras_limit);

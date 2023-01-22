@@ -75,12 +75,13 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_cameras);
         sharedPreferences = getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, MODE_PRIVATE);
         sharedPreferences.registerOnSharedPreferenceChangeListener(listener);
-        cams = getIntent().getParcelableArrayListExtra(KEY_CAMERAS);
-        if (getIntent().hasExtra(KEY_SLIDE_SHOW)) {
-            isSlideShow = true;
-        } else {
-            isSlideShow = false;
-        }
+//        cams = getIntent().getParcelableArrayListExtra(KEY_CAMERAS);
+//        if (getIntent().hasExtra(KEY_SLIDE_SHOW)) {
+//            isSlideShow = true;
+//        } else {
+//            isSlideShow = false;
+//        }
+        cams.add(new IpCam("rtsp://admin:X0nPAssw0rd_000@192.168.1.123/Streaming/Channels/1", "camera", ""));
         getActivityComponent().inject(this);
         mPresenter.onAttach(this);
         setUp();

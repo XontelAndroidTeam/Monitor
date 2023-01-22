@@ -125,7 +125,8 @@ public class CamPreviewFragment extends Fragment {
 
     private void initVlcPlayer() {
         mediaPlayer = new MediaPlayer(getContext());
-//        mediaPlayer.setRecordingDirectory(StorageHelper.getMediaDirectory(getContext(), StorageHelper.VIDEOS_DIRECTORY_NAME).getAbsolutePath());
+        //TODO put the videos public dir
+        mediaPlayer.setRecordingDirectory(StorageHelper.getMediaDirectory(getContext(), StorageHelper.VIDEOS_DIRECTORY_NAME).getAbsolutePath());
         mediaPlayer.attachViews(binding.vlcLayout);
         final Media media = new Media(mediaPlayer.getLibVLCInstance(), Uri.parse(cam.getUrl()));
         media.addCommonOptions();
@@ -281,7 +282,8 @@ public class CamPreviewFragment extends Fragment {
 
     public void capturePhoto() {
         Bitmap bitmap = mediaPlayer.takeSnapShot(getContext());
-        savePhoto(bitmap);
+
+//        savePhoto(bitmap);
     }
 
     private void savePhoto(Bitmap bitmap) {

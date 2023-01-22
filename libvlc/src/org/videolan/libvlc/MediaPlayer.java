@@ -1427,6 +1427,7 @@ public class MediaPlayer extends VLCObject<MediaPlayer.Event> {
             mVideoHelper.setRecordViewEnabled(false);
             nativeRecord(null);
         }
+        // TODO scan video file with media store
     }
 
 

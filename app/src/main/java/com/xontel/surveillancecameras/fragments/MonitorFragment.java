@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,13 +16,11 @@ import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.xontel.surveillancecameras.R;
 import com.xontel.surveillancecameras.activities.AddCamActivity;
-import com.xontel.surveillancecameras.activities.AddNewDeviceActivity;
 import com.xontel.surveillancecameras.base.BaseFragment;
 import com.xontel.surveillancecameras.databinding.FragmentMonitorBinding;
 import com.xontel.surveillancecameras.viewModels.MainViewModel;
 import com.xontel.surveillancecameras.adapters.CamsAdapter;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
-import com.xontel.surveillancecameras.databinding.FragmentMonitorBinding;
 import com.xontel.surveillancecameras.viewModels.ViewModelProviderFactory;
 
 import org.videolan.libvlc.MediaPlayer;
@@ -90,6 +90,12 @@ public class MonitorFragment extends BaseFragment {
         Log.v("TAG_", "onCreate" + " NUMBER : "+fragmentOrder + " Time : "+ simpleDateFormat.format(System.currentTimeMillis()));
         gridCount = mainViewModel.getGridObservable().getValue();
 //        updateIpCams();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.main_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
