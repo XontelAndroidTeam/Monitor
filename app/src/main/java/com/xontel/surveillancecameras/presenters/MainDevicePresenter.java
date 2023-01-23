@@ -5,16 +5,13 @@ import android.util.Log;
 import com.xontel.surveillancecameras.base.BasePresenter;
 import com.xontel.surveillancecameras.base.MvpView;
 import com.xontel.surveillancecameras.data.DataManager;
-import com.xontel.surveillancecameras.data.db.model.CamDevice;
-import com.xontel.surveillancecameras.hikvision.HIKDevice;
+import com.xontel.surveillancecameras.hikvision.CamDevice;
 import com.xontel.surveillancecameras.utils.rx.SchedulerProvider;
 
 import java.util.concurrent.Callable;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.inject.Inject;
 
-import io.reactivex.Completable;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
@@ -29,7 +26,7 @@ public class MainDevicePresenter<V extends MainDeviceMvpView & MvpView> extends 
     }
 
     @Override
-    public void createDevice(HIKDevice device) {
+    public void createDevice(CamDevice device) {
         getMvpView().showLoading();
         getCompositeDisposable().add(getDataManager()
                 .insertCamDevice(device)
@@ -53,7 +50,7 @@ public class MainDevicePresenter<V extends MainDeviceMvpView & MvpView> extends 
     }
 
     @Override
-    public void updateDevice(HIKDevice device) {
+    public void updateDevice(CamDevice device) {
         getCompositeDisposable().add(
         Single.create(sub -> getDataManager().updateCamDevice(device))
                 .subscribeOn(Schedulers.io())
@@ -62,7 +59,7 @@ public class MainDevicePresenter<V extends MainDeviceMvpView & MvpView> extends 
     }
 
     @Override
-    public void deleteDevice(HIKDevice device) {
+    public void deleteDevice(CamDevice device) {
         getMvpView().showLoading();
         getCompositeDisposable().add(
         Single.fromCallable((Callable<Object>) () -> {

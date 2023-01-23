@@ -2,7 +2,6 @@ package com.xontel.surveillancecameras.hikvision;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
@@ -15,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity(tableName = "cam_devices")
-public class HIKDevice implements Parcelable  {
+public class CamDevice implements Parcelable  {
     @PrimaryKey(autoGenerate = true)
     public int id;
     @ColumnInfo(name = "name")
@@ -39,7 +38,7 @@ public class HIKDevice implements Parcelable  {
     @Ignore
     private List<IpCam> cams = new ArrayList<>();
 
-    public HIKDevice(int id,String name, String userName, String password, String ipAddress, int deviceType, String url) {
+    public CamDevice(int id, String name, String userName, String password, String ipAddress, int deviceType, String url) {
         this.name = name;
         this.id = id;
         this.url = url;
@@ -50,7 +49,7 @@ public class HIKDevice implements Parcelable  {
     }
 
 
-    protected HIKDevice(Parcel in) {
+    protected CamDevice(Parcel in) {
         id = in.readInt();
         name = in.readString();
         ipAddress = in.readString();
@@ -63,15 +62,15 @@ public class HIKDevice implements Parcelable  {
         logId = in.readInt();
     }
 
-    public static final Creator<HIKDevice> CREATOR = new Creator<HIKDevice>() {
+    public static final Creator<CamDevice> CREATOR = new Creator<CamDevice>() {
         @Override
-        public HIKDevice createFromParcel(Parcel in) {
-            return new HIKDevice(in);
+        public CamDevice createFromParcel(Parcel in) {
+            return new CamDevice(in);
         }
 
         @Override
-        public HIKDevice[] newArray(int size) {
-            return new HIKDevice[size];
+        public CamDevice[] newArray(int size) {
+            return new CamDevice[size];
         }
     };
 

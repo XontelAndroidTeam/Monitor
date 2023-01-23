@@ -2,6 +2,7 @@ package com.xontel.surveillancecameras.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.service.controls.DeviceTypes;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -11,17 +12,22 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.databinding.Observable;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.xontel.surveillancecameras.R;
 import com.xontel.surveillancecameras.activities.AddCamActivity;
+import com.xontel.surveillancecameras.activities.AddNewDeviceActivity;
+import com.xontel.surveillancecameras.adapters.PagerAdapter;
 import com.xontel.surveillancecameras.base.BaseFragment;
+import com.xontel.surveillancecameras.dahua.DahuaUtil;
 import com.xontel.surveillancecameras.databinding.FragmentMonitorBinding;
-import com.xontel.surveillancecameras.hikvision.HIKDevice;
+import com.xontel.surveillancecameras.hikvision.CamDevice;
 import com.xontel.surveillancecameras.hikvision.HikUtil;
 import com.xontel.surveillancecameras.presenters.MainDeviceMvpPresenter;
 import com.xontel.surveillancecameras.presenters.MainDeviceMvpView;
+import com.xontel.surveillancecameras.utils.CamDeviceType;
 import com.xontel.surveillancecameras.viewModels.MainViewModel;
 import com.xontel.surveillancecameras.adapters.CamsAdapter;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
@@ -35,45 +41,40 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class MonitorFragment extends BaseFragment implements MainDeviceMvpView {
+public class MonitorFragment extends BaseFragment  {
     public static final String TAG = MonitorFragment.class.getSimpleName();
     public static final String KEY_ORDER = "order";
     private FragmentMonitorBinding binding;
     private int gridCount;
     private int fragmentOrder;
+    private PagerAdapter pagerAdapter;
     private List<IpCam> ipCams = new ArrayList<>();
-    private List<HIKDevice> hikDevices = new ArrayList<>();
+    private List<CamDevice> camDevices = new ArrayList<>();
     private MainViewModel mainViewModel;
-    private CamsAdapter gridAdapter;
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss.SSS");
-    @Inject
-    MainDeviceMvpPresenter<MainDeviceMvpView> mPresenter ;
     @Inject
     ViewModelProviderFactory providerFactory;
 
 
-    public MonitorFragment() {
-        // Required empty public constructor
-    }
+    public MonitorFragment() {}
 
     @Override
     public void onResume(){
+        binding.noCams.btnAdd.setOnClickListener(view -> {
+        requireActivity().startActivity(new Intent(requireContext(), AddNewDeviceActivity.class));
+    });
         super.onResume();
-
     }
+
     @Override
     public void onPause() {
-
         super.onPause();
-
-
     }
 
 
-    public static MonitorFragment newInstance(int fragmentOrder) {
+    public static MonitorFragment newInstance() {
         MonitorFragment fragment = new MonitorFragment();
         Bundle args = new Bundle();
-        args.putInt(KEY_ORDER, fragmentOrder);
         fragment.setArguments(args);
         return fragment;
     }
@@ -84,21 +85,11 @@ public class MonitorFragment extends BaseFragment implements MainDeviceMvpView {
         super.onCreate(savedInstanceState);
         requireActivity().setTitle(R.string.monitor);
         getFragmentComponent().inject(this);
-        mainViewModel = new ViewModelProvider(getActivity(), providerFactory).get(MainViewModel.class);
-        mPresenter.onAttach(this);
+        mainViewModel = new ViewModelProvider(requireActivity(), providerFactory).get(MainViewModel.class);
         setHasOptionsMenu(true);
-        if (getArguments() != null) {
-            fragmentOrder = getArguments().getInt(KEY_ORDER);
-        }
-        getAllDevices();
-        Log.v("TAG_", "onCreate" + " NUMBER : "+fragmentOrder + " Time : "+ simpleDateFormat.format(System.currentTimeMillis()));
-        gridCount = mainViewModel.getGridObservable().getValue();
-//        updateIpCams();
+        //gridCount = mainViewModel.getGridObservable().getValue();
     }
 
-    private void getAllDevices() {
-        mPresenter.getAllDevices();
-    }
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
@@ -110,123 +101,66 @@ public class MonitorFragment extends BaseFragment implements MainDeviceMvpView {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add:{
-                requireActivity().startActivity(new Intent(requireContext(), AddCamActivity.class));
-                return true;}
+                requireActivity().startActivity(new Intent(requireContext(), AddNewDeviceActivity.class));
+                return true;
+            }
             default: return super.onOptionsItemSelected(item);
         }
-
     }
 
-
-    public void updateIpCams(){
-        int leapLastIndex = fragmentOrder * gridCount;
-        ipCams.clear();
-        ipCams.addAll(mainViewModel.ipCams.getValue().subList(leapLastIndex - gridCount, Math.min(leapLastIndex, mainViewModel.ipCams.getValue().size())));
-
-    }
+   // public void updateIpCams(){
+   //     int leapLastIndex = fragmentOrder * gridCount;
+   //     ipCams.clear();
+   //     ipCams.addAll(mainViewModel.ipCams.getValue().subList(leapLastIndex - gridCount, Math.min(leapLastIndex, mainViewModel.ipCams.getValue().size())));
+  //  }
 
 
     @Override
-    public void onDestroy() {
-        Log.v("TAG_", "onDestroy" + " NUMBER : "+fragmentOrder + " Time : "+ simpleDateFormat.format(System.currentTimeMillis()));
-        super.onDestroy();
-    }
-
-    @Override
-    public void onStart() {
-        Log.v("TAG_", "onStart" + " NUMBER : "+fragmentOrder);
-        super.onStart();
-    }
-
-    @Override
-    public void onStop() {
-        Log.v("TAG_", "onStop " + " NUMBER : "+fragmentOrder);
-        super.onStop();
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentMonitorBinding.inflate(inflater);
         return binding.getRoot();
     }
 
     @Override
     protected void setUp(View view) {
-        setupCamGrid(new ArrayList<>());
+        setupCamsPager();
         setupObservables();
+    }
+
+    private void setupCamsPager() {
+        binding.camsPager.setEmptyView(binding.noCams.getRoot());
+        pagerAdapter = new PagerAdapter(getChildFragmentManager(),1);
+        binding.camsPager.setAdapter(pagerAdapter);
+        binding.dotsIndicator.setViewPager(binding.camsPager);
     }
 
     private void setupObservables() {
         mainViewModel.ipCams.observe(getViewLifecycleOwner(), allIpCams -> {
-//            updateIpCams();
-            gridAdapter.notifyDataSetChanged();
+            if (allIpCams != null && !allIpCams.isEmpty()){
+                ipCams.addAll(allIpCams);
+                pagerAdapter.getListOfData(allIpCams);
+            }
         });
 
-//        mainViewModel.mGridObservable.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
-//            @Override
-//            public void onPropertyChanged(Observable sender, int propertyId) {
-//                updateIpCams();
-//            }
-//        });
+        mainViewModel.mGridObservable.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
+            @Override
+            public void onPropertyChanged(Observable sender, int propertyId) {
+            //    updateIpCams();
+            }
+        });
 
 
     }
 
     private void updateGrid() {
-        int oldGridCount = ((GridLayoutManager) binding.rvGrid.getLayoutManager()).getSpanCount();
-        if (oldGridCount != gridCount) {
-            gridCount = mainViewModel.getGridObservable().getValue();
-            ((GridLayoutManager) binding.rvGrid.getLayoutManager()).setSpanCount((int) Math.sqrt(gridCount));
-            gridAdapter.setGridCount(gridCount);
-            gridAdapter.notifyDataSetChanged();
-        }
+//        int oldGridCount = ((GridLayoutManager) binding.rvGrid.getLayoutManager()).getSpanCount();
+//        if (oldGridCount != gridCount) {
+//            gridCount = mainViewModel.getGridObservable().getValue();
+//            ((GridLayoutManager) binding.rvGrid.getLayoutManager()).setSpanCount((int) Math.sqrt(gridCount));
+//            gridAdapter.setGridCount(gridCount);
+//            gridAdapter.notifyDataSetChanged();
+//        }
 
     }
 
-    private void setupCamGrid(List<MediaPlayer> mediaPlayers) {
-        binding.rvGrid.setLayoutManager(new GridLayoutManager(getContext(), (int) Math.sqrt(gridCount)));
-        gridAdapter = new CamsAdapter(ipCams,new ArrayList<>(), gridCount, getContext());
-        binding.rvGrid.setAdapter(gridAdapter);
-    }
-
-
-    @Override
-    public void onInsertingDevice() {
-
-    }
-
-    @Override
-    public void onUpdatingDevice() {
-
-    }
-
-    @Override
-    public void onDeletingDevice() {
-
-    }
-
-    @Override
-    public void onGettingDevice(HIKDevice response) {
-
-    }
-
-    @Override
-    public void onGettingAllDevices(List<HIKDevice> response) {
-        if ( response != null && !response.isEmpty() ){
-            hikDevices.clear();
-            ipCams.clear();
-            hikDevices.addAll(response);
-            extractDevices();
-        }
-    }
-
-    private void extractDevices() {
-        for (HIKDevice hikDevice:hikDevices){
-            HikUtil.extractCamsFromDevice(hikDevice);
-            ipCams.addAll(hikDevice.getCams());
-            Log.v(TAG, "Cams num : " + ipCams.size());
-        }
-    }
 }

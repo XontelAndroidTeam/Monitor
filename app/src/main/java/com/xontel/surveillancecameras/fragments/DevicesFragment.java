@@ -1,31 +1,21 @@
 package com.xontel.surveillancecameras.fragments;
 
 import android.content.Intent;
-import android.hardware.camera2.CameraDevice;
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
-import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-
 import com.xontel.surveillancecameras.R;
 import com.xontel.surveillancecameras.activities.AddNewDeviceActivity;
 import com.xontel.surveillancecameras.adapters.DevicesAdapter;
 import com.xontel.surveillancecameras.base.BaseFragment;
-import com.xontel.surveillancecameras.data.db.model.CamDevice;
 import com.xontel.surveillancecameras.databinding.FragmentDevicesBinding;
-import com.xontel.surveillancecameras.hikvision.HIKDevice;
+import com.xontel.surveillancecameras.hikvision.CamDevice;
 import com.xontel.surveillancecameras.presenters.MainDeviceMvpPresenter;
 import com.xontel.surveillancecameras.presenters.MainDeviceMvpView;
 import com.xontel.surveillancecameras.utils.CamDeviceType;
@@ -41,7 +31,7 @@ public class DevicesFragment extends BaseFragment implements MainDeviceMvpView, 
     private DevicesAdapter mDevicesAdapter ;
     private int deviceType = CamDeviceType.OTHER.getValue();
     private int currentSelectedItemIndex = 0 ;
-    private HIKDevice currentSelectedData;
+    private CamDevice currentSelectedData;
     @Inject
     MainDeviceMvpPresenter<MainDeviceMvpView> mPresenter ;
 
@@ -89,7 +79,7 @@ public class DevicesFragment extends BaseFragment implements MainDeviceMvpView, 
     protected void setUp(View view) {
     }
 
-    private void setSelectedData(HIKDevice data){
+    private void setSelectedData(CamDevice data){
         currentSelectedData = data;
         String[] types = getResources().getStringArray(R.array.device_type);
         binding.etName.setText(data.getName());
@@ -153,7 +143,7 @@ public class DevicesFragment extends BaseFragment implements MainDeviceMvpView, 
         String ip = binding.deviceFields.etIp.getText().toString();
         String userName = binding.deviceFields.etUsername.getText().toString();
         String password = binding.deviceFields.etPassword.getText().toString();
-        mPresenter.updateDevice(new HIKDevice(currentSelectedData.getId(),deviceName,userName,password,ip,deviceType,url));
+        mPresenter.updateDevice(new CamDevice(currentSelectedData.getId(),deviceName,userName,password,ip,deviceType,url));
     }
 
     private void deleteCurrentData(){ mPresenter.deleteDevice(currentSelectedData); }
@@ -172,10 +162,10 @@ public class DevicesFragment extends BaseFragment implements MainDeviceMvpView, 
     }
 
     @Override
-    public void onGettingDevice(HIKDevice response) {}
+    public void onGettingDevice(CamDevice response) {}
 
     @Override
-    public void onGettingAllDevices(List<HIKDevice> response) {
+    public void onGettingAllDevices(List<CamDevice> response) {
         if ( response != null && !response.isEmpty() ){
             mDevicesAdapter.setList(response);
             setSelectedData(response.get(currentSelectedItemIndex));
@@ -187,7 +177,7 @@ public class DevicesFragment extends BaseFragment implements MainDeviceMvpView, 
     }
 
     @Override
-    public void onItemClicked(HIKDevice data,int position) {
+    public void onItemClicked(CamDevice data, int position) {
         deviceType = data.getDeviceType() ;
         currentSelectedItemIndex = position;
         refreshView();

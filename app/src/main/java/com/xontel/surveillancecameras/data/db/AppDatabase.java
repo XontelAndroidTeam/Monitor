@@ -7,16 +7,15 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import com.xontel.surveillancecameras.data.db.dao.CamDao;
 import com.xontel.surveillancecameras.data.db.dao.DevicesDao;
-import com.xontel.surveillancecameras.data.db.model.CamDevice;
-import com.xontel.surveillancecameras.data.db.model.IpCam;
-import com.xontel.surveillancecameras.hikvision.HIKDevice;
+
+import com.xontel.surveillancecameras.hikvision.CamDevice;
 
 
 /**
  * Created on : Feb 01, 2019
  * Author     : AndroidWave
  */
-@Database(entities = {CamDevice.class, HIKDevice.class}, version = 5, exportSchema = false)
+@Database(entities = {CamDevice.class}, version = 5, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     private static final String DATABASE_NAME = "cameras-database";
     private static AppDatabase mInstance;

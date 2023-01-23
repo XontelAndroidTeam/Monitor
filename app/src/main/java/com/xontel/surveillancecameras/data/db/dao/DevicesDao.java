@@ -7,8 +7,7 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.xontel.surveillancecameras.data.db.model.CamDevice;
-import com.xontel.surveillancecameras.hikvision.HIKDevice;
+import com.xontel.surveillancecameras.hikvision.CamDevice;
 
 import java.util.List;
 
@@ -20,27 +19,27 @@ import static androidx.room.OnConflictStrategy.REPLACE;
 @Dao
 public interface DevicesDao {
     @Query("SELECT * FROM cam_devices")
-    Flowable<List<HIKDevice>> getDevicesAll();
+    Flowable<List<CamDevice>> getDevicesAll();
 
     @Insert(onConflict = REPLACE)
-    Single<Long> insertCamDevice(HIKDevice mCamDevice);
+    Single<Long> insertCamDevice(CamDevice mCamDevice);
 
     @Insert
-    Single<List<Long>> insertAllCamDevice(HIKDevice... mCamDevicesList);
+    Single<List<Long>> insertAllCamDevice(CamDevice... mCamDevicesList);
 
     @Delete
-    Integer deleteCamDevice(HIKDevice mCamDevice);
+    Integer deleteCamDevice(CamDevice mCamDevice);
 
     @Update
-    void updateCamDevice(HIKDevice mCamDevice);
+    void updateCamDevice(CamDevice mCamDevice);
 
     @Query("SELECT * FROM cam_devices WHERE id = :id")
-    Single<HIKDevice> getCamDeviceById(int id);
+    Single<CamDevice> getCamDeviceById(int id);
 
 
     @Query("SELECT * FROM cam_devices WHERE id IN (:cameraIds)")
-    Single<List<HIKDevice>> loadAllDevicesByIds(int[] cameraIds);
+    Single<List<CamDevice>> loadAllDevicesByIds(int[] cameraIds);
 
     @Query("SELECT * FROM cam_devices WHERE name LIKE :name")
-    Single<HIKDevice> findDeviceByName(String name);
+    Single<CamDevice> findDeviceByName(String name);
 }

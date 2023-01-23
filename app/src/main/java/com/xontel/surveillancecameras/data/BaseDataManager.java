@@ -3,19 +3,15 @@ package com.xontel.surveillancecameras.data;
 import android.content.Context;
 
 import com.xontel.surveillancecameras.data.db.AppDatabase;
-import com.xontel.surveillancecameras.data.db.model.CamDevice;
-import com.xontel.surveillancecameras.data.db.model.IpCam;
-import com.xontel.surveillancecameras.data.db.model.User;
 import com.xontel.surveillancecameras.data.network.RestApiHelper;
 import com.xontel.surveillancecameras.data.network.pojo.FeedItem;
 import com.xontel.surveillancecameras.data.network.pojo.LoginRequest;
-import com.xontel.surveillancecameras.data.network.pojo.TimeZoneResponse;
 import com.xontel.surveillancecameras.data.network.pojo.UserProfile;
 import com.xontel.surveillancecameras.data.network.pojo.WrapperResponse;
 import com.xontel.surveillancecameras.data.prefs.PreferencesHelper;
 import com.xontel.surveillancecameras.data.utils.LoggedInMode;
 import com.xontel.surveillancecameras.di.ApplicationContext;
-import com.xontel.surveillancecameras.hikvision.HIKDevice;
+import com.xontel.surveillancecameras.hikvision.CamDevice;
 
 import java.util.List;
 
@@ -63,42 +59,42 @@ public class BaseDataManager implements DataManager {
 
 
     @Override
-    public Flowable<List<HIKDevice>> getDevicesAll() {
+    public Flowable<List<CamDevice>> getDevicesAll() {
         return mDatabase.mDevicesDao().getDevicesAll();
     }
 
     @Override
-    public Single<Long> insertCamDevice(HIKDevice mCamDevice) {
+    public Single<Long> insertCamDevice(CamDevice mCamDevice) {
         return mDatabase.mDevicesDao().insertCamDevice(mCamDevice);
     }
 
     @Override
-    public Single<List<Long>> insertAllCamDevice(HIKDevice... mCamDevicesList) {
+    public Single<List<Long>> insertAllCamDevice(CamDevice... mCamDevicesList) {
         return mDatabase.mDevicesDao().insertAllCamDevice(mCamDevicesList);
     }
 
     @Override
-    public Integer deleteCamDevice(HIKDevice mCamDevice) {
+    public Integer deleteCamDevice(CamDevice mCamDevice) {
        return   mDatabase.mDevicesDao().deleteCamDevice(mCamDevice);
     }
 
     @Override
-    public void updateCamDevice(HIKDevice mCamDevice) {
+    public void updateCamDevice(CamDevice mCamDevice) {
          mDatabase.mDevicesDao().updateCamDevice(mCamDevice);
     }
 
     @Override
-    public Single<HIKDevice> getCamDeviceById(int id) {
+    public Single<CamDevice> getCamDeviceById(int id) {
         return mDatabase.mDevicesDao().getCamDeviceById(id);
     }
 
     @Override
-    public Single<List<HIKDevice>> loadAllDevicesByIds(int[] cameraIds) {
+    public Single<List<CamDevice>> loadAllDevicesByIds(int[] cameraIds) {
         return mDatabase.mDevicesDao().loadAllDevicesByIds(cameraIds);
     }
 
     @Override
-    public Single<HIKDevice> findDeviceByName(String name) {
+    public Single<CamDevice> findDeviceByName(String name) {
         return mDatabase.mDevicesDao().findDeviceByName(name);
     }
 

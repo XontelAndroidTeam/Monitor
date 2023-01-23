@@ -2,24 +2,16 @@ package com.xontel.surveillancecameras.activities;
 
 import androidx.databinding.DataBindingUtil;
 
-import android.hardware.camera2.CameraDevice;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-
 import com.xontel.surveillancecameras.R;
-import com.xontel.surveillancecameras.adapters.DevicesAdapter;
 import com.xontel.surveillancecameras.base.BaseActivity;
-import com.xontel.surveillancecameras.data.db.model.CamDevice;
-import com.xontel.surveillancecameras.data.db.model.IpCam;
 import com.xontel.surveillancecameras.databinding.ActivityAddNewDeviceBinding;
-import com.xontel.surveillancecameras.hikvision.HIKDevice;
+import com.xontel.surveillancecameras.hikvision.CamDevice;
 import com.xontel.surveillancecameras.presenters.MainDeviceMvpPresenter;
 import com.xontel.surveillancecameras.presenters.MainDeviceMvpView;
-import com.xontel.surveillancecameras.presenters.MainMvpPresenter;
-import com.xontel.surveillancecameras.presenters.MainMvpView;
 import com.xontel.surveillancecameras.utils.CamDeviceType;
 
 import java.util.List;
@@ -51,7 +43,7 @@ public class AddNewDeviceActivity extends BaseActivity implements MainDeviceMvpV
 
     private void fillFieldsWithData() {
         binding.etName.setText(mCamDevice.getName());
-        deviceType = mCamDevice.getType();
+        deviceType = mCamDevice.getDeviceType();
         if(deviceType == CamDeviceType.OTHER.getValue()){
            bindCamFields();
         }else{
@@ -66,9 +58,9 @@ public class AddNewDeviceActivity extends BaseActivity implements MainDeviceMvpV
     }
 
     private void bindDeviceFields() {
-        binding.deviceFields.etIp.setText(mCamDevice.getIp());
+        binding.deviceFields.etIp.setText(mCamDevice.getIpAddress());
         binding.deviceFields.etUsername.setText(mCamDevice.getUserName());
-        binding.deviceFields.etPassword.setText(mCamDevice.getPassword());
+        binding.deviceFields.etPassword.setText(mCamDevice.getPassWord());
     }
 
 
@@ -91,12 +83,12 @@ public class AddNewDeviceActivity extends BaseActivity implements MainDeviceMvpV
                 String ip = binding.deviceFields.etIp.getText().toString();
                 String userName = binding.deviceFields.etUsername.getText().toString();
                 String password = binding.deviceFields.etPassword.getText().toString();
-                HIKDevice hikDevice = new HIKDevice(0,deviceName,userName,password,ip,deviceType,url );
-                if (hikDevice.isLoginValid()) {
+                CamDevice camDevice = new CamDevice(0,deviceName,userName,password,ip,deviceType,url );
+                if (camDevice.isLoginValid()) {
                     if (mCamDevice == null) {
-                        mPresenter.createDevice(hikDevice);
+                        mPresenter.createDevice(camDevice);
                     } else {
-                        mPresenter.updateDevice(new HIKDevice(0, deviceName, userName, password, ip, deviceType, url));
+                        mPresenter.updateDevice(new CamDevice(0, deviceName, userName, password, ip, deviceType, url));
                     }
                 }else{
                     showMessage(this.getString(R.string.Cant_LOGIN));
@@ -157,12 +149,12 @@ public class AddNewDeviceActivity extends BaseActivity implements MainDeviceMvpV
     }
 
     @Override
-    public void onGettingDevice(HIKDevice response) {
+    public void onGettingDevice(CamDevice response) {
 
     }
 
     @Override
-    public void onGettingAllDevices(List<HIKDevice> response) {
+    public void onGettingAllDevices(List<CamDevice> response) {
 
     }
 

@@ -12,14 +12,17 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.Observable;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDestination;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
@@ -36,14 +39,16 @@ import com.xontel.surveillancecameras.base.BaseActivity;
 import com.xontel.surveillancecameras.databinding.ActivityMainBinding;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
-public class HomeActivity extends BaseActivity {
+public class HomeActivity extends BaseActivity implements AdapterView.OnItemClickListener {
 
     private static final String TAG = HomeActivity.class.getSimpleName();
     private static final String KEY_CURRENT_PAGE_INDEX = "current_page_index";
     private PagerAdapter pagerAdapter;
+    private TextInputLayout textInputLayout;
     private ActivityMainBinding binding;
     private int currentPageIndex;
 
@@ -58,7 +63,7 @@ public class HomeActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         getActivityComponent().inject(this);
-//        mainViewModel = new ViewModelProvider(this, providerFactory).get(MainViewModel.class);
+       mainViewModel = new ViewModelProvider(this, providerFactory).get(MainViewModel.class);
 //        mainViewModel.getAllCameras();
         setUp();
 //        if (savedInstanceState != null) {
@@ -88,7 +93,6 @@ public class HomeActivity extends BaseActivity {
     protected void setUp() {
         super.setUp();
         setupNavigation();
-        setupGridDropDown();
 //        binding.home.pagerEmptyView.btnAdd.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
@@ -112,18 +116,34 @@ public class HomeActivity extends BaseActivity {
 //        NavigationUI.setupWithNavController(
 //                binding.appBar.toolbar, navController, appBarConfiguration);
 
+        navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
+            @Override
+            public void onDestinationChanged(@NonNull NavController navController, @NonNull NavDestination navDestination, @Nullable Bundle bundle) {
+                if (Objects.requireNonNull(navController.getCurrentDestination()).getId() == R.id.settingsFragment){
+                    setupGridDropDown();
+                }else{
+                    removeGridDropDown();
+                }
+            }
+        });
+
     }
 
     private void setupGridDropDown() {
-//        TextInputLayout child = (TextInputLayout) getLayoutInflater().inflate(R.layout.drop_down, null);
-//        binding.appBar.llCustomView.addView(child);
-//        ArrayAdapter gridDropDownAdapter = new ArrayAdapter<String>(this,
-//                android.R.layout.simple_spinner_dropdown_item,
-//                getResources().getStringArray(R.array.grid_count));
-//        AutoCompleteTextView autoCompleteTextView = child.findViewById(R.id.slide_show_filter);
-//        autoCompleteTextView.setAdapter(gridDropDownAdapter);
-//        autoCompleteTextView.setText(mainViewModel.getGridObservable().getGridCount());
-//        binding.setLifecycleOwner(this);
+        textInputLayout = (TextInputLayout) getLayoutInflater().inflate(R.layout.drop_down, null);
+        binding.appBar.llCustomView.addView(textInputLayout);
+        ArrayAdapter gridDropDownAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_dropdown_item,
+                getResources().getStringArray(R.array.grid_count));
+        AutoCompleteTextView autoCompleteTextView = textInputLayout.findViewById(R.id.slide_show_filter);
+        autoCompleteTextView.setText(String.valueOf(mainViewModel.gridCount.getValue()));
+        autoCompleteTextView.setAdapter(gridDropDownAdapter);
+        autoCompleteTextView.setOnItemClickListener(this);
+        binding.setLifecycleOwner(this);
+    }
+
+    private void removeGridDropDown(){
+        binding.appBar.llCustomView.removeView(textInputLayout);
     }
 
     private void setupSideMenu() {
@@ -243,7 +263,7 @@ public class HomeActivity extends BaseActivity {
 
 
     private void setupCamerasPager() {
-        pagerAdapter = new PagerAdapter(getSupportFragmentManager());
+        pagerAdapter = new PagerAdapter(getSupportFragmentManager(),1);
 //        binding.home.vpSlider.setAdapter(pagerAdapter);
 //        binding.home.vpSlider.setEmptyView(binding.home.pagerEmptyView.getRoot());
 //        binding.home.vpSlider.setOffscreenPageLimit(0);
@@ -271,6 +291,12 @@ public class HomeActivity extends BaseActivity {
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(KEY_CURRENT_PAGE_INDEX, currentPageIndex);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+        AutoCompleteTextView autoCompleteTextView = textInputLayout.findViewById(R.id.slide_show_filter);
+        mainViewModel.gridCount.setValue(Integer.parseInt(autoCompleteTextView.getText().toString()));
     }
 
 //    private void updateViewPager() {

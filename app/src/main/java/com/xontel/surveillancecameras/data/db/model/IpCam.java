@@ -18,12 +18,14 @@ public class IpCam{
     private int playPort = -1 ;
     private int deviceId;
     private int type ;
+    private int loginId = -1;
 
 
-    public IpCam(int channel, int deviceId, int type) {
+    public IpCam(int channel, int deviceId, int type,int loginId) {
         this.channel = channel;
         this.deviceId = deviceId;
         this.type = type;
+        this.loginId = loginId;
     }
 
 
@@ -65,5 +67,13 @@ public class IpCam{
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    public int getLoginId() {
+        return loginId;
+    }
+
+    public void setLoginId(int loginId) {
+        this.loginId = loginId;
     }
 }

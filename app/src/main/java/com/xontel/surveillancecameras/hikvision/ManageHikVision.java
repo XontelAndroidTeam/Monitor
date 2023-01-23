@@ -20,7 +20,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 
-public class ManageHikVision   {
+public class ManageHikVision {
 
 }
 

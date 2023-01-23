@@ -49,12 +49,11 @@ public class SettingsFragment extends BaseFragment {
         getFragmentComponent().inject(this);
         mSettingViewModel = new ViewModelProvider(this, mViewModelProviderFactory).get(SettingViewModel.class);
         mMainViewModel = new ViewModelProvider(requireActivity(), mViewModelProviderFactory).get(MainViewModel.class);
-
+        setHasOptionsMenu(true);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentSettingsBinding.inflate(inflater);
         return binding.getRoot();
@@ -66,7 +65,6 @@ public class SettingsFragment extends BaseFragment {
     }
 
     private void initUI() {
-
         setupDropDowns();
     }
 

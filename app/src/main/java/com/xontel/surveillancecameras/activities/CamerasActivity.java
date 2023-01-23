@@ -100,9 +100,6 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
 
 
 
-
-
-
     private void showSettings() {
         SettingsDialog settingsDialog = new SettingsDialog(this);
         settingsDialog.show();
@@ -233,10 +230,10 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
     }
 
     private void setupCamerasPager() {
-        pagerAdapter = new PagerAdapter(getSupportFragmentManager());
+        pagerAdapter = new PagerAdapter(getSupportFragmentManager(),1);
         for (IpCam ipCam : cams) {
             CamPreviewFragment camPreviewFragment = CamPreviewFragment.newInstance(ipCam);
-            pagerAdapter.addFragment(camPreviewFragment);
+        //    pagerAdapter.addFragment(camPreviewFragment);
         }
         binding.vpSlider.setAdapter(pagerAdapter);
         binding.vpSlider.setOffscreenPageLimit(0);

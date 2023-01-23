@@ -10,6 +10,7 @@ import com.xontel.surveillancecameras.activities.SettingsActivity;
 import com.xontel.surveillancecameras.di.PerActivity;
 import com.xontel.surveillancecameras.di.module.ActivityModule;
 import com.xontel.surveillancecameras.di.module.ViewModelModule;
+import com.xontel.surveillancecameras.fragments.PagerFragment;
 
 import dagger.Component;
 
@@ -36,6 +37,8 @@ public interface ActivityComponent {
     void inject(CamerasActivity camerasActivity);
 
     void inject(SettingsActivity settingsActivity);
+
+    void inject(PagerFragment pagerFragment);
 
 
 }

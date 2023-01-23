@@ -171,7 +171,7 @@ public class CamPreviewFragment extends Fragment {
 
     private void initHikPlayer() {
 //        HikUtil.initSDK();
-//        HikUtil.loginDevice(new HIKDevice("192.168.1.123", 8000, "admin", "X0nPAssw0rd_000", HIKDeviceType.DVR), new HikUtil.HikInterface() {
+//        HikUtil.loginDevice(new CamDevice("192.168.1.123", 8000, "admin", "X0nPAssw0rd_000", HIKDeviceType.DVR), new HikUtil.HikInterface() {
 //            @Override
 //            public void onLogInSuccess(int id) {
 //                logId = id ;

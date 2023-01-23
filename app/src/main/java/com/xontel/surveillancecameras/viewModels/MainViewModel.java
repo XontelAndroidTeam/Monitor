@@ -7,34 +7,34 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.xontel.surveillancecameras.base.BaseViewModel;
 import com.xontel.surveillancecameras.customObservers.GridObservable;
+import com.xontel.surveillancecameras.dahua.DahuaUtil;
 import com.xontel.surveillancecameras.data.DataManager;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
+import com.xontel.surveillancecameras.hikvision.CamDevice;
+import com.xontel.surveillancecameras.hikvision.HikUtil;
 import com.xontel.surveillancecameras.root.AppConstant;
+import com.xontel.surveillancecameras.utils.CamDeviceType;
 import com.xontel.surveillancecameras.utils.rx.SchedulerProvider;
 
 import org.videolan.libvlc.MediaPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
 public class MainViewModel extends BaseViewModel {
-//    public static final int ON_CREATE = 1 ;
-//    public static final int ON_RESUME = 2 ;
-//    public static final int ON_PAUSE = 3 ;
-//    public static final int ON_DESTROY = 4 ;
-
 
     @Inject
     public GridObservable mGridObservable ;
     public static final String TAG = MainViewModel.class.getSimpleName();
     public MutableLiveData<List<IpCam>> ipCams = new MutableLiveData<>(new ArrayList<>());
-//    public MutableLiveData<Integer> gridCount = new MutableLiveData<>(getDataManager().getGridCount());
-    public List<MediaPlayer> mediaPlayers ;
-//    public MutableLiveData<Integer> lifeCycleObservable = new MutableLiveData<>(0);
+    private final MutableLiveData<List<CamDevice>> camDevices = new MutableLiveData<>(new ArrayList<>());
+    public MutableLiveData<Integer> gridCount = new MutableLiveData<>(4);
+    public MutableLiveData<Integer> lifeCycleObservable = new MutableLiveData<>(0);
     private Context context ;
 
 
@@ -42,7 +42,6 @@ public class MainViewModel extends BaseViewModel {
     public MainViewModel(Context context, SchedulerProvider mSchedulerProvider, CompositeDisposable mCompositeDisposable, DataManager manager) {
         super(mSchedulerProvider, mCompositeDisposable, manager);
         this.context = context ;
-        mediaPlayers = createMediaPlayers();
         getAllCameras();
     }
 
@@ -50,38 +49,42 @@ public class MainViewModel extends BaseViewModel {
         return mGridObservable;
     }
 
-    private List<MediaPlayer> createMediaPlayers() {
-        List<MediaPlayer> mediaPlayers = new ArrayList<>();
-        for(int i = 0; i < AppConstant.MAX_CAMS_IN_WINDOW; i ++){
-            mediaPlayers.add(new MediaPlayer(context));
-        }
-        return mediaPlayers;
-    }
 
-    public void resetPlayers(){
-        for(int i = 0 ; i < mediaPlayers.size() ; i++){
-            mediaPlayers.get(i).stop();
-            mediaPlayers.get(i).detachViews();
-        }
+    public void setIpCams(List<IpCam> ipCamsData){
+        Objects.requireNonNull(ipCams.getValue()).addAll(ipCamsData);
     }
-
 
     public void getAllCameras(){
-        getLoading().postValue(true);
-       /* getCompositeDisposable().add(getDataManager()
-                .getAll()
+        getLoading().setValue(true);
+        getCompositeDisposable().add(getDataManager()
+                .getDevicesAll()
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribe(response -> {
-                    getLoading().postValue(false);
-                    ipCams.postValue(response);
+                    getLoading().setValue(false);
+                    camDevices.setValue(response);
+                    extractDevices();
                 }, error -> {
                     Log.e(TAG, error.getMessage() );
-                    getLoading().postValue(false);
-                    getError().postValue(true);
+                    getLoading().setValue(false);
+                    getError().setValue(true);
                     setErrorMessage(error.getMessage());
                 }));
+    }
 
-        */
+
+    private void extractDevices() {
+        if (camDevices.getValue() != null && !camDevices.getValue().isEmpty()){
+            for (CamDevice camDevice : camDevices.getValue()){
+                if(camDevice.deviceType == CamDeviceType.HIKVISION.getValue()){
+                    HikUtil.extractCamsFromDevice(camDevice);
+                }else if (camDevice.deviceType == CamDeviceType.DAHUA.getValue()){
+                    DahuaUtil.extractCamsFromDevice(camDevice);
+                }else{
+                    //Todo MediaPlayer
+                }
+                ipCams.setValue(camDevice.getCams());
+            }
+        }
     }
 }

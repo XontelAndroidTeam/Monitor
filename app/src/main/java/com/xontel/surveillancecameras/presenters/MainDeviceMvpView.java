@@ -1,11 +1,8 @@
 package com.xontel.surveillancecameras.presenters;
 
-import android.hardware.camera2.CameraDevice;
-
 import com.xontel.surveillancecameras.base.MvpView;
-import com.xontel.surveillancecameras.data.db.model.CamDevice;
-import com.xontel.surveillancecameras.data.db.model.IpCam;
-import com.xontel.surveillancecameras.hikvision.HIKDevice;
+
+import com.xontel.surveillancecameras.hikvision.CamDevice;
 
 import java.util.List;
 
@@ -17,7 +14,7 @@ public interface MainDeviceMvpView extends MvpView {
 
     void onDeletingDevice();
 
-    void onGettingDevice(HIKDevice response);
+    void onGettingDevice(CamDevice response);
 
-    void onGettingAllDevices(List<HIKDevice> response);
+    void onGettingAllDevices(List<CamDevice> response);
 }
