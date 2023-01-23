@@ -28,6 +28,7 @@ public class PagerFragment extends Fragment  {
     private RecyclerViewPagerAdapter recyclerViewPagerAdapter;
     private List<IpCam> data = new ArrayList<>();
     private int index;
+    private boolean isInitialized = false;
     private int rangeFrom,rangeTo;
     @Inject
     ViewModelProviderFactory viewModelProviderFactory;
@@ -42,7 +43,6 @@ public class PagerFragment extends Fragment  {
         setupDagger();
         Bundle args = getArguments();
         if (args != null){
-            Log.i("TATZ", "onCreate: "+args.getInt("IN"));
             index = args.getInt("IN");
         }
     }
@@ -52,6 +52,7 @@ public class PagerFragment extends Fragment  {
         initialization(inflater);
         setupAdapter();
         observers();
+        isInitialized = true;
         return  binding.getRoot();
     }
 
@@ -60,7 +61,7 @@ public class PagerFragment extends Fragment  {
     }
 
     private void initialization(LayoutInflater inflater) {
-        Log.i("TATZ", "initialization: "+data.size());
+        Log.i("TATZ", "initialization: "+recyclerViewPagerAdapter);
         data = new ArrayList<>();
         binding = FragmentPagerBinding.inflate(inflater);
         viewModel = new ViewModelProvider(requireActivity(), viewModelProviderFactory).get(MainViewModel.class);
@@ -72,8 +73,12 @@ public class PagerFragment extends Fragment  {
 
     private void setupAdapter() {
         binding.pagerRecycler.setLayoutManager(new GridLayoutManager(getActivity(), (int) Math.sqrt(viewModel.gridCount.getValue())));
-        recyclerViewPagerAdapter = new RecyclerViewPagerAdapter();
+        if (recyclerViewPagerAdapter == null){recyclerViewPagerAdapter = new RecyclerViewPagerAdapter();}
         binding.pagerRecycler.setAdapter(recyclerViewPagerAdapter);
+        if (!isInitialized){updateData();}
+    }
+
+    private void updateData() {
         for (int i = rangeFrom ; i <= rangeTo ; i ++){
             if (viewModel.ipCams.getValue() != null && !viewModel.ipCams.getValue().isEmpty() &&  viewModel.ipCams.getValue().size() > i ){
                 data.add(viewModel.ipCams.getValue().get(i));
@@ -85,5 +90,7 @@ public class PagerFragment extends Fragment  {
     }
 
     private void observers() {
+
     }
+
 }

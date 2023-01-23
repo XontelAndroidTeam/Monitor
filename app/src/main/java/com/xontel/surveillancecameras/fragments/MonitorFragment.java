@@ -48,6 +48,7 @@ public class MonitorFragment extends BaseFragment  {
     private int gridCount;
     private int fragmentOrder;
     private PagerAdapter pagerAdapter;
+    private boolean isInitialized = false;
     private List<IpCam> ipCams = new ArrayList<>();
     private List<CamDevice> camDevices = new ArrayList<>();
     private MainViewModel mainViewModel;
@@ -125,11 +126,15 @@ public class MonitorFragment extends BaseFragment  {
     protected void setUp(View view) {
         setupCamsPager();
         setupObservables();
+        isInitialized = true;
     }
 
     private void setupCamsPager() {
+        Log.i(TAG, "setupCamsPagerInstance: "+pagerAdapter);
         binding.camsPager.setEmptyView(binding.noCams.getRoot());
-        pagerAdapter = new PagerAdapter(getChildFragmentManager(),1);
+        if (!isInitialized){
+            pagerAdapter = new PagerAdapter(getChildFragmentManager(),1);
+        }
         binding.camsPager.setAdapter(pagerAdapter);
         binding.dotsIndicator.setViewPager(binding.camsPager);
     }
@@ -137,8 +142,19 @@ public class MonitorFragment extends BaseFragment  {
     private void setupObservables() {
         mainViewModel.ipCams.observe(getViewLifecycleOwner(), allIpCams -> {
             if (allIpCams != null && !allIpCams.isEmpty()){
-                ipCams.addAll(allIpCams);
-                pagerAdapter.getListOfData(allIpCams);
+                Log.i(TAG, "DataInitialized: ");
+                if (ipCams.isEmpty() && !isInitialized){
+                    pagerAdapter.getListOfData(allIpCams);
+                } else if (ipCams.size() > allIpCams.size()){
+                    Log.i(TAG, "DataRemoved: ");
+                }else if (ipCams.size() < allIpCams.size()){
+                    Log.i(TAG, "NewData: ");
+                }
+                handleCamsFromDb(allIpCams);
+            }else {
+                if (!ipCams.isEmpty()){
+                    //TODO all cams deleted
+                }
             }
         });
 
@@ -152,15 +168,10 @@ public class MonitorFragment extends BaseFragment  {
 
     }
 
-    private void updateGrid() {
-//        int oldGridCount = ((GridLayoutManager) binding.rvGrid.getLayoutManager()).getSpanCount();
-//        if (oldGridCount != gridCount) {
-//            gridCount = mainViewModel.getGridObservable().getValue();
-//            ((GridLayoutManager) binding.rvGrid.getLayoutManager()).setSpanCount((int) Math.sqrt(gridCount));
-//            gridAdapter.setGridCount(gridCount);
-//            gridAdapter.notifyDataSetChanged();
-//        }
-
+    private void handleCamsFromDb(List<IpCam> ipCams){
+        if (!ipCams.isEmpty()){ipCams.clear();}
+        ipCams.addAll(ipCams);
     }
+
 
 }
