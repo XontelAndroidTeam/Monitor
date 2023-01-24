@@ -6,6 +6,8 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
+
+import com.xontel.surveillancecameras.dahua.DahuaUtil;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
 import com.xontel.surveillancecameras.utils.CamDeviceType;
 
@@ -181,7 +183,7 @@ public class CamDevice implements Parcelable  {
         if (deviceType == CamDeviceType.HIKVISION.getValue()){
             return  HikUtil.loginNormalDevice(this) >= 0;
         }else if (deviceType == CamDeviceType.DAHUA.getValue()){
-
+            return DahuaUtil.loginNormalDevice(this) > 0;
         }else{
 
         }

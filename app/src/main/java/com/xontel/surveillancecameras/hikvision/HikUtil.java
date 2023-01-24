@@ -20,7 +20,7 @@ public class HikUtil {
         // call NET_DVR_Login_v30 to login on, port 8000 as default
         int iLogID = HCNetSDK.getInstance().NET_DVR_Login_V30(
                camDevice.getIpAddress(),
-                HikPlayer.DEFAULT_HIKVISION_PORT_NUMBER,
+                HIKSinglePlayer.DEFAULT_HIKVISION_PORT_NUMBER,
                 camDevice.getUserName(),
                 camDevice.getPassWord(),
                 netDeviceInfoV30);
@@ -53,7 +53,7 @@ public class HikUtil {
             return;
         }
         int channels = camDevice.getChannels();
-        for(int i = 0 ; i < channels ; i++){
+        for(int i = 1 ; i < channels ; i++){
             camDevice.getCams().add(new IpCam(i, camDevice.getId(), camDevice.getDeviceType(),camDevice.getLogId()));
         }
     }

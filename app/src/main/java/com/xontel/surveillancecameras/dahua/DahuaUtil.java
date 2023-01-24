@@ -6,15 +6,15 @@ import com.company.NetSDK.INetSDK;
 import com.company.NetSDK.NET_DEVICEINFO_Ex;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
 import com.xontel.surveillancecameras.hikvision.CamDevice;
-import com.xontel.surveillancecameras.hikvision.HikPlayer;
+import com.xontel.surveillancecameras.hikvision.HIKSinglePlayer;
 
 
 public class DahuaUtil {
     public static final String TAG = DahuaUtil.class.getSimpleName() ;
 
-    private static int loginNormalDevice(CamDevice camDevice) {
+    public static int loginNormalDevice(CamDevice camDevice) {
         NET_DEVICEINFO_Ex net_deviceinfo_ex = new NET_DEVICEINFO_Ex();
-        long iLogID = INetSDK.LoginEx2(camDevice.ipAddress,  HikPlayer.DEFAULT_HIKVISION_PORT_NUMBER, camDevice.userName, camDevice.password, 20, null, net_deviceinfo_ex, 0);
+        long iLogID = INetSDK.LoginEx2(camDevice.ipAddress,  HIKSinglePlayer.DEFAULT_HIKVISION_PORT_NUMBER, camDevice.userName, camDevice.password, 20, null, net_deviceinfo_ex, 0);
         if (iLogID == 0) {
             Log.e(TAG, "NET_DVR_Login is failed!Err: " + "error");
             return 0;
@@ -36,6 +36,7 @@ public class DahuaUtil {
         int channels = camDevice.getChannels();
         for(int i = 0 ; i < channels ; i++){
             camDevice.getCams().add(new IpCam(i, camDevice.getId(), camDevice.getDeviceType(),camDevice.getLogId()));
+
         }
     }
 }

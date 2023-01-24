@@ -18,6 +18,7 @@ import com.xontel.surveillancecameras.utils.rx.SchedulerProvider;
 
 import org.videolan.libvlc.MediaPlayer;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -33,7 +34,8 @@ public class MainViewModel extends BaseViewModel {
     public static final String TAG = MainViewModel.class.getSimpleName();
     public MutableLiveData<List<IpCam>> ipCams = new MutableLiveData<>(new ArrayList<>());
     private final MutableLiveData<List<CamDevice>> camDevices = new MutableLiveData<>(new ArrayList<>());
-    public MutableLiveData<Integer> gridCount = new MutableLiveData<>(4);
+    public MutableLiveData<Integer> gridCount = new MutableLiveData<>(9);
+    public MutableLiveData<Boolean> isRecording = new MutableLiveData<>(false);
     public MutableLiveData<Integer> lifeCycleObservable = new MutableLiveData<>(0);
     private Context context ;
 
@@ -74,6 +76,7 @@ public class MainViewModel extends BaseViewModel {
 
 
     private void extractDevices() {
+        List<IpCam> tempIpCams = new ArrayList<>();
         if (camDevices.getValue() != null && !camDevices.getValue().isEmpty()){
             for (CamDevice camDevice : camDevices.getValue()){
                 if(camDevice.deviceType == CamDeviceType.HIKVISION.getValue()){
@@ -83,8 +86,10 @@ public class MainViewModel extends BaseViewModel {
                 }else{
                     //Todo MediaPlayer
                 }
-                ipCams.setValue(camDevice.getCams());
+                tempIpCams.addAll(camDevice.getCams());
+                break;
             }
+            ipCams.setValue(tempIpCams);
         }
     }
 }

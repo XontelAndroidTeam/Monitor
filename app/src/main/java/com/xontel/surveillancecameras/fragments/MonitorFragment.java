@@ -48,7 +48,6 @@ public class MonitorFragment extends BaseFragment  {
     private int gridCount;
     private int fragmentOrder;
     private PagerAdapter pagerAdapter;
-    private boolean isInitialized = false;
     private List<IpCam> ipCams = new ArrayList<>();
     private List<CamDevice> camDevices = new ArrayList<>();
     private MainViewModel mainViewModel;
@@ -61,6 +60,8 @@ public class MonitorFragment extends BaseFragment  {
 
     @Override
     public void onResume(){
+        Log.i("TATZ", "setupCamsPagerInstanceOnResume: "+pagerAdapter);
+        pagerAdapter.notifyDataSetChanged();
         binding.noCams.btnAdd.setOnClickListener(view -> {
         requireActivity().startActivity(new Intent(requireContext(), AddNewDeviceActivity.class));
     });
@@ -126,13 +127,12 @@ public class MonitorFragment extends BaseFragment  {
     protected void setUp(View view) {
         setupCamsPager();
         setupObservables();
-        isInitialized = true;
     }
 
     private void setupCamsPager() {
         Log.i("TATZ", "setupCamsPagerInstance: "+pagerAdapter);
         binding.camsPager.setEmptyView(binding.noCams.getRoot());
-        if (!isInitialized){
+        if (pagerAdapter == null){
             pagerAdapter = new PagerAdapter(getChildFragmentManager(),1);
         }
         binding.camsPager.setAdapter(pagerAdapter);
@@ -142,8 +142,9 @@ public class MonitorFragment extends BaseFragment  {
     private void setupObservables() {
         mainViewModel.ipCams.observe(getViewLifecycleOwner(), allIpCams -> {
             if (allIpCams != null && !allIpCams.isEmpty()){
+                Log.i("TATZ", "DataInitialized: "+allIpCams.size());
                 if (ipCams.isEmpty()){
-                    Log.i("TATZ", "DataFirstInitialized: ");
+                    Log.i("TATZ", "DataFirstInitialized: "+allIpCams.size());
                     pagerAdapter.getListOfData(allIpCams);
                 } else if (ipCams.size() > allIpCams.size()){
                     Log.i("TATZ", "DataRemoved: ");

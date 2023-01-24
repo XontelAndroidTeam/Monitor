@@ -6,8 +6,8 @@
 6
 7    <uses-sdk
 8        android:minSdkVersion="22"
-8-->D:\projects\AndroidStudioProjects\live-cameras\libvlc\AndroidManifest.xml
+8-->C:\Users\01\AndroidStudioProjects\Monitor\libvlc\AndroidManifest.xml
 9        android:targetSdkVersion="22" />
-9-->D:\projects\AndroidStudioProjects\live-cameras\libvlc\AndroidManifest.xml
+9-->C:\Users\01\AndroidStudioProjects\Monitor\libvlc\AndroidManifest.xml
 10
 11</manifest>

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.TextureView;
 import android.view.View;
@@ -18,8 +19,11 @@ import com.xontel.surveillancecameras.R;
 import com.xontel.surveillancecameras.activities.CamerasActivity;
 import com.xontel.surveillancecameras.activities.HomeActivity;
 import com.xontel.surveillancecameras.base.BaseViewHolder;
+import com.xontel.surveillancecameras.dahua.DahuaSinglePlayer;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
+import com.xontel.surveillancecameras.hikvision.HIKSinglePlayer;
 import com.xontel.surveillancecameras.hikvision.HikUtil;
+import com.xontel.surveillancecameras.utils.CamDeviceType;
 
 import org.videolan.libvlc.Media;
 import org.videolan.libvlc.MediaPlayer;
@@ -29,7 +33,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
+public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder>  {
+    public static final String KEY_CAMERAS = "cameras";
     private List<IpCam> ipCams;
     private Context context;
     private int gridCount;
@@ -85,8 +90,6 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
     @Override
     public void onBindViewHolder(BaseViewHolder holder, int position) {
-        Log.e("TAGGG", "position : " + position
-                + " code : " + holder.hashCode() + (position == 15 ? "\n ============================ \n" : ""));
         holder.onBind(position);
     }
 
@@ -96,10 +99,11 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
     }
 
 
+
     public class CamsViewHolder extends BaseViewHolder implements View.OnClickListener {
         private IpCam ipCam;
         private TextView camName;
-        private VLCVideoLayout vlcVideoLayout;
+        private SurfaceView surfaceView;
         private MediaPlayer mediaPlayer;
         private TextureView textureView;
         private boolean isBound = false;
@@ -107,7 +111,7 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
         public CamsViewHolder(View itemView) {
             super(itemView);
-            vlcVideoLayout = itemView.findViewById(R.id.vlc_layout);
+            surfaceView = itemView.findViewById(R.id.player_view);
             camName = itemView.findViewById(R.id.tv_cam_name);
         }
 
@@ -115,8 +119,15 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
         public void onBind(int position) {
             super.onBind(position);
             ipCam = ipCams.get(position);
-            // camName.setText(ipCam.getName());
-//            initVlcPlayer();
+            if (ipCam.getType() == CamDeviceType.HIKVISION.getValue()){
+                HIKSinglePlayer singlePlayer =  new HIKSinglePlayer(ipCam.getChannel(),ipCam.getLoginId(),ipCam.getType());
+                singlePlayer.initView(surfaceView);
+            }else if(ipCam.getType() == CamDeviceType.DAHUA.getValue()){
+                DahuaSinglePlayer singlePlayer =  new DahuaSinglePlayer(ipCam.getChannel(),ipCam.getLoginId(),ipCam.getType());
+                //singlePlayer.initView(surfaceView);
+            }else{
+
+            }
             itemView.setOnClickListener(this);
             isBound = true;
         }
@@ -129,10 +140,12 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
         @Override
         public void onClick(View view) {
             Intent intent = new Intent(context, CamerasActivity.class);
-            ArrayList<IpCam> cams = new ArrayList<>();
-            cams.add(ipCams.get(getAdapterPosition()));
+            intent.putExtra(KEY_CAMERAS, ipCams.get(getCurrentPosition()));
             context.startActivity(intent);
         }
+
+
+
     }
 
     public class AddCamViewHolder extends BaseViewHolder implements View.OnClickListener {
@@ -155,6 +168,7 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder> {
             ((HomeActivity) context).addNewCam();
         }
     }
+
 
 
 

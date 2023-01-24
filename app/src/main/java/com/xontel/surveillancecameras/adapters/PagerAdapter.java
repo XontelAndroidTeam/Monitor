@@ -21,7 +21,7 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
 
     private final List<Fragment> mFragmentList = new ArrayList<>();
 
-    private int gridCount = 4;
+    private int gridCount = 9;
 
     public List<Fragment> getFragmentList() {
         return mFragmentList;

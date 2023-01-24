@@ -12,7 +12,7 @@ import com.xontel.surveillancecameras.utils.CamDeviceType;
 import com.xontel.surveillancecameras.utils.VideoHelper;
 
 
-public class IpCam{
+public class IpCam implements  Parcelable{
     private int realPlayId = -1;
     private int channel = 0 ;
     private int playPort = -1 ;
@@ -28,6 +28,27 @@ public class IpCam{
         this.loginId = loginId;
     }
 
+
+    protected IpCam(Parcel in) {
+        realPlayId = in.readInt();
+        channel = in.readInt();
+        playPort = in.readInt();
+        deviceId = in.readInt();
+        type = in.readInt();
+        loginId = in.readInt();
+    }
+
+    public static final Creator<IpCam> CREATOR = new Creator<IpCam>() {
+        @Override
+        public IpCam createFromParcel(Parcel in) {
+            return new IpCam(in);
+        }
+
+        @Override
+        public IpCam[] newArray(int size) {
+            return new IpCam[size];
+        }
+    };
 
     public int getRealPlayId() {
         return realPlayId;
@@ -75,5 +96,20 @@ public class IpCam{
 
     public void setLoginId(int loginId) {
         this.loginId = loginId;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(realPlayId);
+        parcel.writeInt(channel);
+        parcel.writeInt(playPort);
+        parcel.writeInt(deviceId);
+        parcel.writeInt(type);
+        parcel.writeInt(loginId);
     }
 }
