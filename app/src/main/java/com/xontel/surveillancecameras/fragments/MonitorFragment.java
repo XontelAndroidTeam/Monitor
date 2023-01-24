@@ -130,7 +130,7 @@ public class MonitorFragment extends BaseFragment  {
     }
 
     private void setupCamsPager() {
-        Log.i(TAG, "setupCamsPagerInstance: "+pagerAdapter);
+        Log.i("TATZ", "setupCamsPagerInstance: "+pagerAdapter);
         binding.camsPager.setEmptyView(binding.noCams.getRoot());
         if (!isInitialized){
             pagerAdapter = new PagerAdapter(getChildFragmentManager(),1);
@@ -142,13 +142,13 @@ public class MonitorFragment extends BaseFragment  {
     private void setupObservables() {
         mainViewModel.ipCams.observe(getViewLifecycleOwner(), allIpCams -> {
             if (allIpCams != null && !allIpCams.isEmpty()){
-                Log.i(TAG, "DataInitialized: ");
-                if (ipCams.isEmpty() && !isInitialized){
+                if (ipCams.isEmpty()){
+                    Log.i("TATZ", "DataFirstInitialized: ");
                     pagerAdapter.getListOfData(allIpCams);
                 } else if (ipCams.size() > allIpCams.size()){
-                    Log.i(TAG, "DataRemoved: ");
+                    Log.i("TATZ", "DataRemoved: ");
                 }else if (ipCams.size() < allIpCams.size()){
-                    Log.i(TAG, "NewData: ");
+                    Log.i("TATZ", "NewData: ");
                 }
                 handleCamsFromDb(allIpCams);
             }else {
@@ -168,9 +168,9 @@ public class MonitorFragment extends BaseFragment  {
 
     }
 
-    private void handleCamsFromDb(List<IpCam> ipCams){
+    private void handleCamsFromDb(List<IpCam> ipCamsData){
         if (!ipCams.isEmpty()){ipCams.clear();}
-        ipCams.addAll(ipCams);
+        ipCams.addAll(ipCamsData);
     }
 
 

@@ -29,7 +29,6 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
 
     public PagerAdapter(@NonNull FragmentManager fm, int behavior) {
         super(fm, behavior);
-        Log.i("TATZ", "PagerAdapterCreation: ");
     }
 
 
