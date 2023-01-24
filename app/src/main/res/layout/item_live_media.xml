@@ -15,26 +15,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <org.videolan.libvlc.util.VLCVideoLayout
-            android:id="@+id/vlc_layout"
+        <SurfaceView
+            android:id="@+id/player_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:vlc_enable_volume_control="false"
-            app:vlc_error_text_size="15dp" />
-<!--        <TextureView-->
-<!--            android:id="@+id/video_view"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"/>-->
-<!--        <com.alexvas.rtsp.widget.RtspSurfaceView-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:id="@+id/svVideo" />-->
+            android:layout_height="match_parent"/>
 
         <TextView
             android:id="@+id/tv_cam_name"
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:layout_gravity="top|start"
             android:textAlignment="viewEnd"
             android:background="@drawable/overlay_gradient"
             android:maxLines="1"
