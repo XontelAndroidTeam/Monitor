@@ -183,11 +183,27 @@ public class CamDevice implements Parcelable  {
         if (deviceType == CamDeviceType.HIKVISION.getValue()){
             return  HikUtil.loginNormalDevice(this) >= 0;
         }else if (deviceType == CamDeviceType.DAHUA.getValue()){
-            return DahuaUtil.loginNormalDevice(this) > 0;
+            return DahuaUtil.loginNormalDevice(this) != 0;
         }else{
-
+            return true;
         }
-        return false;
+    }
+
+    @Override
+    public String toString() {
+        return "CamDevice{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", ipAddress='" + ipAddress + '\'' +
+                ", userName='" + userName + '\'' +
+                ", password='" + password + '\'' +
+                ", deviceType=" + deviceType +
+                ", url='" + url + '\'' +
+                ", port=" + port +
+                ", channels=" + channels +
+                ", logId=" + logId +
+                ", cams=" + cams +
+                '}';
     }
 }
 

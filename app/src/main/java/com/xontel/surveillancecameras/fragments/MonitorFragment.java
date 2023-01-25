@@ -2,7 +2,6 @@ package com.xontel.surveillancecameras.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.service.controls.DeviceTypes;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -10,35 +9,21 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.databinding.Observable;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.GridLayoutManager;
-
 import com.xontel.surveillancecameras.R;
-import com.xontel.surveillancecameras.activities.AddCamActivity;
 import com.xontel.surveillancecameras.activities.AddNewDeviceActivity;
 import com.xontel.surveillancecameras.adapters.PagerAdapter;
 import com.xontel.surveillancecameras.base.BaseFragment;
-import com.xontel.surveillancecameras.dahua.DahuaUtil;
 import com.xontel.surveillancecameras.databinding.FragmentMonitorBinding;
 import com.xontel.surveillancecameras.hikvision.CamDevice;
-import com.xontel.surveillancecameras.hikvision.HikUtil;
-import com.xontel.surveillancecameras.presenters.MainDeviceMvpPresenter;
-import com.xontel.surveillancecameras.presenters.MainDeviceMvpView;
-import com.xontel.surveillancecameras.utils.CamDeviceType;
 import com.xontel.surveillancecameras.viewModels.MainViewModel;
-import com.xontel.surveillancecameras.adapters.CamsAdapter;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
 import com.xontel.surveillancecameras.viewModels.ViewModelProviderFactory;
-
-import org.videolan.libvlc.MediaPlayer;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.inject.Inject;
 
 public class MonitorFragment extends BaseFragment  {
@@ -60,7 +45,6 @@ public class MonitorFragment extends BaseFragment  {
 
     @Override
     public void onResume(){
-        Log.i("TATZ", "setupCamsPagerInstanceOnResume: "+pagerAdapter);
         pagerAdapter.notifyDataSetChanged();
         binding.noCams.btnAdd.setOnClickListener(view -> {
         requireActivity().startActivity(new Intent(requireContext(), AddNewDeviceActivity.class));
@@ -130,7 +114,6 @@ public class MonitorFragment extends BaseFragment  {
     }
 
     private void setupCamsPager() {
-        Log.i("TATZ", "setupCamsPagerInstance: "+pagerAdapter);
         binding.camsPager.setEmptyView(binding.noCams.getRoot());
         if (pagerAdapter == null){
             pagerAdapter = new PagerAdapter(getChildFragmentManager(),1);
@@ -144,17 +127,22 @@ public class MonitorFragment extends BaseFragment  {
             if (allIpCams != null && !allIpCams.isEmpty()){
                 Log.i("TATZ", "DataInitialized: "+allIpCams.size());
                 if (ipCams.isEmpty()){
-                    Log.i("TATZ", "DataFirstInitialized: "+allIpCams.size());
+                   // Log.i("TATZ", "DataFirstInitialized: "+allIpCams.size());
                     pagerAdapter.getListOfData(allIpCams);
                 } else if (ipCams.size() > allIpCams.size()){
                     Log.i("TATZ", "DataRemoved: ");
+                    handleDecreaseIpCam(allIpCams);
                 }else if (ipCams.size() < allIpCams.size()){
                     Log.i("TATZ", "NewData: ");
+                    handleIncreaseIpCam(allIpCams);
+                }else{
+                    Log.i("TATZ", "DataEdit: ");
                 }
                 handleCamsFromDb(allIpCams);
             }else {
                 if (!ipCams.isEmpty()){
-                    //TODO all cams deleted
+                    pagerAdapter.removeAllFragment();
+                    ipCams.clear();
                 }
             }
         });
@@ -166,6 +154,21 @@ public class MonitorFragment extends BaseFragment  {
             }
         });
 
+        binding.addCam.setOnClickListener(view -> {
+            mainViewModel.dummyAddIpCam();
+        });
+
+        binding.RemoveCam.setOnClickListener(view -> {
+            mainViewModel.dummyRemoveIpCam();
+        });
+
+        binding.ChangeGrid.setOnClickListener(view -> {
+            mainViewModel.dummyChangeGrid();
+        });
+
+        binding.removeAllData.setOnClickListener(view -> {
+            mainViewModel.dummyRemoveAllData();
+        });
 
     }
 
@@ -174,5 +177,30 @@ public class MonitorFragment extends BaseFragment  {
         ipCams.addAll(ipCamsData);
     }
 
+    private int getCalculatedCount(List<IpCam> allIpCams){
+        int size = 0 ;
+        Log.i("TATZ", "getCalculatedCount, reminder: "+ (allIpCams.size() % mainViewModel.gridCount.getValue()) + " gridCount: "+mainViewModel.gridCount.getValue()+ " ipCamSize: "+allIpCams.size());
+        if (allIpCams.size() % mainViewModel.gridCount.getValue() != 0){ size = 1;}
+        size = size + (allIpCams.size()/mainViewModel.gridCount.getValue()) ;
+        return size;
+    }
+
+    private void handleIncreaseIpCam(List<IpCam> allIpCams){
+        int size =  getCalculatedCount(allIpCams);
+        Log.i("TATZ", "handleIncreaseIpCam, size: "+size+" currentPagerCount"+pagerAdapter.getFragmentCount());
+        if (size > pagerAdapter.getFragmentCount()){
+            pagerAdapter.addFragment();
+        }
+        mainViewModel.refreshData.setValue(true);
+    }
+
+    private void handleDecreaseIpCam(List<IpCam> allIpCams){
+        int size =  getCalculatedCount(allIpCams);
+        Log.i("TATZ", "handleDecreaseIpCam, size: "+size+" currentPagerCount"+pagerAdapter.getFragmentCount());
+        if (size < pagerAdapter.getFragmentCount()){
+            pagerAdapter.removeFragment();
+        }
+        mainViewModel.refreshData.setValue(true);
+    }
 
 }

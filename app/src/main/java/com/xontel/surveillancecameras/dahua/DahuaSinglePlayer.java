@@ -36,7 +36,6 @@ public class DahuaSinglePlayer {
     private long realPlayId = -1; // return by NET_DVR_RealPlay_V30
     private int playbackId  = -1; // return by NET_DVR_PlayBackByTime
     private int playPort = -1; // play port
-    private  int m_iPort = -1;
     private int startChannel = 2; // start channel no
     private boolean stopPlayback = false;
     private boolean isShow = true;
@@ -85,17 +84,17 @@ public class DahuaSinglePlayer {
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
                 mSurfaceView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
-                if (-1 == m_iPort) {
-                    m_iPort = playerInstance.getPort();
+                if (-1 == playPort) {
+                    playPort = playerInstance.getPort();
                     Surface surface = holder.getSurface();
                     if (surface.isValid()) {
                         startPlay(logId,channel,streamType,mSurfaceView);
-                        if(!Player.getInstance().setCurrentFrameNum(m_iPort, 60)){
-                            Log.e(TAG, "Player failed to set frame rate!");
-                        }
-                        if (!Player.getInstance().setVideoWindow(m_iPort, 0, holder)) {
-                            Log.e(TAG, "Player failed to set or destroy display area!");
-                        }
+                     //   if(!Player.getInstance().setCurrentFrameNum(m_iPort, 60)){
+                       //     Log.e(TAG, "Player failed to set frame rate!");
+                      //  }
+                      //  if (!Player.getInstance().setVideoWindow(m_iPort, 0, holder)) {
+                      //      Log.e(TAG, "Player failed to set or destroy display area!");
+                      //  }
                     }
                 }
             }
@@ -107,14 +106,14 @@ public class DahuaSinglePlayer {
 
             @Override
             public void surfaceDestroyed(SurfaceHolder holder) {
-                Log.i(TAG, "Player setVideoWindow release!" + m_iPort);
-                if (-1 == m_iPort) {
+                Log.i(TAG, "Player setVideoWindow release!" + playPort);
+                if (-1 == playPort) {
                     return;
                 }
                 if (holder.getSurface().isValid()) {
-                    if (!Player.getInstance().setVideoWindow(m_iPort, 0, null)) {
-                        Log.e(TAG, "Player failed to set or destroy display area!");
-                    }
+                  //  if (!Player.getInstance().setVideoWindow(playPort, 0, null)) {
+                     //   Log.e(TAG, "Player failed to set or destroy display area!");
+                  //  }
                 }
             }
         });
@@ -325,6 +324,7 @@ public class DahuaSinglePlayer {
     public void captureVideo(){
         try {
             sDateFormat = new SimpleDateFormat("yyyy-MM-dd-hh_mm_ss_Sss");
+            _isRecording = true;
             File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/capture");
             if (!dir.exists()) {dir.mkdir();}
             String date = sDateFormat.format(new java.util.Date());

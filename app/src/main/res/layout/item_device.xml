@@ -33,6 +33,8 @@
         android:layout_below="@id/tv_title"
         android:layout_marginHorizontal="32dp"
         android:layout_toEndOf="@id/iv_cam"
+        android:maxLines="1"
+        android:ellipsize="end"
         android:textSize="20dp"
         tools:text="192.168.1.123" />
 </RelativeLayout>

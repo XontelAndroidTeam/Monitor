@@ -24,6 +24,7 @@ import java.text.SimpleDateFormat;
 public class HIKSinglePlayer implements RealPlayCallBack{
     public static final String TAG = HIKSinglePlayer.class.getSimpleName();
     public static final int DEFAULT_HIKVISION_PORT_NUMBER = 8000;
+    public static final int DEFAULT_Dahua_PORT_NUMBER = 37777;
     private Player.MPInteger stWidth;
     private Player.MPInteger stHeight;
     private Player.MPInteger stSize;
@@ -78,7 +79,6 @@ public class HIKSinglePlayer implements RealPlayCallBack{
 
             @Override
             public void surfaceDestroyed(SurfaceHolder holder) {
-                Cleanup();
                 stopSinglePreview();
                 if (-1 == m_iPort) {
                     return;
@@ -283,13 +283,15 @@ public class HIKSinglePlayer implements RealPlayCallBack{
         m_iPort = -1;
     }
 
-    public void Cleanup() {
+    public void cleanUp() {
         // release player resource
         stopPlayback = true;
+        playerInstance.closeStream(m_iPort);
         playerInstance.freePort(m_iPort);
         m_iPort = -1;
+
         // release net SDK resource
-      //  netSDKInstance.NET_DVR_Cleanup();
+      // netSDKInstance.NET_DVR_Cleanup();
     }
 
 
@@ -435,7 +437,9 @@ public class HIKSinglePlayer implements RealPlayCallBack{
             fos.close();
           //  Bitmap bitmap = BitmapFactory.decodeFile(dir.getAbsolutePath() + "/" + date + ".jpg");
         } catch (Exception err) {
-            Log.e(TAG, "error: " + err.toString());
+            Log.e("TATZ", "error: " + err.getMessage());
         }
     }
+
+
 }

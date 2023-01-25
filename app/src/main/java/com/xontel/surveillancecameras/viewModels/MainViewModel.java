@@ -36,6 +36,8 @@ public class MainViewModel extends BaseViewModel {
     private final MutableLiveData<List<CamDevice>> camDevices = new MutableLiveData<>(new ArrayList<>());
     public MutableLiveData<Integer> gridCount = new MutableLiveData<>(9);
     public MutableLiveData<Boolean> isRecording = new MutableLiveData<>(false);
+    public MutableLiveData<Boolean> refreshData = new MutableLiveData<>(false);
+    public MutableLiveData<Boolean> refreshGridCount = new MutableLiveData<>(false);
     public MutableLiveData<Integer> lifeCycleObservable = new MutableLiveData<>(0);
     private Context context ;
 
@@ -84,12 +86,34 @@ public class MainViewModel extends BaseViewModel {
                 }else if (camDevice.deviceType == CamDeviceType.DAHUA.getValue()){
                     DahuaUtil.extractCamsFromDevice(camDevice);
                 }else{
-                    //Todo MediaPlayer
+                    camDevice.getCams().add(new IpCam(1, camDevice.getId(), camDevice.getDeviceType(),camDevice.getLogId(),camDevice.getName(),camDevice.getIpAddress().isEmpty() || camDevice.getIpAddress() == null ? camDevice.getUrl() : camDevice.getIpAddress() ));
                 }
                 tempIpCams.addAll(camDevice.getCams());
-                break;
             }
             ipCams.setValue(tempIpCams);
         }
+    }
+
+    public void toggleVideoRecord(){
+        isRecording.setValue(!isRecording.getValue());
+    }
+
+    public void dummyAddIpCam(){
+        ipCams.getValue().add(new IpCam(4,1,2,3,"aaa","192.168.1.1"));
+        ipCams.setValue(ipCams.getValue());
+    }
+
+    public void dummyRemoveIpCam(){
+        ipCams.getValue().remove(ipCams.getValue().size()-1);
+        ipCams.setValue(ipCams.getValue());
+    }
+
+    public void dummyChangeGrid(){
+        gridCount.setValue(4*4);
+    }
+
+    public void dummyRemoveAllData(){
+       ipCams.getValue().clear();
+        ipCams.setValue(ipCams.getValue());
     }
 }

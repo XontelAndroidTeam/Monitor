@@ -54,7 +54,7 @@ public class HikUtil {
         }
         int channels = camDevice.getChannels();
         for(int i = 1 ; i < channels ; i++){
-            camDevice.getCams().add(new IpCam(i, camDevice.getId(), camDevice.getDeviceType(),camDevice.getLogId()));
+            camDevice.getCams().add(new IpCam(i, camDevice.getId(), camDevice.getDeviceType(),camDevice.getLogId(),camDevice.getName(),camDevice.getIpAddress() == null ? camDevice.getUrl() : camDevice.getIpAddress()));
         }
     }
 

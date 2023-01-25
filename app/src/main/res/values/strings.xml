@@ -84,6 +84,7 @@
     <string name="no_devices">No devices added yet</string>
     <string name="update">Update</string>
     <string name="Cant_LOGIN">Can\'t connect with this device</string>
+    <string name="Take_Picture">Picture captured successfully</string>
 
 
 </resources>

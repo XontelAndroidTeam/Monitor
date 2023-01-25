@@ -24,6 +24,7 @@ import com.xontel.surveillancecameras.data.db.model.IpCam;
 import com.xontel.surveillancecameras.hikvision.HIKSinglePlayer;
 import com.xontel.surveillancecameras.hikvision.HikUtil;
 import com.xontel.surveillancecameras.utils.CamDeviceType;
+import com.xontel.surveillancecameras.vlc.VlcSinglePlayer;
 
 import org.videolan.libvlc.Media;
 import org.videolan.libvlc.MediaPlayer;
@@ -40,6 +41,7 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder>  {
     private int gridCount;
     private static final int ITEM_CAM = 0;
     private static final int ITEM_ADD_CAM = 1;
+    private static final int ITEM_VLC = 2;
 
 
     public CamsAdapter(List<IpCam> ipCams, int gridCount, Context context) {
@@ -72,6 +74,10 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder>  {
                 view = LayoutInflater.from(context).inflate(R.layout.item_live_media, parent, false);
                 return new CamsViewHolder(view);
 
+            case ITEM_VLC:
+                view = LayoutInflater.from(context).inflate(R.layout.item_vlc_cam, parent, false);
+                return new CamsVlcViewHolder(view);
+
             case ITEM_ADD_CAM:
             default:
                 view = LayoutInflater.from(context).inflate(R.layout.item_add_cam, parent, false);
@@ -85,7 +91,15 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder>  {
 
     @Override
     public int getItemViewType(int position) {
-        return position < ipCams.size() ? ITEM_CAM : ITEM_ADD_CAM;
+        if (position <= ipCams.size() - 1){
+            if (ipCams.get(position).getType() == CamDeviceType.OTHER.getValue()){
+                return ITEM_VLC;
+            }else{
+                return ITEM_CAM;
+            }
+        }else{
+            return ITEM_ADD_CAM;
+        }
     }
 
     @Override
@@ -120,10 +134,10 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder>  {
             super.onBind(position);
             ipCam = ipCams.get(position);
             if (ipCam.getType() == CamDeviceType.HIKVISION.getValue()){
-                HIKSinglePlayer singlePlayer =  new HIKSinglePlayer(ipCam.getChannel(),ipCam.getLoginId(),ipCam.getType());
-                singlePlayer.initView(surfaceView);
+               // HIKSinglePlayer singlePlayer =  new HIKSinglePlayer(ipCam.getChannel(),ipCam.getLoginId(),ipCam.getType());
+                //singlePlayer.initView(surfaceView);
             }else if(ipCam.getType() == CamDeviceType.DAHUA.getValue()){
-                DahuaSinglePlayer singlePlayer =  new DahuaSinglePlayer(ipCam.getChannel(),ipCam.getLoginId(),ipCam.getType());
+               // DahuaSinglePlayer singlePlayer =  new DahuaSinglePlayer(ipCam.getChannel(),ipCam.getLoginId(),ipCam.getType());
                 //singlePlayer.initView(surfaceView);
             }else{
 
@@ -134,7 +148,7 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder>  {
 
         @Override
         protected void clear() {
-
+          //  Log.i("TATZ", "Adapter_cleared: ");
         }
 
         @Override
@@ -147,6 +161,48 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder>  {
 
 
     }
+
+
+
+    public class CamsVlcViewHolder extends BaseViewHolder implements View.OnClickListener {
+        private IpCam ipCam;
+        private TextView camName;
+        private VLCVideoLayout vlcVideoLayout;
+
+        public CamsVlcViewHolder(View itemView) {
+            super(itemView);
+            vlcVideoLayout = itemView.findViewById(R.id.vlc_layout);
+            camName = itemView.findViewById(R.id.tv_cam_name);
+        }
+
+        @Override
+        public void onBind(int position) {
+            super.onBind(position);
+            ipCam = ipCams.get(position);
+            if (ipCam.getType() == CamDeviceType.OTHER.getValue()){
+               // VlcSinglePlayer vlcSinglePlayer = new VlcSinglePlayer(context);
+              //  vlcSinglePlayer.initVlcPlayer(ipCam.getUrlOrIpAddress(),vlcVideoLayout);
+            }
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        protected void clear() {
+         //   Log.i("TATZ", "Adapter_cleared: ");
+        }
+
+        @Override
+        public void onClick(View view) {
+            Intent intent = new Intent(context, CamerasActivity.class);
+            intent.putExtra(KEY_CAMERAS, ipCams.get(getCurrentPosition()));
+            context.startActivity(intent);
+        }
+
+
+
+    }
+
+
 
     public class AddCamViewHolder extends BaseViewHolder implements View.OnClickListener {
         public AddCamViewHolder(@NonNull View itemView) {

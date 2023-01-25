@@ -82,6 +82,7 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
         if (getIntent().getExtras() != null && getIntent().getParcelableExtra(KEY_CAMERAS) != null ){
             cams.add((IpCam) getIntent().getParcelableExtra(KEY_CAMERAS));
             updateCurrentCam(cams.get(0));
+            updateCamName(cams.get(0).getName());
         }
         if (getIntent().hasExtra(KEY_SLIDE_SHOW)) {
             isSlideShow = true;
@@ -140,7 +141,6 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
     }
 
     public void deleteCam() {
-        Log.i("TATZ", "action delete FromActi: ");
         int camPosition = binding.vpSlider.getCurrentItem();
         new MaterialAlertDialogBuilder(this, R.style.AlertDialogTheme)
                 .setTitle(R.string.delete_camera)
@@ -184,6 +184,10 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
         btnsHandler.postDelayed(btnsRemovalRunnable, TIME_TO_HIDE_BTNS);
     }
 
+    private void updateCamName(String name){
+        binding.tvCamName.setText(name);
+    }
+
     private void hideButtons() {
         if(isBtnsShown) {
             binding.llBtns.animate()
@@ -224,7 +228,7 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
         }
         binding.vpSlider.setAdapter(singlePagerAdapter);
         binding.vpSlider.setOffscreenPageLimit(0);
-        if (cams.size() > 2) {binding.dotsIndicator.setViewPager(binding.vpSlider);}
+        if (cams.size() > 2) {binding.dotsIndicator.setVisibility(View.VISIBLE);binding.dotsIndicator.setViewPager(binding.vpSlider);}else{binding.dotsIndicator.setVisibility(View.GONE);}
         setupSliderSettings();
     }
 

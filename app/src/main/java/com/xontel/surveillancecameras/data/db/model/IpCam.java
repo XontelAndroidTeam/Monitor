@@ -19,13 +19,17 @@ public class IpCam implements  Parcelable{
     private int deviceId;
     private int type ;
     private int loginId = -1;
+    private String name;
+    private String urlOrIpAddress;
 
 
-    public IpCam(int channel, int deviceId, int type,int loginId) {
+    public IpCam(int channel, int deviceId, int type,int loginId,String name,String urlOrIpAddress) {
         this.channel = channel;
         this.deviceId = deviceId;
         this.type = type;
         this.loginId = loginId;
+        this.urlOrIpAddress = urlOrIpAddress;
+        this.name = name;
     }
 
 
@@ -36,6 +40,8 @@ public class IpCam implements  Parcelable{
         deviceId = in.readInt();
         type = in.readInt();
         loginId = in.readInt();
+        name = in.readString();
+        urlOrIpAddress = in.readString();
     }
 
     public static final Creator<IpCam> CREATOR = new Creator<IpCam>() {
@@ -98,6 +104,22 @@ public class IpCam implements  Parcelable{
         this.loginId = loginId;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getUrlOrIpAddress() {
+        return urlOrIpAddress;
+    }
+
+    public void setUrlOrIpAddress(String urlOrIpAddress) {
+        this.urlOrIpAddress = urlOrIpAddress;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -111,5 +133,7 @@ public class IpCam implements  Parcelable{
         parcel.writeInt(deviceId);
         parcel.writeInt(type);
         parcel.writeInt(loginId);
+        parcel.writeString(name);
+        parcel.writeString(urlOrIpAddress);
     }
 }

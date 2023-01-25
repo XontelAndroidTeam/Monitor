@@ -57,8 +57,17 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
         notifyDataSetChanged();
     }
 
-    public void removeFragment(int index) {
-        mFragmentList.remove(index);
+    public int getFragmentCount(){
+        return mFragmentList.size();
+    }
+
+    public void removeFragment() {
+        mFragmentList.remove(mFragmentList.size()-1);
+        notifyDataSetChanged();
+    }
+
+    public void removeAllFragment(){
+        mFragmentList.clear();
         notifyDataSetChanged();
     }
 
