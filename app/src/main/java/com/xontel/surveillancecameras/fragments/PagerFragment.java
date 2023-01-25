@@ -79,7 +79,7 @@ public class PagerFragment extends Fragment  {
     }
 
     private void updateData() {
-        Log.i("TATZ", "updateData: ");
+        Log.i("TATZ", "updateData fragmentIndex:: : "+index);
         if (data != null && !data.isEmpty() ){data.clear();}
         for (int i = rangeFrom ; i <= rangeTo ; i ++){
             if (viewModel.ipCams.getValue() != null && !viewModel.ipCams.getValue().isEmpty() &&  viewModel.ipCams.getValue().size() > i ) {
