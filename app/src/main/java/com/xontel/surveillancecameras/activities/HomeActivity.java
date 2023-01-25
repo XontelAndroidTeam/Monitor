@@ -248,7 +248,7 @@ public class HomeActivity extends BaseActivity implements AdapterView.OnItemClic
 
 
     private void setupCamerasPager() {
-        pagerAdapter = new PagerAdapter(getSupportFragmentManager(),1);
+       // pagerAdapter = new PagerAdapter(getSupportFragmentManager(),1);
 //        binding.home.vpSlider.setAdapter(pagerAdapter);
 //        binding.home.vpSlider.setEmptyView(binding.home.pagerEmptyView.getRoot());
 //        binding.home.vpSlider.setOffscreenPageLimit(0);

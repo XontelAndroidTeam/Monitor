@@ -21,14 +21,15 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
 
     private final List<Fragment> mFragmentList = new ArrayList<>();
 
-    private int gridCount = 9;
+    private int gridCount ;
 
     public List<Fragment> getFragmentList() {
         return mFragmentList;
     }
 
-    public PagerAdapter(@NonNull FragmentManager fm, int behavior) {
+    public PagerAdapter(@NonNull FragmentManager fm, int behavior, int gridCount) {
         super(fm, behavior);
+        this.gridCount = gridCount ;
     }
 
 
@@ -57,14 +58,29 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
         notifyDataSetChanged();
     }
 
-    public int getFragmentCount(){
-        return mFragmentList.size();
+    public void addFragments(int size){
+        for (int i=0 ; i < size  ; i ++){
+            mFragmentList.add(new PagerFragment());
+        }
+        notifyDataSetChanged();
     }
 
     public void removeFragment() {
         mFragmentList.remove(mFragmentList.size()-1);
         notifyDataSetChanged();
     }
+
+    public void removeFragments(int size){
+        for (int i=0 ; i < size  ; i ++){
+            mFragmentList.remove(mFragmentList.size()-1);
+        }
+        notifyDataSetChanged();
+    }
+
+    public int getFragmentCount(){
+        return mFragmentList.size();
+    }
+
 
     public void removeAllFragment(){
         mFragmentList.clear();
@@ -75,6 +91,7 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
     @NotNull
     @Override
     public Fragment getItem(int position) {
+        Log.i("TATZ", "getItem: ");
         PagerFragment pagerFragment = (PagerFragment) mFragmentList.get(position);
         Bundle bundle = new Bundle();
         bundle.putInt("IN",position);
