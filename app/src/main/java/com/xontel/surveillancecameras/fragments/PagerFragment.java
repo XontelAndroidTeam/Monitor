@@ -73,6 +73,7 @@ public class PagerFragment extends Fragment  {
 
     private void setupAdapter() {
         binding.pagerRecycler.setLayoutManager(new GridLayoutManager(getActivity(), (int) Math.sqrt(viewModel.gridCount.getValue())));
+        binding.pagerRecycler.setHasFixedSize(true);
         if (camsAdapter == null){camsAdapter = new CamsAdapter(new ArrayList<>(), viewModel.gridCount.getValue(), getContext());}
         binding.pagerRecycler.setAdapter(camsAdapter);
         if (!isInitialized){updateData();}
@@ -90,6 +91,7 @@ public class PagerFragment extends Fragment  {
 
     private void whenGridChanged(){
         binding.pagerRecycler.setLayoutManager(new GridLayoutManager(getActivity(), (int) Math.sqrt(viewModel.gridCount.getValue())));
+        binding.pagerRecycler.setAdapter(camsAdapter); // to resetView
         camsAdapter.setGridCount(viewModel.gridCount.getValue());
         rangeFrom = index * viewModel.gridCount.getValue();
         rangeTo = rangeFrom + (viewModel.gridCount.getValue() - 1);

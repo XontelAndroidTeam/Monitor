@@ -55,8 +55,6 @@ public class HIKSinglePlayer implements RealPlayCallBack{
         mSurfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
-                mSurfaceView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
-                Log.i(TAG, "surface is created" + m_iPort);
                 if (-1 == m_iPort) {
                    m_iPort = playerInstance.getPort();
                 Surface surface = holder.getSurface();
@@ -74,11 +72,13 @@ public class HIKSinglePlayer implements RealPlayCallBack{
 
             @Override
             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
+                holder.setFormat(PixelFormat.TRANSLUCENT);
+                Log.e(TAG, "surfaceChanged");
             }
 
             @Override
             public void surfaceDestroyed(SurfaceHolder holder) {
+                Log.e(TAG, "surfaceDestroyed");
                 stopSinglePreview();
                 if (-1 == m_iPort) {
                     return;
@@ -100,7 +100,7 @@ public class HIKSinglePlayer implements RealPlayCallBack{
         NET_DVR_PREVIEWINFO previewInfo = new NET_DVR_PREVIEWINFO();
         previewInfo.lChannel = channel;
         previewInfo.dwStreamType = 1; // mainstream
-//        previewInfo.bBlocked = 1;
+        previewInfo.bBlocked = 1;
 
         realPlayId = netSDKInstance.NET_DVR_RealPlay_V40(logId, previewInfo, this);
 
@@ -216,7 +216,7 @@ public class HIKSinglePlayer implements RealPlayCallBack{
                     Log.e(TAG, "Playing audio exclusively failed! failure code :" + Player.getInstance().getLastError(m_iPort));
                     return;
                 }
-                Log.v("TAGGG", "framerate" + Player.getInstance().getCurrentFrameNum(m_iPort)+"");
+                Log.v(TAG, "framerate" + Player.getInstance().getCurrentFrameNum(m_iPort)+"");
             }
         } else {
             if (!Player.getInstance().inputData(m_iPort, pDataBuffer,
@@ -408,6 +408,7 @@ public class HIKSinglePlayer implements RealPlayCallBack{
     public void captureVideo(){
 
     }
+
     public void captureFrame() {
         try {
             Player.MPInteger stWidth = new Player.MPInteger();

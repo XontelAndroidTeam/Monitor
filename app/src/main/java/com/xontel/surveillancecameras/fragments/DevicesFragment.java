@@ -50,7 +50,6 @@ public class DevicesFragment extends BaseFragment implements MainDeviceMvpView, 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requireActivity().setTitle(R.string.devices);
         getFragmentComponent().inject(this);
         mPresenter.onAttach(this);
         setHasOptionsMenu(true);
@@ -112,7 +111,7 @@ public class DevicesFragment extends BaseFragment implements MainDeviceMvpView, 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+        requireActivity().setTitle(R.string.devices);
         binding = FragmentDevicesBinding.inflate(inflater);
 
         setupDevicesList();

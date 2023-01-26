@@ -1,17 +1,19 @@
 package com.xontel.surveillancecameras.fragments;
 
 import android.app.ProgressDialog;
+import android.content.ContentUris;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.view.ActionMode;
-import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 
+import android.provider.MediaStore;
+import android.util.Log;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,8 +30,6 @@ import com.xontel.surveillancecameras.utils.CommonUtils;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 
@@ -37,9 +37,23 @@ public class SavedMediaFragment extends BaseFragment implements MediaAdapter.Cli
     private FragmentSavedMediaBinding binding ;
     private MediaAdapter mediaAdapter;
     private List<File> mediaFiles = new ArrayList<>();
-    private ActionMode actionMode;
+    private android.view.ActionMode actionMode;
     private ProgressDialog progressDialog;
+    Uri collection;
+    String[] projection = new String[] {
+            MediaStore.MediaColumns.RELATIVE_PATH,
+            MediaStore.Images.Media._ID,
+            MediaStore.Images.Media.DATA,
+            MediaStore.Images.Media.DISPLAY_NAME,
+            MediaStore.Images.Media.DURATION,
+            MediaStore.Images.Media.SIZE};
 
+    String[] projectionVideo = new String[] {
+            MediaStore.Video.Media._ID,
+            MediaStore.Video.Media.DATA,
+            MediaStore.Video.Media.DISPLAY_NAME,
+            MediaStore.Video.Media.DURATION,
+            MediaStore.Video.Media.SIZE};
 
     public SavedMediaFragment() {
         // Required empty public constructor
@@ -58,6 +72,15 @@ public class SavedMediaFragment extends BaseFragment implements MediaAdapter.Cli
         super.onPause();
     }
 
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.selection_menu, menu);
+        menu.findItem(R.id.action_select_all).setVisible(false);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+
     public void endSelectionMode() {
         if (actionMode != null) {
             actionMode.finish();
@@ -70,6 +93,7 @@ public class SavedMediaFragment extends BaseFragment implements MediaAdapter.Cli
         fragment.setArguments(args);
         return fragment;
     }
+
     private void shareSelectedItems(List<File> selectedFiles) {
         if(selectedFiles.size() > 0) {
             Intent intent = new Intent();
@@ -98,76 +122,140 @@ public class SavedMediaFragment extends BaseFragment implements MediaAdapter.Cli
         }
     }
 
-    private void loadMediaFiles() {
-        mediaFiles.clear();
-        String imagesDirPath = "/media/images";
-        String videosDirPath = "/media/videos";
-        File[] externalStorageDirs = getContext().getExternalFilesDirs(null);
-        for (File dir : externalStorageDirs) {
-            File[] images = new File(dir.getAbsolutePath() + imagesDirPath).listFiles();
-            File[] videos = new File(dir.getAbsolutePath() + videosDirPath).listFiles();
-            if (images != null)
-                mediaFiles.addAll(Arrays.asList(images));
-            if (videos != null)
-                mediaFiles.addAll(Arrays.asList(videos));
+
+    private void getAllPics(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            collection = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY);
+        } else {
+            collection = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
         }
-        Collections.sort(mediaFiles, (file1, file2) -> {
-            long k = file1.lastModified() - file2.lastModified();
-            if (k > 0) {
-                return 1;
-            } else if (k == 0) {
-                return 0;
-            } else {
-                return -1;
+
+        try(Cursor cursor = requireContext().getContentResolver().query(
+                collection,
+                projection,
+                null,
+                null,
+                null
+        ))  {
+            // Cache column indices.
+            int idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID);
+            int nameColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME);
+            int durationColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DURATION);
+            int relativePath = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.RELATIVE_PATH);
+            int sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.SIZE);
+            int data = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+
+            while (cursor.moveToNext()) {
+                // Get values of columns for a given video.
+                long id = cursor.getLong(idColumn);
+                String name = cursor.getString(nameColumn);
+                int duration = cursor.getInt(durationColumn);
+                int size = cursor.getInt(sizeColumn);
+                String dataPath = cursor.getString(data);
+                Uri contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id);
+                mediaFiles.add(new File(dataPath));
             }
-        });
-        mediaAdapter.notifyDataSetChanged();
+            mediaAdapter.setAllData(mediaFiles);
+            getAllVideos();
+        }catch(Exception e){
+            Log.e("TAG", "error: " + e.getMessage());
+        }
     }
 
+    private void getAllVideos(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            collection = MediaStore.Video.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY);
+        } else {
+            collection = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+        }
+        try(Cursor cursor = requireContext().getContentResolver().query(
+                collection,
+                projectionVideo,
+                null,
+                null,
+                null
+        ))  {
+            // Cache column indices.
+            int idColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID);
+            int nameColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME);
+            int durationColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION);
+            int sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE);
+            int data = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
 
-//    public void startSelectionMode() {
-//        if (actionMode == null) {
-//            actionMode = requireActivity().startActionMode(new ActionMode.Callback() {
-//                @Override
-//                public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-//                    MenuInflater inflater = requireActivity().getMenuInflater();
-//                    inflater.inflate(R.menu.selection_menu, menu);
-//                    return true;
-//                }
-//
-//                @Override
-//                public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-//                    return false;
-//                }
-//
-//                @Override
-//                public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-//                    switch (item.getItemId()) {
-//                        case R.id.action_delete:
-//                            deleteSelectedItems(mediaAdapter.getSelectedItems());
-//                            endSelectionMode();
-//                            return true;
-//                        case R.id.action_share:
-//                            shareSelectedItems(mediaAdapter.getSelectedItems());
-//                            endSelectionMode();
-//                            return true;
-//                        case R.id.action_select_all:
-//                            mediaAdapter.selectAll();
-//                            return true;
-//                    }
-//                    return false;
-//                }
-//
-//                @Override
-//                public void onDestroyActionMode(ActionMode mode) {
-//                    actionMode = null;
-//                    mediaAdapter.enableSelectionMode(false);
-//                }
-//            });
-//            actionMode.setTitle(mediaAdapter.getSelectedItems().size() + "");
-//            mediaAdapter.enableSelectionMode(true);
-//        }
-//    }
+            while (cursor.moveToNext()) {
+                // Get values of columns for a given video.
+                long id = cursor.getLong(idColumn);
+                String name = cursor.getString(nameColumn);
+                int duration = cursor.getInt(durationColumn);
+                int size = cursor.getInt(sizeColumn);
+                String dataPath = cursor.getString(data);
+                Uri contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id);
+                Log.i("TATZ", "getAllVideos: "+dataPath);
+                mediaFiles.add(new File(contentUri.toString()));
+            }
+            mediaAdapter.setAllData(mediaFiles);
+        }catch(Exception e){
+            Log.e("TAG", "error: " + e.getMessage());
+        }
+    }
+
+/*
+    public String getRealPathFromURI(Uri contentUri) {
+        String[] proj = { MediaStore.Images.Media.DATA };
+        CursorLoader loader = new CursorLoader(requireContext(), contentUri, proj, null, null, null);
+        Cursor cursor = loader.loadInBackground();
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        String result = cursor.getString(column_index);
+        cursor.close();
+        return result;
+    }
+
+ */
+
+    public void startSelectionMode() {
+        if (actionMode == null) {
+            actionMode = requireActivity().startActionMode(new ActionMode.Callback() {
+                @Override
+                public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+                    MenuInflater inflater = requireActivity().getMenuInflater();
+                    inflater.inflate(R.menu.selection_menu, menu);
+                    return true;
+                }
+
+                @Override
+                public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
+                    return false;
+                }
+
+                @Override
+                public boolean onActionItemClicked(ActionMode actionMode, MenuItem item) {
+                    switch (item.getItemId()) {
+                        case R.id.action_delete:
+                            deleteSelectedItems(mediaAdapter.getSelectedItems());
+                            endSelectionMode();
+                            return true;
+                        case R.id.action_share:
+                            shareSelectedItems(mediaAdapter.getSelectedItems());
+                            endSelectionMode();
+                            return true;
+                        case R.id.action_select_all:
+                            mediaAdapter.selectAll();
+                            return true;
+                    }
+                    return false;
+                }
+
+                @Override
+                public void onDestroyActionMode(ActionMode actionMode) {
+                    actionMode = null;
+                    mediaAdapter.enableSelectionMode(false);
+                }
+            });
+            actionMode.setTitle(mediaAdapter.getSelectedItems().size() + "");
+            mediaAdapter.enableSelectionMode(true);
+        }
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -176,7 +264,7 @@ public class SavedMediaFragment extends BaseFragment implements MediaAdapter.Cli
             case R.id.action_delete:
             case R.id.action_share:
             default:
-//                startSelectionMode();
+                startSelectionMode();
                 return super.onOptionsItemSelected(item);
         }
     }
@@ -201,18 +289,17 @@ public class SavedMediaFragment extends BaseFragment implements MediaAdapter.Cli
         }else{
             showMessage(R.string.nothing_selected);
         }
-
-
     }
 
     public void onDeleteCompleted() {
-        loadMediaFiles();
+        mediaFiles.clear();
+        getAllPics();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requireActivity().setTitle(R.string.saved_media);
+        setHasOptionsMenu(true);
         if (getArguments() != null) {
 
         }
@@ -221,7 +308,7 @@ public class SavedMediaFragment extends BaseFragment implements MediaAdapter.Cli
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+        requireActivity().setTitle(R.string.saved_media);
         binding = FragmentSavedMediaBinding.inflate(inflater);
         return binding.getRoot();
     }
@@ -230,6 +317,7 @@ public class SavedMediaFragment extends BaseFragment implements MediaAdapter.Cli
     @Override
     protected void setUp(View view) {
         setupMediaList();
+        getAllPics();
     }
 
     private void setupMediaList() {
@@ -246,6 +334,6 @@ public class SavedMediaFragment extends BaseFragment implements MediaAdapter.Cli
 
     @Override
     public void notifySelectionMode() {
-
+        updateActionMode();
     }
 }

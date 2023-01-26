@@ -134,16 +134,13 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder>  {
             super.onBind(position);
             ipCam = ipCams.get(position);
             if (ipCam.getType() == CamDeviceType.HIKVISION.getValue()){
-               // HIKSinglePlayer singlePlayer =  new HIKSinglePlayer(ipCam.getChannel(),ipCam.getLoginId(),ipCam.getType());
-                //singlePlayer.initView(surfaceView);
+                HIKSinglePlayer singlePlayer =  new HIKSinglePlayer(ipCam.getChannel(),ipCam.getLoginId(),ipCam.getType());
+                singlePlayer.initView(surfaceView);
             }else if(ipCam.getType() == CamDeviceType.DAHUA.getValue()){
-               // DahuaSinglePlayer singlePlayer =  new DahuaSinglePlayer(ipCam.getChannel(),ipCam.getLoginId(),ipCam.getType());
-                //singlePlayer.initView(surfaceView);
-            }else{
-
+                DahuaSinglePlayer singlePlayer =  new DahuaSinglePlayer(ipCam.getChannel(),ipCam.getLoginId(),ipCam.getType());
+                singlePlayer.initView(surfaceView);
             }
             itemView.setOnClickListener(this);
-            isBound = true;
         }
 
         @Override
@@ -180,8 +177,8 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder>  {
             super.onBind(position);
             ipCam = ipCams.get(position);
             if (ipCam.getType() == CamDeviceType.OTHER.getValue()){
-               // VlcSinglePlayer vlcSinglePlayer = new VlcSinglePlayer(context);
-              //  vlcSinglePlayer.initVlcPlayer(ipCam.getUrlOrIpAddress(),vlcVideoLayout);
+                VlcSinglePlayer vlcSinglePlayer = new VlcSinglePlayer(context);
+                vlcSinglePlayer.initVlcPlayer(ipCam.getUrlOrIpAddress(),vlcVideoLayout);
             }
             itemView.setOnClickListener(this);
         }

@@ -47,41 +47,6 @@
             android:layout_alignParentBottom="true"
             />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
 
-            <Button
-                android:id="@+id/addCam"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:text="AddCam" />
-
-            <Button
-                android:id="@+id/RemoveCam"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:text="RemoveCam" />
-
-            <Button
-                android:id="@+id/ChangeGrid"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:text="ChangeGrid" />
-
-
-            <Button
-                android:id="@+id/removeAllData"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="RemoveAllData" />
-        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

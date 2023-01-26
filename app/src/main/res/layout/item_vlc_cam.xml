@@ -11,7 +11,7 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_margin="2dp"
+            android:layout_margin="4dp"
             android:backgroundTint="@color/black_color"
             app:layout_constraintDimensionRatio="H,1200:550"
             app:layout_constraintTop_toTopOf="parent"
@@ -27,7 +27,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:vlc_error_text_size="30dp" />
-
 
             <TextView
                 android:id="@+id/tv_cam_name"

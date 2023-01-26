@@ -91,7 +91,6 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
     @NotNull
     @Override
     public Fragment getItem(int position) {
-        Log.i("TATZ", "getItem: ");
         PagerFragment pagerFragment = (PagerFragment) mFragmentList.get(position);
         Bundle bundle = new Bundle();
         bundle.putInt("IN",position);

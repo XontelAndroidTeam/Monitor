@@ -69,7 +69,6 @@ public class MonitorFragment extends BaseFragment  {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requireActivity().setTitle(R.string.monitor);
         getFragmentComponent().inject(this);
         mainViewModel = new ViewModelProvider(requireActivity(), providerFactory).get(MainViewModel.class);
         setHasOptionsMenu(true);
@@ -104,6 +103,7 @@ public class MonitorFragment extends BaseFragment  {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentMonitorBinding.inflate(inflater);
+        requireActivity().setTitle(R.string.monitor);
         return binding.getRoot();
     }
 
@@ -127,7 +127,7 @@ public class MonitorFragment extends BaseFragment  {
             if (allIpCams != null && !allIpCams.isEmpty()){
                 Log.i("TATZ", "DataInitialized: "+allIpCams.size());
                 if (ipCams.isEmpty()){
-                   // Log.i("TATZ", "DataFirstInitialized: "+allIpCams.size());
+                    Log.i("TATZ", "DataFirstInitialized: "+allIpCams.size());
                     pagerAdapter.getListOfData(allIpCams);
                 } else if (ipCams.size() > allIpCams.size()){
                     Log.i("TATZ", "DataRemoved: ");
@@ -136,6 +136,7 @@ public class MonitorFragment extends BaseFragment  {
                     Log.i("TATZ", "NewData: ");
                     handleIncreaseIpCam(allIpCams);
                 }else{
+                    mainViewModel.refreshData.setValue(true);
                     Log.i("TATZ", "DataEdit: ");
                 }
                 handleCamsFromDb(allIpCams);
@@ -162,22 +163,6 @@ public class MonitorFragment extends BaseFragment  {
             }
         });
 
-        binding.addCam.setOnClickListener(view -> {
-            mainViewModel.dummyAddIpCam();
-        });
-
-        binding.RemoveCam.setOnClickListener(view -> {
-            mainViewModel.dummyRemoveIpCam();
-        });
-
-        binding.ChangeGrid.setOnClickListener(view -> {
-            mainViewModel.dummyChangeGrid();
-        });
-
-        binding.removeAllData.setOnClickListener(view -> {
-            mainViewModel.dummyRemoveAllData();
-        });
-
     }
 
     private void handleCamsFromDb(List<IpCam> ipCamsData){
@@ -192,8 +177,8 @@ public class MonitorFragment extends BaseFragment  {
         }else if (size < pagerAdapter.getFragmentCount()){
             pagerAdapter.removeFragments(pagerAdapter.getFragmentCount() - size);
         }
-        pagerAdapter.updateGridCount(mainViewModel.gridCount.getValue());
         mainViewModel.pagerCount.setValue(pagerAdapter.getFragmentCount());
+        pagerAdapter.updateGridCount(mainViewModel.gridCount.getValue());
         mainViewModel.refreshPagerGridCount.setValue(true);
     }
 

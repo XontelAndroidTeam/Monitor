@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.FileObserver;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -105,6 +107,14 @@ public class CamPreviewFragment extends BaseFragment {
         if (getArguments() != null) {
             cam = getArguments().getParcelable(KEY_CAM_INFO);
         }
+
+        new FileObserver(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/capture") {
+            @Override
+            public void onEvent(int event, String path) {
+                if (event == FileObserver.CREATE)
+                    Log.i("File created : ", path);
+            }
+        }.startWatching();
     }
 
     @Override
@@ -275,4 +285,5 @@ public class CamPreviewFragment extends BaseFragment {
         else{vlcSinglePlayer.removeVlcPlayer();}
         super.onDestroy();
     }
+
 }

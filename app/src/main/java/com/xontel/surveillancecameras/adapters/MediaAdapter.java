@@ -28,7 +28,7 @@ import java.util.List;
 
 public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHolder> {
     private Context context ;
-    private List<File> itemList ;
+    private List<File> itemList = new ArrayList<>();;
     private List<File> selectedItems = new ArrayList<>();
     private ClickActionListener clickAction ;
     private boolean selectionModeEnabled = false ;
@@ -41,6 +41,13 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
 
     public List<File> getSelectedItems() {
         return selectedItems;
+    }
+
+
+    public void setAllData(List<File> newItemList){
+        if (!itemList.isEmpty()){itemList.clear();}
+        itemList.addAll(newItemList);
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -94,17 +101,11 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
               checker = itemView.findViewById(R.id.cb_checker) ;
 
         }
-
-
-
-
         public void showChecker(boolean show){
             int visibility = show ? View.VISIBLE : View.GONE ;
             checkBoxOverlay.setVisibility(visibility);
             checker.setVisibility(visibility);
         }
-
-
         @Override
         public void onClick(View v) {
             if(selectionModeEnabled){
@@ -123,12 +124,14 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
         private void viewMedia() {
             File file = itemList.get(getAdapterPosition()) ;
             Intent intent = new Intent(context, MediaViewerActivity.class);
-            if(file.getName().toLowerCase().endsWith("jpeg")){
+            if(file.getName().toLowerCase().endsWith("jpg") || file.getName().toLowerCase().endsWith("jpeg") || file.getName().toLowerCase().endsWith("png")){
                 intent.putExtra(MediaViewerActivity.KEY_MEDIA_TYPE, MediaViewerActivity.MEDIA_IMAGE);
             }else if(file.getName().toLowerCase().endsWith("mp4")){
                 intent.putExtra(MediaViewerActivity.KEY_MEDIA_TYPE, MediaViewerActivity.MEDIA_VIDEO);
+            }else{
+                intent.putExtra(MediaViewerActivity.KEY_MEDIA_TYPE, MediaViewerActivity.MEDIA_VIDEO);
             }
-            intent.putExtra(MediaViewerActivity.KEY_MEDIA_FILE_PATH, file.getAbsolutePath());
+            intent.putExtra(MediaViewerActivity.KEY_MEDIA_FILE_PATH, file.getPath());
             context.startActivity(intent);
         }
 
@@ -137,12 +140,14 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
             showChecker(selectionModeEnabled);
             checker.setChecked(selectedItems.contains(itemList.get(getAdapterPosition())));
             File file = itemList.get(position);
-            if(file.getName().toLowerCase().endsWith("jpeg")){
+            if(file.getName().toLowerCase().endsWith("jpg") || file.getName().toLowerCase().endsWith("jpeg") || file.getName().toLowerCase().endsWith("png")){
                 bindImage(file);
             }else if(file.getName().toLowerCase().endsWith("mp4")){
+                Log.i("TATZ", "viewMedia_Video: "+file.getAbsolutePath());
+                bindVideo(file);
+            }else{
                 bindVideo(file);
             }
-            
         }
 
         private void bindVideo(File file) {
@@ -160,13 +165,11 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
             play.setVisibility(View.GONE);
             Glide.with(context)
                     .load(file.getPath())
-                    .thumbnail(0.25f)// or URI/path
                     .into(image);
         }
     }
 
     public interface ClickActionListener{
-
         void onSelectionModeEnabled(boolean enabled);
         void notifySelectionMode();
     }

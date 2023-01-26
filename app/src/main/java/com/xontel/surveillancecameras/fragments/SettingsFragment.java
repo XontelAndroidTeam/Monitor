@@ -45,7 +45,6 @@ public class SettingsFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requireActivity().setTitle(R.string.settings);
         getFragmentComponent().inject(this);
         mSettingViewModel = new ViewModelProvider(this, mViewModelProviderFactory).get(SettingViewModel.class);
         mMainViewModel = new ViewModelProvider(requireActivity(), mViewModelProviderFactory).get(MainViewModel.class);
@@ -54,7 +53,7 @@ public class SettingsFragment extends BaseFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+        requireActivity().setTitle(R.string.settings);
         binding = FragmentSettingsBinding.inflate(inflater);
         return binding.getRoot();
     }

@@ -104,7 +104,7 @@ public class HomeActivity extends BaseActivity implements AdapterView.OnItemClic
         navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
             @Override
             public void onDestinationChanged(@NonNull NavController navController, @NonNull NavDestination navDestination, @Nullable Bundle bundle) {
-                if (Objects.requireNonNull(navController.getCurrentDestination()).getId() == R.id.settingsFragment){
+                if (Objects.requireNonNull(navController.getCurrentDestination()).getId() == R.id.monitorFragment){
                     setupGridDropDown();
                 }else{
                     removeGridDropDown();
@@ -281,7 +281,11 @@ public class HomeActivity extends BaseActivity implements AdapterView.OnItemClic
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
         AutoCompleteTextView autoCompleteTextView = textInputLayout.findViewById(R.id.slide_show_filter);
-        mainViewModel.gridCount.setValue(Integer.parseInt(autoCompleteTextView.getText().toString()));
+        int gridCount = Integer.parseInt(autoCompleteTextView.getText().toString());
+        if (mainViewModel.gridCount.getValue() != gridCount){
+            mainViewModel.gridCount.setValue(gridCount);
+            mainViewModel.refreshGridCount.setValue(true);
+        }
     }
 
 //    private void updateViewPager() {
