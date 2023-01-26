@@ -21,6 +21,7 @@ import com.bumptech.glide.Glide;
 import com.xontel.surveillancecameras.R;
 import com.xontel.surveillancecameras.activities.MediaViewerActivity;
 import com.xontel.surveillancecameras.activities.SavedMediaActivity;
+import com.xontel.surveillancecameras.utils.MediaData;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -28,23 +29,23 @@ import java.util.List;
 
 public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHolder> {
     private Context context ;
-    private List<File> itemList = new ArrayList<>();;
-    private List<File> selectedItems = new ArrayList<>();
+    private List<MediaData> itemList = new ArrayList<>();;
+    private List<MediaData> selectedItems = new ArrayList<>();
     private ClickActionListener clickAction ;
     private boolean selectionModeEnabled = false ;
 
-    public MediaAdapter(Context context, List<File> itemList, ClickActionListener clickAction) {
+    public MediaAdapter(Context context, List<MediaData> itemList, ClickActionListener clickAction) {
         this.context = context;
         this.itemList = itemList;
         this.clickAction = clickAction;
     }
 
-    public List<File> getSelectedItems() {
+    public List<MediaData> getSelectedItems() {
         return selectedItems;
     }
 
 
-    public void setAllData(List<File> newItemList){
+    public void setAllData(List<MediaData> newItemList){
         if (!itemList.isEmpty()){itemList.clear();}
         itemList.addAll(newItemList);
         notifyDataSetChanged();
@@ -122,7 +123,7 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
         }
 
         private void viewMedia() {
-            File file = itemList.get(getAdapterPosition()) ;
+            MediaData file = itemList.get(getAdapterPosition()) ;
             Intent intent = new Intent(context, MediaViewerActivity.class);
             if(file.getName().toLowerCase().endsWith("jpg") || file.getName().toLowerCase().endsWith("jpeg") || file.getName().toLowerCase().endsWith("png")){
                 intent.putExtra(MediaViewerActivity.KEY_MEDIA_TYPE, MediaViewerActivity.MEDIA_IMAGE);
@@ -131,7 +132,7 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
             }else{
                 intent.putExtra(MediaViewerActivity.KEY_MEDIA_TYPE, MediaViewerActivity.MEDIA_VIDEO);
             }
-            intent.putExtra(MediaViewerActivity.KEY_MEDIA_FILE_PATH, file.getPath());
+            intent.putExtra(MediaViewerActivity.KEY_MEDIA_FILE_PATH, file);
             context.startActivity(intent);
         }
 
@@ -139,32 +140,33 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
         public void onBind(int position) {
             showChecker(selectionModeEnabled);
             checker.setChecked(selectedItems.contains(itemList.get(getAdapterPosition())));
-            File file = itemList.get(position);
-            if(file.getName().toLowerCase().endsWith("jpg") || file.getName().toLowerCase().endsWith("jpeg") || file.getName().toLowerCase().endsWith("png")){
+            MediaData data = itemList.get(position);
+            String file = data.getImagePath() == null ? data.getVideoPath() : data.getImagePath();
+            if(file.toLowerCase().endsWith("jpg") || file.toLowerCase().endsWith("jpeg") || file.toLowerCase().endsWith("png")){
                 bindImage(file);
-            }else if(file.getName().toLowerCase().endsWith("mp4")){
-                Log.i("TATZ", "viewMedia_Video: "+file.getAbsolutePath());
+            }else if(file.toLowerCase().endsWith("mp4")){
+                Log.i("TATZ", "viewMedia_Video: "+file);
                 bindVideo(file);
             }else{
                 bindVideo(file);
             }
         }
 
-        private void bindVideo(File file) {
+        private void bindVideo(String file) {
             play.setVisibility(View.VISIBLE);
 //            Glide.with(context)
 //                    .asBitmap()
 //                    .load(file.getPath())
 //                    .thumbnail(0.5f)// or URI/path// or URI/path
 //                    .into(image);
-            image.setImageBitmap(ThumbnailUtils.createVideoThumbnail(file.getAbsolutePath(),
+            image.setImageBitmap(ThumbnailUtils.createVideoThumbnail(file,
                     MediaStore.Images.Thumbnails.MINI_KIND));
         }
 
-        private void bindImage(File file) {
+        private void bindImage(String file) {
             play.setVisibility(View.GONE);
             Glide.with(context)
-                    .load(file.getPath())
+                    .load(file)
                     .into(image);
         }
     }

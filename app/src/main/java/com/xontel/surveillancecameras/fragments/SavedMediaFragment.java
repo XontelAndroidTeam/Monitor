@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.ContentUris;
 import android.content.Intent;
 import android.database.Cursor;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,6 +12,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 
+import android.os.Environment;
+import android.os.FileObserver;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.ActionMode;
@@ -27,6 +30,9 @@ import com.xontel.surveillancecameras.adapters.MediaAdapter;
 import com.xontel.surveillancecameras.base.BaseFragment;
 import com.xontel.surveillancecameras.databinding.FragmentSavedMediaBinding;
 import com.xontel.surveillancecameras.utils.CommonUtils;
+import com.xontel.surveillancecameras.utils.MediaData;
+
+import org.videolan.libvlc.Media;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -36,7 +42,7 @@ import java.util.List;
 public class SavedMediaFragment extends BaseFragment implements MediaAdapter.ClickActionListener {
     private FragmentSavedMediaBinding binding ;
     private MediaAdapter mediaAdapter;
-    private List<File> mediaFiles = new ArrayList<>();
+    private List<MediaData> mediaFiles = new ArrayList<>();
     private android.view.ActionMode actionMode;
     private ProgressDialog progressDialog;
     Uri collection;
@@ -93,15 +99,15 @@ public class SavedMediaFragment extends BaseFragment implements MediaAdapter.Cli
         fragment.setArguments(args);
         return fragment;
     }
-
-    private void shareSelectedItems(List<File> selectedFiles) {
+/*
+    private void shareSelectedItems(List<MediaData> selectedFiles) {
         if(selectedFiles.size() > 0) {
             Intent intent = new Intent();
             intent.setAction(Intent.ACTION_SEND_MULTIPLE);
             intent.putExtra(Intent.EXTRA_SUBJECT, "Here are some files.");
-            intent.setType("image/jpeg"); /* This example is sharing jpeg images. */
+            intent.setType("image/jpeg");
             ArrayList<Uri> files = new ArrayList<Uri>();
-            for (File file : selectedFiles) {
+            for (MediaData file : selectedFiles) {
                 Uri uri = Uri.fromFile(file);
                 files.add(uri);
             }
@@ -113,6 +119,8 @@ public class SavedMediaFragment extends BaseFragment implements MediaAdapter.Cli
         }
 
     }
+
+ */
 
     public void updateActionMode() {
         //  ((MainActivity)getContext()).getActionMode().getMenu().getItem(0).setVisible(itemsCount == 1);
@@ -153,7 +161,7 @@ public class SavedMediaFragment extends BaseFragment implements MediaAdapter.Cli
                 int size = cursor.getInt(sizeColumn);
                 String dataPath = cursor.getString(data);
                 Uri contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id);
-                mediaFiles.add(new File(dataPath));
+                mediaFiles.add(new MediaData(name,size,duration,null,dataPath));
             }
             mediaAdapter.setAllData(mediaFiles);
             getAllVideos();
@@ -190,8 +198,7 @@ public class SavedMediaFragment extends BaseFragment implements MediaAdapter.Cli
                 int size = cursor.getInt(sizeColumn);
                 String dataPath = cursor.getString(data);
                 Uri contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id);
-                Log.i("TATZ", "getAllVideos: "+dataPath);
-                mediaFiles.add(new File(contentUri.toString()));
+                mediaFiles.add(new MediaData(name,size,duration,dataPath,null));
             }
             mediaAdapter.setAllData(mediaFiles);
         }catch(Exception e){
@@ -236,7 +243,7 @@ public class SavedMediaFragment extends BaseFragment implements MediaAdapter.Cli
                             endSelectionMode();
                             return true;
                         case R.id.action_share:
-                            shareSelectedItems(mediaAdapter.getSelectedItems());
+                          //  shareSelectedItems(mediaAdapter.getSelectedItems());
                             endSelectionMode();
                             return true;
                         case R.id.action_select_all:
@@ -277,10 +284,10 @@ public class SavedMediaFragment extends BaseFragment implements MediaAdapter.Cli
         progressDialog.setCancelable(false);
     }
 
-    private void deleteSelectedItems(List<File> selectedFiles) {
+    private void deleteSelectedItems(List<MediaData> selectedFiles) {
         if(selectedFiles.size() > 0 ) {
             for (int i = 0; i < selectedFiles.size(); i++) {
-                if (!CommonUtils.deleteFile(selectedFiles.get(i))) {
+                if (!CommonUtils.deleteFile(new File(selectedFiles.get(i).getImagePath() == null || selectedFiles.get(i).getImagePath().isEmpty()  ? selectedFiles.get(i).getVideoPath() : selectedFiles.get(i).getImagePath()  ))) {
                     Toast.makeText(getContext(), R.string.file_delete_error + selectedFiles.get(i).getName(), Toast.LENGTH_LONG).show();
                 }
             }
@@ -299,6 +306,20 @@ public class SavedMediaFragment extends BaseFragment implements MediaAdapter.Cli
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+/*
+        FileObserver observer = new FileObserver(Environment.DIRECTORY_DOWNLOADS) { // set up a file observer to watch this directory on sd card
+            @Override
+            public void onEvent(int event, String file) {
+                if(event == FileObserver.CREATE && !file.equals(".probe")){ // check if its a "create" and not equal to .probe because thats created every time camera is launched
+                    Log.i("TATZ", "File created ");
+                }
+            }
+        };
+         observer.startWatching();
+ */
+        String filename = "*" + ".mp4";
+        File apkFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), filename);
+        MediaScannerConnection.scanFile(requireContext(), new String[]{apkFile.getAbsolutePath()}, new String[]{"video/*"}, (s, uri) -> Log.i("TATZ", "onScanCompleted: "+uri));
         setHasOptionsMenu(true);
         if (getArguments() != null) {
 

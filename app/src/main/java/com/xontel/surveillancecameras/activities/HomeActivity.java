@@ -25,6 +25,7 @@ import com.xontel.surveillancecameras.viewModels.ViewModelProviderFactory;
 import com.xontel.surveillancecameras.adapters.PagerAdapter;
 import com.xontel.surveillancecameras.base.BaseActivity;
 import com.xontel.surveillancecameras.databinding.ActivityMainBinding;
+
 import java.util.Objects;
 import javax.inject.Inject;
 

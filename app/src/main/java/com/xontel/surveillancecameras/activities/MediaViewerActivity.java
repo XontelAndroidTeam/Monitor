@@ -27,6 +27,7 @@ import com.xontel.surveillancecameras.base.BaseActivity;
 import com.xontel.surveillancecameras.databinding.ActivityMediaViewerActivityBinding;
 import com.xontel.surveillancecameras.databinding.DialogMediaDetailsBinding;
 import com.xontel.surveillancecameras.dialogs.MediaDetailsDialog;
+import com.xontel.surveillancecameras.utils.MediaData;
 
 import org.videolan.libvlc.Media;
 import org.videolan.libvlc.MediaPlayer;
@@ -42,24 +43,7 @@ public class MediaViewerActivity extends BaseActivity {
     public static final int MEDIA_VIDEO = 1;
     public static final int MEDIA_IMAGE = 0;
     private MediaPlayer mediaPlayer;
-    Uri contentUri;
-    Uri collection;
-    String[] projection = new String[] {
-            MediaStore.MediaColumns.RELATIVE_PATH,
-            MediaStore.Images.Media._ID,
-            MediaStore.Images.Media.DATA,
-            MediaStore.Images.Media.DISPLAY_NAME,
-            MediaStore.Images.Media.DURATION,
-            MediaStore.Images.Media.SIZE};
-
-    String[] projectionVideo = new String[] {
-            MediaStore.Video.Media._ID,
-            MediaStore.Video.Media.DATA,
-            MediaStore.Video.Media.DISPLAY_NAME,
-            MediaStore.Video.Media.DURATION,
-            MediaStore.Video.Media.SIZE};
-    private String mediaFilePath;
-    private SimpleExoPlayer simpleExoPlayer;
+    private MediaData mediaFilePath;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,15 +58,14 @@ public class MediaViewerActivity extends BaseActivity {
     }
 
     private void intUI() {
-        mediaFilePath = getIntent().getStringExtra(KEY_MEDIA_FILE_PATH);
+        mediaFilePath = getIntent().getParcelableExtra(KEY_MEDIA_FILE_PATH);
         binding.ivDetails.setOnClickListener(v -> {
-            MediaDetailsDialog mediaDetailsDialog = new MediaDetailsDialog(this, new File(mediaFilePath));
+            MediaDetailsDialog mediaDetailsDialog = new MediaDetailsDialog(this, new File( mediaFilePath.getImagePath() == null  ? mediaFilePath.getVideoPath() : mediaFilePath.getImagePath()));
             mediaDetailsDialog.show();
         });
-        getAllVideos();
         if(getIntent().hasExtra(KEY_MEDIA_TYPE)){
             if(getIntent().getIntExtra(KEY_MEDIA_TYPE, MEDIA_IMAGE) == MEDIA_IMAGE){
-             //   showImage();
+                showImage();
             }else{
                 showVideo();
             }
@@ -91,7 +74,7 @@ public class MediaViewerActivity extends BaseActivity {
     }
 
     private void showImage(){
-        Glide.with(this).asBitmap().load(mediaFilePath).into(new SimpleTarget<Bitmap>() {
+        Glide.with(this).asBitmap().load(mediaFilePath.getImagePath()).into(new SimpleTarget<Bitmap>() {
 
             @Override
             public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
@@ -103,55 +86,17 @@ public class MediaViewerActivity extends BaseActivity {
     }
 
     private void showVideo(){
-
-
-            binding.vlcLayout.setVisibility(View.VISIBLE);
-            mediaPlayer = new MediaPlayer(this);
-            mediaPlayer.attachViews(binding.vlcLayout);
-            final Media media = new Media(mediaPlayer.getLibVLCInstance(), contentUri.toString());
-            media.addCommonOptions();
-            mediaPlayer.setMedia(media);
-            media.release();
-            mediaPlayer.play();
-
-
+        binding.vlcLayout.setVisibility(View.VISIBLE);
+        mediaPlayer = new MediaPlayer(this);
+        mediaPlayer.attachViews(binding.vlcLayout);
+        final Media media = new Media(mediaPlayer.getLibVLCInstance(), mediaFilePath.getVideoPath());
+        media.addCommonOptions();
+        mediaPlayer.setMedia(media);
+        media.release();
+        mediaPlayer.play();
     }
-    private void getAllVideos(){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            collection = MediaStore.Video.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY);
-        } else {
-            collection = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
-        }
-        try(Cursor cursor = this.getContentResolver().query(
-                collection,
-                projectionVideo,
-                null,
-                null,
-                null
-        ))  {
-            // Cache column indices.
-            int idColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID);
-            int nameColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME);
-            int durationColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION);
-            int sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE);
-            int data = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
 
-            while (cursor.moveToNext()) {
-                // Get values of columns for a given video.
-                long id = cursor.getLong(idColumn);
-                String name = cursor.getString(nameColumn);
-                int duration = cursor.getInt(durationColumn);
-                int size = cursor.getInt(sizeColumn);
-                String dataPath = cursor.getString(data);
-                 contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id);
-                Log.i("TATZ", "getAllVideos: "+contentUri);
-                Log.i("TATZ", "getAllVideos: "+dataPath);
-            }
-            showVideo();
-        }catch(Exception e){
-            Log.e("TAG", "error: " + e.getMessage());
-        }
-    }
+
 
 
     @Override

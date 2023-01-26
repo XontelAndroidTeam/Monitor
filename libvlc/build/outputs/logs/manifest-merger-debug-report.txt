@@ -1,29 +1,29 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\Users\01\AndroidStudioProjects\Monitor\libvlc\AndroidManifest.xml:2:1-6:12
-INJECTED from C:\Users\01\AndroidStudioProjects\Monitor\libvlc\AndroidManifest.xml:2:1-6:12
-INJECTED from C:\Users\01\AndroidStudioProjects\Monitor\libvlc\AndroidManifest.xml:2:1-6:12
+ADDED from C:\Users\aly_m\AndroidStudioProjects\Monitor\libvlc\AndroidManifest.xml:2:1-6:12
+INJECTED from C:\Users\aly_m\AndroidStudioProjects\Monitor\libvlc\AndroidManifest.xml:2:1-6:12
+INJECTED from C:\Users\aly_m\AndroidStudioProjects\Monitor\libvlc\AndroidManifest.xml:2:1-6:12
 	package
-		ADDED from C:\Users\01\AndroidStudioProjects\Monitor\libvlc\AndroidManifest.xml:3:5-27
-		INJECTED from C:\Users\01\AndroidStudioProjects\Monitor\libvlc\AndroidManifest.xml
-		INJECTED from C:\Users\01\AndroidStudioProjects\Monitor\libvlc\AndroidManifest.xml
+		ADDED from C:\Users\aly_m\AndroidStudioProjects\Monitor\libvlc\AndroidManifest.xml:3:5-27
+		INJECTED from C:\Users\aly_m\AndroidStudioProjects\Monitor\libvlc\AndroidManifest.xml
+		INJECTED from C:\Users\aly_m\AndroidStudioProjects\Monitor\libvlc\AndroidManifest.xml
 	android:versionName
-		ADDED from C:\Users\01\AndroidStudioProjects\Monitor\libvlc\AndroidManifest.xml:5:5-32
+		ADDED from C:\Users\aly_m\AndroidStudioProjects\Monitor\libvlc\AndroidManifest.xml:5:5-32
 	xmlns:android
-		ADDED from C:\Users\01\AndroidStudioProjects\Monitor\libvlc\AndroidManifest.xml:2:11-69
+		ADDED from C:\Users\aly_m\AndroidStudioProjects\Monitor\libvlc\AndroidManifest.xml:2:11-69
 	android:versionCode
-		ADDED from C:\Users\01\AndroidStudioProjects\Monitor\libvlc\AndroidManifest.xml:4:5-28
+		ADDED from C:\Users\aly_m\AndroidStudioProjects\Monitor\libvlc\AndroidManifest.xml:4:5-28
 uses-sdk
-INJECTED from C:\Users\01\AndroidStudioProjects\Monitor\libvlc\AndroidManifest.xml reason: use-sdk injection requested
-INJECTED from C:\Users\01\AndroidStudioProjects\Monitor\libvlc\AndroidManifest.xml
-INJECTED from C:\Users\01\AndroidStudioProjects\Monitor\libvlc\AndroidManifest.xml
-INJECTED from C:\Users\01\AndroidStudioProjects\Monitor\libvlc\AndroidManifest.xml
-INJECTED from C:\Users\01\AndroidStudioProjects\Monitor\libvlc\AndroidManifest.xml
+INJECTED from C:\Users\aly_m\AndroidStudioProjects\Monitor\libvlc\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from C:\Users\aly_m\AndroidStudioProjects\Monitor\libvlc\AndroidManifest.xml
+INJECTED from C:\Users\aly_m\AndroidStudioProjects\Monitor\libvlc\AndroidManifest.xml
+INJECTED from C:\Users\aly_m\AndroidStudioProjects\Monitor\libvlc\AndroidManifest.xml
+INJECTED from C:\Users\aly_m\AndroidStudioProjects\Monitor\libvlc\AndroidManifest.xml
 	android:targetSdkVersion
-		INJECTED from C:\Users\01\AndroidStudioProjects\Monitor\libvlc\AndroidManifest.xml
-		ADDED from C:\Users\01\AndroidStudioProjects\Monitor\libvlc\AndroidManifest.xml
-		INJECTED from C:\Users\01\AndroidStudioProjects\Monitor\libvlc\AndroidManifest.xml
+		INJECTED from C:\Users\aly_m\AndroidStudioProjects\Monitor\libvlc\AndroidManifest.xml
+		ADDED from C:\Users\aly_m\AndroidStudioProjects\Monitor\libvlc\AndroidManifest.xml
+		INJECTED from C:\Users\aly_m\AndroidStudioProjects\Monitor\libvlc\AndroidManifest.xml
 	android:minSdkVersion
-		INJECTED from C:\Users\01\AndroidStudioProjects\Monitor\libvlc\AndroidManifest.xml
-		ADDED from C:\Users\01\AndroidStudioProjects\Monitor\libvlc\AndroidManifest.xml
-		INJECTED from C:\Users\01\AndroidStudioProjects\Monitor\libvlc\AndroidManifest.xml
+		INJECTED from C:\Users\aly_m\AndroidStudioProjects\Monitor\libvlc\AndroidManifest.xml
+		ADDED from C:\Users\aly_m\AndroidStudioProjects\Monitor\libvlc\AndroidManifest.xml
+		INJECTED from C:\Users\aly_m\AndroidStudioProjects\Monitor\libvlc\AndroidManifest.xml

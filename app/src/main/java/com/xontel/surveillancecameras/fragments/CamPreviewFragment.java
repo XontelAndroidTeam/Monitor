@@ -1,10 +1,7 @@
 package com.xontel.surveillancecameras.fragments;
 
 import android.annotation.SuppressLint;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.FileObserver;
@@ -14,24 +11,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.hikvision.netsdk.HCNetSDK;
-import com.hikvision.netsdk.NET_DVR_IPPARACFG_V40;
 import com.xontel.surveillancecameras.R;
-import com.xontel.surveillancecameras.activities.AddCamActivity;
-import com.xontel.surveillancecameras.activities.AddNewDeviceActivity;
 import com.xontel.surveillancecameras.activities.CamerasActivity;
 import com.xontel.surveillancecameras.base.BaseFragment;
 import com.xontel.surveillancecameras.dahua.DahuaSinglePlayer;
@@ -41,16 +27,10 @@ import com.xontel.surveillancecameras.databinding.FragmentCameraBinding;
 import com.xontel.surveillancecameras.dialogs.CamDetailsDialog;
 import com.xontel.surveillancecameras.hikvision.HIKSinglePlayer;
 import com.xontel.surveillancecameras.utils.CamDeviceType;
-import com.xontel.surveillancecameras.utils.StorageHelper;
-import com.xontel.surveillancecameras.utils.VideoHelper;
 import com.xontel.surveillancecameras.viewModels.MainViewModel;
 import com.xontel.surveillancecameras.viewModels.ViewModelProviderFactory;
 import com.xontel.surveillancecameras.vlc.VlcSinglePlayer;
-
 import org.jetbrains.annotations.NotNull;
-import org.videolan.libvlc.Media;
-import org.videolan.libvlc.MediaPlayer;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
@@ -61,21 +41,12 @@ import javax.inject.Inject;
 
 public class CamPreviewFragment extends BaseFragment {
     public static final String TAG = CamPreviewFragment.class.getSimpleName();
-    private MediaPlayer mediaPlayer;
-    private static final int REQUEST_CODE_EDIT_CAM = 44;
     private VlcSinglePlayer vlcSinglePlayer;
     private HIKSinglePlayer hikSinglePlayer ;
     private DahuaSinglePlayer dahuaSinglePlayer;
     private MainViewModel mainViewModel;
-    private int logId;
-    //    private LibVLC libVLC;
-    private VideoHelper videoHelper;
-//    private boolean isRecording = false;
-//    private ObjectAnimator objAnimator;
     private int recordTime = 0;
     private SimpleDateFormat mSimpleDateFormat;
-//    private static final boolean USE_TEXTURE_VIEW = false;
-//    private static final boolean ENABLE_SUBTITLES = true;
     private Timer mTimer;
     private static final String KEY_CAM_INFO = "cam_info";
     private IpCam cam;

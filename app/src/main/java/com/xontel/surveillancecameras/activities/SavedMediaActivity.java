@@ -110,11 +110,11 @@ public class SavedMediaActivity extends BaseActivity implements Observer, MediaA
                 public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
                     switch (item.getItemId()) {
                         case R.id.action_delete:
-                            deleteSelectedItems(mediaAdapter.getSelectedItems());
+                          //  deleteSelectedItems(mediaAdapter.getSelectedItems());
                             endSelectionMode();
                             return true;
                         case R.id.action_share:
-                            shareSelectedItems(mediaAdapter.getSelectedItems());
+                           // shareSelectedItems(mediaAdapter.getSelectedItems());
                             endSelectionMode();
                             return true;
                         case R.id.action_select_all:
@@ -214,7 +214,7 @@ public class SavedMediaActivity extends BaseActivity implements Observer, MediaA
     }
 
     private void setupMediaList() {
-        mediaAdapter = new MediaAdapter(this, mediaFiles, this);
+       // mediaAdapter = new MediaAdapter(this, mediaFiles, this);
         binding.rvMedia.setEmptyView(binding.llEmptyIndicator);
         binding.rvMedia.setAdapter(mediaAdapter)    ;
         binding.rvMedia.setLayoutManager(new GridLayoutManager(this, 4));
