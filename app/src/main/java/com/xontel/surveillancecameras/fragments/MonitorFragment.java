@@ -116,7 +116,7 @@ public class MonitorFragment extends BaseFragment  {
     private void setupCamsPager() {
         binding.camsPager.setEmptyView(binding.noCams.getRoot());
         if (pagerAdapter == null){
-            pagerAdapter = new PagerAdapter(getChildFragmentManager(),1,mainViewModel.gridCount.getValue());
+            pagerAdapter = new PagerAdapter(getChildFragmentManager(),mainViewModel.gridCount.getValue());
         }
         binding.camsPager.setAdapter(pagerAdapter);
         binding.dotsIndicator.setViewPager(binding.camsPager);

@@ -27,8 +27,8 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
         return mFragmentList;
     }
 
-    public PagerAdapter(@NonNull FragmentManager fm, int behavior, int gridCount) {
-        super(fm, behavior);
+    public PagerAdapter(@NonNull FragmentManager fm, int gridCount) {
+        super(fm, PagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         this.gridCount = gridCount ;
     }
 

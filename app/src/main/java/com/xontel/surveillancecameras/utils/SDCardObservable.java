@@ -1,9 +1,13 @@
 package com.xontel.surveillancecameras.utils;
 
+import androidx.lifecycle.MutableLiveData;
+
 import java.util.Observable;
 
 public class SDCardObservable extends Observable {
     private static SDCardObservable instance = new SDCardObservable();
+
+    public MutableLiveData<Boolean> refreshRemovable = new MutableLiveData<>(false);
 
     public static SDCardObservable getInstance() {
         return instance;
@@ -13,9 +17,10 @@ public class SDCardObservable extends Observable {
     }
 
     public void updateValue(String action) {
-        synchronized (this) {
-            setChanged();
-            notifyObservers(action);
-        }
+        refreshRemovable.setValue(true);
+      //  synchronized (this) {
+       //     setChanged();
+       //     notifyObservers(action);
+       // }
     }
 }

@@ -2,6 +2,7 @@ package com.xontel.surveillancecameras.fragments;
 
 import android.app.ProgressDialog;
 import android.content.ContentUris;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.media.MediaScannerConnection;
@@ -10,6 +11,8 @@ import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import android.os.Environment;
@@ -31,12 +34,15 @@ import com.xontel.surveillancecameras.base.BaseFragment;
 import com.xontel.surveillancecameras.databinding.FragmentSavedMediaBinding;
 import com.xontel.surveillancecameras.utils.CommonUtils;
 import com.xontel.surveillancecameras.utils.MediaData;
+import com.xontel.surveillancecameras.utils.SDCardObservable;
+import com.xontel.surveillancecameras.utils.StorageBroadcastReceiver;
 
 import org.videolan.libvlc.Media;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 
 public class SavedMediaFragment extends BaseFragment implements MediaAdapter.ClickActionListener {
@@ -219,6 +225,15 @@ public class SavedMediaFragment extends BaseFragment implements MediaAdapter.Cli
     }
 
  */
+    /*
+    private void deleteDataFromMediaStore(String dataPath){
+        requireActivity().getContentResolver().delete(
+                MediaStore.Video.Media.EXTERNAL_CONTENT_URI ,
+                MediaStore.Video.Media.DATA + " = ?",
+                new String[] { dataPath });
+    }
+
+     */
 
     public void startSelectionMode() {
         if (actionMode == null) {
@@ -268,8 +283,6 @@ public class SavedMediaFragment extends BaseFragment implements MediaAdapter.Cli
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
-            case R.id.action_delete:
-            case R.id.action_share:
             default:
                 startSelectionMode();
                 return super.onOptionsItemSelected(item);
@@ -282,15 +295,26 @@ public class SavedMediaFragment extends BaseFragment implements MediaAdapter.Cli
         progressDialog.setTitle(R.string.deleting); // Setting Title
         progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL); // Progress Dialog Style Horizontal
         progressDialog.setCancelable(false);
+        progressDialog.show();
+    }
+
+    private void setProgressDialogValues(int value){
+        progressDialog.setProgress(value);
+    }
+    private void hideProgressDialogValues(){
+        progressDialog.dismiss();
     }
 
     private void deleteSelectedItems(List<MediaData> selectedFiles) {
+        setupProgressDialog();
         if(selectedFiles.size() > 0 ) {
             for (int i = 0; i < selectedFiles.size(); i++) {
+                setProgressDialogValues(i);
                 if (!CommonUtils.deleteFile(new File(selectedFiles.get(i).getImagePath() == null || selectedFiles.get(i).getImagePath().isEmpty()  ? selectedFiles.get(i).getVideoPath() : selectedFiles.get(i).getImagePath()  ))) {
                     Toast.makeText(getContext(), R.string.file_delete_error + selectedFiles.get(i).getName(), Toast.LENGTH_LONG).show();
                 }
             }
+            hideProgressDialogValues();
             selectedFiles.clear();
             onDeleteCompleted();
         }else{
@@ -306,20 +330,6 @@ public class SavedMediaFragment extends BaseFragment implements MediaAdapter.Cli
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-/*
-        FileObserver observer = new FileObserver(Environment.DIRECTORY_DOWNLOADS) { // set up a file observer to watch this directory on sd card
-            @Override
-            public void onEvent(int event, String file) {
-                if(event == FileObserver.CREATE && !file.equals(".probe")){ // check if its a "create" and not equal to .probe because thats created every time camera is launched
-                    Log.i("TATZ", "File created ");
-                }
-            }
-        };
-         observer.startWatching();
- */
-        String filename = "*" + ".mp4";
-        File apkFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), filename);
-        MediaScannerConnection.scanFile(requireContext(), new String[]{apkFile.getAbsolutePath()}, new String[]{"video/*"}, (s, uri) -> Log.i("TATZ", "onScanCompleted: "+uri));
         setHasOptionsMenu(true);
         if (getArguments() != null) {
 
@@ -327,12 +337,52 @@ public class SavedMediaFragment extends BaseFragment implements MediaAdapter.Cli
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         requireActivity().setTitle(R.string.saved_media);
         binding = FragmentSavedMediaBinding.inflate(inflater);
+      //  getContentUris(requireContext(),true);
         return binding.getRoot();
     }
+
+    private List<Uri> getContentUris(@NonNull final Context context, boolean isImage) {
+        final List<String> allVolumes = new ArrayList<>();
+        allVolumes.add(MediaStore.VOLUME_EXTERNAL_PRIMARY);
+        final Set<String> externalVolumeNames;
+        final List<Uri> output = new ArrayList<>();
+        File [] files = requireActivity().getExternalFilesDirs(Environment.DIRECTORY_PICTURES);
+        File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES)+"");
+      //  Log.i("TATZ", "getDir: "+dir.getAbsolutePath());
+     //   for (File f : files){
+       //     Log.i("TATZ", "getFile: "+f.getAbsolutePath());
+    //    }
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+            externalVolumeNames = MediaStore.getExternalVolumeNames(context);
+            for ( String entry : externalVolumeNames) {
+                Log.i("TATZ", "volumeNames: "+entry);
+                if (!allVolumes.contains(entry)) {
+                    allVolumes.add(0, entry);
+                }
+            }
+        }
+
+
+        for (final String entry : allVolumes) {
+            Log.i("TATZ", "uri: "+MediaStore.Images.Media.getContentUri(entry));
+            output.add(MediaStore.Images.Media.getContentUri(entry));
+        }
+
+     //   File[] aDirArray = ContextCompat.getExternalFilesDirs(requireContext(), null);
+      //  File path = new File(aDirArray[1], Environment.DIRECTORY_DCIM);
+     //   String data=path.toString();
+     //   int index=data.indexOf("Android");
+     //   String subdata=data.substring(0,index);
+     //   File sec=new File(subdata+"Pictures/Monitor");
+     //   Log.i("TATZ", "5nzra: "+sec.getAbsolutePath());
+
+        return output;
+    }
+
 
 
     @Override

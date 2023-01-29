@@ -42,6 +42,7 @@ public class PagerFragment extends Fragment  {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(null);
         setupDagger();
+        Log.i("TATZ", "onCreatePagerFragment: "+index);
         Bundle args = getArguments();
         if (args != null){
             index = args.getInt("IN");

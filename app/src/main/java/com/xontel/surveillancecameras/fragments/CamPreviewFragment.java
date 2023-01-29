@@ -2,6 +2,7 @@ package com.xontel.surveillancecameras.fragments;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.media.MediaScannerConnection;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.FileObserver;
@@ -31,6 +32,8 @@ import com.xontel.surveillancecameras.viewModels.MainViewModel;
 import com.xontel.surveillancecameras.viewModels.ViewModelProviderFactory;
 import com.xontel.surveillancecameras.vlc.VlcSinglePlayer;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
@@ -46,6 +49,7 @@ public class CamPreviewFragment extends BaseFragment {
     private DahuaSinglePlayer dahuaSinglePlayer;
     private MainViewModel mainViewModel;
     private int recordTime = 0;
+    private FileObserver observer;
     private SimpleDateFormat mSimpleDateFormat;
     private Timer mTimer;
     private static final String KEY_CAM_INFO = "cam_info";
@@ -78,14 +82,6 @@ public class CamPreviewFragment extends BaseFragment {
         if (getArguments() != null) {
             cam = getArguments().getParcelable(KEY_CAM_INFO);
         }
-
-        new FileObserver(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/capture") {
-            @Override
-            public void onEvent(int event, String path) {
-                if (event == FileObserver.CREATE)
-                    Log.i("File created : ", path);
-            }
-        }.startWatching();
     }
 
     @Override
@@ -97,6 +93,21 @@ public class CamPreviewFragment extends BaseFragment {
     @SuppressLint("SimpleDateFormat")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+         observer = new FileObserver(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/capture") {
+            @Override
+            public void onEvent(int event, String file) {
+                if(event == FileObserver.CREATE && !file.equals(".probe") && file.toLowerCase().endsWith("mp4")){
+                    File pathFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/capture", file);
+                    MediaScannerConnection.scanFile(requireContext(), new String[]{pathFile.getAbsolutePath()}, new String[]{"video/*"}, (s, uri) -> Log.i("TATZ", "onScanCompleted_video: "+uri));
+                }else if(event == FileObserver.CREATE && !file.equals(".probe") ){
+                    File pathFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/capture", file);
+                    MediaScannerConnection.scanFile(requireContext(), new String[]{pathFile.getAbsolutePath()}, new String[]{"image/*"}, (s, uri) -> Log.i("TATZ", "onScanCompleted_image: "+uri));
+                }
+            }
+        };
+         observer.startWatching();
+
         binding = FragmentCameraBinding.inflate(inflater);
         parentBinding = ((CamerasActivity)requireActivity()).getViewRoot();
         mSimpleDateFormat = new SimpleDateFormat("HH:mm:ss");
@@ -124,14 +135,12 @@ public class CamPreviewFragment extends BaseFragment {
     }
 
     @Override
-    protected void setUp(View view) {
-
-    }
+    protected void setUp(View view) { }
 
 
     private void playCamStream() {
         if (cam.getType() == CamDeviceType.HIKVISION.getValue()){
-             hikSinglePlayer =  new HIKSinglePlayer(cam.getChannel(),cam.getLoginId(),cam.getType());
+            hikSinglePlayer =  new HIKSinglePlayer(cam.getChannel(),cam.getLoginId(),cam.getType());
             hikSinglePlayer.initView(binding.surfaceView);
         }else if(cam.getType() == CamDeviceType.DAHUA.getValue()){
             dahuaSinglePlayer =  new DahuaSinglePlayer(cam.getChannel(),cam.getLoginId(),cam.getType());
@@ -248,12 +257,16 @@ public class CamPreviewFragment extends BaseFragment {
         ((CamerasActivity)requireActivity()).showMessage(getString(R.string.Take_Picture));
     }
 
+
+
+
     @Override
     public void onDestroy() {
         if (mTimer != null){mTimer.cancel();}
         if (cam.getType() == CamDeviceType.HIKVISION.getValue()){ hikSinglePlayer.cleanUp();}
         else if(cam.getType() == CamDeviceType.DAHUA.getValue()){ dahuaSinglePlayer.stopPlay();}
         else{vlcSinglePlayer.removeVlcPlayer();}
+        observer.stopWatching();
         super.onDestroy();
     }
 

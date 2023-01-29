@@ -6,6 +6,9 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
+
+import com.xontel.surveillancecameras.utils.StorageHelper;
+
 import org.videolan.libvlc.Media;
 import org.videolan.libvlc.MediaPlayer;
 import org.videolan.libvlc.util.VLCVideoLayout;
@@ -23,10 +26,8 @@ public class VlcSinglePlayer {
     }
 
     public void initVlcPlayer(String url, VLCVideoLayout vlcLayout) {
-        File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/capture");
-        if (!dir.exists()) {dir.mkdir();}
         mediaPlayer = new MediaPlayer(context);
-        mediaPlayer.setRecordingDirectory(dir.getAbsolutePath());
+        mediaPlayer.setRecordingDirectory(StorageHelper.getMediaDirectory(context,Environment.DIRECTORY_MOVIES).getAbsolutePath());
         mediaPlayer.attachViews(vlcLayout);
         final Media media = new Media(mediaPlayer.getLibVLCInstance(), Uri.parse(url));
         media.addCommonOptions();
@@ -57,14 +58,16 @@ public class VlcSinglePlayer {
 
 
     private void saveImageWithoutResolver(Bitmap bitmap){
-        String filename = +System.currentTimeMillis() + ".png";
-        File apkFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), filename);
+        String filename = System.currentTimeMillis() + ".png";
+        File file = new File(StorageHelper.getMediaDirectory(context,Environment.DIRECTORY_PICTURES),filename);
+        Log.i("TATZ", "saveImageWithoutResolver: "+file.getAbsolutePath());
         OutputStream fos ;
         try {
-            fos = new FileOutputStream(apkFile);
+            fos = new FileOutputStream(file);
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            fos.flush();
             fos.close();
-            MediaScannerConnection.scanFile(context, new String[]{apkFile.getAbsolutePath()}, new String[]{"image/*"}, (s, uri) -> Log.i("TATZ", "onScanCompleted: "+uri));
+//            MediaScannerConnection.scanFile(context, new String[]{file.getAbsolutePath()}, new String[]{"image/*"}, (s, uri) -> Log.i("TATZ", "onScanCompleted: "+uri));
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -2,10 +2,12 @@ package com.xontel.surveillancecameras.utils;
 
 import static android.content.Context.STORAGE_SERVICE;
 
+import android.annotation.TargetApi;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;
@@ -14,11 +16,13 @@ import android.util.Log;
 
 import com.xontel.surveillancecameras.R;
 
+import org.videolan.libvlc.Media;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-
+@TargetApi(30)
 public class StorageHelper {
     public static final int INTERNAL_STORAGE = 0;
     public static final int SDCARD_STORAGE = 1;
@@ -33,7 +37,6 @@ public class StorageHelper {
         List<StorageVolume> volumes = storageManager.getStorageVolumes();
         List<StorageVolume> activeVolumes = new ArrayList<>();
         for (StorageVolume storageVolume : volumes) {
-
             if (storageVolume.getState().equals(Environment.MEDIA_MOUNTED)) {
                 activeVolumes.add(storageVolume);
             }
@@ -41,17 +44,25 @@ public class StorageHelper {
         return activeVolumes;
     }
 
-    public static File getMediaDirectory(Context context, String dirType) {
+
+    public static String getVolumeLabel(Context context, StorageVolume storageVolume) {
+        Log.e("err", storageVolume.getDescription(context));
+        if (isSDCard(context, storageVolume)) {
+            return context.getString(R.string.sd_card);
+        } else if (isUSB(context, storageVolume)) {
+            return context.getString(R.string.usb);
+        } else {
+            return context.getString(R.string.internal_storage);
+        }
+    }
+
+    public static File getMediaDirectory(Context context, String mediaType) {
         try {
-            File appMediaDir = new File(getChosenExternalStorageDir(context), "media");
-            appMediaDir.mkdir();
-            if (appMediaDir.exists()) {
-                File dir = new File(appMediaDir, dirType);
-                dir.mkdir();
-                if (dir.exists()) {
-                    return dir;
-                }
+            File appMediaDir = new File(getChosenExternalStorageDir(context)+"/"+mediaType+"/monitor");
+            if (!appMediaDir.exists()){
+                appMediaDir.mkdirs();
             }
+            return appMediaDir;
         }catch (Exception e) {
             e.printStackTrace();
         }
@@ -71,13 +82,7 @@ public class StorageHelper {
     public static File getChosenExternalStorageDir(Context context) {
         StorageVolume storageVolume = getVolumeByType(context, getSavedStorageType(context));
         if (storageVolume.getState().equals(Environment.MEDIA_MOUNTED)) {
-            File[] externalDirs = context.getExternalFilesDirs(null);
-            for (File dir : externalDirs) {
-                Log.v("err", storageVolume.getUuid() + " == " + dir.getAbsolutePath());
-                if (storageVolume.getUuid() != null && dir.getAbsolutePath().contains(storageVolume.getUuid())) {
-                    return dir;
-                }
-            }
+            return storageVolume.getDirectory();
         }
         return context.getExternalFilesDirs(null)[0];
 
@@ -104,6 +109,7 @@ public class StorageHelper {
         return labels /*.toArray(labelsArr)*/;
     }
 
+
     public static List<Integer> getVolumesTypesList(Context context) {
         List<Integer> types = new ArrayList<>();
         List<StorageVolume> volumes = getActiveVolumes(context);
@@ -113,6 +119,25 @@ public class StorageHelper {
         Log.v("helper", types.toString());
         return new ArrayList<>(new HashSet<>(types));
     }
+/*
+    public static StorageVolume getStorageVolumeFromName(Context context, String name){
+        StorageManager storageManager = (StorageManager) context.getSystemService(STORAGE_SERVICE);
+        return storageManager.getStorageVolume(new File("/storage/" + name.toUpperCase()));
+    }
+ */
+
+    public static String getLabelFromVolume(Context context, StorageVolume volume){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            if(volume.isEmulated()){
+                return context.getString(R.string.internal_storage);
+            }else if(volume.isRemovable()){
+                if(isSDCard(context, volume))
+                    return context.getString(R.string.sd_card);
+            }
+        }
+        return context.getString(R.string.usb) ;
+    }
+
 
     private static Integer getVolumeType(Context context, StorageVolume storageVolume) {
         if (isSDCard(context, storageVolume)) {
@@ -123,17 +148,6 @@ public class StorageHelper {
         return INTERNAL_STORAGE;
     }
 
-
-    public static String getVolumeLabel(Context context, StorageVolume storageVolume) {
-        Log.e("err", storageVolume.getDescription(context));
-        if (isSDCard(context, storageVolume)) {
-            return context.getString(R.string.sd_card);
-        } else if (isUSB(context, storageVolume)) {
-            return context.getString(R.string.usb);
-        } else {
-            return context.getString(R.string.internal_storage);
-        }
-    }
 
     public static int getStorageTypeFromLabel(Context context, String label) {
         if (label.equals(context.getString(R.string.sd_card))) {
@@ -172,13 +186,18 @@ public class StorageHelper {
     public static int getSavedStorageType(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE);
         int storageType = sharedPreferences.getInt(KEY_CHOSEN_STORAGE, INTERNAL_STORAGE);
-        Log.v("helper", storageType+"");
         return getVolumesTypesList(context).contains(storageType) ? storageType : INTERNAL_STORAGE;
     }
 
     public static void saveStorageType(Context context, String label) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE);
-        sharedPreferences.edit().putInt(KEY_CHOSEN_STORAGE, getStorageTypeFromLabel(context, label)).commit();
+        sharedPreferences.edit().putInt(KEY_CHOSEN_STORAGE, getStorageTypeFromLabel(context, label)).apply();
+    }
+
+    public static String  getSaveStorageName(Context context){
+        SharedPreferences sharedPreferences = context.getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE);
+        int storageType = sharedPreferences.getInt(KEY_CHOSEN_STORAGE, INTERNAL_STORAGE);
+        return getLabelFromStorageType(context,storageType);
     }
 
 }

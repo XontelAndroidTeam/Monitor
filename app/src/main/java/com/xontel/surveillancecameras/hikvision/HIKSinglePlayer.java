@@ -414,21 +414,19 @@ public class HIKSinglePlayer implements RealPlayCallBack{
             Player.MPInteger stWidth = new Player.MPInteger();
             Player.MPInteger stHeight = new Player.MPInteger();
             if (!Player.getInstance().getPictureSize(m_iPort, stWidth, stHeight)) {
-                Log.e(TAG, "获取图片尺寸失败---> error code:" + Player.getInstance().getLastError(m_iPort));
                 return ;
             }
             int nSize = 5 * stWidth.value * stHeight.value;
             byte[] picBuf = new byte[nSize];
             Player.MPInteger stSize = new Player.MPInteger();
             if (!Player.getInstance().getBMP(m_iPort, picBuf, nSize, stSize)) {
-                Log.e(TAG, "获取位图失败----> error code:" + Player.getInstance().getLastError(m_iPort));
                 return ;
             }
             if (sDateFormat == null) {
                 sDateFormat = new SimpleDateFormat("yyyy-MM-dd-hh_mm_ss_Sss");
             }
             String date = sDateFormat.format(new java.util.Date());
-            File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/capture");
+            File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/Monitor");
             if (!dir.exists()) {
                 dir.mkdir();
             }

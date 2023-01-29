@@ -1,11 +1,17 @@
 package com.xontel.surveillancecameras.dahua;
 
+import android.content.Context;
 import android.graphics.PixelFormat;
+import android.net.Uri;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+
+import androidx.annotation.NonNull;
+
 import com.company.NetSDK.CB_fDisConnect;
 import com.company.NetSDK.CB_fHaveReConnect;
 import com.company.NetSDK.CB_fRealDataCallBackEx;
@@ -19,6 +25,9 @@ import com.hikvision.netsdk.HCNetSDK;
 import org.MediaPlayer.PlayM4.Player;
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public class DahuaSinglePlayer {
     public static final String TAG = DahuaSinglePlayer.class.getSimpleName();
@@ -311,7 +320,7 @@ public class DahuaSinglePlayer {
     public void captureFrame() {
         try {
             sDateFormat = new SimpleDateFormat("yyyy-MM-dd-hh_mm_ss_Sss");
-            File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/capture");
+            File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/Monitor");
             if (!dir.exists()) {dir.mkdir();}
             String date = sDateFormat.format(new java.util.Date());
             File file = new File(dir, date + ".png");
@@ -325,7 +334,7 @@ public class DahuaSinglePlayer {
         try {
             sDateFormat = new SimpleDateFormat("yyyy-MM-dd-hh_mm_ss_Sss");
             _isRecording = true;
-            File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/capture");
+            File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES) + "/Monitor");
             if (!dir.exists()) {dir.mkdir();}
             String date = sDateFormat.format(new java.util.Date());
             File file = new File(dir, date + ".mp4");
@@ -338,5 +347,7 @@ public class DahuaSinglePlayer {
     public void stopCaptureVideo(){
         IPlaySDK.PLAYStopDataRecord(playPort);
     }
+
+
 
 }
