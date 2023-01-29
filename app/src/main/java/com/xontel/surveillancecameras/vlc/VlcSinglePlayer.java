@@ -2,7 +2,6 @@ package com.xontel.surveillancecameras.vlc;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;

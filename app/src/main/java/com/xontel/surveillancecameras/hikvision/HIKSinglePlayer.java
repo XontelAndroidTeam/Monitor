@@ -1,5 +1,6 @@
 package com.xontel.surveillancecameras.hikvision;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PixelFormat;
@@ -13,6 +14,7 @@ import com.hikvision.netsdk.HCNetSDK;
 import com.hikvision.netsdk.NET_DVR_PREVIEWINFO;
 import com.hikvision.netsdk.RealPlayCallBack;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
+import com.xontel.surveillancecameras.utils.StorageHelper;
 
 import org.MediaPlayer.PlayM4.Player;
 
@@ -28,6 +30,7 @@ public class HIKSinglePlayer implements RealPlayCallBack{
     private Player.MPInteger stWidth;
     private Player.MPInteger stHeight;
     private Player.MPInteger stSize;
+    private Context context;
     private SimpleDateFormat sDateFormat;
     public static final int HIK_MAIN_STREAM_CODE = 0;      //主码流
     public static final int HIK_SUB_STREAM_CODE = 1;
@@ -44,10 +47,11 @@ public class HIKSinglePlayer implements RealPlayCallBack{
     private int streamType ;
     private boolean isShow = true;
 //
-    public HIKSinglePlayer(int channel, int logId, int streamType) {
+    public HIKSinglePlayer(int channel, int logId, int streamType,Context context) {
         this.channel = channel;
         this.logId = logId;
         this.streamType = streamType ;
+        this.context = context;
     }
 
     public  void initView(SurfaceView surfaceView) {
@@ -426,10 +430,7 @@ public class HIKSinglePlayer implements RealPlayCallBack{
                 sDateFormat = new SimpleDateFormat("yyyy-MM-dd-hh_mm_ss_Sss");
             }
             String date = sDateFormat.format(new java.util.Date());
-            File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/Monitor");
-            if (!dir.exists()) {
-                dir.mkdir();
-            }
+            File dir = new File(StorageHelper.getMediaDirectory(context,Environment.DIRECTORY_PICTURES).getAbsolutePath());
             File file = new File(dir, date + ".jpg");
             FileOutputStream fos = new FileOutputStream(file);
             fos.write(picBuf, 0, stSize.value);

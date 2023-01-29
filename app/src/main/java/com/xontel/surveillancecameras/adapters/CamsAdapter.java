@@ -134,10 +134,10 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder>  {
             super.onBind(position);
             ipCam = ipCams.get(position);
             if (ipCam.getType() == CamDeviceType.HIKVISION.getValue()){
-                HIKSinglePlayer singlePlayer =  new HIKSinglePlayer(ipCam.getChannel(),ipCam.getLoginId(),ipCam.getType());
+                HIKSinglePlayer singlePlayer =  new HIKSinglePlayer(ipCam.getChannel(),ipCam.getLoginId(),ipCam.getType(),context);
                 singlePlayer.initView(surfaceView);
             }else if(ipCam.getType() == CamDeviceType.DAHUA.getValue()){
-                DahuaSinglePlayer singlePlayer =  new DahuaSinglePlayer(ipCam.getChannel(),ipCam.getLoginId(),ipCam.getType());
+                DahuaSinglePlayer singlePlayer =  new DahuaSinglePlayer(ipCam.getChannel(),ipCam.getLoginId(),ipCam.getType(),context);
                 singlePlayer.initView(surfaceView);
             }
             itemView.setOnClickListener(this);

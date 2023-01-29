@@ -22,6 +22,8 @@ import com.company.NetSDK.NET_DEVICEINFO_Ex;
 import com.company.NetSDK.SDK_RealPlayType;
 import com.company.PlaySDK.IPlaySDK;
 import com.hikvision.netsdk.HCNetSDK;
+import com.xontel.surveillancecameras.utils.StorageHelper;
+
 import org.MediaPlayer.PlayM4.Player;
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -48,6 +50,7 @@ public class DahuaSinglePlayer {
     private int startChannel = 2; // start channel no
     private boolean stopPlayback = false;
     private boolean isShow = true;
+    private Context context;
     private int loginType = EM_LOGIN_SPAC_CAP_TYPE.EM_LOGIN_SPEC_CAP_MOBILE;
     private boolean _isOpenSound;
     private boolean _isRecording;
@@ -81,10 +84,11 @@ public class DahuaSinglePlayer {
         }
     }
 
-    public DahuaSinglePlayer(int channel, int logId, int streamType) {
+    public DahuaSinglePlayer(int channel, int logId, int streamType,Context context) {
         this.channel = channel;
         this.logId = logId;
         this.streamType = streamType ;
+        this.context = context;
     }
 
     public  void initView(SurfaceView surfaceView) {
@@ -320,8 +324,7 @@ public class DahuaSinglePlayer {
     public void captureFrame() {
         try {
             sDateFormat = new SimpleDateFormat("yyyy-MM-dd-hh_mm_ss_Sss");
-            File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/Monitor");
-            if (!dir.exists()) {dir.mkdir();}
+            File dir = new File(StorageHelper.getMediaDirectory(context,Environment.DIRECTORY_PICTURES).getAbsolutePath());
             String date = sDateFormat.format(new java.util.Date());
             File file = new File(dir, date + ".png");
             IPlaySDK.PLAYCatchPic(playPort,file.getAbsolutePath());
@@ -334,8 +337,7 @@ public class DahuaSinglePlayer {
         try {
             sDateFormat = new SimpleDateFormat("yyyy-MM-dd-hh_mm_ss_Sss");
             _isRecording = true;
-            File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES) + "/Monitor");
-            if (!dir.exists()) {dir.mkdir();}
+            File dir = new File(StorageHelper.getMediaDirectory(context,Environment.DIRECTORY_MOVIES).getAbsolutePath());
             String date = sDateFormat.format(new java.util.Date());
             File file = new File(dir, date + ".mp4");
             IPlaySDK.PLAYStartDataRecord(playPort,file.getAbsolutePath(),0,null,0);
