@@ -130,15 +130,15 @@ public class CamPreviewFragment extends BaseFragment {
 
     private void watchFile() {
         if (observer != null){ observer.stopWatching();}
-
-        observer = new FileObserver(StorageHelper.getMediaDirectory(requireContext(),isPicture ? Environment.DIRECTORY_PICTURES :Environment.DIRECTORY_MOVIES ).getAbsolutePath()) {
+        String path = StorageHelper.getMediaDirectory(requireContext(),isPicture ? Environment.DIRECTORY_PICTURES :Environment.DIRECTORY_MOVIES ).getAbsolutePath();
+        observer = new FileObserver(path) {
         @Override
         public void onEvent(int event, String file) {
             if(event == FileObserver.CREATE && !file.equals(".probe") && file.toLowerCase().endsWith("mp4")){
-                File pathFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/capture", file);
+                File pathFile = new File(path, file);
                 MediaScannerConnection.scanFile(requireContext(), new String[]{pathFile.getAbsolutePath()}, new String[]{"video/*"}, (s, uri) -> Log.i("TATZ", "onScanCompleted_video: "+uri));
             }else if(event == FileObserver.CREATE && !file.equals(".probe") ){
-                File pathFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/capture", file);
+                File pathFile = new File(path, file);
                 MediaScannerConnection.scanFile(requireContext(), new String[]{pathFile.getAbsolutePath()}, new String[]{"image/*"}, (s, uri) -> Log.i("TATZ", "onScanCompleted_image: "+uri));
             }
         }
