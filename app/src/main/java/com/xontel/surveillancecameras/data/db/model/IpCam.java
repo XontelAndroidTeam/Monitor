@@ -3,14 +3,6 @@ package com.xontel.surveillancecameras.data.db.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import androidx.room.ColumnInfo;
-import androidx.room.Entity;
-import androidx.room.Ignore;
-import androidx.room.PrimaryKey;
-
-import com.xontel.surveillancecameras.utils.CamDeviceType;
-import com.xontel.surveillancecameras.utils.VideoHelper;
-
 
 public class IpCam implements  Parcelable{
     private int realPlayId = -1;
@@ -135,5 +127,19 @@ public class IpCam implements  Parcelable{
         parcel.writeInt(loginId);
         parcel.writeString(name);
         parcel.writeString(urlOrIpAddress);
+    }
+
+    @Override
+    public String toString() {
+        return "IpCam{" +
+                "realPlayId=" + realPlayId +
+                ", channel=" + channel +
+                ", playPort=" + playPort +
+                ", deviceId=" + deviceId +
+                ", type=" + type +
+                ", loginId=" + loginId +
+                ", name='" + name + '\'' +
+                ", urlOrIpAddress='" + urlOrIpAddress + '\'' +
+                '}';
     }
 }

@@ -166,7 +166,6 @@ public class SavedMediaFragment extends BaseFragment implements MediaAdapter.Cli
                     String dataPath = cursor.getString(data);
                     Uri contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id);
                     if (dataPath.contains("/Pictures")){
-                        Log.i("TATZ", "getAllPics: "+dataPath);
                         mediaFiles.add(new MediaData(name,size,duration,null,dataPath));
                     }
                 }

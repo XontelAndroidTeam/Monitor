@@ -34,6 +34,7 @@ public class StorageHelper {
     public static final String IMAGES_DIRECTORY_NAME = "images";
     public static final String VIDEOS_DIRECTORY_NAME = "videos";
     public static final String KEY_CHOSEN_STORAGE = "chosen_storage";
+    public static final String KEY_CHOSEN_SLIDE = "chosen_slide";
 
 
     public static List<StorageVolume> getActiveVolumes(Context context) {
@@ -202,6 +203,17 @@ public class StorageHelper {
         SharedPreferences sharedPreferences = context.getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE);
         int storageType = sharedPreferences.getInt(KEY_CHOSEN_STORAGE, INTERNAL_STORAGE);
         return getLabelFromStorageType(context,storageType);
+    }
+
+
+    public static String getSlideInterval(Context context){
+        SharedPreferences sharedPreferences = context.getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE);
+        return sharedPreferences.getString(KEY_CHOSEN_SLIDE, CommonUtils.KEY_SLIDE_INTERVAL_INDEX);
+    }
+
+    public static void saveSlideInterval(Context context,String name){
+        SharedPreferences sharedPreferences = context.getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE);
+        sharedPreferences.edit().putString(KEY_CHOSEN_SLIDE, name).apply();
     }
 
 

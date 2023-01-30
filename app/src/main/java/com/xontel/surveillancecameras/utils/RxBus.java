@@ -8,16 +8,20 @@ import io.reactivex.Observable;
 import io.reactivex.subjects.PublishSubject;
 public class RxBus {
     private static RxBus mInstance;
+    private PublishSubject<List<IpCam>> camsPublisher = PublishSubject.create();
+    private PublishSubject<Integer> gridCountPublisher = PublishSubject.create();
+
     public static RxBus getInstance() {
         if (mInstance == null) {
             mInstance = new RxBus();
         }
         return mInstance;
     }
+
     private RxBus() {
     }
-    private PublishSubject<List<IpCam>> camsPublisher = PublishSubject.create();
-    private PublishSubject<Integer> gridCountPublisher = PublishSubject.create();
+
+
     public void publishCams(List<IpCam> event) {
         camsPublisher.onNext(event);
     }
@@ -25,6 +29,7 @@ public class RxBus {
     public void publishGridCount(Integer event) {
         gridCountPublisher.onNext(event);
     }
+
     // Listen should return an Observable
     public Observable<List<IpCam>> listenToCams() {
         return camsPublisher;

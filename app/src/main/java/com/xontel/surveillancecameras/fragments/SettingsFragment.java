@@ -38,7 +38,7 @@ import javax.inject.Inject;
  * Use the {@link SettingsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SettingsFragment extends BaseFragment implements AdapterView.OnItemClickListener {
+public class SettingsFragment extends BaseFragment {
     private FragmentSettingsBinding binding;
     private SettingViewModel mSettingViewModel ;
     private MainViewModel mMainViewModel;
@@ -111,17 +111,31 @@ public class SettingsFragment extends BaseFragment implements AdapterView.OnItem
         ArrayAdapter mediaDirsDropDownAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, currentStorage);
         ArrayAdapter intervalsDirsDropDownAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, getResources().getStringArray(R.array.intervals));
         binding.mediaFilter.setText(StorageHelper.getSaveStorageName(requireContext()));
+        binding.slideShowFilter.setText(StorageHelper.getSlideInterval(requireContext()) );
         binding.mediaFilter.setAdapter(mediaDirsDropDownAdapter);
         binding.slideShowFilter.setAdapter(intervalsDirsDropDownAdapter);
-        binding.mediaFilter.setOnItemClickListener(this);
+
+        binding.slideShowFilter.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                String name = binding.slideShowFilter.getText().toString();
+                StorageHelper.saveSlideInterval(requireContext(),name);
+                binding.slideShowFilter.setText(name);
+                binding.slideShowFilter.setAdapter(intervalsDirsDropDownAdapter);
+            }
+        });
+
+        binding.mediaFilter.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                String name = binding.mediaFilter.getText().toString();
+                binding.mediaFilter.setText(name);
+                binding.mediaFilter.setAdapter(mediaDirsDropDownAdapter);
+                StorageHelper.saveStorageType(requireContext(),name);
+            }
+        });
+
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-        ArrayAdapter mediaDirsDropDownAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, currentStorage);
-        String name = binding.mediaFilter.getText().toString();
-        binding.mediaFilter.setText(name);
-        binding.mediaFilter.setAdapter(mediaDirsDropDownAdapter);
-        StorageHelper.saveStorageType(requireContext(),name);
-    }
+
 }

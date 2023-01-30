@@ -30,6 +30,7 @@ id btn_stop
 id iv_sound
 id ll_record_panel
 id loading_dots
+id player_surface
 id player_surface_frame
 id remote_player_surface
 id remote_player_surface_frame

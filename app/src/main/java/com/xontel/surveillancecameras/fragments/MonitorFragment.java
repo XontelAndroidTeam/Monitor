@@ -125,19 +125,14 @@ public class MonitorFragment extends BaseFragment  {
     private void setupObservables() {
         mainViewModel.ipCams.observe(getViewLifecycleOwner(), allIpCams -> {
             if (allIpCams != null && !allIpCams.isEmpty()){
-                Log.i("TATZ", "DataInitialized: "+allIpCams.size());
                 if (ipCams.isEmpty()){
-                    Log.i("TATZ", "DataFirstInitialized: "+allIpCams.size());
                     pagerAdapter.getListOfData(allIpCams);
                 } else if (ipCams.size() > allIpCams.size()){
-                    Log.i("TATZ", "DataRemoved: ");
                     handleDecreaseIpCam(allIpCams);
                 }else if (ipCams.size() < allIpCams.size()){
-                    Log.i("TATZ", "NewData: ");
                     handleIncreaseIpCam(allIpCams);
                 }else{
                     mainViewModel.refreshData.setValue(true);
-                    Log.i("TATZ", "DataEdit: ");
                 }
                 handleCamsFromDb(allIpCams);
                 mainViewModel.pagerCount.setValue(pagerAdapter.getFragmentCount());

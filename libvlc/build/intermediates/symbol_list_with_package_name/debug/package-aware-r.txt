@@ -162,6 +162,7 @@ id normal
 id notification_background
 id notification_main_column
 id notification_main_column_container
+id player_surface
 id player_surface_frame
 id remote_player_surface
 id remote_player_surface_frame

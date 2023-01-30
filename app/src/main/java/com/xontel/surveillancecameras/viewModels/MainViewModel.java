@@ -89,6 +89,7 @@ public class MainViewModel extends BaseViewModel {
                     DahuaUtil.extractCamsFromDevice(camDevice);
                 }else{
                     camDevice.getCams().add(new IpCam(1, camDevice.getId(), camDevice.getDeviceType(),camDevice.getLogId(),camDevice.getName(),camDevice.getIpAddress().isEmpty() || camDevice.getIpAddress() == null ? camDevice.getUrl() : camDevice.getIpAddress() ));
+
                 }
                 tempIpCams.addAll(camDevice.getCams());
             }

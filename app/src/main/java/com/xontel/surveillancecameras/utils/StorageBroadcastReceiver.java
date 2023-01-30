@@ -22,11 +22,9 @@ public class StorageBroadcastReceiver extends BroadcastReceiver {
         String action = intent.getAction();
         switch (action){
             case Intent.ACTION_MEDIA_MOUNTED:
-                Log.i("TATZ", "ACTION_MEDIA_MOUNTED: ");
                 refreshRemovable.setValue(true);
                 break;
             case Intent.ACTION_MEDIA_EJECT:
-                Log.i("TATZ", "ACTION_MEDIA_EJECT: ");
                 refreshRemovable.setValue(true);
         }
      //   SDCardObservable.getInstance().updateValue(action);

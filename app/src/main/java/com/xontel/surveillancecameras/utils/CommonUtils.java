@@ -34,8 +34,9 @@ import java.util.UUID;
 
 public class CommonUtils {
     public static final String SHARED_PREFERENCES_FILE = "com.xontel.surveillancecameras.preferences.file";
+    public static final String KEY_AUTO_SLIDE = "auto_slide";
+    public static final String KEY_SLIDE_INTERVAL_INDEX = "5 seconds";
     public static final String KEY_AUTO_PREVIEW = "auto_preview";
-    public static final String KEY_SLIDE_INTERVAL_INDEX = "slide_interval_index";
     public static final String KEY_MEDIA_STORAGE = "media_storage";
     public static final String KEY_GRID_COUNT = "grid_count";
     private static final long NUM_BYTES_NEEDED_FOR_MY_APP = 1024 * 1024 * 10L;
