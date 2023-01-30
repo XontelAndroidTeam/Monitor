@@ -13,7 +13,9 @@ import android.widget.TextView;
 import com.xontel.surveillancecameras.R;
 import com.xontel.surveillancecameras.activities.CamerasActivity;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
+import com.xontel.surveillancecameras.hikvision.HikCamView;
 import com.xontel.surveillancecameras.utils.CamDeviceType;
+import com.xontel.surveillancecameras.vlc.VlcCamView;
 
 import org.videolan.libvlc.util.VLCVideoLayout;
 
@@ -22,48 +24,78 @@ import java.util.List;
 
 
 public class GridAdapter extends BaseAdapter {
+    List<View> camViews = new ArrayList<>();
     Context context;
-    List<IpCam> cams;
-    LayoutInflater inflater;
+    List<IpCam> cams = new ArrayList<>();
+    private int gridCount ;
 
-    public GridAdapter(Context context, List<IpCam> cams) {
+
+    public GridAdapter(Context context, int gridCount, List<IpCam> cams) {
         this.context = context;
-        this.cams = cams;
-        inflater = (LayoutInflater.from(context));
+        this.cams.addAll(cams);
+        this.gridCount = gridCount;
+    }
+
+    public void setGridCount(int gridCount) {
+        this.gridCount = gridCount;
+    }
+
+    public void addItems(List<IpCam> cams) {
+        this.cams.clear();
+        this.cams.addAll(cams);
+        notifyDataSetChanged();
+    }
+    public void addItem(IpCam cam) {
+        cams.add(cam);
     }
 
     @Override
     public int getCount() {
-        return cams.size();
+        return 1;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return cams.get(position).getType();
     }
 
     @Override
     public Object getItem(int i) {
-        return null;
+        return camViews.get(i);
     }
 
     @Override
     public long getItemId(int i) {
-        return 0;
+        return camViews.get(i).getId();
     }
-
 
 
     @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
-        IpCam ipCam = cams.get(i);
-        if (ipCam.getType() == CamDeviceType.OTHER.getValue()){
-            view = inflater.inflate(R.layout.item_live_media, null);
-            SurfaceView surfaceView = view.findViewById(R.id.player_view);
-        }else{
-            view = inflater.inflate(R.layout.item_vlc_cam, null);
-            VLCVideoLayout vlcVideoLayout = view.findViewById(R.id.vlc_layout);
-        }
-        TextView camName = view.findViewById(R.id.tv_cam_name);
+    public View getView(int position, View view, ViewGroup viewGroup) {
+        IpCam currentCam = cams.get(position);
+        if (camViews.size() <= position)
+           return createCamView(currentCam.getType(), position);
+            return camViews.get(position);
 
-        return view;
     }
 
+    private View createCamView(int type, int position) {
+                if(CamDeviceType.HIKVISION.getValue() == type) {
+                    HikCamView hikCamView = new HikCamView(context, cams.get(position));
+                    camViews.add(hikCamView);
+                    return hikCamView;
+                }else if(CamDeviceType.DAHUA.getValue() == type) {
+//                    HikCamView hikCamView =new HikCamView(context, cams.get(i));
+//                    camViews.add(hikCamView);
+//                    return hikCamView;
+                }
+                else if(CamDeviceType.OTHER.getValue() == type) {
+                        VlcCamView vlcCamView = new VlcCamView(context, cams.get(position));
+                        return vlcCamView;
+                    }
+
+        return null;
+    }
 
 
 }

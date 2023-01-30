@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import com.xontel.surveillancecameras.activities.HomeActivity;
 import com.xontel.surveillancecameras.adapters.CamsAdapter;
+import com.xontel.surveillancecameras.adapters.GridAdapter;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
 import com.xontel.surveillancecameras.databinding.FragmentPagerBinding;
 import com.xontel.surveillancecameras.viewModels.MainViewModel;
@@ -27,6 +28,7 @@ public class PagerFragment extends Fragment  {
     private FragmentPagerBinding binding;
     private MainViewModel viewModel;
     private CamsAdapter camsAdapter;
+    private GridAdapter gridAdapter;
     private List<IpCam> data = new ArrayList<>();
     private int index;
     private boolean isInitialized = false;
@@ -42,7 +44,6 @@ public class PagerFragment extends Fragment  {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(null);
         setupDagger();
-        Log.i("TATZ", "onCreatePagerFragment: "+index);
         Bundle args = getArguments();
         if (args != null){
             index = args.getInt("IN");
@@ -73,10 +74,16 @@ public class PagerFragment extends Fragment  {
     }
 
     private void setupAdapter() {
-        binding.pagerRecycler.setLayoutManager(new GridLayoutManager(getActivity(), (int) Math.sqrt(viewModel.gridCount.getValue())));
-        binding.pagerRecycler.setHasFixedSize(true);
+        //New
+        gridAdapter = new GridAdapter(getContext(), viewModel.gridCount.getValue(), viewModel.ipCams.getValue());
+        binding.gridViewPager.setNumColumns( (int) Math.sqrt(viewModel.gridCount.getValue()));
+        binding.gridViewPager.setAdapter(gridAdapter);
+
+        //Old
+      //  binding.pagerRecycler.setLayoutManager(new GridLayoutManager(getActivity(), (int) Math.sqrt(viewModel.gridCount.getValue())));
+      //  binding.pagerRecycler.setHasFixedSize(true);
         if (camsAdapter == null){camsAdapter = new CamsAdapter(new ArrayList<>(), viewModel.gridCount.getValue(), getContext());}
-        binding.pagerRecycler.setAdapter(camsAdapter);
+     //   binding.pagerRecycler.setAdapter(camsAdapter);
         if (!isInitialized){updateData();}
     }
 
@@ -87,13 +94,16 @@ public class PagerFragment extends Fragment  {
                 data.add(viewModel.ipCams.getValue().get(i));
             }
         }
-        camsAdapter.addItems(data);
+        gridAdapter.addItems(data);
     }
 
     private void whenGridChanged(){
-        binding.pagerRecycler.setLayoutManager(new GridLayoutManager(getActivity(), (int) Math.sqrt(viewModel.gridCount.getValue())));
-        binding.pagerRecycler.setAdapter(camsAdapter); // to resetView
-        camsAdapter.setGridCount(viewModel.gridCount.getValue());
+        binding.gridViewPager.setNumColumns( (int) Math.sqrt(viewModel.gridCount.getValue()));
+        gridAdapter.setGridCount(viewModel.gridCount.getValue());
+        Log.i("TATZ", "whenGridChanged: ");
+      //  binding.pagerRecycler.setLayoutManager(new GridLayoutManager(getActivity(), (int) Math.sqrt(viewModel.gridCount.getValue())));
+     //   binding.pagerRecycler.setAdapter(camsAdapter); // to resetView
+//        camsAdapter.setGridCount(viewModel.gridCount.getValue());
         rangeFrom = index * viewModel.gridCount.getValue();
         rangeTo = rangeFrom + (viewModel.gridCount.getValue() - 1);
         updateData();
