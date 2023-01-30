@@ -5,6 +5,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PixelFormat;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceHolder;
@@ -44,6 +47,7 @@ public class HIKSinglePlayer implements RealPlayCallBack{
     private int playbackId = -1; // return by NET_DVR_PlayBackByTime
     private  int channel = 0;
     private int logId;
+    Thread thread;
     private int streamType ;
     private boolean isShow = true;
 //
@@ -76,8 +80,6 @@ public class HIKSinglePlayer implements RealPlayCallBack{
 
             @Override
             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-                holder.setFormat(PixelFormat.TRANSLUCENT);
-                Log.e(TAG, "surfaceChanged");
             }
 
             @Override
@@ -439,6 +441,25 @@ public class HIKSinglePlayer implements RealPlayCallBack{
         } catch (Exception err) {
             Log.e("TATZ", "error: " + err.getMessage());
         }
+    }
+
+    private void background(){
+        thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (!Thread.currentThread().isInterrupted()) {
+                    SystemClock.sleep(1000);
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (isShow)
+                                startSinglePreview();
+                        }
+                    });
+                }
+            }
+        });
+        thread.start();
     }
 
 

@@ -421,7 +421,7 @@ class VideoHelper implements IVLCVout.OnNewVideoLayoutListener {
 
     public void setRecordViewEnabled(boolean visible) {
         if(visible){
-            recordPanel.setVisibility( View.VISIBLE);
+            recordPanel.setVisibility( View.GONE);
             timeCounter = new TimeCounter(timerText);
             timeCounter.count();
         }else{

@@ -75,7 +75,6 @@ public class SettingsFragment extends BaseFragment implements AdapterView.OnItem
         binding.setLifecycleOwner(this);
         StorageBroadcastReceiver.refreshRemovable.observe(getViewLifecycleOwner(), aBoolean -> {
             if (aBoolean){
-                Log.i("TATZ", "Cleared: ");
                 if (StorageHelper.getActiveVolumes(requireContext()).size() != currentStorage.size()){
                     currentStorage.clear();
                     getCurrentStorage();
@@ -100,16 +99,15 @@ public class SettingsFragment extends BaseFragment implements AdapterView.OnItem
         for (StorageVolume s : StorageHelper.getActiveVolumes(requireContext())){
             currentStorage.add(StorageHelper.getLabelFromVolume(requireContext(),s));
         }
-        Log.i("TATZ", "getCurrentStorage: ");
     }
 
     private void bindStorageAgain(){
         ArrayAdapter mediaDirsDropDownAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, currentStorage);
+        binding.mediaFilter.setText(StorageHelper.getSaveStorageName(requireContext()));
         binding.mediaFilter.setAdapter(mediaDirsDropDownAdapter);
     }
 
     private void setupDropDowns() {
-        Log.i("TATZ", "getCurrentStorageSize: "+currentStorage.size());
         ArrayAdapter mediaDirsDropDownAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, currentStorage);
         ArrayAdapter intervalsDirsDropDownAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, getResources().getStringArray(R.array.intervals));
         binding.mediaFilter.setText(StorageHelper.getSaveStorageName(requireContext()));
@@ -124,7 +122,6 @@ public class SettingsFragment extends BaseFragment implements AdapterView.OnItem
         String name = binding.mediaFilter.getText().toString();
         binding.mediaFilter.setText(name);
         binding.mediaFilter.setAdapter(mediaDirsDropDownAdapter);
-        Log.i("TATZ", "onItemClick: "+name);
         StorageHelper.saveStorageType(requireContext(),name);
     }
 }

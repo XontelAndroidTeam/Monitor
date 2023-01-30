@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -12,6 +13,9 @@ import android.widget.TextView;
 import com.xontel.surveillancecameras.R;
 import com.xontel.surveillancecameras.activities.CamerasActivity;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
+import com.xontel.surveillancecameras.utils.CamDeviceType;
+
+import org.videolan.libvlc.util.VLCVideoLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,70 +47,23 @@ public class GridAdapter extends BaseAdapter {
         return 0;
     }
 
+
+
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        view = inflater.inflate(R.layout.item_live_media, null); // inflate the layout
-//        MjpegView mjpegView = view.findViewById(R.id.mjpeg_view);
-        TextView camName = view.findViewById(R.id.tv_cam_name);
-        TextView textError = view.findViewById(R.id.tv_error);
-//        ImageView placeholder = view.findViewById(R.id.player_surface_frame);
-
         IpCam ipCam = cams.get(i);
-        /*
-        if(ipCam.getUrl() == null){ // not set yet
-            camName.setText("");
-//            mjpegView.setVisibility(View.GONE);
-//            placeholder.setVisibility(View.VISIBLE);
-//            placeholder.setOnClickListener(v->{
-                //TODO open add activity
-//            });
-
-        }else {
-//            mjpegView.setVisibility(View.VISIBLE);
-//            placeholder.setVisibility(View.GONE);
-//            camName.setText(ipCam.getName());
-//            setupVideoPlayer(mjpegView, i);
-            // TODO error text
-
-            view.setOnClickListener(v -> {
-                Log.e("adapter", "onBindViewHolder: ");
-                Intent intent = new Intent(context, CamerasActivity.class);
-                ArrayList<IpCam> cams = new ArrayList<>();
-                cams.add(this.cams.get(i));
-               // intent.putParcelableArrayListExtra(CamerasActivity.KEY_CAMERAS, cams);
-                context.startActivity(intent);
-            });
+        if (ipCam.getType() == CamDeviceType.OTHER.getValue()){
+            view = inflater.inflate(R.layout.item_live_media, null);
+            SurfaceView surfaceView = view.findViewById(R.id.player_view);
+        }else{
+            view = inflater.inflate(R.layout.item_vlc_cam, null);
+            VLCVideoLayout vlcVideoLayout = view.findViewById(R.id.vlc_layout);
         }
-        */
+        TextView camName = view.findViewById(R.id.tv_cam_name);
+
         return view;
     }
 
 
-    private void setupVideoPlayer(/*MjpegView mjpegView* ,*/ int position){
-//        mjpegView.setAdjustHeight(true);
-//        mjpegView.setAdjustWidth(true);
-//        mjpegView.setMode(MjpegView.MODE_FIT_WIDTH);
-//        mjpegView.setMsecWaitAfterReadImageError(1000);
-//        mjpegView.setUrl(cams.get(position).getUrl());
-//        mjpegView.setRecycleBitmap(true);
-//        mjpegView.startStream();
-
-
-        //        int TIMEOUT = 5; //seconds
-//
-//        Mjpeg.newInstance()
-//                .open(cams.get(i).getUrl(), TIMEOUT)
-//                .doOnError(new Action1<Throwable>() {
-//                    @Override
-//                    public void call(Throwable throwable) {
-//                        textError.setText(throwable.getMessage());
-//                    }
-//                })
-//                .subscribe(inputStream -> {
-//                    mjpegView.setSource(inputStream);
-//                    mjpegView.setDisplayMode(DisplayMode.FULLSCREEN);
-//                    mjpegView.showFps(true);
-//                });
-    }
 
 }

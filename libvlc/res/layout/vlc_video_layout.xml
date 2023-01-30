@@ -57,6 +57,7 @@
         android:layout_gravity="center"
         android:visibility="gone"
         tools:visibility="visible"/>
+
     <include layout="@layout/record_panel"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
@@ -64,6 +65,7 @@
         android:visibility="gone"
         tools:visibility="visible"
         android:layout_gravity="top|left"/>
+
     <org.videolan.libvlc.util.VolumeControllerView
         android:id="@+id/volume_controller"
         android:layout_gravity="right|top"

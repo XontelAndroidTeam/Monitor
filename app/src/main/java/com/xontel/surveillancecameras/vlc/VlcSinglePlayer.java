@@ -59,7 +59,6 @@ public class VlcSinglePlayer {
     private void saveImageWithoutResolver(Bitmap bitmap){
         String filename = System.currentTimeMillis() + ".png";
         File file = new File(StorageHelper.getMediaDirectory(context,Environment.DIRECTORY_PICTURES),filename);
-        Log.i("TATZ", "saveImageWithoutResolver: "+file.getAbsolutePath());
         OutputStream fos ;
         try {
             fos = new FileOutputStream(file);

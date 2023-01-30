@@ -36,6 +36,7 @@ import com.xontel.surveillancecameras.utils.CommonUtils;
 import com.xontel.surveillancecameras.utils.MediaData;
 import com.xontel.surveillancecameras.utils.SDCardObservable;
 import com.xontel.surveillancecameras.utils.StorageBroadcastReceiver;
+import com.xontel.surveillancecameras.utils.StorageHelper;
 
 import org.videolan.libvlc.Media;
 
@@ -51,7 +52,7 @@ public class SavedMediaFragment extends BaseFragment implements MediaAdapter.Cli
     private List<MediaData> mediaFiles = new ArrayList<>();
     private android.view.ActionMode actionMode;
     private ProgressDialog progressDialog;
-    Uri collection;
+    List<Uri> collection;
     String[] projection = new String[] {
             MediaStore.MediaColumns.RELATIVE_PATH,
             MediaStore.Images.Media._ID,
@@ -138,78 +139,80 @@ public class SavedMediaFragment extends BaseFragment implements MediaAdapter.Cli
 
 
     private void getAllPics(){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            collection = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY);
-        } else {
-            collection = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-        }
+        collection = StorageHelper.getContentUris(requireContext(),true);
 
-        try(Cursor cursor = requireContext().getContentResolver().query(
-                collection,
-                projection,
-                null,
-                null,
-                null
-        ))  {
-            // Cache column indices.
-            int idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID);
-            int nameColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME);
-            int durationColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DURATION);
-            int relativePath = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.RELATIVE_PATH);
-            int sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.SIZE);
-            int data = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        for (Uri uri:collection){
+            try(Cursor cursor = requireContext().getContentResolver().query(
+                    uri,
+                    projection,
+                    null,
+                    null,
+                    null
+            ))  {
+                // Cache column indices.
+                int idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID);
+                int nameColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME);
+                int durationColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DURATION);
+                int relativePath = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.RELATIVE_PATH);
+                int sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.SIZE);
+                int data = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
 
-            while (cursor.moveToNext()) {
-                // Get values of columns for a given video.
-                long id = cursor.getLong(idColumn);
-                String name = cursor.getString(nameColumn);
-                int duration = cursor.getInt(durationColumn);
-                int size = cursor.getInt(sizeColumn);
-                String dataPath = cursor.getString(data);
-                Uri contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id);
-                mediaFiles.add(new MediaData(name,size,duration,null,dataPath));
+                while (cursor.moveToNext()) {
+                    // Get values of columns for a given video.
+                    long id = cursor.getLong(idColumn);
+                    String name = cursor.getString(nameColumn);
+                    int duration = cursor.getInt(durationColumn);
+                    int size = cursor.getInt(sizeColumn);
+                    String dataPath = cursor.getString(data);
+                    Uri contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id);
+                    if (dataPath.contains("/Pictures")){
+                        Log.i("TATZ", "getAllPics: "+dataPath);
+                        mediaFiles.add(new MediaData(name,size,duration,null,dataPath));
+                    }
+                }
+            }catch(Exception e){
+                Log.e("TAG", "error: " + e.getMessage());
             }
-            mediaAdapter.setAllData(mediaFiles);
-            getAllVideos();
-        }catch(Exception e){
-            Log.e("TAG", "error: " + e.getMessage());
         }
+        mediaAdapter.setAllData(mediaFiles);
+        getAllVideos();
     }
 
     private void getAllVideos(){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            collection = MediaStore.Video.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY);
-        } else {
-            collection = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
-        }
-        try(Cursor cursor = requireContext().getContentResolver().query(
-                collection,
-                projectionVideo,
-                null,
-                null,
-                null
-        ))  {
-            // Cache column indices.
-            int idColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID);
-            int nameColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME);
-            int durationColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION);
-            int sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE);
-            int data = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
+        collection = StorageHelper.getContentUris(requireContext(),false);
 
-            while (cursor.moveToNext()) {
-                // Get values of columns for a given video.
-                long id = cursor.getLong(idColumn);
-                String name = cursor.getString(nameColumn);
-                int duration = cursor.getInt(durationColumn);
-                int size = cursor.getInt(sizeColumn);
-                String dataPath = cursor.getString(data);
-                Uri contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id);
-                mediaFiles.add(new MediaData(name,size,duration,dataPath,null));
+        for (Uri uri:collection) {
+            try (Cursor cursor = requireContext().getContentResolver().query(
+                    uri,
+                    projectionVideo,
+                    null,
+                    null,
+                    null
+            )) {
+                // Cache column indices.
+                int idColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID);
+                int nameColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME);
+                int durationColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION);
+                int sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE);
+                int data = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
+
+                while (cursor.moveToNext()) {
+                    // Get values of columns for a given video.
+                    long id = cursor.getLong(idColumn);
+                    String name = cursor.getString(nameColumn);
+                    int duration = cursor.getInt(durationColumn);
+                    int size = cursor.getInt(sizeColumn);
+                    String dataPath = cursor.getString(data);
+                    Uri contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id);
+                    if (dataPath.contains("/Movies")){
+                        mediaFiles.add(new MediaData(name, size, duration, dataPath, null));
+                    }
+                }
+            } catch (Exception e) {
+                Log.e("TAG", "error: " + e.getMessage());
             }
-            mediaAdapter.setAllData(mediaFiles);
-        }catch(Exception e){
-            Log.e("TAG", "error: " + e.getMessage());
         }
+        mediaAdapter.setAllData(mediaFiles);
     }
 
 /*
@@ -225,15 +228,15 @@ public class SavedMediaFragment extends BaseFragment implements MediaAdapter.Cli
     }
 
  */
-    /*
+
     private void deleteDataFromMediaStore(String dataPath){
         requireActivity().getContentResolver().delete(
-                MediaStore.Video.Media.EXTERNAL_CONTENT_URI ,
-                MediaStore.Video.Media.DATA + " = ?",
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI ,
+                MediaStore.Images.Media.DATA + " = ?",
                 new String[] { dataPath });
     }
 
-     */
+
 
     public void startSelectionMode() {
         if (actionMode == null) {
@@ -269,7 +272,7 @@ public class SavedMediaFragment extends BaseFragment implements MediaAdapter.Cli
                 }
 
                 @Override
-                public void onDestroyActionMode(ActionMode actionMode) {
+                public void onDestroyActionMode(ActionMode mode) {
                     actionMode = null;
                     mediaAdapter.enableSelectionMode(false);
                 }
@@ -278,6 +281,8 @@ public class SavedMediaFragment extends BaseFragment implements MediaAdapter.Cli
             mediaAdapter.enableSelectionMode(true);
         }
     }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -306,8 +311,8 @@ public class SavedMediaFragment extends BaseFragment implements MediaAdapter.Cli
     }
 
     private void deleteSelectedItems(List<MediaData> selectedFiles) {
-        setupProgressDialog();
         if(selectedFiles.size() > 0 ) {
+            setupProgressDialog();
             for (int i = 0; i < selectedFiles.size(); i++) {
                 setProgressDialogValues(i);
                 if (!CommonUtils.deleteFile(new File(selectedFiles.get(i).getImagePath() == null || selectedFiles.get(i).getImagePath().isEmpty()  ? selectedFiles.get(i).getVideoPath() : selectedFiles.get(i).getImagePath()  ))) {
@@ -340,47 +345,7 @@ public class SavedMediaFragment extends BaseFragment implements MediaAdapter.Cli
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         requireActivity().setTitle(R.string.saved_media);
         binding = FragmentSavedMediaBinding.inflate(inflater);
-      //  getContentUris(requireContext(),true);
         return binding.getRoot();
-    }
-
-    private List<Uri> getContentUris(@NonNull final Context context, boolean isImage) {
-        final List<String> allVolumes = new ArrayList<>();
-        allVolumes.add(MediaStore.VOLUME_EXTERNAL_PRIMARY);
-        final Set<String> externalVolumeNames;
-        final List<Uri> output = new ArrayList<>();
-        File [] files = requireActivity().getExternalFilesDirs(Environment.DIRECTORY_PICTURES);
-        File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES)+"");
-      //  Log.i("TATZ", "getDir: "+dir.getAbsolutePath());
-     //   for (File f : files){
-       //     Log.i("TATZ", "getFile: "+f.getAbsolutePath());
-    //    }
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-            externalVolumeNames = MediaStore.getExternalVolumeNames(context);
-            for ( String entry : externalVolumeNames) {
-                Log.i("TATZ", "volumeNames: "+entry);
-                if (!allVolumes.contains(entry)) {
-                    allVolumes.add(0, entry);
-                }
-            }
-        }
-
-
-        for (final String entry : allVolumes) {
-            Log.i("TATZ", "uri: "+MediaStore.Images.Media.getContentUri(entry));
-            output.add(MediaStore.Images.Media.getContentUri(entry));
-        }
-
-     //   File[] aDirArray = ContextCompat.getExternalFilesDirs(requireContext(), null);
-      //  File path = new File(aDirArray[1], Environment.DIRECTORY_DCIM);
-     //   String data=path.toString();
-     //   int index=data.indexOf("Android");
-     //   String subdata=data.substring(0,index);
-     //   File sec=new File(subdata+"Pictures/Monitor");
-     //   Log.i("TATZ", "5nzra: "+sec.getAbsolutePath());
-
-        return output;
     }
 
 

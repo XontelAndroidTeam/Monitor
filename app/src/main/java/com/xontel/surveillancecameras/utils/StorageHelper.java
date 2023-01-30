@@ -14,6 +14,8 @@ import android.os.storage.StorageVolume;
 import android.provider.MediaStore;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.xontel.surveillancecameras.R;
 
 import org.videolan.libvlc.Media;
@@ -22,6 +24,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 @TargetApi(30)
 public class StorageHelper {
     public static final int INTERNAL_STORAGE = 0;
@@ -199,5 +203,31 @@ public class StorageHelper {
         int storageType = sharedPreferences.getInt(KEY_CHOSEN_STORAGE, INTERNAL_STORAGE);
         return getLabelFromStorageType(context,storageType);
     }
+
+
+    public static List<Uri> getContentUris(@NonNull final Context context,Boolean isPicture) {
+
+        final List<String> allVolumes = new ArrayList<>();
+        final List<Uri> output = new ArrayList<>();
+        allVolumes.add(MediaStore.VOLUME_EXTERNAL_PRIMARY);
+        final Set<String> externalVolumeNames = MediaStore.getExternalVolumeNames(context);
+
+        for ( String entry : externalVolumeNames) {
+            if (!allVolumes.contains(entry))
+                allVolumes.add(0, entry);
+        }
+
+
+        for (final String entry : allVolumes) {
+            if (isPicture){
+                output.add(MediaStore.Images.Media.getContentUri(entry));
+            }else{
+                output.add(MediaStore.Video.Media.getContentUri(entry));
+            }
+        }
+
+        return output;
+    }
+
 
 }
