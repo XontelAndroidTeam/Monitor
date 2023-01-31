@@ -88,6 +88,7 @@ public class PagerFragment extends Fragment  {
     }
 
     private void updateData() {
+        Log.i("TATZ", "[Pager] updateData: ");
         if (data != null && !data.isEmpty() ){data.clear();}
         for (int i = rangeFrom ; i <= rangeTo ; i ++){
             if (viewModel.ipCams.getValue() != null && !viewModel.ipCams.getValue().isEmpty() &&  viewModel.ipCams.getValue().size() > i ) {
@@ -98,15 +99,18 @@ public class PagerFragment extends Fragment  {
     }
 
     private void whenGridChanged(){
+        Log.i("TATAZ", "[Pager] whenGridChanged: "+viewModel.gridCount.getValue());
         binding.gridViewPager.setNumColumns( (int) Math.sqrt(viewModel.gridCount.getValue()));
         gridAdapter.setGridCount(viewModel.gridCount.getValue());
-        Log.i("TATZ", "whenGridChanged: ");
+        gridAdapter.notifyDataSetChanged();
+
+
       //  binding.pagerRecycler.setLayoutManager(new GridLayoutManager(getActivity(), (int) Math.sqrt(viewModel.gridCount.getValue())));
      //   binding.pagerRecycler.setAdapter(camsAdapter); // to resetView
 //        camsAdapter.setGridCount(viewModel.gridCount.getValue());
         rangeFrom = index * viewModel.gridCount.getValue();
         rangeTo = rangeFrom + (viewModel.gridCount.getValue() - 1);
-        updateData();
+       // updateData();
     }
 
     private void observers() {
@@ -118,6 +122,7 @@ public class PagerFragment extends Fragment  {
                 }
             }
         });
+
         viewModel.refreshPagerGridCount.observe(getViewLifecycleOwner(), aBoolean -> {
             if (aBoolean){
                 whenGridChanged();

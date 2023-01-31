@@ -8,12 +8,20 @@
             type="com.xontel.surveillancecameras.viewModels.MainViewModel" />
     </data>
 
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <GridView
         android:id="@+id/gridViewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/item_vlc_cam"
-        android:numColumns="4"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:numColumns="1"
+        tools:listitem="@layout/item_vlc_cam" />
+</androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

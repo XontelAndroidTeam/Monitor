@@ -7,6 +7,7 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.xontel.surveillancecameras.R;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
@@ -14,7 +15,7 @@ import com.xontel.surveillancecameras.vlc.VlcSinglePlayer;
 
 import org.videolan.libvlc.util.VLCVideoLayout;
 
-public class HikCamView extends FrameLayout {
+public class HikCamView extends ConstraintLayout {
     private IpCam ipCam;
     private HIKSinglePlayer hikSinglePlayer ;
     private Context context;

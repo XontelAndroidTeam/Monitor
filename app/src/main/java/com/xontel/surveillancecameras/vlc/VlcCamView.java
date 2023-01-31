@@ -18,7 +18,7 @@ import com.xontel.surveillancecameras.utils.CamDeviceType;
 
 import org.videolan.libvlc.util.VLCVideoLayout;
 
-public class VlcCamView extends FrameLayout {
+public class VlcCamView extends ConstraintLayout {
     private IpCam ipCam;
     private VlcSinglePlayer vlcSinglePlayer ;
     private Context context;
@@ -50,9 +50,6 @@ public class VlcCamView extends FrameLayout {
         this.ipCam = ipCam;
         init();
     }
-
-
-
 
 
     private void init() {

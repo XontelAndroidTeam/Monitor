@@ -281,7 +281,8 @@ public class CamPreviewFragment extends BaseFragment {
     @Override
     public void onDestroy() {
         if (mTimer != null){mTimer.cancel();}
-        if (cam.getType() == CamDeviceType.HIKVISION.getValue()){ hikSinglePlayer.cleanUp();}
+        if (cam.getType() == CamDeviceType.HIKVISION.getValue()){ //hikSinglePlayer.cleanUp();
+        }
         else if(cam.getType() == CamDeviceType.DAHUA.getValue()){ dahuaSinglePlayer.stopPlay();}
         else{vlcSinglePlayer.removeVlcPlayer();}
         observer.stopWatching();

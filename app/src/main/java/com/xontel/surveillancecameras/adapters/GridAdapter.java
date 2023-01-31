@@ -27,7 +27,7 @@ public class GridAdapter extends BaseAdapter {
     List<View> camViews = new ArrayList<>();
     Context context;
     List<IpCam> cams = new ArrayList<>();
-    private int gridCount ;
+    private int gridCount;
 
 
     public GridAdapter(Context context, int gridCount, List<IpCam> cams) {
@@ -45,6 +45,7 @@ public class GridAdapter extends BaseAdapter {
         this.cams.addAll(cams);
         notifyDataSetChanged();
     }
+
     public void addItem(IpCam cam) {
         cams.add(cam);
     }
@@ -74,25 +75,24 @@ public class GridAdapter extends BaseAdapter {
     public View getView(int position, View view, ViewGroup viewGroup) {
         IpCam currentCam = cams.get(position);
         if (camViews.size() <= position)
-           return createCamView(currentCam.getType(), position);
-            return camViews.get(position);
+            return createCamView(currentCam.getType(), position);
+        return camViews.get(position);
 
     }
 
     private View createCamView(int type, int position) {
-                if(CamDeviceType.HIKVISION.getValue() == type) {
-                    HikCamView hikCamView = new HikCamView(context, cams.get(position));
-                    camViews.add(hikCamView);
-                    return hikCamView;
-                }else if(CamDeviceType.DAHUA.getValue() == type) {
+        if (CamDeviceType.HIKVISION.getValue() == type) {
+            HikCamView hikCamView = new HikCamView(context, cams.get(position));
+            camViews.add(hikCamView);
+            return hikCamView;
+        } else if (CamDeviceType.DAHUA.getValue() == type) {
 //                    HikCamView hikCamView =new HikCamView(context, cams.get(i));
 //                    camViews.add(hikCamView);
 //                    return hikCamView;
-                }
-                else if(CamDeviceType.OTHER.getValue() == type) {
-                        VlcCamView vlcCamView = new VlcCamView(context, cams.get(position));
-                        return vlcCamView;
-                    }
+        } else if (CamDeviceType.OTHER.getValue() == type) {
+            VlcCamView vlcCamView = new VlcCamView(context, cams.get(position));
+            return vlcCamView;
+        }
 
         return null;
     }

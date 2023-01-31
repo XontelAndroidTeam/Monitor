@@ -128,11 +128,11 @@ public class MonitorFragment extends BaseFragment  {
                 if (ipCams.isEmpty()){
                     pagerAdapter.getListOfData(allIpCams);
                 } else if (ipCams.size() > allIpCams.size()){
-                    handleDecreaseIpCam(allIpCams);
+                //    handleDecreaseIpCam(allIpCams);
                 }else if (ipCams.size() < allIpCams.size()){
-                    handleIncreaseIpCam(allIpCams);
+                 //   handleIncreaseIpCam(allIpCams);
                 }else{
-                    mainViewModel.refreshData.setValue(true);
+                //    mainViewModel.refreshData.setValue(true);
                 }
                 handleCamsFromDb(allIpCams);
                 mainViewModel.pagerCount.setValue(pagerAdapter.getFragmentCount());
@@ -166,14 +166,14 @@ public class MonitorFragment extends BaseFragment  {
     }
 
     private void handleChangeGrid(){
-        int size =  getCalculatedCount(ipCams);
-        if (size > pagerAdapter.getFragmentCount()){
-            pagerAdapter.addFragments(size - pagerAdapter.getFragmentCount());
-        }else if (size < pagerAdapter.getFragmentCount()){
-            pagerAdapter.removeFragments(pagerAdapter.getFragmentCount() - size);
-        }
-        mainViewModel.pagerCount.setValue(pagerAdapter.getFragmentCount());
-        pagerAdapter.updateGridCount(mainViewModel.gridCount.getValue());
+    //    int size =  getCalculatedCount(ipCams);
+   //     if (size > pagerAdapter.getFragmentCount()){
+     //       pagerAdapter.addFragments(size - pagerAdapter.getFragmentCount());
+      //  }else if (size < pagerAdapter.getFragmentCount()){
+    //        pagerAdapter.removeFragments(pagerAdapter.getFragmentCount() - size);
+      //  }
+      //  mainViewModel.pagerCount.setValue(pagerAdapter.getFragmentCount());
+     //   pagerAdapter.updateGridCount(mainViewModel.gridCount.getValue());
         mainViewModel.refreshPagerGridCount.setValue(true);
     }
 
