@@ -67,8 +67,8 @@ public class PagerFragment extends Fragment  {
         data = new ArrayList<>();
         binding = FragmentPagerBinding.inflate(inflater);
         viewModel = new ViewModelProvider(requireActivity(), viewModelProviderFactory).get(MainViewModel.class);
-        rangeFrom = index * viewModel.gridCount.getValue();
-        rangeTo = rangeFrom + (viewModel.gridCount.getValue() - 1);
+        rangeFrom = 0;
+        rangeTo = 1;
         binding.setViewModel(viewModel);
         binding.setLifecycleOwner(getViewLifecycleOwner());
     }
@@ -123,7 +123,7 @@ public class PagerFragment extends Fragment  {
             }
         });
 
-        viewModel.refreshPagerGridCount.observe(getViewLifecycleOwner(), aBoolean -> {
+        viewModel.refreshGridCount.observe(getViewLifecycleOwner(), aBoolean -> {
             if (aBoolean){
                 whenGridChanged();
                 if (index == viewModel.pagerCount.getValue()-1){

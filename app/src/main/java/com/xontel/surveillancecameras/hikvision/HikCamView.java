@@ -2,8 +2,10 @@ package com.xontel.surveillancecameras.hikvision;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.SurfaceView;
 import android.widget.FrameLayout;
+import android.widget.GridView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -56,7 +58,17 @@ public class HikCamView extends ConstraintLayout {
 
     }
 
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        Log.v("TAGG", "attached");
+    }
 
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        Log.v("TAGG", "detached");
+    }
 
     private void bind() {
         surfaceView =  findViewById(R.id.hik_layout) ;

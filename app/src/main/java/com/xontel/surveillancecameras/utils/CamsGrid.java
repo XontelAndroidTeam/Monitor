@@ -20,4 +20,13 @@ public class CamsGrid extends GridView {
     public CamsGrid(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
+
+
+    @Override
+    public void setNumColumns(int numColumns) {
+        if (numColumns != mRequestedNumColumns) {
+            mRequestedNumColumns = numColumns;
+            requestLayoutIfNecessary();
+        }
+    }
 }
