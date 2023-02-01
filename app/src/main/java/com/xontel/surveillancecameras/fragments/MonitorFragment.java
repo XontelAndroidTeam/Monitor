@@ -28,10 +28,7 @@ import javax.inject.Inject;
 
 public class MonitorFragment extends BaseFragment  {
     public static final String TAG = MonitorFragment.class.getSimpleName();
-    public static final String KEY_ORDER = "order";
     private FragmentMonitorBinding binding;
-    private int gridCount;
-    private int fragmentOrder;
     private PagerAdapter pagerAdapter;
     private List<IpCam> ipCams = new ArrayList<>();
     private List<CamDevice> camDevices = new ArrayList<>();
@@ -45,7 +42,7 @@ public class MonitorFragment extends BaseFragment  {
 
     @Override
     public void onResume(){
-        pagerAdapter.notifyDataSetChanged();
+      //  pagerAdapter.notifyDataSetChanged();
         binding.noCams.btnAdd.setOnClickListener(view -> {
         requireActivity().startActivity(new Intent(requireContext(), AddNewDeviceActivity.class));
     });
@@ -72,7 +69,6 @@ public class MonitorFragment extends BaseFragment  {
         getFragmentComponent().inject(this);
         mainViewModel = new ViewModelProvider(requireActivity(), providerFactory).get(MainViewModel.class);
         setHasOptionsMenu(true);
-        //gridCount = mainViewModel.getGridObservable().getValue();
     }
 
 
@@ -93,24 +89,19 @@ public class MonitorFragment extends BaseFragment  {
         }
     }
 
-   // public void updateIpCams(){
-   //     int leapLastIndex = fragmentOrder * gridCount;
-   //     ipCams.clear();
-   //     ipCams.addAll(mainViewModel.ipCams.getValue().subList(leapLastIndex - gridCount, Math.min(leapLastIndex, mainViewModel.ipCams.getValue().size())));
-  //  }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentMonitorBinding.inflate(inflater);
+        setupCamsPager();
+        setupObservables();
         requireActivity().setTitle(R.string.monitor);
         return binding.getRoot();
     }
 
     @Override
     protected void setUp(View view) {
-        setupCamsPager();
-        setupObservables();
     }
 
     private void setupCamsPager() {
@@ -118,6 +109,7 @@ public class MonitorFragment extends BaseFragment  {
         if (pagerAdapter == null){
             pagerAdapter = new PagerAdapter(getChildFragmentManager(),mainViewModel.gridCount.getValue());
         }
+        binding.camsPager.setOffscreenPageLimit(1);
         binding.camsPager.setAdapter(pagerAdapter);
         binding.dotsIndicator.setViewPager(binding.camsPager);
     }
@@ -128,11 +120,11 @@ public class MonitorFragment extends BaseFragment  {
                 if (ipCams.isEmpty()){
                     pagerAdapter.getListOfData(allIpCams);
                 } else if (ipCams.size() > allIpCams.size()){
-                //    handleDecreaseIpCam(allIpCams);
+                    handleDecreaseIpCam(allIpCams);
                 }else if (ipCams.size() < allIpCams.size()){
-                 //   handleIncreaseIpCam(allIpCams);
+                    handleIncreaseIpCam(allIpCams);
                 }else{
-                //    mainViewModel.refreshData.setValue(true);
+                    mainViewModel.refreshData.setValue(true);
                 }
                 handleCamsFromDb(allIpCams);
                 mainViewModel.pagerCount.setValue(pagerAdapter.getFragmentCount());
@@ -144,12 +136,7 @@ public class MonitorFragment extends BaseFragment  {
             }
         });
 
-        mainViewModel.mGridObservable.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
-            @Override
-            public void onPropertyChanged(Observable sender, int propertyId) {
-            //    updateIpCams();
-            }
-        });
+
 
         mainViewModel.refreshGridCount.observe(getViewLifecycleOwner(), aBoolean -> {
             if (aBoolean){
@@ -166,15 +153,15 @@ public class MonitorFragment extends BaseFragment  {
     }
 
     private void handleChangeGrid(){
-    //    int size =  getCalculatedCount(ipCams);
-   //     if (size > pagerAdapter.getFragmentCount()){
-     //       pagerAdapter.addFragments(size - pagerAdapter.getFragmentCount());
-      //  }else if (size < pagerAdapter.getFragmentCount()){
-    //        pagerAdapter.removeFragments(pagerAdapter.getFragmentCount() - size);
-      //  }
-      //  mainViewModel.pagerCount.setValue(pagerAdapter.getFragmentCount());
-     //   pagerAdapter.updateGridCount(mainViewModel.gridCount.getValue());
-        mainViewModel.refreshPagerGridCount.setValue(true);
+        int size =  getCalculatedCount(ipCams);
+        if (size > pagerAdapter.getFragmentCount()){
+            pagerAdapter.addFragments(size - pagerAdapter.getFragmentCount());
+        }else if (size < pagerAdapter.getFragmentCount()){
+            pagerAdapter.removeFragments(pagerAdapter.getFragmentCount() - size);
+        }
+        mainViewModel.pagerCount.setValue(pagerAdapter.getFragmentCount());
+        pagerAdapter.updateGridCount(mainViewModel.gridCount.getValue());
+       mainViewModel.refreshPagerGridCount.setValue(true);
     }
 
     private int getCalculatedCount(List<IpCam> allIpCams){

@@ -5,34 +5,38 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridLayout;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.GridLayoutManager;
 import com.xontel.surveillancecameras.activities.HomeActivity;
-import com.xontel.surveillancecameras.adapters.CamsAdapter;
 import com.xontel.surveillancecameras.adapters.GridAdapter;
+import com.xontel.surveillancecameras.dahua.DahuaCamView;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
 import com.xontel.surveillancecameras.databinding.FragmentPagerBinding;
+import com.xontel.surveillancecameras.hikvision.HikCamView;
+import com.xontel.surveillancecameras.utils.CamDeviceType;
+import com.xontel.surveillancecameras.utils.CamViewEmpty;
+import com.xontel.surveillancecameras.utils.PlayerView;
 import com.xontel.surveillancecameras.viewModels.MainViewModel;
 import com.xontel.surveillancecameras.viewModels.ViewModelProviderFactory;
+import com.xontel.surveillancecameras.vlc.VlcCamView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
 public class PagerFragment extends Fragment  {
     private FragmentPagerBinding binding;
-    private MainViewModel viewModel;
-    private CamsAdapter camsAdapter;
-    private GridAdapter gridAdapter;
     private List<IpCam> data = new ArrayList<>();
+    private MainViewModel viewModel;
+    private GridAdapter gridAdapter;
     private int index;
     private boolean isInitialized = false;
-    private int rangeFrom,rangeTo;
     @Inject
     ViewModelProviderFactory viewModelProviderFactory;
 
@@ -43,6 +47,7 @@ public class PagerFragment extends Fragment  {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(null);
+       // Log.i("TATZ", "onCreatePager: "+index);
         setupDagger();
         Bundle args = getArguments();
         if (args != null){
@@ -67,70 +72,97 @@ public class PagerFragment extends Fragment  {
         data = new ArrayList<>();
         binding = FragmentPagerBinding.inflate(inflater);
         viewModel = new ViewModelProvider(requireActivity(), viewModelProviderFactory).get(MainViewModel.class);
-        rangeFrom = 0;
-        rangeTo = 1;
         binding.setViewModel(viewModel);
         binding.setLifecycleOwner(getViewLifecycleOwner());
     }
 
     private void setupAdapter() {
-        //New
-        gridAdapter = new GridAdapter(getContext(), viewModel.gridCount.getValue(), viewModel.ipCams.getValue());
-        binding.gridViewPager.setNumColumns( (int) Math.sqrt(viewModel.gridCount.getValue()));
-        binding.gridViewPager.setAdapter(gridAdapter);
-
-        //Old
-      //  binding.pagerRecycler.setLayoutManager(new GridLayoutManager(getActivity(), (int) Math.sqrt(viewModel.gridCount.getValue())));
-      //  binding.pagerRecycler.setHasFixedSize(true);
-        if (camsAdapter == null){camsAdapter = new CamsAdapter(new ArrayList<>(), viewModel.gridCount.getValue(), getContext());}
-     //   binding.pagerRecycler.setAdapter(camsAdapter);
-        if (!isInitialized){updateData();}
+        if (!isInitialized){ drawGrid(viewModel.gridCount.getValue());}
     }
 
-    private void updateData() {
-        Log.i("TATZ", "[Pager] updateData: ");
-        if (data != null && !data.isEmpty() ){data.clear();}
-        for (int i = rangeFrom ; i <= rangeTo ; i ++){
-            if (viewModel.ipCams.getValue() != null && !viewModel.ipCams.getValue().isEmpty() &&  viewModel.ipCams.getValue().size() > i ) {
-                data.add(viewModel.ipCams.getValue().get(i));
-            }
-        }
-        gridAdapter.addItems(data);
-    }
-
-    private void whenGridChanged(){
-        Log.i("TATAZ", "[Pager] whenGridChanged: "+viewModel.gridCount.getValue());
-        binding.gridViewPager.setNumColumns( (int) Math.sqrt(viewModel.gridCount.getValue()));
-        gridAdapter.setGridCount(viewModel.gridCount.getValue());
-        gridAdapter.notifyDataSetChanged();
 
 
-      //  binding.pagerRecycler.setLayoutManager(new GridLayoutManager(getActivity(), (int) Math.sqrt(viewModel.gridCount.getValue())));
-     //   binding.pagerRecycler.setAdapter(camsAdapter); // to resetView
-//        camsAdapter.setGridCount(viewModel.gridCount.getValue());
-        rangeFrom = index * viewModel.gridCount.getValue();
-        rangeTo = rangeFrom + (viewModel.gridCount.getValue() - 1);
-       // updateData();
-    }
 
     private void observers() {
         viewModel.refreshData.observe(getViewLifecycleOwner(), aBoolean -> {
             if (aBoolean){
-                updateData();
                 if (index == viewModel.pagerCount.getValue()-1){
                     viewModel.refreshData.setValue(false);
                 }
             }
         });
 
-        viewModel.refreshGridCount.observe(getViewLifecycleOwner(), aBoolean -> {
+        viewModel.refreshPagerGridCount.observe(getViewLifecycleOwner(), aBoolean -> {
             if (aBoolean){
-                whenGridChanged();
+                drawGrid(viewModel.gridCount.getValue());
                 if (index == viewModel.pagerCount.getValue()-1){
                     viewModel.refreshPagerGridCount.setValue(false);
                 }
             }
         });
+    }
+
+
+
+    private void drawGrid(int gridCount){
+        int count = (int)Math.sqrt(gridCount) ;
+        int childCount = binding.grid.getChildCount();
+
+        if(gridCount > childCount){
+            binding.grid.setColumnCount(count);
+            binding.grid.setRowCount(count);
+            addViews(gridCount);
+        }else{
+            binding.grid.removeViews(gridCount, binding.grid.getChildCount() - gridCount );
+            for(int i = 0 ; i < binding.grid.getChildCount() ; i++){
+                GridLayout.LayoutParams param = new GridLayout.LayoutParams(GridLayout.spec(
+                        GridLayout.UNDEFINED, GridLayout.FILL, 1f),
+                        GridLayout.spec(GridLayout.UNDEFINED, GridLayout.FILL, 1f));
+                param.height = 0;
+                param.width = 0;
+                binding.grid.getChildAt(i).setLayoutParams(param);
+
+            }
+            binding.grid.setColumnCount(count);
+            binding.grid.setRowCount(count);
+        }
+
+    }
+
+
+    private void addViews(int size) {
+        View playerView;
+        for (int i = binding.grid.getChildCount(); i < size; i++) {
+            if ( i < viewModel.ipCams.getValue().size()){
+                IpCam ipCam = Objects.requireNonNull(viewModel.ipCams.getValue()).get(i);
+                 playerView =  createCamView(ipCam.getType(),ipCam);
+            }else{
+                 playerView = new CamViewEmpty(requireContext());
+            }
+            GridLayout.LayoutParams param = new GridLayout.LayoutParams(GridLayout.spec(
+                    GridLayout.UNDEFINED, GridLayout.FILL, 1f),
+                    GridLayout.spec(GridLayout.UNDEFINED, GridLayout.FILL, 1f));
+
+            param.height = 0;
+            param.width = 0;
+            binding.grid.addView(playerView,param);
+        }
+    }
+
+    private View createCamView(int type,IpCam ipCam) {
+        if (CamDeviceType.HIKVISION.getValue() == type) {
+            return new HikCamView(requireContext(), ipCam);
+        }
+
+        else if (CamDeviceType.DAHUA.getValue() == type) {
+            return new DahuaCamView(requireContext(),ipCam);
+        }
+
+        else if (CamDeviceType.OTHER.getValue() == type) {
+            return new VlcCamView(requireContext(),ipCam);
+        }
+
+        return null;
     }
 
 }

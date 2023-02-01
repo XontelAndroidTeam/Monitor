@@ -39,7 +39,11 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getItemPosition(@NonNull Object object) {
-        return POSITION_NONE;
+        if ( ((Fragment)object).getId() ==  mFragmentList.get(0).getId()){
+            return POSITION_UNCHANGED;
+        }else{
+            return  POSITION_NONE ;
+        }
     }
 
     public void getListOfData(List<IpCam> dbList){

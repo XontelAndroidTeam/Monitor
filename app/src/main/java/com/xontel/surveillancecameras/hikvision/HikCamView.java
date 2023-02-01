@@ -17,7 +17,7 @@ import com.xontel.surveillancecameras.vlc.VlcSinglePlayer;
 
 import org.videolan.libvlc.util.VLCVideoLayout;
 
-public class HikCamView extends ConstraintLayout {
+public class HikCamView extends FrameLayout {
     private IpCam ipCam;
     private HIKSinglePlayer hikSinglePlayer ;
     private Context context;
@@ -55,7 +55,6 @@ public class HikCamView extends ConstraintLayout {
     private void init() {
         inflate(context, R.layout.item_hik_cam, this);
         bind();
-
     }
 
     @Override

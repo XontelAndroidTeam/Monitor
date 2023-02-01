@@ -34,7 +34,7 @@ public class MainViewModel extends BaseViewModel {
     public static final String TAG = MainViewModel.class.getSimpleName();
     public MutableLiveData<List<IpCam>> ipCams = new MutableLiveData<>(new ArrayList<>());
     private final MutableLiveData<List<CamDevice>> camDevices = new MutableLiveData<>(new ArrayList<>());
-    public MutableLiveData<Integer> gridCount = new MutableLiveData<>(16);
+    public MutableLiveData<Integer> gridCount = new MutableLiveData<>(9);
     public MutableLiveData<Boolean> isRecording = new MutableLiveData<>(false);
     public MutableLiveData<Boolean> refreshData = new MutableLiveData<>(false);
     public MutableLiveData<Boolean> refreshGridCount = new MutableLiveData<>(false);

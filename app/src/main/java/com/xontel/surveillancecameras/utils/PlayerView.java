@@ -42,7 +42,7 @@ public class PlayerView extends FrameLayout {
 
     private void init(Context context){
        inflate(context, R.layout.item_player, this);
-        mSurfaceView = findViewById(R.id.player);
+
 
     }
 
@@ -50,7 +50,6 @@ public class PlayerView extends FrameLayout {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        mSurfaceView.setText(((ViewGroup)getParent()).indexOfChild(this)+"");
         Log.v("LOGGYY", "onAttachedToWindow ===== "+ ((ViewGroup)getParent()).indexOfChild(this));
     }
 

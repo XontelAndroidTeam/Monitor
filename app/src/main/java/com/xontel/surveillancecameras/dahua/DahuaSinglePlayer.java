@@ -102,12 +102,6 @@ public class DahuaSinglePlayer {
                     Surface surface = holder.getSurface();
                     if (surface.isValid()) {
                         startPlay(logId,channel,streamType,mSurfaceView);
-                     //   if(!Player.getInstance().setCurrentFrameNum(m_iPort, 60)){
-                       //     Log.e(TAG, "Player failed to set frame rate!");
-                      //  }
-                      //  if (!Player.getInstance().setVideoWindow(m_iPort, 0, holder)) {
-                      //      Log.e(TAG, "Player failed to set or destroy display area!");
-                      //  }
                     }
                 }
             }
@@ -120,13 +114,9 @@ public class DahuaSinglePlayer {
             @Override
             public void surfaceDestroyed(SurfaceHolder holder) {
                 Log.i(TAG, "Player setVideoWindow release!" + playPort);
+                stopPlay();
                 if (-1 == playPort) {
                     return;
-                }
-                if (holder.getSurface().isValid()) {
-                  //  if (!Player.getInstance().setVideoWindow(playPort, 0, null)) {
-                     //   Log.e(TAG, "Player failed to set or destroy display area!");
-                  //  }
                 }
             }
         });
@@ -134,15 +124,12 @@ public class DahuaSinglePlayer {
 
 
     public void processRealData(int iDataType, byte[] pDataBuffer, int iDataSize, int iStreamMode) {
-        // must decode data
-//        if (HCNetSDK.NET_DVR_SYSHEAD == iDataType) {
         if (playPort >= 0) {
             return;
         }
         playPort = playerInstance.getPort();
         if (playPort == -1) {
-            Log.e(TAG, "getPort is failed with: "
-                    + playerInstance.getLastError(playPort));
+            Log.e(TAG, "getPort is failed with: " + playerInstance.getLastError(playPort));
             return;
         }
         Log.i(TAG, "getPort succ with: " + playPort);
@@ -234,71 +221,6 @@ public class DahuaSinglePlayer {
         return true;
     }
 
-
-
-    public void startPlayHik(long loginHandle, int channel, int streamType, SurfaceView surfaceView) {
-        realPlayId = INetSDK.RealPlayEx(loginId, 0, SDK_RealPlayType.SDK_RType_Realplay_1);
-        if (realPlayId == 0L) {
-            Log.e(TAG, "startPlay: RealPlayEx failed!");
-            return;
-        }
-        if (!prePlayHik(surfaceView)) {
-            Log.d(TAG, "prePlay returned false..");
-            INetSDK.StopRealPlayEx(realPlayId);
-            return;
-        }
-        if (realPlayId != 0L) {
-            _realDataCallBackEx = new CB_fRealDataCallBackEx() {
-                @Override
-                public void invoke(long l, int dataType, byte[] buffer, int i1, int i2) {
-//                    if (RAW_AUDIO_VIDEO_MIX_DATA == dataType) {
-//                        processRealData(dataType, buffer, i1, 0);
-
-                    System.arraycopy(
-                            buffer,
-                            0,
-                            streamBuffer,
-                            0,
-                            buffer.length
-                    );
-                    Log.v(TAG, " iDataType : "+ dataType +
-                            " pDataBuffer : "+streamBuffer.length +
-                            "hashCode : "+streamBuffer.hashCode()+
-                            " iDataSize : "+i1);
-                    if(!playerInstance.inputData(playPort, streamBuffer, i1)){
-                        Log.v(TAG, "failed play");
-                    }
-//                    }
-                }
-            };
-            INetSDK.SetRealDataCallBackEx(realPlayId, _realDataCallBackEx, 1);
-        }
-    }
-    private boolean prePlayHik(SurfaceView surfaceView) {
-        if (!playerInstance.setStreamOpenMode(playPort,
-                Player.STREAM_REALTIME)) // set stream mode
-        {
-            Log.e(TAG, "setStreamOpenMode failed");
-            return false;
-        }
-        boolean isOpened = playerInstance.openStream(playPort, streamBuffer, 0, STREAM_BUF_SIZE) ;
-        if (!isOpened) {
-            Log.d(TAG, "OpenStream Failed");
-            return false;
-        }
-        if (!playerInstance
-                .setVideoWindow(playPort, 0, surfaceView.getHolder())) {
-            Log.e(TAG, "Player setVideoWindow failed!");
-        }
-        boolean isPlaying = playerInstance.play(playPort, surfaceView.getHolder());
-        if (!isPlaying) {
-            Log.d(TAG, "PLAYPlay Failed");
-            playerInstance.closeStream(playPort);
-            return false;
-        }
-
-        return true;
-    }
 
 
     public void stopPlay() {

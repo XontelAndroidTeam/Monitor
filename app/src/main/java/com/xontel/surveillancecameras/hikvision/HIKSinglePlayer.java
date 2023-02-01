@@ -69,7 +69,7 @@ public class HIKSinglePlayer implements RealPlayCallBack {
         mSurfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
-                Log.v("TATZ", "[Hik] surfaceCreated"+ "port : "+m_iPort);
+             //   Log.v("TATZ", "[Hik] surfaceCreated"+ "port : "+m_iPort);
                 if (-1 == m_iPort) {return;}
                     Surface surface = holder.getSurface();
                     if (surface.isValid()) {
@@ -86,7 +86,7 @@ public class HIKSinglePlayer implements RealPlayCallBack {
 
             @Override
             public void surfaceDestroyed(SurfaceHolder holder) {
-                Log.v("TATZ", "[Hik] surfaceDestroyed "+"port : "+m_iPort);
+              //  Log.v("TATZ", "[Hik] surfaceDestroyed "+"port : "+m_iPort);
                 if (isShow) {isShow = false;}
                 unConfigurePlay();
                 if (-1 == m_iPort) {
@@ -135,7 +135,7 @@ public class HIKSinglePlayer implements RealPlayCallBack {
                     Log.e(TAG, "Playing audio exclusively failed! failure code :" + Player.getInstance().getLastError(m_iPort));
                     return;
                 }
-                Log.i("TATZ", "[configurePlayer] channel: "+channel);
+               // Log.i("TATZ", "[configurePlayer] channel: "+channel);
                 isConfigure = true ;
                 isShow = true;
 
@@ -159,7 +159,7 @@ public class HIKSinglePlayer implements RealPlayCallBack {
     }
 
     public void processRealData( byte[] pDataBuffer, int iDataSize) {
-            Log.i("TATZ", "[processRealData] "+"port : "+m_iPort);
+          //  Log.i("TATZ", "[processRealData] "+"port : "+m_iPort);
             if (!Player.getInstance().inputData(m_iPort, pDataBuffer, iDataSize)) {
                 Log.e(TAG, "inputData failed with: " +
                         playerInstance.getLastError(m_iPort));
@@ -209,7 +209,7 @@ public class HIKSinglePlayer implements RealPlayCallBack {
     @Override
     public void fRealDataCallBack(int iRealHandle, int iDataType, byte[] pDataBuffer, int iDataSize) {
         if (HCNetSDK.NET_DVR_SYSHEAD == iDataType){
-            Log.i("TATZ", "[NET_DVR_SYSHEAD] iDataType: "+iDataType+ "port : "+m_iPort);
+          //  Log.i("TATZ", "[NET_DVR_SYSHEAD] iDataType: "+iDataType+ "port : "+m_iPort);
             if (!Player.getInstance().setStreamOpenMode(m_iPort, STREAM_Mode))  //set stream mode
             {
                 Log.e(TAG, "Failed to set streaming mode！");
@@ -222,7 +222,7 @@ public class HIKSinglePlayer implements RealPlayCallBack {
             }
         }
         else{
-            Log.i("TATZ", "[isShow] isShow: "+isShow + "port : "+m_iPort);
+          //  Log.i("TATZ", "[isShow] isShow: "+isShow + "port : "+m_iPort);
             if (isShow ) {
                 processRealData( pDataBuffer, iDataSize);
             }

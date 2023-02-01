@@ -10,6 +10,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+
     <GridLayout
         android:id="@+id/grid"
         android:layout_width="match_parent"
@@ -18,6 +19,7 @@
         android:columnCount="2"
         android:rowCount="2"
         tools:context=".GridTestActivity"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -51,6 +53,7 @@
             android:layout_height="wrap_content"
             android:text="16"/>
     </LinearLayout>
+
 </LinearLayout>
 
 </layout>

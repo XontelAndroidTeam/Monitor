@@ -2,6 +2,7 @@ package com.xontel.surveillancecameras.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -201,36 +202,6 @@ public class HomeActivity extends BaseActivity implements AdapterView.OnItemClic
 
 
     private void setupObservables() {
-        /*
-        mainViewModel.getLoading().observe(this, loading -> {
-            if (loading) {
-                showLoading();
-            } else {
-                hideLoading();
-            }
-        });
-        mainViewModel.getError().observe(this, error -> {
-            if (error) {
-                showMessage(R.string.error_occurred_while_processing);
-            }
-        });
-        mainViewModel.ipCams.observe(this, ipCams -> {
-//            updateViewPager();
-        });
-
-        mainViewModel.getGridObservable().addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
-            @Override
-            public void onPropertyChanged(Observable sender, int propertyId) {
-//                updateViewPager();
-            }
-        });
-//        mainViewModel.gridCount.observe(this, gridCount -> {
-//            binding.spGridCount.setText(String.format("%d", gridCount));
-//            dataManager.setGridCount(gridCount);
-//            updateViewPager();
-//        });
-
-         */
     }
 
 
@@ -248,29 +219,6 @@ public class HomeActivity extends BaseActivity implements AdapterView.OnItemClic
     }
 
 
-    private void setupCamerasPager() {
-       // pagerAdapter = new PagerAdapter(getSupportFragmentManager(),1);
-//        binding.home.vpSlider.setAdapter(pagerAdapter);
-//        binding.home.vpSlider.setEmptyView(binding.home.pagerEmptyView.getRoot());
-//        binding.home.vpSlider.setOffscreenPageLimit(0);
-//        binding.home.dotsIndicator.setViewPager(binding.home.vpSlider);
-//        binding.home.vpSlider.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-//            @Override
-//            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-//
-//            }
-//
-//            @Override
-//            public void onPageSelected(int position) {
-//                currentPageIndex = position;
-//            }
-//
-//            @Override
-//            public void onPageScrollStateChanged(int state) {
-//
-//            }
-//        });
-    }
 
 
     @Override
