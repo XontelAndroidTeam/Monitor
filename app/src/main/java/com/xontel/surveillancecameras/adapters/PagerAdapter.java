@@ -39,14 +39,13 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
     public int getItemPosition(@NonNull Object object) {
         for (Fragment fragment : mFragmentList){
             if ( ((Fragment)object).getId() == fragment.getId()){
-                return POSITION_NONE;
+                return POSITION_UNCHANGED;
             }
         }
-        return  POSITION_UNCHANGED ;
+        return  POSITION_NONE ;
     }
 
     public void getListOfData(List<IpCam> dbList){
-        Log.i("TATZ", "getListOfData: ");
         int size = 0 ;
         if (dbList.size() % gridCount != 0){ size = 1;}
         size = size + (dbList.size()/gridCount) ;

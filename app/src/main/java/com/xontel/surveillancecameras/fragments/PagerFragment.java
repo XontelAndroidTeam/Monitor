@@ -141,7 +141,6 @@ public class PagerFragment extends Fragment implements HikCamView.HikClickViews,
 
     private void addViews() {
         View playerView;
-        to = binding.grid.getChildCount() == 0 ? to:to  ;
         for (int i = from + binding.grid.getChildCount(); i < to; i++) {
             if ( i < viewModel.ipCams.getValue().size()){
                 IpCam ipCam = Objects.requireNonNull(viewModel.ipCams.getValue()).get(i);
