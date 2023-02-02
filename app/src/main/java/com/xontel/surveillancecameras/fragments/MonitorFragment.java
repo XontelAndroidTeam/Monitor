@@ -109,7 +109,7 @@ public class MonitorFragment extends BaseFragment  {
         if (pagerAdapter == null){
             pagerAdapter = new PagerAdapter(getChildFragmentManager(),mainViewModel.gridCount.getValue());
         }
-        binding.camsPager.setOffscreenPageLimit(3);
+     //   binding.camsPager.setOffscreenPageLimit(3);
         binding.camsPager.setAdapter(pagerAdapter);
         binding.dotsIndicator.setViewPager(binding.camsPager); //must be after adapter
     }
@@ -161,6 +161,7 @@ public class MonitorFragment extends BaseFragment  {
         }else if (size < pagerAdapter.getFragmentCount()){
             pagerAdapter.removeFragments(pagerAdapter.getFragmentCount() - size);
         }
+        binding.camsPager.setCurrentItem(0);
         mainViewModel.pagerCount.setValue(pagerAdapter.getFragmentCount());
         pagerAdapter.updateGridCount(mainViewModel.gridCount.getValue());
         if (pagerAdapter.getFragmentCount() > 1){binding.dotsIndicator.setVisibility(View.VISIBLE);}else{binding.dotsIndicator.setVisibility(View.GONE);}

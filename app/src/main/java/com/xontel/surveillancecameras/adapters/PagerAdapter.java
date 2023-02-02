@@ -90,7 +90,6 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
         notifyDataSetChanged();
     }
 
-
     @NonNull
     @Override
     public Fragment getItem(int position) {
