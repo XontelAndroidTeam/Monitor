@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.xontel.surveillancecameras.R;
@@ -22,31 +23,36 @@ public class VlcCamView extends FrameLayout {
     private IpCam ipCam;
     private VlcSinglePlayer vlcSinglePlayer ;
     private Context context;
+    private VlcClickViews vlcClickViews;
 
-    public VlcCamView(@NonNull Context context, IpCam ipCam) {
+    public VlcCamView(@NonNull Context context, IpCam ipCam,VlcClickViews vlcClickViews) {
         super(context);
         this.context = context;
+        this.vlcClickViews = vlcClickViews;
         this.ipCam = ipCam;
         init();
     }
 
-    public VlcCamView(@NonNull Context context, IpCam ipCam, @Nullable AttributeSet attrs) {
+    public VlcCamView(@NonNull Context context, IpCam ipCam, @Nullable AttributeSet attrs,VlcClickViews vlcClickViews) {
         super(context, attrs);
         this.context = context;
+        this.vlcClickViews = vlcClickViews;
         this.ipCam = ipCam;
         init();
     }
 
-    public VlcCamView(@NonNull Context context, IpCam ipCam, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public VlcCamView(@NonNull Context context, IpCam ipCam, @Nullable AttributeSet attrs, int defStyleAttr,VlcClickViews vlcClickViews) {
         super(context, attrs, defStyleAttr);
         this.context = context;
+        this.vlcClickViews = vlcClickViews;
         this.ipCam = ipCam;
         init();
     }
 
-    public VlcCamView(@NonNull Context context, IpCam ipCam, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public VlcCamView(@NonNull Context context, IpCam ipCam, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes,VlcClickViews vlcClickViews) {
         super(context, attrs, defStyleAttr, defStyleRes);
         this.context = context;
+        this.vlcClickViews = vlcClickViews;
         this.ipCam = ipCam;
         init();
     }
@@ -63,9 +69,18 @@ public class VlcCamView extends FrameLayout {
     }
 
     public void bind() {
+        CardView cardView = findViewById(R.id.cardView);
         VLCVideoLayout vlcVideoLayout = findViewById(R.id.vlc_layout);
         vlcSinglePlayer = new VlcSinglePlayer(context);
         vlcSinglePlayer.initVlcPlayer(ipCam.getUrlOrIpAddress(), vlcVideoLayout);
+        cardView.setOnClickListener(view -> {
+            vlcClickViews.onVlcClick(ipCam);
+        });
+
+    }
+
+  public  interface VlcClickViews{
+        void onVlcClick(IpCam ipCam);
     }
 
 

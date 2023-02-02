@@ -33,6 +33,7 @@
         android:inflatedId="@+id/texture_video"
         android:id="@+id/texture_stub"
         android:layout_gravity="center" />
+
     <org.videolan.libvlc.util.LoadingDots
         android:id="@+id/loading_dots"
         android:layout_width="wrap_content"
@@ -47,6 +48,7 @@
         app:LoadingDots_loop_start_delay="100"
         app:LoadingDots_jump_duration="200"
         app:LoadingDots_jump_height="4dp"/>
+
     <TextView
         android:id="@+id/tv_error"
         android:layout_width="wrap_content"

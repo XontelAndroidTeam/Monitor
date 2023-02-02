@@ -14,6 +14,7 @@ import com.xontel.surveillancecameras.hikvision.CamDevice;
 import com.xontel.surveillancecameras.hikvision.HikUtil;
 import com.xontel.surveillancecameras.root.AppConstant;
 import com.xontel.surveillancecameras.utils.CamDeviceType;
+import com.xontel.surveillancecameras.utils.StorageHelper;
 import com.xontel.surveillancecameras.utils.rx.SchedulerProvider;
 
 import org.videolan.libvlc.MediaPlayer;
@@ -34,7 +35,7 @@ public class MainViewModel extends BaseViewModel {
     public static final String TAG = MainViewModel.class.getSimpleName();
     public MutableLiveData<List<IpCam>> ipCams = new MutableLiveData<>(new ArrayList<>());
     private final MutableLiveData<List<CamDevice>> camDevices = new MutableLiveData<>(new ArrayList<>());
-    public MutableLiveData<Integer> gridCount = new MutableLiveData<>(9);
+    public MutableLiveData<Integer> gridCount = new MutableLiveData<>();
     public MutableLiveData<Boolean> isRecording = new MutableLiveData<>(false);
     public MutableLiveData<Boolean> refreshData = new MutableLiveData<>(false);
     public MutableLiveData<Boolean> refreshGridCount = new MutableLiveData<>(false);
@@ -48,6 +49,7 @@ public class MainViewModel extends BaseViewModel {
     public MainViewModel(Context context, SchedulerProvider mSchedulerProvider, CompositeDisposable mCompositeDisposable, DataManager manager) {
         super(mSchedulerProvider, mCompositeDisposable, manager);
         this.context = context ;
+        gridCount.setValue(StorageHelper.getGridCount(context));
         getAllCameras();
     }
 

@@ -82,16 +82,16 @@ public class GridAdapter extends BaseAdapter {
 
     private View createCamView(int type, int position) {
         if (CamDeviceType.HIKVISION.getValue() == type) {
-            HikCamView hikCamView = new HikCamView(context, cams.get(position));
-            camViews.add(hikCamView);
-            return hikCamView;
+          //  HikCamView hikCamView = new HikCamView(context, cams.get(position));
+          //  camViews.add(hikCamView);
+          //  return hikCamView;
         } else if (CamDeviceType.DAHUA.getValue() == type) {
 //                    HikCamView hikCamView =new HikCamView(context, cams.get(i));
 //                    camViews.add(hikCamView);
 //                    return hikCamView;
         } else if (CamDeviceType.OTHER.getValue() == type) {
-            VlcCamView vlcCamView = new VlcCamView(context, cams.get(position));
-            return vlcCamView;
+        //    VlcCamView vlcCamView = new VlcCamView(context, cams.get(position));
+            //return vlcCamView;
         }
 
         return null;

@@ -20,9 +20,7 @@ import java.util.List;
 public class PagerAdapter extends FragmentStatePagerAdapter {
 
     private final List<Fragment> mFragmentList = new ArrayList<>();
-
     private int gridCount ;
-
     public List<Fragment> getFragmentList() {
         return mFragmentList;
     }
@@ -30,6 +28,7 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
     public PagerAdapter(@NonNull FragmentManager fm, int gridCount) {
         super(fm, PagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         this.gridCount = gridCount ;
+        Log.i("TATZ", "PagerAdapterInstance: ");
     }
 
 
@@ -39,11 +38,11 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getItemPosition(@NonNull Object object) {
-        if ( ((Fragment)object).getId() ==  mFragmentList.get(0).getId()){
-            return POSITION_UNCHANGED;
-        }else{
-            return  POSITION_NONE ;
-        }
+       // if ( ((Fragment)object).getId() ==  mFragmentList.get(0).getId()){
+         //   return POSITION_UNCHANGED;
+      //  }else{
+            return  POSITION_UNCHANGED ;
+      //  }
     }
 
     public void getListOfData(List<IpCam> dbList){

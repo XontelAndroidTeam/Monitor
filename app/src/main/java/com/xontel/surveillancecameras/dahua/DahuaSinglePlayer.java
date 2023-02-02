@@ -11,6 +11,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.MutableLiveData;
 
 import com.company.NetSDK.CB_fDisConnect;
 import com.company.NetSDK.CB_fHaveReConnect;
@@ -43,6 +44,8 @@ public class DahuaSinglePlayer {
     private CB_fRealDataCallBackEx _realDataCallBackEx ;
     private Boolean isRecording = false;
     private SimpleDateFormat sDateFormat;
+    public MutableLiveData<Boolean> isError = new MutableLiveData(false);
+    public MutableLiveData<Boolean> isLoading = new MutableLiveData(true);
     private long loginId = 0; // return by NET_DVR_Login_v30
     private long realPlayId = -1; // return by NET_DVR_RealPlay_V30
     private int playbackId  = -1; // return by NET_DVR_PlayBackByTime
@@ -60,29 +63,6 @@ public class DahuaSinglePlayer {
     private int logId;
     private int streamType ;
 
-
-    class DeviceDisConnect implements CB_fDisConnect {
-        @Override
-        public void invoke(long lLoginID, String pchDVRIP, int nDVRPort) {
-
-            return;
-        }
-    }
-
-    public class DeviceReConnect implements CB_fHaveReConnect {
-        @Override
-        public void invoke(long lLoginID, String pchDVRIP, int nDVRPort) {
-
-        }
-    }
-
-    public class DeviceSubDisConnect implements CB_fSubDisConnect {
-        @Override
-        public void invoke(int emInterfaceType, boolean bOnline,
-                           long lOperateHandle, long lLoginID) {
-
-        }
-    }
 
     public DahuaSinglePlayer(int channel, int logId, int streamType,Context context) {
         this.channel = channel;
@@ -102,6 +82,7 @@ public class DahuaSinglePlayer {
                     Surface surface = holder.getSurface();
                     if (surface.isValid()) {
                         startPlay(logId,channel,streamType,mSurfaceView);
+                        isLoading.setValue(false);
                     }
                 }
             }
@@ -115,6 +96,7 @@ public class DahuaSinglePlayer {
             public void surfaceDestroyed(SurfaceHolder holder) {
                 Log.i(TAG, "Player setVideoWindow release!" + playPort);
                 stopPlay();
+                isLoading.setValue(true);
                 if (-1 == playPort) {
                     return;
                 }
@@ -132,23 +114,30 @@ public class DahuaSinglePlayer {
             Log.e(TAG, "getPort is failed with: " + playerInstance.getLastError(playPort));
             return;
         }
-        Log.i(TAG, "getPort succ with: " + playPort);
         if (iDataSize > 0) {
             // set stream mode
             if (!playerInstance.setStreamOpenMode(playPort, iStreamMode)) {
                 Log.e(TAG, "setStreamOpenMode failed");
+                isError.postValue(true);
                 return;
+            }else{
+                isError.postValue(false);
             }
             // open stream
             if (!playerInstance.openStream(playPort, pDataBuffer, iDataSize, 2 * 1024 * 1024)) {
                 Log.e(TAG, "openStream failed");
+                isError.postValue(true);
                 return;
+            }else{
+                isError.postValue(false);
             }
 
-            if (!playerInstance.play(playPort,
-                    mSurfaceView.getHolder())) {
+            if (!playerInstance.play(playPort, mSurfaceView.getHolder())) {
                 Log.e(TAG, "play failed");
+                isError.postValue(true);
                 return;
+            }else{
+                isError.postValue(false);
             }
 
             if (!playerInstance.playSound(playPort)) {

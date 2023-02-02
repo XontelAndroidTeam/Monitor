@@ -21,6 +21,7 @@ import androidx.navigation.ui.NavigationUI;
 import com.google.android.material.textfield.TextInputLayout;
 import com.xontel.surveillancecameras.R;
 import com.xontel.surveillancecameras.adapters.SideMenuAdapter;
+import com.xontel.surveillancecameras.utils.StorageHelper;
 import com.xontel.surveillancecameras.viewModels.MainViewModel;
 import com.xontel.surveillancecameras.viewModels.ViewModelProviderFactory;
 import com.xontel.surveillancecameras.adapters.PagerAdapter;
@@ -232,6 +233,7 @@ public class HomeActivity extends BaseActivity implements AdapterView.OnItemClic
         AutoCompleteTextView autoCompleteTextView = textInputLayout.findViewById(R.id.slide_show_filter);
         int gridCount = Integer.parseInt(autoCompleteTextView.getText().toString());
         if (mainViewModel.gridCount.getValue() != gridCount){
+            StorageHelper.saveGridCount(this,gridCount);
             mainViewModel.gridCount.setValue(gridCount);
             mainViewModel.refreshGridCount.setValue(true);
         }

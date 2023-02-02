@@ -14,6 +14,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.MutableLiveData;
 
 import com.hikvision.netsdk.HCNetSDK;
 import com.hikvision.netsdk.NET_DVR_PREVIEWINFO;
@@ -37,6 +38,8 @@ public class HIKSinglePlayer implements RealPlayCallBack {
     private SimpleDateFormat sDateFormat;
     private final HCNetSDK netSDKInstance = HCNetSDK.getInstance();
     private final Player playerInstance = Player.getInstance();
+    public MutableLiveData<Boolean> isError = new MutableLiveData(false);
+    public MutableLiveData<Boolean> isLoading = new MutableLiveData(true);
     private SurfaceView mSurfaceView;
     private boolean stopPlayback = false;
     private int m_iPort = -1;
@@ -61,7 +64,6 @@ public class HIKSinglePlayer implements RealPlayCallBack {
         this.context = context;
         m_iPort = playerInstance.getPort();
         openStream();
-
     }
 
     public void initView(SurfaceView surfaceView) {
@@ -73,8 +75,8 @@ public class HIKSinglePlayer implements RealPlayCallBack {
                 if (-1 == m_iPort) {return;}
                     Surface surface = holder.getSurface();
                     if (surface.isValid()) {
-
                         configurePlayer(holder);
+                        isLoading.setValue(false);
                 }
             }
 
@@ -89,6 +91,7 @@ public class HIKSinglePlayer implements RealPlayCallBack {
               //  Log.v("TATZ", "[Hik] surfaceDestroyed "+"port : "+m_iPort);
                 if (isShow) {isShow = false;}
                 unConfigurePlay();
+                isLoading.setValue(true);
                 if (-1 == m_iPort) {
                     return;
                 }
@@ -102,8 +105,6 @@ public class HIKSinglePlayer implements RealPlayCallBack {
     }
 
     private void openStream() {
-
-
         NET_DVR_PREVIEWINFO previewInfo = new NET_DVR_PREVIEWINFO();
         previewInfo.lChannel = channel;
         previewInfo.dwStreamType = 1; // mainstream
@@ -125,11 +126,11 @@ public class HIKSinglePlayer implements RealPlayCallBack {
                     Log.e(TAG, "Player failed to set or destroy display area!");
                 }
 
-
                 if (!Player.getInstance().play(m_iPort, mSurfaceView.getHolder())) {
+                    isError.setValue(true);
                     Log.e(TAG, "Failed to play！ " + m_iPort);
                     return;
-                }
+                }else{isError.setValue(false);}
 
                 if (!Player.getInstance().playSound(m_iPort)) {
                     Log.e(TAG, "Playing audio exclusively failed! failure code :" + Player.getInstance().getLastError(m_iPort));
@@ -213,13 +214,15 @@ public class HIKSinglePlayer implements RealPlayCallBack {
             if (!Player.getInstance().setStreamOpenMode(m_iPort, STREAM_Mode))  //set stream mode
             {
                 Log.e(TAG, "Failed to set streaming mode！");
+                isError.postValue(true);
                 return;
-            }
+            }else{isError.postValue(false);}
             if (!Player.getInstance().openStream(m_iPort, pDataBuffer, iDataSize, 2 * 1024 * 1024)) //open stream
             {
                 Log.e(TAG, "Failed to open stream！");
+                isError.postValue(true);
                 return;
-            }
+            }else{isError.postValue(false);}
         }
         else{
           //  Log.i("TATZ", "[isShow] isShow: "+isShow + "port : "+m_iPort);

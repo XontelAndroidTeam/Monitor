@@ -5,13 +5,17 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
 
@@ -92,6 +96,7 @@ public class SavedMediaFragment extends BaseFragment implements MediaAdapter.Cli
         menu.findItem(R.id.action_select_all).setVisible(false);
         super.onCreateOptionsMenu(menu, inflater);
     }
+
 
 
     public void endSelectionMode() {
@@ -244,6 +249,15 @@ public class SavedMediaFragment extends BaseFragment implements MediaAdapter.Cli
                 public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
                     MenuInflater inflater = requireActivity().getMenuInflater();
                     inflater.inflate(R.menu.selection_menu, menu);
+
+                    for(int i = 0; i < menu.size(); i++){
+                        Drawable drawable = menu.getItem(i).getIcon();
+                        if(drawable != null) {
+                            drawable.mutate();
+                            drawable.setColorFilter(getResources().getColor(R.color.white_color), PorterDuff.Mode.SRC_ATOP);
+                        }
+                    }
+
                     return true;
                 }
 

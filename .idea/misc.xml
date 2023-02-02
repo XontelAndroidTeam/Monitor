@@ -4,7 +4,17 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Sdk/platforms/android-31/data/res/layout/simple_spinner_dropdown_item.xml" value="0.375" />
+        <entry key="..\:/Users/01/AndroidStudioProjects/Monitor/app/src/main/res/drawable-xxhdpi/custom_check_box.xml" value="0.189" />
+        <entry key="..\:/Users/01/AndroidStudioProjects/Monitor/app/src/main/res/drawable-xxhdpi/ic_eo_circle_light_green_white_checkmark.xml" value="0.189" />
+        <entry key="..\:/Users/01/AndroidStudioProjects/Monitor/app/src/main/res/drawable/custom_share_icon.xml" value="0.189" />
+        <entry key="..\:/Users/01/AndroidStudioProjects/Monitor/app/src/main/res/drawable/delete_icon_custom.xml" value="0.189" />
+        <entry key="..\:/Users/01/AndroidStudioProjects/Monitor/app/src/main/res/drawable/ic_baseline_close_24.xml" value="0.189" />
+        <entry key="..\:/Users/01/AndroidStudioProjects/Monitor/app/src/main/res/drawable/ic_baseline_delete_24.xml" value="0.189" />
+        <entry key="..\:/Users/01/AndroidStudioProjects/Monitor/app/src/main/res/drawable/ic_baseline_info_24.xml" value="0.189" />
+        <entry key="..\:/Users/01/AndroidStudioProjects/Monitor/app/src/main/res/drawable/ic_baseline_settings_24.xml" value="0.189" />
+        <entry key="..\:/Users/01/AndroidStudioProjects/Monitor/app/src/main/res/drawable/ic_baseline_share_24.xml" value="0.189" />
         <entry key="..\:/Users/01/AndroidStudioProjects/Monitor/app/src/main/res/drawable/ic_details.xml" value="0.2085" />
+        <entry key="..\:/Users/01/AndroidStudioProjects/Monitor/app/src/main/res/drawable/ic_illustration.xml" value="0.189" />
         <entry key="..\:/Users/01/AndroidStudioProjects/Monitor/app/src/main/res/layout/activity_add_cam.xml" value="0.18" />
         <entry key="..\:/Users/01/AndroidStudioProjects/Monitor/app/src/main/res/layout/activity_add_new_device.xml" value="0.18" />
         <entry key="..\:/Users/01/AndroidStudioProjects/Monitor/app/src/main/res/layout/activity_cam_details.xml" value="0.10208333333333333" />
@@ -33,12 +43,12 @@
         <entry key="..\:/Users/01/AndroidStudioProjects/Monitor/app/src/main/res/layout/item_device.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/01/AndroidStudioProjects/Monitor/app/src/main/res/layout/item_hik_cam.xml" value="0.1" />
         <entry key="..\:/Users/01/AndroidStudioProjects/Monitor/app/src/main/res/layout/item_live_media.xml" value="0.1" />
-        <entry key="..\:/Users/01/AndroidStudioProjects/Monitor/app/src/main/res/layout/item_media.xml" value="0.10208333333333333" />
+        <entry key="..\:/Users/01/AndroidStudioProjects/Monitor/app/src/main/res/layout/item_media.xml" value="0.25" />
         <entry key="..\:/Users/01/AndroidStudioProjects/Monitor/app/src/main/res/layout/item_player.xml" value="0.10208333333333333" />
         <entry key="..\:/Users/01/AndroidStudioProjects/Monitor/app/src/main/res/layout/item_vlc_cam.xml" value="0.10208333333333333" />
         <entry key="..\:/Users/01/AndroidStudioProjects/Monitor/app/src/main/res/layout/live.xml" value="0.10208333333333333" />
         <entry key="..\:/Users/01/AndroidStudioProjects/Monitor/app/src/main/res/layout/no_cameras.xml" value="0.10208333333333333" />
-        <entry key="..\:/Users/01/AndroidStudioProjects/Monitor/app/src/main/res/layout/no_cams.xml" value="0.10208333333333333" />
+        <entry key="..\:/Users/01/AndroidStudioProjects/Monitor/app/src/main/res/layout/no_cams.xml" value="0.18" />
         <entry key="..\:/Users/01/AndroidStudioProjects/Monitor/app/src/main/res/layout/no_devices.xml" value="0.10208333333333333" />
         <entry key="..\:/Users/01/AndroidStudioProjects/Monitor/app/src/main/res/layout/record_panel.xml" value="0.10208333333333333" />
         <entry key="..\:/Users/01/AndroidStudioProjects/Monitor/app/src/main/res/menu/bottom_navigation_menu.xml" value="0.18" />

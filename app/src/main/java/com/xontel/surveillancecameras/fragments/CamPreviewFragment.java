@@ -285,7 +285,7 @@ public class CamPreviewFragment extends BaseFragment {
         }
         else if(cam.getType() == CamDeviceType.DAHUA.getValue()){ dahuaSinglePlayer.stopPlay();}
         else{vlcSinglePlayer.removeVlcPlayer();}
-        observer.stopWatching();
+        if(observer != null){observer.stopWatching();}
         super.onDestroy();
     }
 

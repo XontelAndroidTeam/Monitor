@@ -28,13 +28,14 @@
         android:layout_gravity="center"
         android:src="@drawable/ic_baseline_play_circle_filled_24"
         android:scaleType="fitXY"/>
+
     <CheckBox
         android:id="@+id/cb_checker"
-        android:button="@drawable/custom_check_box"
         android:visibility="gone"
         android:clickable="false"
         android:focusable="false"
         android:longClickable="false"
+        android:buttonTint="@color/white_color"
         android:layout_width="30dp"
         android:layout_height="30dp"/>
 </androidx.cardview.widget.CardView>

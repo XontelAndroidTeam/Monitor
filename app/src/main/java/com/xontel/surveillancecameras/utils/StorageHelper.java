@@ -22,6 +22,7 @@ import org.videolan.libvlc.Media;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -35,6 +36,7 @@ public class StorageHelper {
     public static final String VIDEOS_DIRECTORY_NAME = "videos";
     public static final String KEY_CHOSEN_STORAGE = "chosen_storage";
     public static final String KEY_CHOSEN_SLIDE = "chosen_slide";
+    public static final String KEY_CHOSEN_GRID = "chosen_grid";
 
 
     public static List<StorageVolume> getActiveVolumes(Context context) {
@@ -207,13 +209,25 @@ public class StorageHelper {
 
 
     public static String getSlideInterval(Context context){
+        ArrayList<String> data = new ArrayList<>(Arrays.asList(context.getResources().getStringArray(R.array.intervals)));
         SharedPreferences sharedPreferences = context.getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE);
-        return sharedPreferences.getString(KEY_CHOSEN_SLIDE, CommonUtils.KEY_SLIDE_INTERVAL_INDEX);
+        return data.get(sharedPreferences.getInt(KEY_CHOSEN_SLIDE, 0));
     }
 
     public static void saveSlideInterval(Context context,String name){
+        ArrayList<String> data = new ArrayList<>(Arrays.asList(context.getResources().getStringArray(R.array.intervals)));
         SharedPreferences sharedPreferences = context.getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE);
-        sharedPreferences.edit().putString(KEY_CHOSEN_SLIDE, name).apply();
+        sharedPreferences.edit().putInt(KEY_CHOSEN_SLIDE, data.indexOf(name)).apply();
+    }
+
+    public static void saveGridCount(Context context,int gridCount){
+        SharedPreferences sharedPreferences = context.getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE);
+        sharedPreferences.edit().putInt(KEY_CHOSEN_GRID, gridCount).apply();
+    }
+
+    public static int getGridCount(Context context){
+        SharedPreferences sharedPreferences = context.getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE);
+        return sharedPreferences.getInt(KEY_CHOSEN_GRID, 16);
     }
 
 

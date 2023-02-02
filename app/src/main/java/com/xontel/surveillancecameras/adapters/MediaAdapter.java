@@ -100,11 +100,11 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
               checkBoxOverlay = itemView.findViewById(R.id.iv_overlay) ;
               play = itemView.findViewById(R.id.iv_Play) ;
               checker = itemView.findViewById(R.id.cb_checker) ;
-
         }
         public void showChecker(boolean show){
             int visibility = show ? View.VISIBLE : View.GONE ;
             checkBoxOverlay.setVisibility(visibility);
+
             checker.setVisibility(visibility);
         }
         @Override
@@ -145,7 +145,6 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
             if(file.toLowerCase().endsWith("jpg") || file.toLowerCase().endsWith("jpeg") || file.toLowerCase().endsWith("png")){
                 bindImage(file);
             }else if(file.toLowerCase().endsWith("mp4")){
-                Log.i("TATZ", "viewMedia_Video: "+file);
                 bindVideo(file);
             }else{
                 bindVideo(file);

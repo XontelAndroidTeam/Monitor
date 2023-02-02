@@ -65,19 +65,22 @@
     <string name="back">رجوع</string>
     <string name="camera_name">اسم الكاميرا</string>
     <string name="camera_info">معلومات الكاميرا</string>
-    <string name="add_first_cam">Add your first cam</string>
+    <string name="add_first_cam">أضف الكاميرا </string>
     <string name="add">أضف</string>
+    <string name="update">تحديث</string>
     <string name="seconds">ثوان</string>
     <string name="seconds_formated">%d ثوان</string>
     <string name="devices">الأجهرة</string>
     <string name="login_failed">فشل تسجيل الدخول</string>
     <string name="device_info">معلومات الجهاز</string>
-    <string name="add_device"></string>
+    <string name="add_device">اضف جهاز</string>
+    <string name="device_list">قائمة الأجهزة</string>
     <string name="ip_address">عنوان IP</string>
     <string name="username">اسم المستخدم</string>
     <string name="password">كلمة المرور</string>
-    <string name="invalid_ip">Invalid ip address</string>
-    <string name="invalid_url">Invalid url</string>
-    <string name="no_devices">No devices added yet</string>
+    <string name="invalid_ip">عنوان ip غير صالح</string>
+    <string name="invalid_url">URL غير صالح</string>
+    <string name="no_devices">لم تتم إضافة أي أجهزة حتى الآن</string>
     <string name="init_sdk_init_error">Error starting HCNetSDK</string>
+    <string name="error_streaming">خطأ في التشغيل</string>
 </resources>

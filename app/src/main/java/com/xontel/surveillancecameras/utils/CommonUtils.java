@@ -28,6 +28,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -140,6 +142,9 @@ public class CommonUtils {
         progressDialog.setCancelable(false);
         progressDialog.setCanceledOnTouchOutside(false);
         return progressDialog;
+    }
+
+    public static void checkIfIntervalIsArabicOrEnglish(Context context){
     }
 
 

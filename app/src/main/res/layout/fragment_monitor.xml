@@ -22,9 +22,9 @@
         <com.xontel.surveillancecameras.utils.ViewPagerWithEmptyView
             android:id="@+id/cams_pager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
             android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/dots_indicator"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -33,18 +33,17 @@
             android:id="@+id/dots_indicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="8dp"
             app:dotsColor="@color/white"
             app:dotsCornerRadius="8dp"
             app:dotsSize="16dp"
             app:dotsSpacing="4dp"
             app:dotsWidthFactor="2.5"
-            app:selectedDotColor="@color/primary_dark_color"
-            android:layout_marginBottom="24dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_alignParentBottom="true"
-            />
+            app:layout_constraintStart_toStartOf="parent"
+            app:selectedDotColor="@color/primary_dark_color" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

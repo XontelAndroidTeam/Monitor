@@ -156,11 +156,15 @@
 
         </LinearLayout>
 
+
+
         <ImageView
             android:layout_width="350dp"
             android:layout_height="350dp"
+            android:visibility="visible"
+            android:autoMirrored="true"
             android:layout_marginStart="100dp"
-            android:layout_gravity="center_vertical"
+            android:layout_gravity="start|center"
             android:src="@drawable/ic_illustration" />
 
 
