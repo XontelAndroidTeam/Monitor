@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class GridAdapter extends BaseAdapter {
+public class GridAdapter  /* extends BaseAdapter */{
     List<View> camViews = new ArrayList<>();
     Context context;
     List<IpCam> cams = new ArrayList<>();
@@ -35,7 +35,7 @@ public class GridAdapter extends BaseAdapter {
         this.cams.addAll(cams);
         this.gridCount = gridCount;
     }
-
+/*
     public void setGridCount(int gridCount) {
         this.gridCount = gridCount;
     }
@@ -97,5 +97,7 @@ public class GridAdapter extends BaseAdapter {
         return null;
     }
 
+
+ */
 
 }

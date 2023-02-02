@@ -2,6 +2,7 @@ package com.xontel.surveillancecameras.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +37,6 @@ public class PagerFragment extends Fragment implements HikCamView.HikClickViews,
     private FragmentPagerBinding binding;
     private List<IpCam> data = new ArrayList<>();
     private MainViewModel viewModel;
-    private GridAdapter gridAdapter;
     private int index,from,to;
     private boolean isInitialized = false;
     @Inject
@@ -49,7 +49,7 @@ public class PagerFragment extends Fragment implements HikCamView.HikClickViews,
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(null);
-       // Log.i("TATZ", "onCreatePager: "+index);
+        Log.i("TATZ", "onCreatePager: "+index);
         setupDagger();
         Bundle args = getArguments();
         if (args != null){
@@ -75,17 +75,19 @@ public class PagerFragment extends Fragment implements HikCamView.HikClickViews,
         binding = FragmentPagerBinding.inflate(inflater);
         viewModel = new ViewModelProvider(requireActivity(), viewModelProviderFactory).get(MainViewModel.class);
         from = index * viewModel.gridCount.getValue();
-        to = from + (viewModel.gridCount.getValue() - 1);
+        to = from + (viewModel.gridCount.getValue() );
         binding.setViewModel(viewModel);
         binding.setLifecycleOwner(getViewLifecycleOwner());
     }
 
-    private void setupAdapter() {
-        if (!isInitialized){ drawGrid(viewModel.gridCount.getValue());}
-
+    private void recalculate(){
+        from = index * viewModel.gridCount.getValue();
+        to = from + (viewModel.gridCount.getValue() );
     }
 
-
+    private void setupAdapter() {
+        if (!isInitialized){ drawGrid(viewModel.gridCount.getValue());}
+    }
 
 
     private void observers() {
@@ -99,6 +101,7 @@ public class PagerFragment extends Fragment implements HikCamView.HikClickViews,
 
         viewModel.refreshPagerGridCount.observe(getViewLifecycleOwner(), aBoolean -> {
             if (aBoolean){
+                recalculate();
                 drawGrid(viewModel.gridCount.getValue());
                 if (index == viewModel.pagerCount.getValue()-1){
                     viewModel.refreshPagerGridCount.setValue(false);
@@ -109,6 +112,7 @@ public class PagerFragment extends Fragment implements HikCamView.HikClickViews,
 
 
 
+
     private void drawGrid(int gridCount){
         int count = (int)Math.sqrt(gridCount) ;
         int childCount = binding.grid.getChildCount();
@@ -116,7 +120,7 @@ public class PagerFragment extends Fragment implements HikCamView.HikClickViews,
         if(gridCount > childCount){
             binding.grid.setColumnCount(count);
             binding.grid.setRowCount(count);
-            addViews(gridCount);
+            addViews();
         }else{
             binding.grid.removeViews(gridCount, binding.grid.getChildCount() - gridCount );
             for(int i = 0 ; i < binding.grid.getChildCount() ; i++){
@@ -135,9 +139,10 @@ public class PagerFragment extends Fragment implements HikCamView.HikClickViews,
     }
 
 
-    private void addViews(int size) {
+    private void addViews() {
         View playerView;
-        for (int i = binding.grid.getChildCount(); i < size; i++) {
+        to = binding.grid.getChildCount() == 0 ? to:to  ;
+        for (int i = from + binding.grid.getChildCount(); i < to; i++) {
             if ( i < viewModel.ipCams.getValue().size()){
                 IpCam ipCam = Objects.requireNonNull(viewModel.ipCams.getValue()).get(i);
                  playerView =  createCamView(ipCam.getType(),ipCam);

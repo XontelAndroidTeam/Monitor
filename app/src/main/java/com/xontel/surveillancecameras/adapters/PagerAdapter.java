@@ -26,9 +26,8 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
     }
 
     public PagerAdapter(@NonNull FragmentManager fm, int gridCount) {
-        super(fm, PagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        super(fm);
         this.gridCount = gridCount ;
-        Log.i("TATZ", "PagerAdapterInstance: ");
     }
 
 
@@ -38,14 +37,16 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getItemPosition(@NonNull Object object) {
-       // if ( ((Fragment)object).getId() ==  mFragmentList.get(0).getId()){
-         //   return POSITION_UNCHANGED;
-      //  }else{
-            return  POSITION_UNCHANGED ;
-      //  }
+        for (Fragment fragment : mFragmentList){
+            if ( ((Fragment)object).getId() == fragment.getId()){
+                return POSITION_NONE;
+            }
+        }
+        return  POSITION_UNCHANGED ;
     }
 
     public void getListOfData(List<IpCam> dbList){
+        Log.i("TATZ", "getListOfData: ");
         int size = 0 ;
         if (dbList.size() % gridCount != 0){ size = 1;}
         size = size + (dbList.size()/gridCount) ;
@@ -90,8 +91,8 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
         notifyDataSetChanged();
     }
 
+
     @NonNull
-    @NotNull
     @Override
     public Fragment getItem(int position) {
         PagerFragment pagerFragment = (PagerFragment) mFragmentList.get(position);

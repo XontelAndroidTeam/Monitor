@@ -42,7 +42,7 @@ public class MonitorFragment extends BaseFragment  {
 
     @Override
     public void onResume(){
-        pagerAdapter.notifyDataSetChanged();
+       // pagerAdapter.notifyDataSetChanged();
         binding.noCams.btnAdd.setOnClickListener(view -> {
         requireActivity().startActivity(new Intent(requireContext(), AddNewDeviceActivity.class));
     });
@@ -109,6 +109,7 @@ public class MonitorFragment extends BaseFragment  {
         if (pagerAdapter == null){
             pagerAdapter = new PagerAdapter(getChildFragmentManager(),mainViewModel.gridCount.getValue());
         }
+        binding.camsPager.setOffscreenPageLimit(3);
         binding.camsPager.setAdapter(pagerAdapter);
         binding.dotsIndicator.setViewPager(binding.camsPager); //must be after adapter
     }
@@ -127,7 +128,9 @@ public class MonitorFragment extends BaseFragment  {
                 }
                 handleCamsFromDb(allIpCams);
                 mainViewModel.pagerCount.setValue(pagerAdapter.getFragmentCount());
+                if (pagerAdapter.getFragmentCount() > 1){binding.dotsIndicator.setVisibility(View.VISIBLE);}
             }else {
+                binding.dotsIndicator.setVisibility(View.GONE);
                 if (!ipCams.isEmpty()){
                     pagerAdapter.removeAllFragment();
                     ipCams.clear();
@@ -160,6 +163,7 @@ public class MonitorFragment extends BaseFragment  {
         }
         mainViewModel.pagerCount.setValue(pagerAdapter.getFragmentCount());
         pagerAdapter.updateGridCount(mainViewModel.gridCount.getValue());
+        if (pagerAdapter.getFragmentCount() > 1){binding.dotsIndicator.setVisibility(View.VISIBLE);}else{binding.dotsIndicator.setVisibility(View.GONE);}
        mainViewModel.refreshPagerGridCount.setValue(true);
     }
 
