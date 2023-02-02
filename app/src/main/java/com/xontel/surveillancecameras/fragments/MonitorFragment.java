@@ -109,7 +109,7 @@ public class MonitorFragment extends BaseFragment  {
         if (pagerAdapter == null){
             pagerAdapter = new PagerAdapter(getChildFragmentManager(),mainViewModel.gridCount.getValue());
         }
-     //   binding.camsPager.setOffscreenPageLimit(3);
+        binding.camsPager.setOffscreenPageLimit(3);
         binding.camsPager.setAdapter(pagerAdapter);
         binding.dotsIndicator.setViewPager(binding.camsPager); //must be after adapter
     }

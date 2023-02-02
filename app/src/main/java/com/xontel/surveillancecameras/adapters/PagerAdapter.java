@@ -2,6 +2,7 @@ package com.xontel.surveillancecameras.adapters;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -98,6 +99,11 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
         bundle.putInt("IN",position);
         pagerFragment.setArguments(bundle);
         return pagerFragment;
+    }
+
+    @Override
+    public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
+        super.destroyItem(container, position, object);
     }
 
     @Override

@@ -194,4 +194,10 @@ public class PagerFragment extends Fragment implements HikCamView.HikClickViews,
         intent.putExtra(CamsAdapter.KEY_CAMERAS, ipCam);
         requireContext().startActivity(intent);
     }
+
+    @Override
+    public void onDestroy() {
+        binding.grid.removeAllViews();
+        super.onDestroy();
+    }
 }
