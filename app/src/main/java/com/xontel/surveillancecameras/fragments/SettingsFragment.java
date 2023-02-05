@@ -75,11 +75,9 @@ public class SettingsFragment extends BaseFragment {
         binding.setLifecycleOwner(this);
         StorageBroadcastReceiver.refreshRemovable.observe(getViewLifecycleOwner(), aBoolean -> {
             if (aBoolean){
-                if (StorageHelper.getActiveVolumes(requireContext()).size() != currentStorage.size()){
                     currentStorage.clear();
                     getCurrentStorage();
                     bindStorageAgain();
-                }
                 StorageBroadcastReceiver.refreshRemovable.setValue(false);
             }
         });
@@ -103,7 +101,8 @@ public class SettingsFragment extends BaseFragment {
 
     private void bindStorageAgain(){
         ArrayAdapter mediaDirsDropDownAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, currentStorage);
-        binding.mediaFilter.setText(StorageHelper.getSaveStorageName(requireContext()));
+        String value = StorageHelper.getSaveStorageName(requireContext()) ;
+        binding.mediaFilter.setText( currentStorage.contains(value) ? value : requireContext().getString(R.string.internal_storage)  );
         binding.mediaFilter.setAdapter(mediaDirsDropDownAdapter);
     }
 

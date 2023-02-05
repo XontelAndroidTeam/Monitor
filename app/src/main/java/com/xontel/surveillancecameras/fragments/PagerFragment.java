@@ -49,7 +49,6 @@ public class PagerFragment extends Fragment implements HikCamView.HikClickViews,
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(null);
-        Log.i("TATZ", "onCreatePager: "+index);
         setupDagger();
         Bundle args = getArguments();
         if (args != null){
