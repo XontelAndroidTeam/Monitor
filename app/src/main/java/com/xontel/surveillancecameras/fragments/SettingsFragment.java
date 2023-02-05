@@ -101,8 +101,12 @@ public class SettingsFragment extends BaseFragment {
 
     private void bindStorageAgain(){
         ArrayAdapter mediaDirsDropDownAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, currentStorage);
-        String value = StorageHelper.getSaveStorageName(requireContext()) ;
-        binding.mediaFilter.setText( currentStorage.contains(value) ? value : requireContext().getString(R.string.internal_storage)  );
+        String currentValue = StorageHelper.getSaveStorageName(requireContext()) ;
+        if (!currentStorage.contains(currentValue) ){
+            currentValue = requireContext().getString(R.string.internal_storage) ;
+            StorageHelper.saveStorageType(requireContext(),currentValue);
+        }
+        binding.mediaFilter.setText(currentValue);
         binding.mediaFilter.setAdapter(mediaDirsDropDownAdapter);
     }
 

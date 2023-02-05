@@ -2,21 +2,17 @@ package com.xontel.surveillancecameras.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridLayout;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-
 import com.xontel.surveillancecameras.activities.CamerasActivity;
 import com.xontel.surveillancecameras.activities.HomeActivity;
 import com.xontel.surveillancecameras.adapters.CamsAdapter;
-import com.xontel.surveillancecameras.adapters.GridAdapter;
 import com.xontel.surveillancecameras.dahua.DahuaCamView;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
 import com.xontel.surveillancecameras.databinding.FragmentPagerBinding;
@@ -26,11 +22,9 @@ import com.xontel.surveillancecameras.utils.CamViewEmpty;
 import com.xontel.surveillancecameras.viewModels.MainViewModel;
 import com.xontel.surveillancecameras.viewModels.ViewModelProviderFactory;
 import com.xontel.surveillancecameras.vlc.VlcCamView;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
 import javax.inject.Inject;
 
 public class PagerFragment extends Fragment implements HikCamView.HikClickViews,DahuaCamView.DahuaClickViews, VlcCamView.VlcClickViews {
@@ -108,8 +102,6 @@ public class PagerFragment extends Fragment implements HikCamView.HikClickViews,
             }
         });
     }
-
-
 
 
     private void drawGrid(int gridCount){
