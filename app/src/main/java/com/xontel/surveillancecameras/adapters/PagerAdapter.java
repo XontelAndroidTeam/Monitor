@@ -1,20 +1,13 @@
 package com.xontel.surveillancecameras.adapters;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
-
-
 import com.xontel.surveillancecameras.data.db.model.IpCam;
 import com.xontel.surveillancecameras.fragments.PagerFragment;
-
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,13 +31,19 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getItemPosition(@NonNull Object object) {
-        for (Fragment fragment : mFragmentList){
-            if ( ((Fragment)object).getId() == fragment.getId()){
+        if(((Fragment)object).getId() == mFragmentList.get(0).getId()){
+            if (gridCount == 1){
+                return POSITION_NONE;
+            }else{
                 return POSITION_UNCHANGED;
             }
+        }else{
+            return  POSITION_NONE ;
         }
-        return  POSITION_NONE ;
+
     }
+
+
 
     public void getListOfData(List<IpCam> dbList){
         int size = 0 ;

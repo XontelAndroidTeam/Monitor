@@ -186,24 +186,7 @@ public class HIKSinglePlayer implements RealPlayCallBack {
         realPlayId = -1;
     }
 
-    private void stopSinglePlayer() {
-        playerInstance.stopSound();
-        // player stop play
-        if (!playerInstance.stop(m_iPort)) {
-            Log.e(TAG, "stop is failed!");
-            return;
-        }
 
-        if (!playerInstance.closeStream(m_iPort)) {
-            Log.e(TAG, "closeStream is failed!");
-            return;
-        }
-        if (!playerInstance.freePort(m_iPort)) {
-            Log.e(TAG, "freePort is failed!" + m_iPort);
-            return;
-        }
-        m_iPort = -1;
-    }
 
 
 
