@@ -8,6 +8,7 @@
         <include
             android:id="@+id/no_cams"
             layout="@layout/no_cams"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="16dp"
@@ -19,11 +20,11 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.xontel.surveillancecameras.utils.ViewPagerWithEmptyView
+        <androidx.viewpager.widget.ViewPager
             android:id="@+id/cams_pager"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:orientation="vertical"
+            android:orientation="horizontal"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             app:layout_constraintBottom_toTopOf="@+id/dots_indicator"
             app:layout_constraintEnd_toEndOf="parent"

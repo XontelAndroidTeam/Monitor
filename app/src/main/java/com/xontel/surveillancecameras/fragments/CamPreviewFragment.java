@@ -26,7 +26,7 @@ import com.xontel.surveillancecameras.data.db.model.IpCam;
 import com.xontel.surveillancecameras.databinding.ActivityCamerasBinding;
 import com.xontel.surveillancecameras.databinding.FragmentCameraBinding;
 import com.xontel.surveillancecameras.dialogs.CamDetailsDialog;
-import com.xontel.surveillancecameras.hikvision.HIKSinglePlayer;
+import com.xontel.surveillancecameras.hikvision.HIKPlayer;
 import com.xontel.surveillancecameras.utils.CamDeviceType;
 import com.xontel.surveillancecameras.utils.StorageBroadcastReceiver;
 import com.xontel.surveillancecameras.utils.StorageHelper;
@@ -45,7 +45,7 @@ import javax.inject.Inject;
 public class CamPreviewFragment extends BaseFragment {
     public static final String TAG = CamPreviewFragment.class.getSimpleName();
     private VlcSinglePlayer vlcSinglePlayer;
-    private HIKSinglePlayer hikSinglePlayer ;
+    private HIKPlayer hikSinglePlayer ;
     private DahuaSinglePlayer dahuaSinglePlayer;
     private MainViewModel mainViewModel;
     private int recordTime = 0;
@@ -101,15 +101,15 @@ public class CamPreviewFragment extends BaseFragment {
         TimeZone tz = TimeZone.getTimeZone("UTC");
         mSimpleDateFormat.setTimeZone(tz);
         playCamStream();
-        mainViewModel.isRecording.observe(getViewLifecycleOwner(), aBoolean -> {
-            if (aBoolean){
-                parentBinding.btnRecord.setClickable(false);
-                parentBinding.btnSnapshot.setClickable(false);
-            }else {
-                parentBinding.btnRecord.setClickable(true);
-                parentBinding.btnSnapshot.setClickable(true);
-            }
-        });
+//        mainViewModel.isRecording.observe(getViewLifecycleOwner(), aBoolean -> {
+//            if (aBoolean){
+//                parentBinding.btnRecord.setClickable(false);
+//                parentBinding.btnSnapshot.setClickable(false);
+//            }else {
+//                parentBinding.btnRecord.setClickable(true);
+//                parentBinding.btnSnapshot.setClickable(true);
+//            }
+//        });
 
         binding.recordLayout.btnStop.setOnClickListener(view -> {
             stopRecordingVideo();
@@ -154,11 +154,11 @@ public class CamPreviewFragment extends BaseFragment {
 
     private void playCamStream() {
         if (cam.getType() == CamDeviceType.HIKVISION.getValue()){
-            hikSinglePlayer =  new HIKSinglePlayer(cam.getChannel(),cam.getLoginId(),cam.getType(),requireContext());
-            hikSinglePlayer.initView(binding.surfaceView);
+//            hikSinglePlayer =  new HIKSinglePlayer(cam.getChannel(),cam.getLoginId(),requireContext());
+//            hikSinglePlayer.initView(binding.surfaceView);
         }else if(cam.getType() == CamDeviceType.DAHUA.getValue()){
-            dahuaSinglePlayer =  new DahuaSinglePlayer(cam.getChannel(),cam.getLoginId(),cam.getType(),requireContext());
-            dahuaSinglePlayer.initView(binding.surfaceView);
+//            dahuaSinglePlayer =  new DahuaSinglePlayer(cam.getChannel(),cam.getLoginId(),requireContext());
+//            dahuaSinglePlayer.initView(binding.surfaceView);
         }else{
             binding.vlcLayout.setVisibility(View.VISIBLE);
             binding.surfaceView.setVisibility(View.GONE);
@@ -177,7 +177,7 @@ public class CamPreviewFragment extends BaseFragment {
 
     private void stopRecordingVideo() {
         binding.recordLayout.llRecordPanel.setVisibility(View.GONE);
-        mainViewModel.toggleVideoRecord();
+//        mainViewModel.toggleVideoRecord();
         if (mTimer != null){mTimer.cancel();}
         stopCaptureVideo();
     }
@@ -185,7 +185,7 @@ public class CamPreviewFragment extends BaseFragment {
 
     private void startRecordingVideo() {
         enableVideoRecordingView();
-        mainViewModel.toggleVideoRecord();
+//        mainViewModel.toggleVideoRecord();
         captureVideo();
     }
 
@@ -269,8 +269,8 @@ public class CamPreviewFragment extends BaseFragment {
     private void captureImage(){
         isPicture = true;
         watchFile();
-        if (cam.getType() == CamDeviceType.HIKVISION.getValue()){hikSinglePlayer.captureFrame();}
-        else if(cam.getType() == CamDeviceType.DAHUA.getValue()){dahuaSinglePlayer.captureFrame();}
+        if (cam.getType() == CamDeviceType.HIKVISION.getValue()){hikSinglePlayer.takeSnapshot();}
+        else if(cam.getType() == CamDeviceType.DAHUA.getValue()){dahuaSinglePlayer.takeSnapshot();}
         else{vlcSinglePlayer.vlcCaptureImage();}
         ((CamerasActivity)requireActivity()).showMessage(getString(R.string.Take_Picture));
     }
@@ -283,7 +283,7 @@ public class CamPreviewFragment extends BaseFragment {
         if (mTimer != null){mTimer.cancel();}
         if (cam.getType() == CamDeviceType.HIKVISION.getValue()){ //hikSinglePlayer.cleanUp();
         }
-        else if(cam.getType() == CamDeviceType.DAHUA.getValue()){ dahuaSinglePlayer.stopPlay();}
+        else if(cam.getType() == CamDeviceType.DAHUA.getValue()){ dahuaSinglePlayer.stopStream();}
         else{vlcSinglePlayer.removeVlcPlayer();}
         if(observer != null){observer.stopWatching();}
         super.onDestroy();

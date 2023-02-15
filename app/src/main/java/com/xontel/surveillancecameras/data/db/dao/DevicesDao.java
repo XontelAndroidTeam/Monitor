@@ -28,7 +28,7 @@ public interface DevicesDao {
     Single<List<Long>> insertAllCamDevice(CamDevice... mCamDevicesList);
 
     @Delete
-    Integer deleteCamDevice(CamDevice mCamDevice);
+    Single<Integer> deleteCamDevice(CamDevice mCamDevice);
 
     @Update
     void updateCamDevice(CamDevice mCamDevice);

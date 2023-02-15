@@ -35,6 +35,9 @@ public class CamDevice implements Parcelable  {
     private int port;
     @Ignore
     private int channels;
+
+    @Ignore
+    private int startChannel;
     @Ignore
     private int logId = -1;
     @Ignore
@@ -61,6 +64,7 @@ public class CamDevice implements Parcelable  {
         url = in.readString();
         port = in.readInt();
         channels = in.readInt();
+        startChannel = in.readInt();
         logId = in.readInt();
     }
 
@@ -110,6 +114,13 @@ public class CamDevice implements Parcelable  {
 
     public void setChannels(int channels) {
         this.channels = channels;
+    }
+    public int getStartChannel() {
+        return startChannel;
+    }
+
+    public void setStartChannel(int startChannel) {
+        this.startChannel = startChannel;
     }
 
     public String getIpAddress() {
@@ -176,6 +187,7 @@ public class CamDevice implements Parcelable  {
         parcel.writeString(url);
         parcel.writeInt(port);
         parcel.writeInt(channels);
+        parcel.writeInt(startChannel);
         parcel.writeInt(logId);
     }
 
@@ -201,6 +213,7 @@ public class CamDevice implements Parcelable  {
                 ", url='" + url + '\'' +
                 ", port=" + port +
                 ", channels=" + channels +
+                ", startChannel=" + startChannel +
                 ", logId=" + logId +
                 ", cams=" + cams +
                 '}';

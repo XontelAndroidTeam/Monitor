@@ -15,10 +15,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.xontel.surveillancecameras.R;
 import com.xontel.surveillancecameras.hikvision.CamDevice;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DevicesAdapter extends RecyclerView.Adapter<DevicesAdapter.DeviceViewHolder> {
-    private List<CamDevice> mDeviceList ;
+    public static final int NO_SELECTION = -1;
+    private List<CamDevice> mDeviceList = new ArrayList<>();
     private Context mContext ;
     private ClickListener mClickListener;
     private int selectedItemPosition = 0;
@@ -26,8 +28,16 @@ public class DevicesAdapter extends RecyclerView.Adapter<DevicesAdapter.DeviceVi
 
     public DevicesAdapter(Context context, List<CamDevice> deviceList, ClickListener clickListener) {
         mContext = context;
-        mDeviceList = deviceList;
         mClickListener = clickListener;
+        addItems(deviceList);
+    }
+
+    public int getSelectedItemPosition() {
+        return selectedItemPosition;
+    }
+
+    public List<CamDevice> getDeviceList() {
+        return mDeviceList;
     }
 
     @NonNull
@@ -38,46 +48,30 @@ public class DevicesAdapter extends RecyclerView.Adapter<DevicesAdapter.DeviceVi
 
     @Override
     public void onBindViewHolder(@NonNull DeviceViewHolder holder, int position) {
-       CamDevice data = mDeviceList.get(position);
-        RelativeLayout rowData = holder.itemView.findViewById(R.id.rowData);
-        TextView title = holder.itemView.findViewById(R.id.tv_title);
-        TextView ipOrUrl = holder.itemView.findViewById(R.id.tv_desc);
-        ImageView imageView = holder.itemView.findViewById(R.id.iv_cam);
-       if (position == selectedItemPosition){
-           title.setTextColor(ContextCompat.getColor(mContext,R.color.white_color));
-           ipOrUrl.setTextColor(ContextCompat.getColor(mContext,R.color.white_color));
-           rowData.setBackgroundColor(ContextCompat.getColor(mContext,R.color.accent_color));
-           imageView.setColorFilter(ContextCompat.getColor(mContext,R.color.white_color));
-       }else{
-           rowData.setBackgroundColor(ContextCompat.getColor(mContext,R.color.white_color));
-           imageView.setColorFilter(ContextCompat.getColor(mContext,R.color.accent_color));
-           title.setTextColor(ContextCompat.getColor(mContext,R.color.black_color));
-           ipOrUrl.setTextColor(ContextCompat.getColor(mContext,R.color.black_color));
-       }
-       title.setText(data.getName());
-       ipOrUrl.setText( data.getIpAddress().isEmpty() ? data.getUrl() : data.getIpAddress()  );
+        CamDevice data = mDeviceList.get(position);
+        int textColorRes = position == selectedItemPosition ? R.color.white_color : R.color.black_color ;
+        int iconColorRes = position == selectedItemPosition ? R.color.white_color : R.color.accent_color ;
+        int bgColor = position == selectedItemPosition ? R.color.accent_color : R.color.white_color ;
+        holder.title.setText(data.getName());
+        holder.ipOrUrl.setText( data.getIpAddress().isEmpty() ? data.getUrl() : data.getIpAddress() );
+        holder.title.setTextColor(ContextCompat.getColor(mContext,textColorRes));
+        holder.ipOrUrl.setTextColor(ContextCompat.getColor(mContext,textColorRes));
+        holder.itemView.setBackgroundColor(ContextCompat.getColor(mContext,bgColor));
+        holder.imageView.setColorFilter(ContextCompat.getColor(mContext,iconColorRes));
 
-       rowData.setOnClickListener(view -> {
-           selectedItemPosition = position ;
-           mClickListener.onItemClicked(data,position);
-           notifyDataSetChanged();
-       });
     }
 
-    public void setList(List<CamDevice> data){
-        mDeviceList = data;
-        notifyDataSetChanged();
-    }
 
     public void setCurrentSelectedItem(int position){
-        selectedItemPosition = position;
+        selectedItemPosition = mDeviceList.isEmpty() ? NO_SELECTION : mDeviceList.size() <= position ? 0 : position;
+        mClickListener.onItemClicked(selectedItemPosition == NO_SELECTION ? null :mDeviceList.get(selectedItemPosition));
         notifyDataSetChanged();
     }
 
-    public void clearList(){
+    public void addItems(List<CamDevice> data){
         mDeviceList.clear();
-        selectedItemPosition = 0;
-        notifyDataSetChanged();
+        mDeviceList.addAll(data);
+        setCurrentSelectedItem(selectedItemPosition);
     }
 
     @Override
@@ -85,14 +79,25 @@ public class DevicesAdapter extends RecyclerView.Adapter<DevicesAdapter.DeviceVi
         return mDeviceList.size();
     }
 
-    public class DeviceViewHolder extends RecyclerView.ViewHolder{
-
+    public class DeviceViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        TextView title ;
+        TextView ipOrUrl ;
+        ImageView imageView ;
         public DeviceViewHolder(@NonNull View itemView) {
             super(itemView);
+            itemView.setOnClickListener(this);
+             title = itemView.findViewById(R.id.tv_title);
+            ipOrUrl = itemView.findViewById(R.id.tv_desc);
+             imageView = itemView.findViewById(R.id.iv_cam);
+        }
+
+        @Override
+        public void onClick(View view) {
+            setCurrentSelectedItem(getAbsoluteAdapterPosition());
         }
     }
 
     public interface ClickListener{
-        void onItemClicked(CamDevice data, int position );
+        void onItemClicked(CamDevice camDevice);
     }
 }

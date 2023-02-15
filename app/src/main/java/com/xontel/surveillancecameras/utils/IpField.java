@@ -24,7 +24,7 @@ public class IpField extends TextField {
 
     @Override
     public boolean isPatternMatched() {
-        return Patterns.IP_ADDRESS.matcher(getText().toString()).matches();
+        return Patterns.DOMAIN_NAME.matcher(getText().toString()).matches();
     }
 
     @Override

@@ -34,11 +34,8 @@ import javax.inject.Inject;
 public class HomeActivity extends BaseActivity implements AdapterView.OnItemClickListener {
 
     private static final String TAG = HomeActivity.class.getSimpleName();
-    private static final String KEY_CURRENT_PAGE_INDEX = "current_page_index";
-    private PagerAdapter pagerAdapter;
     private TextInputLayout textInputLayout;
     private ActivityMainBinding binding;
-    private int currentPageIndex;
 
 
     @Inject
@@ -51,21 +48,12 @@ public class HomeActivity extends BaseActivity implements AdapterView.OnItemClic
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         getActivityComponent().inject(this);
-       mainViewModel = new ViewModelProvider(this, providerFactory).get(MainViewModel.class);
-//        mainViewModel.getAllCameras();
+        mainViewModel = new ViewModelProvider(this, providerFactory).get(MainViewModel.class);
+        mainViewModel.getAllDevices();
         setUp();
-//        if (savedInstanceState != null) {
-//            currentPageIndex = savedInstanceState.getInt(KEY_CURRENT_PAGE_INDEX, 0);
-//        }
+
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-       // MenuInflater menuInflater = getMenuInflater();
-     //   menuInflater.inflate(R.menu.main_menu, menu);
-        return true;
-    }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -81,14 +69,6 @@ public class HomeActivity extends BaseActivity implements AdapterView.OnItemClic
     protected void setUp() {
         super.setUp();
         setupNavigation();
-//        binding.home.pagerEmptyView.btnAdd.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                startActivity(new Intent(HomeActivity.this, AddNewDeviceActivity.class));
-//            }
-//        });
-        setupObservables();
-//        setupCamerasPager();
     }
 
 
@@ -101,17 +81,12 @@ public class HomeActivity extends BaseActivity implements AdapterView.OnItemClic
                 new AppBarConfiguration.Builder(navHostFragment.getNavController().getGraph())
                         .setOpenableLayout(binding.drawer)
                         .build();
-//        NavigationUI.setupWithNavController(
-//                binding.appBar.toolbar, navController, appBarConfiguration);
 
-        navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
-            @Override
-            public void onDestinationChanged(@NonNull NavController navController, @NonNull NavDestination navDestination, @Nullable Bundle bundle) {
-                if (Objects.requireNonNull(navController.getCurrentDestination()).getId() == R.id.monitorFragment){
-                    setupGridDropDown();
-                }else{
-                    removeGridDropDown();
-                }
+        navController.addOnDestinationChangedListener((navController1, navDestination, bundle) -> {
+            if (Objects.requireNonNull(navController1.getCurrentDestination()).getId() == R.id.monitorFragment){
+                setupGridDropDown();
+            }else{
+                removeGridDropDown();
             }
         });
 
@@ -124,7 +99,7 @@ public class HomeActivity extends BaseActivity implements AdapterView.OnItemClic
                 android.R.layout.simple_spinner_dropdown_item,
                 getResources().getStringArray(R.array.grid_count));
         AutoCompleteTextView autoCompleteTextView = textInputLayout.findViewById(R.id.slide_show_filter);
-        autoCompleteTextView.setText(String.valueOf(mainViewModel.gridCount.getValue()));
+        autoCompleteTextView.setText(String.valueOf(mainViewModel.mGridObservable.getValue()));
         autoCompleteTextView.setAdapter(gridDropDownAdapter);
         autoCompleteTextView.setOnItemClickListener(this);
         binding.setLifecycleOwner(this);
@@ -152,7 +127,6 @@ public class HomeActivity extends BaseActivity implements AdapterView.OnItemClic
             }
 
         });
-//        binding.sideMenu.setAdapter(sideMenuAdapter);
     }
 
     private void navigateToActivity(Class classZ) {
@@ -169,16 +143,7 @@ public class HomeActivity extends BaseActivity implements AdapterView.OnItemClic
     }
 
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
 
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
 
     @Override
     protected void onResume() {
@@ -186,84 +151,22 @@ public class HomeActivity extends BaseActivity implements AdapterView.OnItemClic
         setupSideMenu();
     }
 
-//    public List<IpCam> getCams() {
-//        return cams;
-//    }
-
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-
-    private void setupObservables() {
-    }
-
-
-    private void showSettings() {
-        startActivity(new Intent(this, SettingsActivity.class));
-    }
 
     public void addNewCam() {
-        if (mainViewModel.ipCams.getValue().size() < 32) {
             startActivity(new Intent(HomeActivity.this, AddCamActivity.class));
-
-        } else {
-            showMessage(R.string.cameras_limit);
-        }
     }
 
-
-
-
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt(KEY_CURRENT_PAGE_INDEX, currentPageIndex);
-    }
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
         AutoCompleteTextView autoCompleteTextView = textInputLayout.findViewById(R.id.slide_show_filter);
         int gridCount = Integer.parseInt(autoCompleteTextView.getText().toString());
-        if (mainViewModel.gridCount.getValue() != gridCount){
+        if (mainViewModel.getGridObservable().getValue() != gridCount){
             StorageHelper.saveGridCount(this,gridCount);
-            mainViewModel.gridCount.setValue(gridCount);
-            mainViewModel.refreshGridCount.setValue(true);
+            mainViewModel.mGridObservable.setGridCount(gridCount+"");
         }
     }
 
-//    private void updateViewPager() {
-//        int gridCount = mainViewModel.getGridObservable().getValue();
-//        int camsCount = mainViewModel.ipCams.getValue().size();
-//        int numOfFragments = (int) Math.ceil(camsCount * 1.0 / gridCount);
-//        Log.v("TAG_", "pages : " + pagerAdapter.getFragmentList().size() + " grid count : " + gridCount + " numOfFragments : " + numOfFragments);
-////         recreate the fragments in view pager
-//        if (pagerAdapter.getCount() > numOfFragments) { // a change in the view pager is needed
-//            for (int i = pagerAdapter.getCount() - 1; i >= numOfFragments; i--) {
-//                Log.v("TAG_", i + "");
-////                pagerAdapter.destroyItem(binding.home.vpSlider, i, pagerAdapter.getFragmentList().get(i));
-//                pagerAdapter.removeFragment(i);
-//            }
-//        } else if (pagerAdapter.getCount() < numOfFragments) {
-//            numOfFragments = numOfFragments - pagerAdapter.getCount();
-//            for (int i = 0; i < numOfFragments; i++) {
-//                MonitorFragment gridFragment = MonitorFragment.newInstance(pagerAdapter.getFragmentList().size() + 1);
-//                pagerAdapter.addFragment(gridFragment);
-//                pagerAdapter.notifyDataSetChanged();
-////                binding.home.vpSlider.setCurrentItem(currentPageIndex);
-////                binding.home.dotsIndicator.refreshDots();
-//            }
-//        }
-//
-//
-//    }
 
 
 }

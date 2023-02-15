@@ -1,110 +1,120 @@
 package com.xontel.surveillancecameras.hikvision;
 
 import android.content.Context;
-import android.util.AttributeSet;
 import android.util.Log;
+import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.GridView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.lifecycle.Observer;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
 
 import com.xontel.surveillancecameras.R;
 import com.xontel.surveillancecameras.activities.HomeActivity;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
-import com.xontel.surveillancecameras.vlc.VlcSinglePlayer;
 
 import org.videolan.libvlc.util.LoadingDots;
-import org.videolan.libvlc.util.VLCVideoLayout;
 
-public class HikCamView extends FrameLayout {
+public class HikCamView extends FrameLayout implements SurfaceHolder.Callback {
+    public static final String TAG = HikCamView.class.getSimpleName();
     private IpCam ipCam;
-    private HIKSinglePlayer hikSinglePlayer ;
+    private HIKPlayer mHIKPlayer ;
     private Context context;
     private TextView errorTextView;
     private LoadingDots loadingDots;
     private SurfaceView surfaceView ;
     private HikClickViews hikClickViews;
-
-
-    public HikCamView(@NonNull Context context, IpCam ipCam,HikClickViews hikCamView) {
+    private LiveData<Boolean> running;
+    private LifecycleOwner mLifecycleOwner;
+    public HikCamView(@NonNull Context context/*, LiveData<Boolean> running, LifecycleOwner lifecycleOwner,  IpCam ipCam,HikClickViews hikCamView*/) {
         super(context);
         this.context = context;
-        this.hikClickViews = hikCamView;
-        this.ipCam = ipCam;
+//        this.hikClickViews = hikCamView;
+//        this.ipCam = ipCam;
+//        this.running = running;
+//        this.mLifecycleOwner = lifecycleOwner;
         init();
     }
 
-    public HikCamView(@NonNull Context context, IpCam ipCam, @Nullable AttributeSet attrs,HikClickViews hikCamView) {
-        super(context, attrs);
-        this.context = context;
-        this.hikClickViews = hikCamView;
-        this.ipCam = ipCam;
-        init();
-    }
-
-    public HikCamView(@NonNull Context context, IpCam ipCam, @Nullable AttributeSet attrs, int defStyleAttr,HikClickViews hikCamView) {
-        super(context, attrs, defStyleAttr);
-        this.context = context;
-        this.hikClickViews = hikCamView;
-        this.ipCam = ipCam;
-        init();
-    }
-
-    public HikCamView(@NonNull Context context, IpCam ipCam, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes,HikClickViews hikCamView) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        this.context = context;
-        this.hikClickViews = hikCamView;
-        this.ipCam = ipCam;
-        init();
-    }
 
     private void init() {
         inflate(context, R.layout.item_hik_cam, this);
         bind();
+//        running.observe(mLifecycleOwner, resumed -> {
+//            if(resumed!=null) {
+//                if (resumed == true) {
+//                    doOnResume();
+//                } else {
+//                    doOnPause();
+//                }
+//            }
+//        });
+    }
+
+    private void doOnPause() {
+        mHIKPlayer.stopLiveView();
+    }
+
+    private void doOnResume() {
+        mHIKPlayer.attachView(surfaceView);
+        mHIKPlayer.startLiveView();
+
     }
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        Log.v("TAGG", "attached");
+        Log.v(TAG, "onAttachedToWindow");
     }
 
     @Override
     protected void onDetachedFromWindow() {
+
         super.onDetachedFromWindow();
-        Log.v("TAGG", "detached");
+        Log.v(TAG, "onDetachedFromWindow");
+       if(mHIKPlayer != null){
+           mHIKPlayer.stopLiveView();
+       }
     }
 
     private void bind() {
         surfaceView =  findViewById(R.id.hik_layout) ;
+        surfaceView.getHolder().addCallback(this);
         errorTextView =  findViewById(R.id.error_stream) ;
         loadingDots =  findViewById(R.id.loading_dots) ;
-        hikSinglePlayer = new HIKSinglePlayer(ipCam.getChannel(), ipCam.getLoginId(), 0, context);
-        hikSinglePlayer.initView(surfaceView);
+//        mHIKPlayer = new HIKPlayer(ipCam.getChannel(), ipCam.getLoginId(), context);
+//        surfaceView.setOnClickListener(view -> hikClickViews.onHikClick(ipCam));
+//        mHIKPlayer.isLoading.observe((HomeActivity)context, aBoolean -> {
+//
+//            if (aBoolean){loadingDots.setVisibility(VISIBLE);}
+//            else{loadingDots.setVisibility(GONE);}
+//        });
+//
+//        mHIKPlayer.isError.observe((HomeActivity) context, aBoolean -> {
+//            if (aBoolean){errorTextView.setVisibility(VISIBLE);}
+//            else{errorTextView.setVisibility(GONE);}
+//        });
+    }
 
-        surfaceView.setOnClickListener(view -> hikClickViews.onHikClick(ipCam));
+    @Override
+    public void surfaceCreated(@NonNull SurfaceHolder surfaceHolder) {
+//        Log.v(TAG, "surfaceCreated "+ ipCam.getChannel());
+    }
 
-        hikSinglePlayer.isLoading.observe((HomeActivity)context, aBoolean -> {
-            if (aBoolean){loadingDots.setVisibility(VISIBLE);}
-            else{loadingDots.setVisibility(GONE);}
-        });
+    @Override
+    public void surfaceChanged(@NonNull SurfaceHolder surfaceHolder, int i, int i1, int i2) {
+//        Log.v(TAG, "surfaceChanged "+ ipCam.getChannel());
+    }
 
-        hikSinglePlayer.isError.observe((HomeActivity) context, aBoolean -> {
-            if (aBoolean){errorTextView.setVisibility(VISIBLE);}
-            else{errorTextView.setVisibility(GONE);}
-        });
+    @Override
+    public void surfaceDestroyed(@NonNull SurfaceHolder surfaceHolder) {
+//        Log.v(TAG, "surfaceDestroyed"+ ipCam.getChannel());
     }
 
     public interface HikClickViews{
         void onHikClick(IpCam ipCam);
-      //  void onError(Boolean value);
-      //  void onLoading(Boolean value);
     }
 }
 

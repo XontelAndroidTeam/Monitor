@@ -2,10 +2,7 @@ package com.xontel.surveillancecameras.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.TextureView;
 import android.view.View;
@@ -19,18 +16,13 @@ import com.xontel.surveillancecameras.R;
 import com.xontel.surveillancecameras.activities.CamerasActivity;
 import com.xontel.surveillancecameras.activities.HomeActivity;
 import com.xontel.surveillancecameras.base.BaseViewHolder;
-import com.xontel.surveillancecameras.dahua.DahuaSinglePlayer;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
-import com.xontel.surveillancecameras.hikvision.HIKSinglePlayer;
-import com.xontel.surveillancecameras.hikvision.HikUtil;
 import com.xontel.surveillancecameras.utils.CamDeviceType;
 import com.xontel.surveillancecameras.vlc.VlcSinglePlayer;
 
-import org.videolan.libvlc.Media;
 import org.videolan.libvlc.MediaPlayer;
 import org.videolan.libvlc.util.VLCVideoLayout;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -134,11 +126,11 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder>  {
             super.onBind(position);
             ipCam = ipCams.get(position);
             if (ipCam.getType() == CamDeviceType.HIKVISION.getValue()){
-                HIKSinglePlayer singlePlayer =  new HIKSinglePlayer(ipCam.getChannel(),ipCam.getLoginId(),ipCam.getType(),context);
-                singlePlayer.initView(surfaceView);
+//                HIKSinglePlayer singlePlayer =  new HIKSinglePlayer(ipCam.getChannel(),ipCam.getLoginId(),context);
+//                singlePlayer.initView(surfaceView);
             }else if(ipCam.getType() == CamDeviceType.DAHUA.getValue()){
-                DahuaSinglePlayer singlePlayer =  new DahuaSinglePlayer(ipCam.getChannel(),ipCam.getLoginId(),ipCam.getType(),context);
-                singlePlayer.initView(surfaceView);
+//                DahuaSinglePlayer singlePlayer =  new DahuaSinglePlayer(ipCam.getChannel(),ipCam.getLoginId(),context);
+//                singlePlayer.initView(surfaceView);
             }
             itemView.setOnClickListener(this);
         }

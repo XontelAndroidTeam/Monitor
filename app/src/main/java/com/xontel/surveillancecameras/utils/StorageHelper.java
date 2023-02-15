@@ -3,9 +3,11 @@ package com.xontel.surveillancecameras.utils;
 import static android.content.Context.STORAGE_SERVICE;
 
 import android.annotation.TargetApi;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -24,19 +26,26 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 @TargetApi(30)
 public class StorageHelper {
+    public static final String TAG = StorageHelper.class.getSimpleName();
     public static final int INTERNAL_STORAGE = 0;
     public static final int SDCARD_STORAGE = 1;
     public static final int USB_STORAGE = 2;
-    public static final String IMAGES_DIRECTORY_NAME = "images";
-    public static final String VIDEOS_DIRECTORY_NAME = "videos";
+    public static final String APP_MEDIA_DIRECTORY_PATH = "/monitor/";
     public static final String KEY_CHOSEN_STORAGE = "chosen_storage";
     public static final String KEY_CHOSEN_SLIDE = "chosen_slide";
     public static final String KEY_CHOSEN_GRID = "chosen_grid";
+    public static final String[] projection = new String[] {
+            MediaStore.Images.Media._ID,
+            MediaStore.Images.Media.DATA,
+            MediaStore.Images.Media.DISPLAY_NAME,
+            MediaStore.Images.Media.DURATION,
+            MediaStore.Images.Media.SIZE};
 
 
     public static List<StorageVolume> getActiveVolumes(Context context) {
@@ -231,28 +240,69 @@ public class StorageHelper {
     }
 
 
-    public static List<Uri> getContentUris(@NonNull final Context context,Boolean isPicture) {
+    public static List<Uri> getContentUris(@NonNull final Context context, String mediaType) {
 
         final List<String> allVolumes = new ArrayList<>();
         final List<Uri> output = new ArrayList<>();
         allVolumes.add(MediaStore.VOLUME_EXTERNAL_PRIMARY);
         final Set<String> externalVolumeNames = MediaStore.getExternalVolumeNames(context);
-
-        for ( String entry : externalVolumeNames) {
+        for (String entry : externalVolumeNames) {
+            Log.v(TAG, "Volume found " + entry);
             if (!allVolumes.contains(entry))
                 allVolumes.add(0, entry);
         }
 
 
         for (final String entry : allVolumes) {
-            if (isPicture){
+            if (mediaType.equals(Environment.DIRECTORY_PICTURES)) {
                 output.add(MediaStore.Images.Media.getContentUri(entry));
-            }else{
+            } else {
                 output.add(MediaStore.Video.Media.getContentUri(entry));
             }
         }
 
         return output;
+    }
+
+
+    public static List<MediaData> getMediaItems(Context context, String mediaType){
+        List<Uri> collection = StorageHelper.getContentUris(context, mediaType);
+        List<MediaData> mediaList = new ArrayList<>();
+        for (Uri uri:collection){
+            mediaList.addAll(getMediaFromUri(context, uri, mediaType));
+        }
+        return mediaList;
+    }
+
+    private static List<MediaData> getMediaFromUri(Context context, Uri uri, String mediaType){
+        List<MediaData> mediaList = new ArrayList<>();
+       Cursor cursor = context.getContentResolver().query(
+                uri,
+                projection,
+                null,
+                null,
+                null
+        );
+            // Cache column indices.
+            int idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID);
+            int nameColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME);
+            int durationColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DURATION);
+            int sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.SIZE);
+            int data = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+
+            while (cursor.moveToNext()) {
+                // Get values of columns for a given video.
+                long id = cursor.getLong(idColumn);
+                String name = cursor.getString(nameColumn);
+                int duration = cursor.getInt(durationColumn);
+                int size = cursor.getInt(sizeColumn);
+                String dataPath = cursor.getString(data);
+                Uri contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id);
+                if (dataPath.contains(mediaType + StorageHelper.APP_MEDIA_DIRECTORY_PATH)){
+                    mediaList.add(new MediaData(contentUri, name, size, mediaType, duration, dataPath));
+                }
+            }
+            return mediaList;
     }
 
 

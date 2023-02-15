@@ -36,10 +36,10 @@
             <TextView
                 android:id="@+id/tv_title"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="24dp"
+                android:layout_height="50dp"
                 android:background="@color/edit_text_color"
                 android:textSize="20dp"
+                android:padding="8dp"
                 android:layout_toEndOf="@id/iv_cam"
                 android:layout_alignParentTop="true"
                 android:textColor="@color/black"
@@ -50,11 +50,15 @@
             tools:listitem="@layout/item_device"
             android:layout_height="match_parent"/>
         </LinearLayout>
-
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/accent_color"/>
         <LinearLayout
             android:layout_width="0dp"
             android:layout_weight="2"
             android:gravity="center"
+            android:background="@color/white_color"
             android:padding="24dp"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -115,7 +119,19 @@
                     android:gravity="end"
                     android:layout_marginVertical="8dp"
                     android:orientation="horizontal">
-
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_save"
+                        android:layout_width="150dp"
+                        android:layout_height="80dp"
+                        android:text="@string/save"
+                        app:backgroundTint="@color/primary_color"
+                        android:stateListAnimator="@null"
+                        app:cornerRadius="5dp"
+                        android:visibility="gone"
+                        android:layout_marginHorizontal="16dp"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white_color"
+                        android:textSize="17dp" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_delete"

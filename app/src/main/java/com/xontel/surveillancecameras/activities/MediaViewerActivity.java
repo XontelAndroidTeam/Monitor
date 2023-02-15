@@ -60,7 +60,7 @@ public class MediaViewerActivity extends BaseActivity {
     private void intUI() {
         mediaFilePath = getIntent().getParcelableExtra(KEY_MEDIA_FILE_PATH);
         binding.ivDetails.setOnClickListener(v -> {
-            MediaDetailsDialog mediaDetailsDialog = new MediaDetailsDialog(this, new File( mediaFilePath.getImagePath() == null  ? mediaFilePath.getVideoPath() : mediaFilePath.getImagePath()));
+            MediaDetailsDialog mediaDetailsDialog = new MediaDetailsDialog(this, new File( mediaFilePath.getMediaPath() == null  ? mediaFilePath.getMediaPath() : mediaFilePath.getMediaPath()));
             mediaDetailsDialog.show();
         });
         if(getIntent().hasExtra(KEY_MEDIA_TYPE)){
@@ -74,7 +74,7 @@ public class MediaViewerActivity extends BaseActivity {
     }
 
     private void showImage(){
-        Glide.with(this).asBitmap().load(mediaFilePath.getImagePath()).into(new SimpleTarget<Bitmap>() {
+        Glide.with(this).asBitmap().load(mediaFilePath.getMediaType()).into(new SimpleTarget<Bitmap>() {
 
             @Override
             public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
@@ -89,7 +89,7 @@ public class MediaViewerActivity extends BaseActivity {
         binding.vlcLayout.setVisibility(View.VISIBLE);
         mediaPlayer = new MediaPlayer(this);
         mediaPlayer.attachViews(binding.vlcLayout);
-        final Media media = new Media(mediaPlayer.getLibVLCInstance(), mediaFilePath.getVideoPath());
+        final Media media = new Media(mediaPlayer.getLibVLCInstance(), mediaFilePath.getMediaPath());
         media.addCommonOptions();
         mediaPlayer.setMedia(media);
         media.release();

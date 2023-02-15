@@ -103,7 +103,7 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V>
     }
 
     @Override
-    public void getAllCameras() {
+    public void getAllDevices() {
         getMvpView().showLoading();
      /*   getCompositeDisposable().add(getDataManager()
                 .getAll()

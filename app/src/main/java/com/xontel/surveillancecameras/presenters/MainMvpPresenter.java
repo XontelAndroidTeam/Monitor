@@ -8,6 +8,6 @@ public interface MainMvpPresenter <V extends MainMvpView> extends MvpPresenter<V
     void createCamera(IpCam ipCam);
     void updateCamera(IpCam ipCam);
     void deleteCamera(IpCam ipCam);
-    void getAllCameras();
+    void getAllDevices();
     void getCameraById(int id);
 }

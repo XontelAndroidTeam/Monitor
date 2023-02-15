@@ -1,5 +1,7 @@
 package com.xontel.surveillancecameras.utils;
 
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -7,15 +9,21 @@ public class MediaData  implements Parcelable {
     private String name;
     private Integer size;
     private Integer duration;
-    private String videoPath;
-    private String imagePath;
+    private String mediaPath;
+    private Uri mediaUri ;
+    private String mediaType;
 
-    public MediaData(String name, Integer size, Integer duration, String videoPath, String imagePath) {
+    public MediaData(Uri mediaUri, String name, Integer size, String mediaType, Integer duration, String mediaPath) {
+        this.mediaUri = mediaUri;
         this.name = name;
         this.size = size;
         this.duration = duration;
-        this.videoPath = videoPath;
-        this.imagePath = imagePath;
+        this.mediaPath = mediaPath;
+        this.mediaType = mediaType;
+    }
+
+    public Bitmap getMediaThumbnail(){
+        return null;
     }
 
     protected MediaData(Parcel in) {
@@ -30,8 +38,9 @@ public class MediaData  implements Parcelable {
         } else {
             duration = in.readInt();
         }
-        videoPath = in.readString();
-        imagePath = in.readString();
+        mediaPath = in.readString();
+        mediaUri = Uri.parse(in.readString());
+        mediaType = in.readString();
     }
 
     public static final Creator<MediaData> CREATOR = new Creator<MediaData>() {
@@ -70,20 +79,29 @@ public class MediaData  implements Parcelable {
         this.duration = duration;
     }
 
-    public String getVideoPath() {
-        return videoPath;
+
+    public String getMediaPath() {
+        return mediaPath;
     }
 
-    public void setVideoPath(String videoPath) {
-        this.videoPath = videoPath;
+    public void setMediaPath(String mediaPath) {
+        this.mediaPath = mediaPath;
     }
 
-    public String getImagePath() {
-        return imagePath;
+    public Uri getMediaUri() {
+        return mediaUri;
     }
 
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
+    public void setMediaUri(Uri mediaUri) {
+        this.mediaUri = mediaUri;
+    }
+
+    public String getMediaType() {
+        return mediaType;
+    }
+
+    public void setMediaType(String mediaType) {
+        this.mediaType = mediaType;
     }
 
     @Override
@@ -106,7 +124,9 @@ public class MediaData  implements Parcelable {
             dest.writeByte((byte) 1);
             dest.writeInt(duration);
         }
-        dest.writeString(videoPath);
-        dest.writeString(imagePath);
+        dest.writeString(mediaPath);
+        dest.writeString(mediaUri.toString());
+        dest.writeString(mediaType);
+
     }
 }

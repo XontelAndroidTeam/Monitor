@@ -32,7 +32,7 @@ public class VlcSinglePlayer {
         media.addCommonOptions();
         mediaPlayer.setMedia(media);
         media.release();
-        mediaPlayer.play();
+        mediaPlayer.stop();
     }
 
     public void removeVlcPlayer(){

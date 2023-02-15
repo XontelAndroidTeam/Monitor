@@ -2,25 +2,23 @@ package com.xontel.surveillancecameras.fragments;
 
 import android.app.ProgressDialog;
 import android.content.ContentUris;
-import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
-import androidx.core.graphics.drawable.DrawableCompat;
-import androidx.lifecycle.Observer;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.CursorLoader;
+import androidx.loader.content.Loader;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import android.os.Environment;
-import android.os.FileObserver;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.ActionMode;
@@ -38,39 +36,33 @@ import com.xontel.surveillancecameras.base.BaseFragment;
 import com.xontel.surveillancecameras.databinding.FragmentSavedMediaBinding;
 import com.xontel.surveillancecameras.utils.CommonUtils;
 import com.xontel.surveillancecameras.utils.MediaData;
-import com.xontel.surveillancecameras.utils.SDCardObservable;
-import com.xontel.surveillancecameras.utils.StorageBroadcastReceiver;
+import com.xontel.surveillancecameras.utils.MediaUtils;
 import com.xontel.surveillancecameras.utils.StorageHelper;
 
-import org.videolan.libvlc.Media;
-
 import java.io.File;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 
-public class SavedMediaFragment extends BaseFragment implements MediaAdapter.ClickActionListener {
+public class SavedMediaFragment extends BaseFragment implements LoaderManager.LoaderCallbacks<Cursor>, MediaAdapter.ClickActionListener {
+    public static final String TAG = SavedMediaFragment.class.getSimpleName();
     private FragmentSavedMediaBinding binding ;
     private MediaAdapter mediaAdapter;
-    private List<MediaData> mediaFiles = new ArrayList<>();
+    private List<MediaData> images = new ArrayList<>();
+    private List<MediaData> videos = new ArrayList<>();
     private android.view.ActionMode actionMode;
     private ProgressDialog progressDialog;
-    List<Uri> collection;
-    String[] projection = new String[] {
-            MediaStore.MediaColumns.RELATIVE_PATH,
+    public static final int IMAGES_LOADER = 0;
+    public static final int VIDEOS_LOADER = 1;
+    public static final String[] projection = new String[] {
             MediaStore.Images.Media._ID,
             MediaStore.Images.Media.DATA,
             MediaStore.Images.Media.DISPLAY_NAME,
             MediaStore.Images.Media.DURATION,
             MediaStore.Images.Media.SIZE};
 
-    String[] projectionVideo = new String[] {
-            MediaStore.Video.Media._ID,
-            MediaStore.Video.Media.DATA,
-            MediaStore.Video.Media.DISPLAY_NAME,
-            MediaStore.Video.Media.DURATION,
-            MediaStore.Video.Media.SIZE};
 
     public SavedMediaFragment() {
         // Required empty public constructor
@@ -81,6 +73,7 @@ public class SavedMediaFragment extends BaseFragment implements MediaAdapter.Cli
     @Override
     public void onResume() {
         super.onResume();
+
     }
 
     @Override
@@ -111,28 +104,128 @@ public class SavedMediaFragment extends BaseFragment implements MediaAdapter.Cli
         fragment.setArguments(args);
         return fragment;
     }
-/*
-    private void shareSelectedItems(List<MediaData> selectedFiles) {
-        if(selectedFiles.size() > 0) {
-            Intent intent = new Intent();
-            intent.setAction(Intent.ACTION_SEND_MULTIPLE);
-            intent.putExtra(Intent.EXTRA_SUBJECT, "Here are some files.");
-            intent.setType("image/jpeg");
-            ArrayList<Uri> files = new ArrayList<Uri>();
-            for (MediaData file : selectedFiles) {
-                Uri uri = Uri.fromFile(file);
-                files.add(uri);
-            }
-            selectedFiles.clear();
-            intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, files);
-            startActivity(intent);
-        }else{
-            showMessage(R.string.nothing_selected);
+
+
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+        if (getArguments() != null) {
+
         }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        requireActivity().setTitle(R.string.saved_media);
+        binding = FragmentSavedMediaBinding.inflate(inflater);
+        return binding.getRoot();
+    }
+
+
+
+    @Override
+    protected void setUp(View view) {
+        setupMediaList();
+        LoaderManager.getInstance(this).initLoader(IMAGES_LOADER, null, this);
+        LoaderManager.getInstance(this).initLoader(VIDEOS_LOADER, null, this);
+    }
+
+    private void setupMediaList() {
+        mediaAdapter = new MediaAdapter(getContext(), new ArrayList<>(), this);
+        binding.rvMedia.setEmptyView(binding.llEmptyIndicator);
+        binding.rvMedia.setAdapter(mediaAdapter);
+        binding.rvMedia.setLayoutManager(new GridLayoutManager(getContext(), 4));
+    }
+
+    @Override
+    public void onSelectionModeEnabled(boolean enabled) {
 
     }
 
- */
+    @Override
+    public void notifySelectionMode() {
+        updateActionMode();
+    }
+
+  
+    @NonNull
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
+        switch (id) {
+            case IMAGES_LOADER:
+                return new CursorLoader(
+                        getContext(),
+                       MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                        projection,
+                        MediaStore.Images.Media.VOLUME_NAME + " IN "+createSelectionForVolumes() +" AND "+ MediaStore.Images.Media.RELATIVE_PATH+"=?",
+                        createSelectionArgs(Environment.DIRECTORY_PICTURES),
+                        null
+                );
+            case VIDEOS_LOADER:
+                return new CursorLoader(
+                        getContext(),
+                        MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                        projection,
+                        MediaStore.Images.Media.VOLUME_NAME + " IN "+createSelectionForVolumes()+" AND " + MediaStore.Images.Media.RELATIVE_PATH+"=?",
+                        createSelectionArgs(Environment.DIRECTORY_MOVIES),
+                        null
+                );
+            default:
+                return null;
+        }
+    }
+
+    @Override
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
+        switch (loader.getId()){
+            case IMAGES_LOADER:
+                images.clear();
+                images.addAll(MediaUtils.extractMedia(data, Environment.DIRECTORY_PICTURES));
+                notifyDataChanged();
+                break;
+            case VIDEOS_LOADER:
+                videos.clear();
+                videos.addAll(MediaUtils.extractMedia(data, Environment.DIRECTORY_MOVIES));
+                notifyDataChanged();
+                break;
+        }
+    }
+
+    private void notifyDataChanged() {
+       List<MediaData> allMedia = new ArrayList<>();
+       allMedia.addAll(images);
+       allMedia.addAll(videos);
+       mediaAdapter.setAllData(allMedia);
+    }
+
+    @Override
+    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
+
+    }
+
+    private void shareSelectedItems(List<MediaData> selectedFiles) {
+//        if(selectedFiles.size() > 0) {
+//            Intent intent = new Intent();
+//            intent.setAction(Intent.ACTION_SEND_MULTIPLE);
+//            intent.putExtra(Intent.EXTRA_SUBJECT, "Here are some files.");
+//            intent.setType("image/jpeg");
+//            ArrayList<Uri> files = new ArrayList<Uri>();
+//            for (MediaData file : selectedFiles) {
+//                Uri uri = Uri.fromFile(file);
+//                files.add(uri);
+//            }
+//            selectedFiles.clear();
+//            intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, files);
+//            startActivity(intent);
+//        }else{
+//            showMessage(R.string.nothing_selected);
+//        }
+
+    }
+
+
 
     public void updateActionMode() {
         //  ((MainActivity)getContext()).getActionMode().getMenu().getItem(0).setVisible(itemsCount == 1);
@@ -143,81 +236,6 @@ public class SavedMediaFragment extends BaseFragment implements MediaAdapter.Cli
     }
 
 
-    private void getAllPics(){
-        collection = StorageHelper.getContentUris(requireContext(),true);
-
-        for (Uri uri:collection){
-            try(Cursor cursor = requireContext().getContentResolver().query(
-                    uri,
-                    projection,
-                    null,
-                    null,
-                    null
-            ))  {
-                // Cache column indices.
-                int idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID);
-                int nameColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME);
-                int durationColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DURATION);
-                int relativePath = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.RELATIVE_PATH);
-                int sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.SIZE);
-                int data = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-
-                while (cursor.moveToNext()) {
-                    // Get values of columns for a given video.
-                    long id = cursor.getLong(idColumn);
-                    String name = cursor.getString(nameColumn);
-                    int duration = cursor.getInt(durationColumn);
-                    int size = cursor.getInt(sizeColumn);
-                    String dataPath = cursor.getString(data);
-                    Uri contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id);
-                    if (dataPath.contains("/Pictures")){
-                        mediaFiles.add(new MediaData(name,size,duration,null,dataPath));
-                    }
-                }
-            }catch(Exception e){
-                Log.e("TAG", "error: " + e.getMessage());
-            }
-        }
-        mediaAdapter.setAllData(mediaFiles);
-        getAllVideos();
-    }
-
-    private void getAllVideos(){
-        collection = StorageHelper.getContentUris(requireContext(),false);
-
-        for (Uri uri:collection) {
-            try (Cursor cursor = requireContext().getContentResolver().query(
-                    uri,
-                    projectionVideo,
-                    null,
-                    null,
-                    null
-            )) {
-                // Cache column indices.
-                int idColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID);
-                int nameColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME);
-                int durationColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION);
-                int sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE);
-                int data = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
-
-                while (cursor.moveToNext()) {
-                    // Get values of columns for a given video.
-                    long id = cursor.getLong(idColumn);
-                    String name = cursor.getString(nameColumn);
-                    int duration = cursor.getInt(durationColumn);
-                    int size = cursor.getInt(sizeColumn);
-                    String dataPath = cursor.getString(data);
-                    Uri contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id);
-                    if (dataPath.contains("/Movies")){
-                        mediaFiles.add(new MediaData(name, size, duration, dataPath, null));
-                    }
-                }
-            } catch (Exception e) {
-                Log.e("TAG", "error: " + e.getMessage());
-            }
-        }
-        mediaAdapter.setAllData(mediaFiles);
-    }
 
 /*
     public String getRealPathFromURI(Uri contentUri) {
@@ -274,7 +292,7 @@ public class SavedMediaFragment extends BaseFragment implements MediaAdapter.Cli
                             endSelectionMode();
                             return true;
                         case R.id.action_share:
-                          //  shareSelectedItems(mediaAdapter.getSelectedItems());
+                            shareSelectedItems(mediaAdapter.getSelectedItems());
                             endSelectionMode();
                             return true;
                         case R.id.action_select_all:
@@ -328,7 +346,7 @@ public class SavedMediaFragment extends BaseFragment implements MediaAdapter.Cli
             setupProgressDialog();
             for (int i = 0; i < selectedFiles.size(); i++) {
                 setProgressDialogValues(i);
-                if (!CommonUtils.deleteFile(new File(selectedFiles.get(i).getImagePath() == null || selectedFiles.get(i).getImagePath().isEmpty()  ? selectedFiles.get(i).getVideoPath() : selectedFiles.get(i).getImagePath()  ))) {
+                if (!CommonUtils.deleteFile(new File(selectedFiles.get(i).getMediaPath() == null || selectedFiles.get(i).getMediaPath().isEmpty()  ? selectedFiles.get(i).getMediaPath() : selectedFiles.get(i).getMediaPath()  ))) {
                     Toast.makeText(getContext(), R.string.file_delete_error + selectedFiles.get(i).getName(), Toast.LENGTH_LONG).show();
                 }
             }
@@ -341,48 +359,43 @@ public class SavedMediaFragment extends BaseFragment implements MediaAdapter.Cli
     }
 
     public void onDeleteCompleted() {
-        mediaFiles.clear();
-        getAllPics();
+//        mediaFiles.clear();
+//        getAllPics();
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-        if (getArguments() != null) {
-
+  
+    private String createSelectionForVolumes(){
+        Set<String> volumesNames = MediaStore.getExternalVolumeNames(getContext());
+        String selection = "(";
+        for(String name : volumesNames){
+            selection+="?,";
         }
+
+        selection = selection.substring(0, selection.length() - 1);
+         selection+= ")";
+         Log.v(TAG, selection);
+         return selection;
+    }
+
+  
+    private String[] createSelectionArgs(String mediaType){
+        int i = 0;
+        Set<String> volumesNames = MediaStore.getExternalVolumeNames(getContext());
+        String[] selectionArgs = new String[volumesNames.size()+1];
+        for(String name : volumesNames){
+            selectionArgs[i++] = name;
+        }
+        selectionArgs[selectionArgs.length - 1] = mediaType + StorageHelper.APP_MEDIA_DIRECTORY_PATH;
+        for(String s: selectionArgs) {
+            Log.v(TAG, s);
+        }
+        return selectionArgs;
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        requireActivity().setTitle(R.string.saved_media);
-        binding = FragmentSavedMediaBinding.inflate(inflater);
-        return binding.getRoot();
-    }
-
-
-
-    @Override
-    protected void setUp(View view) {
-        setupMediaList();
-        getAllPics();
-    }
-
-    private void setupMediaList() {
-        mediaAdapter = new MediaAdapter(getContext(), new ArrayList<>(), this);
-        binding.rvMedia.setEmptyView(binding.llEmptyIndicator);
-        binding.rvMedia.setAdapter(mediaAdapter);
-        binding.rvMedia.setLayoutManager(new GridLayoutManager(getContext(), 4));
-    }
-
-    @Override
-    public void onSelectionModeEnabled(boolean enabled) {
-
-    }
-
-    @Override
-    public void notifySelectionMode() {
-        updateActionMode();
+    public void onStop() {
+        super.onStop();
+        LoaderManager.getInstance(this).destroyLoader(IMAGES_LOADER);
+        LoaderManager.getInstance(this).destroyLoader(VIDEOS_LOADER);
     }
 }

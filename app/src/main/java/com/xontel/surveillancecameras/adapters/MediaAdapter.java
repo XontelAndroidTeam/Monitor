@@ -5,8 +5,11 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
 import android.opengl.Visibility;
+import android.os.Build;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.util.Size;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +18,7 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -24,6 +28,7 @@ import com.xontel.surveillancecameras.activities.SavedMediaActivity;
 import com.xontel.surveillancecameras.utils.MediaData;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,7 +51,7 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
 
 
     public void setAllData(List<MediaData> newItemList){
-        if (!itemList.isEmpty()){itemList.clear();}
+        itemList.clear();
         itemList.addAll(newItemList);
         notifyDataSetChanged();
     }
@@ -101,12 +106,15 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
               play = itemView.findViewById(R.id.iv_Play) ;
               checker = itemView.findViewById(R.id.cb_checker) ;
         }
+
+
         public void showChecker(boolean show){
             int visibility = show ? View.VISIBLE : View.GONE ;
             checkBoxOverlay.setVisibility(visibility);
-
             checker.setVisibility(visibility);
         }
+
+
         @Override
         public void onClick(View v) {
             if(selectionModeEnabled){
@@ -123,50 +131,29 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
         }
 
         private void viewMedia() {
-            MediaData file = itemList.get(getAdapterPosition()) ;
+            MediaData data = itemList.get(getAbsoluteAdapterPosition()) ;
             Intent intent = new Intent(context, MediaViewerActivity.class);
-            if(file.getName().toLowerCase().endsWith("jpg") || file.getName().toLowerCase().endsWith("jpeg") || file.getName().toLowerCase().endsWith("png")){
-                intent.putExtra(MediaViewerActivity.KEY_MEDIA_TYPE, MediaViewerActivity.MEDIA_IMAGE);
-            }else if(file.getName().toLowerCase().endsWith("mp4")){
-                intent.putExtra(MediaViewerActivity.KEY_MEDIA_TYPE, MediaViewerActivity.MEDIA_VIDEO);
-            }else{
-                intent.putExtra(MediaViewerActivity.KEY_MEDIA_TYPE, MediaViewerActivity.MEDIA_VIDEO);
-            }
-            intent.putExtra(MediaViewerActivity.KEY_MEDIA_FILE_PATH, file);
+            intent.putExtra(MediaViewerActivity.KEY_MEDIA_FILE_PATH, data);
             context.startActivity(intent);
         }
+
 
 
         public void onBind(int position) {
             showChecker(selectionModeEnabled);
             checker.setChecked(selectedItems.contains(itemList.get(getAdapterPosition())));
             MediaData data = itemList.get(position);
-            String file = data.getImagePath() == null ? data.getVideoPath() : data.getImagePath();
-            if(file.toLowerCase().endsWith("jpg") || file.toLowerCase().endsWith("jpeg") || file.toLowerCase().endsWith("png")){
-                bindImage(file);
-            }else if(file.toLowerCase().endsWith("mp4")){
-                bindVideo(file);
-            }else{
-                bindVideo(file);
-            }
-        }
+            play.setVisibility(data.getMediaType().equals(Environment.DIRECTORY_PICTURES) ? View.GONE : View.VISIBLE);
+                try {
+                    image.setImageBitmap(context.getContentResolver().loadThumbnail(
+                            data.getMediaUri(),
+                          new Size(200, 200), // TODO check for smarter alternatives
+                            null
+                    ));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
-        private void bindVideo(String file) {
-            play.setVisibility(View.VISIBLE);
-//            Glide.with(context)
-//                    .asBitmap()
-//                    .load(file.getPath())
-//                    .thumbnail(0.5f)// or URI/path// or URI/path
-//                    .into(image);
-            image.setImageBitmap(ThumbnailUtils.createVideoThumbnail(file,
-                    MediaStore.Images.Thumbnails.MINI_KIND));
-        }
-
-        private void bindImage(String file) {
-            play.setVisibility(View.GONE);
-            Glide.with(context)
-                    .load(file)
-                    .into(image);
         }
     }
 

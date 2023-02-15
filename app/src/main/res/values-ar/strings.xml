@@ -22,7 +22,7 @@
     <string name="empty_field">حقل فارغ</string>
     <string name="share_url">شارك رابط الكاميرا</string>
     <string name="delete_camera">حذف الكاميرا</string>
-    <string name="are_you_sure_delete">هل تريد بالفعل حذف هذه الكاميرا؟</string>
+    <string name="are_you_sure_delete">هل تريد بالفعل حذف هذا الجهاز؟</string>
     <string name="ok">موافق</string>
     <string name="grid_count">العدد اثناء العرض</string>
     <string name="live_cameras">المراقب</string>
@@ -83,4 +83,6 @@
     <string name="no_devices">لم تتم إضافة أي أجهزة حتى الآن</string>
     <string name="init_sdk_init_error">Error starting HCNetSDK</string>
     <string name="error_streaming">خطأ في التشغيل</string>
+    <string name="device_deleted">تم حذف الجهاز بنجاح</string>
+    <string name="save">حفظ</string>
 </resources>

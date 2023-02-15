@@ -1,14 +1,11 @@
 package com.xontel.surveillancecameras.adapters;
 
-import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import com.xontel.surveillancecameras.fragments.CamPreviewFragment;
-import com.xontel.surveillancecameras.fragments.PagerFragment;
 
 import org.jetbrains.annotations.NotNull;
 

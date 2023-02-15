@@ -12,14 +12,19 @@ import com.xontel.surveillancecameras.data.prefs.PreferencesHelper;
 import com.xontel.surveillancecameras.data.utils.LoggedInMode;
 import com.xontel.surveillancecameras.di.ApplicationContext;
 import com.xontel.surveillancecameras.hikvision.CamDevice;
+import com.xontel.surveillancecameras.utils.MediaData;
+import com.xontel.surveillancecameras.utils.StorageHelper;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
 
+import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.core.SingleEmitter;
+import io.reactivex.rxjava3.core.SingleOnSubscribe;
 
 
 public class BaseDataManager implements DataManager {
@@ -57,6 +62,11 @@ public class BaseDataManager implements DataManager {
 
     }
 
+    @Override
+    public Single<List<MediaData>> getStoredMedia(Context context, String mediaType) {
+        return Single.create(emitter -> emitter.onSuccess(StorageHelper.getMediaItems(context, mediaType)));
+    }
+
 
     @Override
     public Flowable<List<CamDevice>> getDevicesAll() {
@@ -74,7 +84,7 @@ public class BaseDataManager implements DataManager {
     }
 
     @Override
-    public Integer deleteCamDevice(CamDevice mCamDevice) {
+    public Single<Integer> deleteCamDevice(CamDevice mCamDevice) {
        return   mDatabase.mDevicesDao().deleteCamDevice(mCamDevice);
     }
 
@@ -154,6 +164,10 @@ public class BaseDataManager implements DataManager {
     public int getStorageMedia() {
         return mPreferencesHelper.getStorageMedia();
     }
+
+
+
+
 
 
 }

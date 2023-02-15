@@ -162,7 +162,7 @@
     <style name="editTextStyle">
         <item name="android:background">@drawable/custom_edit_text</item>
         <item name="android:imeOptions">actionNext</item>
-        <item name="android:inputType">text</item>
+        <item name="android:inputType">textNoSuggestions</item>
         <item name="android:maxLines">1</item>
         <item name="android:textColorHint">@color/black</item>
         <item name="android:textAlignment">viewStart</item>

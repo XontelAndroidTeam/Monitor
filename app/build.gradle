@@ -17,7 +17,7 @@ android {
     buildToolsVersion "30.0.3"
     defaultConfig {
         applicationId "com.xontel.surveillancecameras"
-        minSdkVersion 22
+        minSdkVersion 30
         targetSdkVersion 31
         versionCode 7
         versionName "1.5"
