@@ -13,22 +13,19 @@
         android:orientation="vertical">
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/ip_input_layout"
+            android:id="@+id/domain_input_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:theme="@style/materialTextInputStyle"
             android:layout_marginVertical="8dp"
-           
-           
             app:boxStrokeWidth="0dp"
             app:boxStrokeWidthFocused="0dp"
-            android:hint="@string/ip_address">
+            android:hint="@string/domain">
         <com.xontel.surveillancecameras.utils.IpField
-            android:id="@+id/et_ip"
+            android:id="@+id/et_domain"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="number"
-            android:digits="0123456789."
+            android:inputType="textNoSuggestions"
             style="@style/editTextStyle" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -56,8 +53,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:theme="@style/materialTextInputStyle"
-           
-           
+
             app:boxStrokeWidth="0dp"
             android:layout_marginVertical="8dp"
             app:boxStrokeWidthFocused="0dp"
@@ -67,7 +63,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxLength="20"
-            style="@style/editTextStyle" />
+            style="@style/editTextStyle"
+            android:inputType="textPassword"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout

@@ -21,7 +21,7 @@ import javax.inject.Inject;
 public class AddNewDeviceActivity extends BaseActivity implements MainDeviceMvpView, AdapterView.OnItemClickListener {
     public static final String KEY_DEVICE = "device";
     private ActivityAddNewDeviceBinding binding ;
-    private int deviceType = CamDeviceType.OTHER.getValue();
+    private int deviceType = 0;
     private boolean isEditMode = false;
     private CamDevice mCamDevice;
     @Inject
@@ -44,21 +44,14 @@ public class AddNewDeviceActivity extends BaseActivity implements MainDeviceMvpV
     private void fillFieldsWithData() {
         binding.etName.setText(mCamDevice.getName());
         deviceType = mCamDevice.getDeviceType();
-        if(deviceType == CamDeviceType.OTHER.getValue()){
-           bindCamFields();
-        }else{
-           bindDeviceFields();
-        }
-
+        bindDeviceFields();
         refreshView();
     }
 
-    private void bindCamFields() {
-        binding.camFields.etUrl.setText(mCamDevice.getUrl());
-    }
+
 
     private void bindDeviceFields() {
-        binding.deviceFields.etIp.setText(mCamDevice.getIpAddress());
+        binding.deviceFields.etDomain.setText(mCamDevice.getDomain());
         binding.deviceFields.etUsername.setText(mCamDevice.getUserName());
         binding.deviceFields.etPassword.setText(mCamDevice.getPassWord());
     }
@@ -79,38 +72,37 @@ public class AddNewDeviceActivity extends BaseActivity implements MainDeviceMvpV
         binding.btnSave.setOnClickListener(v->{
             if(validateFields() ){
                 String deviceName = binding.etName.getText().toString();
-                String url = binding.camFields.etUrl.getText().toString();
-                String ip = binding.deviceFields.etIp.getText().toString();
+                String ip = binding.deviceFields.etDomain.getText().toString();
                 String userName = binding.deviceFields.etUsername.getText().toString();
                 String password = binding.deviceFields.etPassword.getText().toString();
-                CamDevice camDevice = new CamDevice(0,deviceName,userName,password,ip,deviceType,url );
-                if (camDevice.isLoginValid()) {
-                    if (mCamDevice == null) {
-                        mPresenter.createDevice(camDevice);
-                    } else {
-                        mPresenter.updateDevice(new CamDevice(0, deviceName, userName, password, ip, deviceType, url));
-                    }
-                }else{
-                    showMessage(this.getString(R.string.Cant_LOGIN));
-                }
+//                CamDevice camDevice = new CamDevice(0,deviceName,userName,password,ip,deviceType,url );
+//                if (camDevice.isLoginValid()) {
+//                    if (mCamDevice == null) {
+//                        mPresenter.createDevice(camDevice);
+//                    } else {
+//                        mPresenter.updateDevice(new CamDevice(0, deviceName, userName, password, ip, deviceType, url));
+//                    }
+//                }else{
+//                    showMessage(this.getString(R.string.Cant_LOGIN));
+//                }
             }
         });
     }
 
 
     private boolean validateFields() {
-        if(deviceType == CamDeviceType.OTHER.getValue()){
+        if(deviceType == 0){
             return binding.etName.isValid() && binding.camFields.etUrl.isValid();
         }
         return binding.etName.isValid() &&
-                binding.deviceFields.etIp.isValid() &&
+                binding.deviceFields.etDomain.isValid() &&
                 binding.deviceFields.etUsername.isValid() &&
                 binding.deviceFields.etPassword.isValid() ;
     }
 
 
     private void refreshView() {
-        boolean isCam = deviceType == CamDeviceType.OTHER.getValue() ;
+        boolean isCam = deviceType == 0 ;
         binding.camFields.getRoot().setVisibility(isCam ? View.VISIBLE : View.GONE );
         binding.deviceFields.getRoot().setVisibility(!isCam ? View.VISIBLE : View.GONE );
     }
@@ -124,7 +116,7 @@ public class AddNewDeviceActivity extends BaseActivity implements MainDeviceMvpV
                 android.R.layout.simple_spinner_dropdown_item, types
                 );
         binding.dropDown.slideShowFilter.setAdapter(typesDropDownAdapter);
-        binding.dropDown.slideShowFilter.setText(types[CamDeviceType.OTHER.getValue()], false);
+        binding.dropDown.slideShowFilter.setText(types[0], false);
         binding.dropDown.slideShowFilter.setOnItemClickListener(this);
         typesDropDownAdapter.notifyDataSetChanged();
         binding.setLifecycleOwner(this);

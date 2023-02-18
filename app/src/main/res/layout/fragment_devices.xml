@@ -6,22 +6,13 @@
     <data>
 
     </data>
-<FrameLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <include
-        android:id="@+id/no_devices"
-        layout="@layout/no_devices"
-        android:layout_height="match_parent"
-        android:layout_width="match_parent"
-        android:visibility="gone"/>
+
 
     <LinearLayout
         android:id="@+id/root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal">
-
         <LinearLayout
             android:layout_width="0dp"
             android:layout_weight="1"
@@ -44,11 +35,22 @@
                 android:layout_alignParentTop="true"
                 android:textColor="@color/black"
                 android:text="@string/device_list"/>
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <include
+                    android:id="@+id/no_devices"
+                    layout="@layout/no_devices"
+                    android:visibility="gone"
+                    android:layout_height="match_parent"
+                    android:layout_width="match_parent"
+                    />
         <com.xontel.surveillancecameras.utils.DevicesList
             android:id="@+id/rv_devices"
             android:layout_width="match_parent"
             tools:listitem="@layout/item_device"
             android:layout_height="match_parent"/>
+            </FrameLayout>
         </LinearLayout>
         <View
             android:layout_width="1dp"
@@ -100,12 +102,12 @@
                         />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <include
-                    android:id="@+id/cam_fields"
-                    layout="@layout/cam_fields"
-                    android:visibility="gone"
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"/>
+<!--                <include-->
+<!--                    android:id="@+id/cam_fields"-->
+<!--                    layout="@layout/cam_fields"-->
+<!--                    android:visibility="gone"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_width="match_parent"/>-->
 
                 <include
                     android:id="@+id/device_fields"
@@ -163,5 +165,5 @@
             </LinearLayout>
 
     </LinearLayout>
-</FrameLayout>
+
 </layout>

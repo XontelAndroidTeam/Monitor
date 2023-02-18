@@ -20,7 +20,7 @@
     <string-array name="device_type">
         <item>هيكفيجن</item>
         <item>داهوا</item>
-        <item>أخري</item>
+<!--        <item>أخري</item>-->
     </string-array>
 
 </resources>

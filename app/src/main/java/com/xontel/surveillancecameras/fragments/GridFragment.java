@@ -135,18 +135,18 @@ public class GridFragment extends BaseFragment {
 
     private void addViews() {
         View playerView;
-        for (int i = from + binding.grid.getChildCount(); i < to; i++) {
-                 playerView =  createCamView();
-            GridLayout.LayoutParams param = new GridLayout.LayoutParams(GridLayout.spec(
-                    GridLayout.UNDEFINED, GridLayout.FILL, 1f),
-                    GridLayout.spec(GridLayout.UNDEFINED, GridLayout.FILL, 1f));
-
-            param.height = 0;
-            param.width = 0;
-            binding.grid.addView(playerView,param);
-        }
+//        for (int i = from + binding.grid.getChildCount(); i < to; i++) {
+//                 playerView =  createCamView();
+//            GridLayout.LayoutParams param = new GridLayout.LayoutParams(GridLayout.spec(
+//                    GridLayout.UNDEFINED, GridLayout.FILL, 1f),
+//                    GridLayout.spec(GridLayout.UNDEFINED, GridLayout.FILL, 1f));
+//
+//            param.height = 0;
+//            param.width = 0;
+//            binding.grid.addView(playerView,param);
+//        }
     }
-
+//
     private View createCamView() {
             return new HikCamView(requireContext());
 

@@ -12,6 +12,7 @@ import com.xontel.surveillancecameras.data.prefs.PreferencesHelper;
 import com.xontel.surveillancecameras.data.utils.LoggedInMode;
 import com.xontel.surveillancecameras.di.ApplicationContext;
 import com.xontel.surveillancecameras.hikvision.CamDevice;
+import com.xontel.surveillancecameras.hikvision.HikUtil;
 import com.xontel.surveillancecameras.utils.MediaData;
 import com.xontel.surveillancecameras.utils.StorageHelper;
 
@@ -89,8 +90,8 @@ public class BaseDataManager implements DataManager {
     }
 
     @Override
-    public void updateCamDevice(CamDevice mCamDevice) {
-         mDatabase.mDevicesDao().updateCamDevice(mCamDevice);
+    public Single<Integer> updateCamDevice(CamDevice mCamDevice) {
+        return mDatabase.mDevicesDao().updateCamDevice(mCamDevice);
     }
 
     @Override
@@ -108,6 +109,27 @@ public class BaseDataManager implements DataManager {
         return mDatabase.mDevicesDao().findDeviceByName(name);
     }
 
+    @Override
+    public Single<Integer> loginHikDevice(CamDevice camDevice) {
+       return Single.create(emitter -> {
+           int logId = HikUtil.loginNormalDevice(camDevice);
+           if(logId < 0 ){
+               emitter.onError(new Throwable("Cannot login to this hik device"));
+           }else{
+               emitter.onSuccess(1);
+           }
+       });
+    }
+
+    @Override
+    public Single<Integer> getChannelsInfo(CamDevice camDevice) {
+        return null;
+    }
+
+    @Override
+    public Single<Integer> getCFgInfo(CamDevice camDevice) {
+        return null;
+    }
 
 
     @Override

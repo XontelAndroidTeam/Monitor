@@ -15,7 +15,7 @@ import com.xontel.surveillancecameras.hikvision.CamDevice;
  * Created on : Feb 01, 2019
  * Author     : AndroidWave
  */
-@Database(entities = {CamDevice.class}, version = 5, exportSchema = false)
+@Database(entities = {CamDevice.class}, version = 6, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     private static final String DATABASE_NAME = "cameras-database";
     private static AppDatabase mInstance;

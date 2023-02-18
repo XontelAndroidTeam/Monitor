@@ -2,6 +2,7 @@ package com.xontel.surveillancecameras.utils;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.Patterns;
 
 import androidx.annotation.NonNull;
@@ -24,6 +25,7 @@ public class IpField extends TextField {
 
     @Override
     public boolean isPatternMatched() {
+        Log.v(TAG, "text is : "+getText().toString());
         return Patterns.DOMAIN_NAME.matcher(getText().toString()).matches();
     }
 
@@ -32,8 +34,5 @@ public class IpField extends TextField {
         return R.string.invalid_ip;
     }
 
-    @Override
-    public boolean isValid() {
-        return super.isValid() && isPatternMatched();
-    }
+
 }

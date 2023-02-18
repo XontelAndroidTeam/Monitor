@@ -162,8 +162,8 @@ public class CamPreviewFragment extends BaseFragment {
         }else{
             binding.vlcLayout.setVisibility(View.VISIBLE);
             binding.surfaceView.setVisibility(View.GONE);
-            vlcSinglePlayer = new VlcSinglePlayer(requireContext());
-            vlcSinglePlayer.initVlcPlayer(cam.getUrlOrIpAddress(),binding.vlcLayout);
+//            vlcSinglePlayer = new VlcSinglePlayer(requireContext());
+//            vlcSinglePlayer.initVlcPlayer(cam.get(),binding.vlcLayout);
         }
     }
 
@@ -228,7 +228,7 @@ public class CamPreviewFragment extends BaseFragment {
         Intent i = new Intent(Intent.ACTION_SEND);
         i.setType("text/plain");
         i.putExtra(Intent.EXTRA_SUBJECT, "Sharing URL");
-        i.putExtra(Intent.EXTRA_TEXT, cam.getUrlOrIpAddress());
+//        i.putExtra(Intent.EXTRA_TEXT, cam.ge());
         startActivity(Intent.createChooser(i, getString(R.string.share_url)));
     }
 

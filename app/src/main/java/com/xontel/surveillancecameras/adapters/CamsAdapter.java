@@ -84,7 +84,7 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder>  {
     @Override
     public int getItemViewType(int position) {
         if (position <= ipCams.size() - 1){
-            if (ipCams.get(position).getType() == CamDeviceType.OTHER.getValue()){
+            if (ipCams.get(position).getType() == 0){
                 return ITEM_VLC;
             }else{
                 return ITEM_CAM;
@@ -168,9 +168,9 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder>  {
         public void onBind(int position) {
             super.onBind(position);
             ipCam = ipCams.get(position);
-            if (ipCam.getType() == CamDeviceType.OTHER.getValue()){
+            if (ipCam.getType() == 0){
                 VlcSinglePlayer vlcSinglePlayer = new VlcSinglePlayer(context);
-                vlcSinglePlayer.initVlcPlayer(ipCam.getUrlOrIpAddress(),vlcVideoLayout);
+//                vlcSinglePlayer.initVlcPlayer(ipCam.ge(),vlcVideoLayout);
             }
             itemView.setOnClickListener(this);
         }

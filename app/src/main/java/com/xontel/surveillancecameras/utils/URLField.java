@@ -32,8 +32,5 @@ public class URLField extends TextField {
         return R.string.invalid_url;
     }
 
-    @Override
-    public boolean isValid() {
-        return super.isValid() && isPatternMatched();
-    }
+
 }

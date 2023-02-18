@@ -16,7 +16,7 @@
     <string-array name="device_type">
         <item>HikVision</item>
         <item>Dahua</item>
-        <item>Other</item>
+<!--        <item>Other</item>-->
     </string-array>
 
 

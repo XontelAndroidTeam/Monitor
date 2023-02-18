@@ -10,7 +10,11 @@
         android:id="@+id/monitorFragment"
         android:name="com.xontel.surveillancecameras.fragments.MonitorFragment"
         android:label="@string/monitor"
-        tools:layout="@layout/fragment_monitor"/>
+        tools:layout="@layout/fragment_monitor">
+        <action
+            android:id="@+id/action_monitorFragment_to_deviceFragment"
+            app:destination="@id/deviceFragment" />
+    </fragment>
     <fragment
         android:id="@+id/deviceFragment"
         android:name="com.xontel.surveillancecameras.fragments.DevicesFragment"

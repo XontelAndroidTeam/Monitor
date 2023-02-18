@@ -1,5 +1,8 @@
 package com.xontel.surveillancecameras.base;
 
+import android.content.Context;
+import android.widget.Toast;
+
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -11,7 +14,7 @@ import javax.inject.Inject;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
 public class BaseViewModel extends ViewModel {
-
+    private Toast mToast;
     private final SchedulerProvider mSchedulerProvider;
     private final CompositeDisposable mCompositeDisposable;
     private final DataManager manager;
@@ -25,7 +28,6 @@ public class BaseViewModel extends ViewModel {
         this.mCompositeDisposable = mCompositeDisposable;
         this.manager = manager;
     }
-
     public SchedulerProvider getSchedulerProvider() {
         return mSchedulerProvider;
     }
@@ -50,6 +52,14 @@ public class BaseViewModel extends ViewModel {
         return errorMessage;
     }
 
+    public void showToastMessage(Context context, int device_deleted) {
+        if(mToast != null) {
+            mToast.cancel();
+        }
+        mToast = Toast.makeText(context, device_deleted, Toast.LENGTH_LONG);
+        mToast.show();
+
+    }
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
     }

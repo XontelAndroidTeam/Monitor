@@ -31,7 +31,7 @@ public interface DevicesDao {
     Single<Integer> deleteCamDevice(CamDevice mCamDevice);
 
     @Update
-    void updateCamDevice(CamDevice mCamDevice);
+    Single<Integer> updateCamDevice(CamDevice mCamDevice);
 
     @Query("SELECT * FROM cam_devices WHERE id = :id")
     Single<CamDevice> getCamDeviceById(int id);

@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.databinding.Observable;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.xontel.surveillancecameras.R;
@@ -48,7 +49,7 @@ public class MonitorFragment extends BaseFragment {
     @Override
     public void onResume(){
         binding.noCams.btnAdd.setOnClickListener(view -> {
-        requireActivity().startActivity(new Intent(requireContext(), AddNewDeviceActivity.class));
+        navigateToDevices();
     });
         super.onResume();
     }
@@ -86,13 +87,16 @@ public class MonitorFragment extends BaseFragment {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add:{
-                requireActivity().startActivity(new Intent(requireContext(), AddNewDeviceActivity.class));
+                navigateToDevices();
                 return true;
             }
             default: return super.onOptionsItemSelected(item);
         }
     }
 
+    private void navigateToDevices() {
+        NavHostFragment.findNavController(this).navigate(R.id.action_monitorFragment_to_deviceFragment);
+    }
 
 
     @Override

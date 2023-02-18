@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class DevicesList extends RecyclerView {
     private View emptyView;
-    private View root ;
+
 
     private AdapterDataObserver emptyObserver = new AdapterDataObserver() {
         @Override
@@ -20,11 +20,11 @@ public class DevicesList extends RecyclerView {
             if(adapter != null && emptyView != null) {
                 if(adapter.getItemCount() == 0) {
                     emptyView.setVisibility(View.VISIBLE);
-                    root.setVisibility(View.GONE);
+                    DevicesList.this.setVisibility(View.GONE);
                 }
                 else {
                     emptyView.setVisibility(View.GONE);
-                    root.setVisibility(View.VISIBLE);
+                    DevicesList.this.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -47,9 +47,7 @@ public class DevicesList extends RecyclerView {
         this.emptyView = emptyView;
     }
 
-    public void setRoot(View root) {
-        this.root = root;
-    }
+
     @Override
     public void setAdapter(Adapter adapter) {
         super.setAdapter(adapter);

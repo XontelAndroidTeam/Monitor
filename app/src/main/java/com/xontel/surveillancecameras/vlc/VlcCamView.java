@@ -72,7 +72,7 @@ public class VlcCamView extends FrameLayout {
         CardView cardView = findViewById(R.id.cardView);
         VLCVideoLayout vlcVideoLayout = findViewById(R.id.vlc_layout);
         vlcSinglePlayer = new VlcSinglePlayer(context);
-        vlcSinglePlayer.initVlcPlayer(ipCam.getUrlOrIpAddress(), vlcVideoLayout);
+//        vlcSinglePlayer.initVlcPlayer(ipCam.getUrlOrIpAddress(), vlcVideoLayout);
         cardView.setOnClickListener(view -> {
             vlcClickViews.onVlcClick(ipCam);
         });

@@ -4,11 +4,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
+
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -37,11 +40,15 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import okhttp3.Call;
 
-public class DevicesFragment extends BaseFragment implements DevicesAdapter.ClickListener {
+
+public class DevicesFragment extends BaseFragment implements DevicesAdapter.ClickListener  {
     private FragmentDevicesBinding binding;
-    private DevicesAdapter mDevicesAdapter ;
+    private DevicesAdapter mDevicesAdapter;
     private MainViewModel mMainViewModel;
+
+    private DataFormMode mode ;
     @Inject
     ViewModelProviderFactory providerFactory;
 
@@ -49,7 +56,7 @@ public class DevicesFragment extends BaseFragment implements DevicesAdapter.Clic
         // Required empty public constructor
     }
 
-    
+
     public static DevicesFragment newInstance() {
         DevicesFragment fragment = new DevicesFragment();
         return fragment;
@@ -68,117 +75,138 @@ public class DevicesFragment extends BaseFragment implements DevicesAdapter.Clic
                              Bundle savedInstanceState) {
         requireActivity().setTitle(R.string.devices);
         binding = FragmentDevicesBinding.inflate(inflater);
-
-
-
         binding.setLifecycleOwner(this);
-
-
-        
         binding.addDevice.getRoot().setOnClickListener(view -> {
-            enableCreationMode();
+            mDevicesAdapter.setCurrentSelectedItem(DevicesAdapter.NO_SELECTION);
         });
-
         binding.btnUpdate.setOnClickListener(view -> updateCurrentData());
-
         binding.btnDelete.setOnClickListener(view -> deleteCurrentData());
 
         return binding.getRoot();
     }
+
     private void setUpObservables() {
+        mMainViewModel.getLoading().observe(getViewLifecycleOwner(), loading -> {
+            if(loading)
+            showLoading();
+            else hideLoading();
+        });
         mMainViewModel.camDevices.observe(getViewLifecycleOwner(), camDevices -> {
             mDevicesAdapter.addItems(camDevices);
         });
+        mMainViewModel.reloader.observe(getViewLifecycleOwner(), reload -> {
+            if(reload){
+                enableReadMode();
+            }
+        });
     }
 
-
-
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.main_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_add:{
-                requireActivity().startActivity(new Intent(requireContext(),AddNewDeviceActivity.class));
-                return true;}
-            default: return super.onOptionsItemSelected(item);
-        }
-
-    }
 
     @Override
     protected void setUp(View view) {
         setupDevicesList();
         setUpObservables();
         setupDeviceTypeDropDown();
+        binding.btnUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                enableEditMode();
+            }
+        });
+        binding.btnSave.setOnClickListener(v -> {
+            if (validateFields()) {
+                int deviceType = CamDeviceType.getTypeFromString(binding.dropDown.slideShowFilter.getText().toString());
+                String deviceName = binding.etName.getText().toString();
+                String ip = binding.deviceFields.etDomain.getText().toString();
+                String userName = binding.deviceFields.etUsername.getText().toString();
+                String password = binding.deviceFields.etPassword.getText().toString();
+                CamDevice camDevice = new CamDevice(deviceName, userName, password, ip, deviceType);
+                if(mode.equals(DataFormMode.CREATE)) {
+                    mMainViewModel.createDevice(camDevice);
+                    mDevicesAdapter.setCurrentSelectedItem(0);
+                }else if(mode.equals(DataFormMode.EDIT)){
+                    camDevice.setId(mDevicesAdapter.getSelectedDevice().getId());
+                    mMainViewModel.updateDevice(camDevice);
+                }
+            }else {
+                showMessage(R.string.one_or_more_invalid_fields);
+            }
+        });
     }
 
-    private void setupDeviceTypeDropDown(){
+    private boolean validateFields() {
+        boolean isDropDownChoiceValid =  CamDeviceType.getTypeFromString(binding.dropDown.slideShowFilter.getText().toString()) != -1 ;
+        if(!isDropDownChoiceValid){
+            showMessage(R.string.wrong_device_type);
+            return false;
+        }
+         boolean areFieldsValid =
+                 binding.etName.isValid() &&
+                binding.deviceFields.etDomain.isValid() &&
+                binding.deviceFields.etUsername.isValid() &&
+                binding.deviceFields.etPassword.isValid() ;
+
+        return areFieldsValid;
+
+    }
+
+    private void setupDeviceTypeDropDown() {
         String[] types = getResources().getStringArray(R.array.device_type);
         ArrayAdapter typesDropDownAdapter = new ArrayAdapter<String>(getContext(),
                 android.R.layout.simple_spinner_dropdown_item, types
         );
         binding.dropDown.slideShowFilter.setAdapter(typesDropDownAdapter);
-        binding.dropDown.slideShowFilter.setOnItemClickListener((adapterView, view, position, id) -> {
-            refreshView(CamDeviceType.OTHER.getValue() != position);
-        });
         typesDropDownAdapter.notifyDataSetChanged();
         binding.setLifecycleOwner(this);
     }
 
-    private void setSelectedData(CamDevice data){
+    private void bindCamDevice(CamDevice data) {
+        binding.dropDown.slideShowFilter.setText(getResources().getStringArray(R.array.device_type)[data.deviceType], false);
         binding.etName.setText(data.getName());
-//        binding.dropDown.slideShowFilter.setText(CamDeviceType.values(), false);
-        if (data.getDeviceType() == CamDeviceType.OTHER.getValue()){
-            binding.camFields.etUrl.setText(data.getUrl());
-        }else{
-            binding.deviceFields.etIp.setText(data.getIpAddress());
-            binding.deviceFields.etUsername.setText(data.getUserName());
-            binding.deviceFields.etPassword.setText(data.getPassWord());
-        }
-    }
+        binding.deviceFields.etDomain.setText(data.getDomain());
+        binding.deviceFields.etUsername.setText(data.getUserName());
+        binding.deviceFields.etPassword.setText(data.getPassWord());
 
 
-    private void refreshView(boolean isHikOrDah) {
-        binding.camFields.getRoot().setVisibility(!isHikOrDah ? View.VISIBLE : View.GONE );
-        binding.deviceFields.getRoot().setVisibility(isHikOrDah ? View.VISIBLE : View.GONE );
     }
+
 
     private void setupDevicesList() {
         mDevicesAdapter = new DevicesAdapter(getContext(), mMainViewModel.camDevices.getValue(), this);
         binding.rvDevices.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.rvDevices.setEmptyView(binding.noDevices.getRoot());
-        binding.rvDevices.setRoot(binding.root);
+        binding.rvDevices.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
         binding.rvDevices.setAdapter(mDevicesAdapter);
     }
 
     private void enableCreationMode() {
-        mDevicesAdapter.setCurrentSelectedItem(DevicesAdapter.NO_SELECTION);
         setAddLayoutSelected(true);
         notifyDataFormModeChanged(DataFormMode.CREATE);
     }
+
+
 
     private void enableReadMode() {
         setAddLayoutSelected(false);
         notifyDataFormModeChanged(DataFormMode.READ);
     }
+
+
     private void enableEditMode() {
         notifyDataFormModeChanged(DataFormMode.EDIT);
+
     }
 
     private void notifyDataFormModeChanged(DataFormMode dataFormMode) {
+        mode = dataFormMode;
         switch (dataFormMode) {
             case EDIT:
-
+                enableFieldsForEdit();
                 break;
             case CREATE:
                 flushAllFields();
                 break;
-                
+
             case READ:
                 lockAllFields();
                 break;
@@ -188,28 +216,38 @@ public class DevicesFragment extends BaseFragment implements DevicesAdapter.Clic
     private void flushAllFields() {
         setAllFieldsEnabled(true);
         setAllFieldsEmpty();
+        binding.dropDown.slideShowFilter.setText(getString(R.string.device_type), false);
+        binding.btnSave.setVisibility(View.VISIBLE);
+        binding.btnDelete.setVisibility(View.GONE);
+        binding.btnUpdate.setVisibility(View.GONE);
+
+    }
+
+
+    private void enableFieldsForEdit() {
+        setAllFieldsEnabled(true);
         binding.btnSave.setVisibility(View.VISIBLE);
         binding.btnDelete.setVisibility(View.GONE);
         binding.btnUpdate.setVisibility(View.GONE);
         binding.dropDown.getRoot().setEnabled(true);
     }
 
+
     private void setAllFieldsEmpty() {
-        binding.camFields.etUrl.setText("");
-        binding.etName.setText("");
-        binding.deviceFields.etPassword.setText("");
-        binding.deviceFields.etUsername.setText("");
-        binding.deviceFields.etIp.setText("");
-        binding.deviceFields.etDescription.setText("");
+        binding.etName.setText(null);
+        binding.deviceFields.etPassword.setText(null);
+        binding.deviceFields.etUsername.setText(null);
+        binding.deviceFields.etDomain.setText(null);
+        binding.deviceFields.etDescription.setText(null);
     }
 
     private void setAllFieldsEnabled(boolean enabled) {
         binding.nameInputLayout.setEnabled(enabled);
-        binding.camFields.urlInputLayout.setEnabled(enabled);
         binding.deviceFields.passwordInputLayout.setEnabled(enabled);
         binding.deviceFields.usernameInputLayout.setEnabled(enabled);
-        binding.deviceFields.ipInputLayout.setEnabled(enabled);
+        binding.deviceFields.domainInputLayout.setEnabled(enabled);
         binding.deviceFields.descriptionInputLayout.setEnabled(enabled);
+        binding.dropDown.getRoot().setEnabled(enabled);
     }
 
     private void lockAllFields() {
@@ -217,27 +255,24 @@ public class DevicesFragment extends BaseFragment implements DevicesAdapter.Clic
         binding.btnSave.setVisibility(View.GONE);
         binding.btnDelete.setVisibility(View.VISIBLE);
         binding.btnUpdate.setVisibility(View.VISIBLE);
-        binding.dropDown.getRoot().setEnabled(false);
     }
 
 
     private void setAddLayoutSelected(boolean selected) {
-        binding.addDevice.getRoot().setBackgroundColor(ContextCompat.getColor(getContext(),selected ? R.color.accent_color : R.color.white_color));
-        binding.addDevice.tvTitle.setTextColor(ContextCompat.getColor(getContext(),selected ? R.color.white_color : R.color.black_color));
-        binding.addDevice.ivCam.setColorFilter(ContextCompat.getColor(getContext(),selected ? R.color.white_color : R.color.grey_color));
+        binding.addDevice.getRoot().setBackgroundColor(ContextCompat.getColor(getContext(), selected ? R.color.accent_color : R.color.white_color));
+        binding.addDevice.tvTitle.setTextColor(ContextCompat.getColor(getContext(), selected ? R.color.white_color : R.color.black_color));
+        binding.addDevice.ivCam.setColorFilter(ContextCompat.getColor(getContext(), selected ? R.color.white_color : R.color.grey_color));
     }
 
 
-    private void updateCurrentData(){
+    private void updateCurrentData() {
         String deviceName = binding.etName.getText().toString();
-        String url = binding.camFields.etUrl.getText().toString();
-        String ip = binding.deviceFields.etIp.getText().toString();
+        String ip = binding.deviceFields.etDomain.getText().toString();
         String userName = binding.deviceFields.etUsername.getText().toString();
         String password = binding.deviceFields.etPassword.getText().toString();
-//        mPresenter.updateDevice(new CamDevice(currentSelectedData.getId(),deviceName,userName,password,ip,deviceType,url));
     }
 
-    private void deleteCurrentData(){
+    private void deleteCurrentData() {
         showDeleteDialog();
     }
 
@@ -251,32 +286,19 @@ public class DevicesFragment extends BaseFragment implements DevicesAdapter.Clic
     }
 
 
-    public void onInsertingDevice() {}
-
-
-    public void onUpdatingDevice() {}
-
-
-    public void onDeletingDevice() {
-//        currentSelectedItemIndex = 0;
-//        mDevicesAdapter.setCurrentSelectedItem();
-    }
-
-
-//    public void onGettingAllDevices(List<CamDevice> response) {
-//            setSelectedData(response.get(currentSelectedItemIndex));
-//            deviceType = response.get(currentSelectedItemIndex).getDeviceType() ;
-//            refreshView();
-//    }
-
     @Override
     public void onItemClicked(CamDevice camDevice) {
-        if(camDevice != null) {
+        if (camDevice != null) {
+            bindCamDevice(camDevice);
             enableReadMode();
-            refreshView(camDevice.deviceType != CamDeviceType.OTHER.getValue());
-            setSelectedData(camDevice);
+        }else{
+            enableCreationMode();
         }
     }
+
+
+
+
 
 
 }

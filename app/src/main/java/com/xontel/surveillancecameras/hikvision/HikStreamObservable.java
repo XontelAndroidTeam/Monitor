@@ -25,12 +25,12 @@ public class HikStreamObservable extends Flowable<StreamData> implements RealPla
             previewInfo.dwStreamType = 1; // mainstream
             previewInfo.bBlocked = 1;
 
-            mIpCam.setRealPlayId(HCNetSDK.getInstance().NET_DVR_RealPlay_V40((int)mIpCam.getLoginId(), previewInfo, this));
+//            mIpCam.setRealPlayId(HCNetSDK.getInstance().NET_DVR_RealPlay_V40((int)mIpCam.getLoginId(), previewInfo, this));
 
-            if (mIpCam.getRealPlayId() < 0L) {
-                s.onError(new Throwable( "NET_DVR_RealPlay is failed!Err: " + HCNetSDK.getInstance().NET_DVR_GetLastError()));
-                return;
-            }
+//            if (mIpCam.getRealPlayId() < 0L) {
+//                s.onError(new Throwable( "NET_DVR_RealPlay is failed!Err: " + HCNetSDK.getInstance().NET_DVR_GetLastError()));
+//                return;
+//            }
     }
 
     @Override

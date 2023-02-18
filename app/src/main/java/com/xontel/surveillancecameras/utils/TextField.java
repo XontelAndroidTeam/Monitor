@@ -1,5 +1,6 @@
 package com.xontel.surveillancecameras.utils;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.text.Editable;
@@ -14,6 +15,7 @@ import androidx.annotation.Nullable;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.xontel.surveillancecameras.R;
 
 import java.util.concurrent.TimeUnit;
 
@@ -23,10 +25,10 @@ import io.reactivex.rxjava3.core.ObservableEmitter;
 import io.reactivex.rxjava3.core.ObservableOnSubscribe;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
-public abstract class TextField extends TextInputEditText implements TextWatcher, ObservableOnSubscribe<String> {
+public abstract class TextField extends TextInputEditText implements TextWatcher, ObservableOnSubscribe<Boolean> {
     public static final String TAG = TextField.class.getSimpleName();
     private Context mContext;
-    private ObservableEmitter<String> mEmitter ;
+    private ObservableEmitter<Boolean> mEmitter ;
 
     public TextField(@NonNull Context context) {
         super(context);
@@ -35,7 +37,7 @@ public abstract class TextField extends TextInputEditText implements TextWatcher
     }
 
     @Override
-    public void subscribe(@NonNull ObservableEmitter<String> emitter) throws Throwable {
+    public void subscribe(@NonNull ObservableEmitter<Boolean> emitter) throws Throwable {
         this.mEmitter = emitter;
     }
 
@@ -51,10 +53,10 @@ public abstract class TextField extends TextInputEditText implements TextWatcher
         init();
     }
 
+    @SuppressLint("CheckResult")
     private void init(){
         Observable.create(this)
                 .debounce(3, TimeUnit.SECONDS)
-                .map(text -> isPatternMatched())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -70,12 +72,21 @@ public abstract class TextField extends TextInputEditText implements TextWatcher
     }
 
     public boolean isValid(){
-        return !getText().toString().isEmpty() ;
+        boolean isEmpty =  getText().toString().isEmpty() ;
+        boolean valid = isPatternMatched();
+        if(isEmpty){
+            showError(R.string.empty_field);
+            return false;
+        }
+        if(!valid){
+            showError();
+            return false;
+        }
+        return true;
     }
 
 
     public void validate(){
-
     }
 
 
@@ -98,9 +109,12 @@ public abstract class TextField extends TextInputEditText implements TextWatcher
     }
 
     private void showError() {
+      showError(getErrorMessageStringId());
+    }
+    private void showError(int stringRes) {
         ViewGroup viewGroup = ((ViewGroup) this.getParent());
         if(viewGroup != null) {
-            ((TextInputLayout) viewGroup.getParent()).setError(mContext.getString(getErrorMessageStringId()));
+            ((TextInputLayout) viewGroup.getParent()).setError(mContext.getString(stringRes));
         }
     }
 
@@ -112,10 +126,9 @@ public abstract class TextField extends TextInputEditText implements TextWatcher
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-        Log.v(TAG, s.toString());
         clearErrorMessage();
-        if(s.length() !=0){
-            mEmitter.onNext(s.toString());
+        if(s.length() !=0 && hasFocus()){
+            mEmitter.onNext(isPatternMatched());
         }
     }
 

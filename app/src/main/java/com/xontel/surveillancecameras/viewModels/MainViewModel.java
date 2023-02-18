@@ -12,26 +12,21 @@ import com.xontel.surveillancecameras.customObservers.GridObservable;
 import com.xontel.surveillancecameras.dahua.DahuaUtil;
 import com.xontel.surveillancecameras.data.DataManager;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
+import com.xontel.surveillancecameras.fragments.DevicesFragment;
 import com.xontel.surveillancecameras.hikvision.CamDevice;
 import com.xontel.surveillancecameras.hikvision.HikUtil;
-import com.xontel.surveillancecameras.root.AppConstant;
 import com.xontel.surveillancecameras.utils.CamDeviceType;
-import com.xontel.surveillancecameras.utils.StorageHelper;
 import com.xontel.surveillancecameras.utils.rx.SchedulerProvider;
 
-import org.videolan.libvlc.MediaPlayer;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.core.SingleSource;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.functions.Function;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class MainViewModel extends BaseViewModel {
@@ -40,6 +35,8 @@ public class MainViewModel extends BaseViewModel {
     public static final String TAG = MainViewModel.class.getSimpleName();
     public final MutableLiveData<List<IpCam>> ipCams = new MutableLiveData<>(new ArrayList<>());
     public final MutableLiveData<List<CamDevice>> camDevices = new MutableLiveData<>(new ArrayList<>());
+
+    public final MutableLiveData<Boolean> reloader = new MutableLiveData<>(false);
     private Context context;
 
 
@@ -63,7 +60,62 @@ public class MainViewModel extends BaseViewModel {
                 .subscribe(response -> {
                     getLoading().setValue(false);
                     camDevices.setValue(response);
-                    extractDevices();
+                    scanDevices();
+
+                }, error -> {
+                    Log.e(TAG, error.getMessage());
+                    getLoading().setValue(false);
+                    getError().setValue(true);
+                    setErrorMessage(error.getMessage());
+                }));
+    }
+
+    private void scanDevices() {
+        List<CamDevice> devices = camDevices.getValue();
+        for(CamDevice camDevice : devices){
+            if(!camDevice.isScanned()){
+                camDevice.login();
+                camDevice.setScanned(true);
+            }
+        }
+        camDevices.setValue(devices);
+    }
+
+
+
+    public void createDevice(CamDevice device) {
+        getLoading().setValue(true);
+        getCompositeDisposable().add(getDataManager()
+                .insertCamDevice(device)
+                .flatMap((Function<Long, SingleSource<Integer>>)
+                        id -> getDataManager().loginHikDevice(device))
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe(response -> {
+
+                    getLoading().setValue(false);
+                    showToastMessage(context, R.string.device_created);
+                }, error -> {
+                    Log.e(TAG, error.getMessage());
+                    getLoading().setValue(false);
+                    getError().setValue(true);
+                    showToastMessage(context, R.string.Cant_LOGIN);
+                }));
+
+    }
+
+
+    public void updateDevice(CamDevice device) {
+        device.setScanned(false);
+        getLoading().setValue(true);
+        getCompositeDisposable().add(getDataManager()
+                .updateCamDevice(device)
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe(response -> {
+                    getLoading().setValue(false);
+                    showToastMessage(context, R.string.device_updated);
+                    reloader.setValue(true);
                 }, error -> {
                     Log.e(TAG, error.getMessage());
                     getLoading().setValue(false);
@@ -81,7 +133,7 @@ public class MainViewModel extends BaseViewModel {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(success -> {
                             getLoading().setValue(false);
-                            showToastMessage(R.string.device_deleted);
+                            showToastMessage(context, R.string.device_deleted);
                         }, error -> {
                             Log.e(TAG, error.getMessage());
                             getLoading().setValue(false);
@@ -91,27 +143,28 @@ public class MainViewModel extends BaseViewModel {
 
     }
 
-    private void showToastMessage(int device_deleted) {
-        Toast.makeText(context, device_deleted, Toast.LENGTH_LONG).show();
-    }
 
 
-    private void extractDevices() {
-        List<IpCam> tempIpCams = new ArrayList<>();
-        if (camDevices.getValue() != null && !camDevices.getValue().isEmpty()) {
-            for (CamDevice camDevice : camDevices.getValue()) {
-                if (camDevice.deviceType == CamDeviceType.HIKVISION.getValue()) {
-                    HikUtil.extractCamsFromDevice(camDevice);
-                } else if (camDevice.deviceType == CamDeviceType.DAHUA.getValue()) {
-                    DahuaUtil.extractCamsFromDevice(camDevice);
-                } else {
-                    camDevice.getCams().add(new IpCam(1, camDevice.getId(), camDevice.getDeviceType(), camDevice.getLogId(), camDevice.getName(), camDevice.getIpAddress().isEmpty() || camDevice.getIpAddress() == null ? camDevice.getUrl() : camDevice.getIpAddress()));
 
-                }
-                tempIpCams.addAll(camDevice.getCams());
-            }
-            ipCams.setValue(tempIpCams);
-        }
-    }
+//    private void extractDevices() {
+//        List<IpCam> tempIpCams = new ArrayList<>();
+//        if (camDevices.getValue() != null && !camDevices.getValue().isEmpty()) {
+//            for (CamDevice camDevice : camDevices.getValue()) {
+//                if (camDevice.deviceType == CamDeviceType.HIKVISION.getValue()) {
+//                    HikUtil.extractCamsFromDevice(camDevice);
+//                } else if (camDevice.deviceType == CamDeviceType.DAHUA.getValue()) {
+//                    DahuaUtil.extractCamsFromDevice(camDevice);
+//                } else {
+//                    camDevice.getCams().add(new IpCam(1, camDevice.getId(), camDevice.getDeviceType(), camDevice.getLogId(), camDevice.getName()));
+//
+//                }
+//                tempIpCams.addAll(camDevice.getCams());
+//            }
+//            ipCams.setValue(tempIpCams);
+//        }
+//    }
+
+
+
 
 }

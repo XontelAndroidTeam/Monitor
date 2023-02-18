@@ -1,7 +1,11 @@
 package com.xontel.surveillancecameras.hikvision;
 
+import android.annotation.SuppressLint;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
+
+import androidx.annotation.Nullable;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
@@ -15,39 +19,44 @@ import com.xontel.surveillancecameras.utils.CamDeviceType;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.annotations.NonNull;
+import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.core.SingleEmitter;
+import io.reactivex.rxjava3.core.SingleOnSubscribe;
+import io.reactivex.rxjava3.core.SingleSource;
+import io.reactivex.rxjava3.functions.Function;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+
 @Entity(tableName = "cam_devices")
 public class CamDevice implements Parcelable  {
+
     @PrimaryKey(autoGenerate = true)
     public int id;
     @ColumnInfo(name = "name")
     public String name;
-    @ColumnInfo(name = "ipAddress")
-    public String ipAddress;
+    @ColumnInfo(name = "domain")
+    public String domain;
     @ColumnInfo(name = "userName")
     public String userName;
     @ColumnInfo(name = "password")
     public String password;
     @ColumnInfo(name = "deviceType")
     public int deviceType ;
-    @ColumnInfo(name = "url")
-    public String url;
-    @Ignore
-    private int port;
-    @Ignore
-    private int channels;
 
     @Ignore
-    private int startChannel;
+    private int channels ;
     @Ignore
     private int logId = -1;
     @Ignore
     private List<IpCam> cams = new ArrayList<>();
 
-    public CamDevice(int id, String name, String userName, String password, String ipAddress, int deviceType, String url) {
+    @Ignore
+    private boolean scanned;
+
+    public CamDevice(String name, String userName, String password, String domain, int deviceType) {
         this.name = name;
-        this.id = id;
-        this.url = url;
-        this.ipAddress = ipAddress;
+        this.domain = domain;
         this.userName = userName;
         this.password = password;
         this.deviceType = deviceType;
@@ -57,14 +66,11 @@ public class CamDevice implements Parcelable  {
     protected CamDevice(Parcel in) {
         id = in.readInt();
         name = in.readString();
-        ipAddress = in.readString();
+        domain = in.readString();
         userName = in.readString();
         password = in.readString();
         deviceType = in.readInt();
-        url = in.readString();
-        port = in.readInt();
         channels = in.readInt();
-        startChannel = in.readInt();
         logId = in.readInt();
     }
 
@@ -80,8 +86,28 @@ public class CamDevice implements Parcelable  {
         }
     };
 
+    public int getChannels() {
+        return channels;
+    }
+
+    public void setChannels(int channels) {
+        this.channels = channels;
+    }
+
     public int getId() {
         return id;
+    }
+
+    public void setId(int id){
+        this.id = id;
+    }
+
+    public boolean isScanned() {
+        return scanned;
+    }
+
+    public void setScanned(boolean scanned) {
+        this.scanned = scanned;
     }
 
     public String getName() {
@@ -108,36 +134,18 @@ public class CamDevice implements Parcelable  {
         this.logId = logId;
     }
 
-    public int getChannels() {
-        return channels;
+
+
+
+    public String getDomain() {
+        return domain;
     }
 
-    public void setChannels(int channels) {
-        this.channels = channels;
-    }
-    public int getStartChannel() {
-        return startChannel;
+    public void setDomain(String ipAddress) {
+        this.domain = ipAddress;
     }
 
-    public void setStartChannel(int startChannel) {
-        this.startChannel = startChannel;
-    }
 
-    public String getIpAddress() {
-        return ipAddress;
-    }
-
-    public void setIpAddress(String ipAddress) {
-        this.ipAddress = ipAddress;
-    }
-
-    public int getPort() {
-        return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
-    }
 
     public String getUserName() {
         return userName;
@@ -163,13 +171,7 @@ public class CamDevice implements Parcelable  {
         this.deviceType = deviceType;
     }
 
-    public String getUrl() {
-        return url;
-    }
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
 
     @Override
     public int describeContents() {
@@ -180,14 +182,11 @@ public class CamDevice implements Parcelable  {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeInt(id);
         parcel.writeString(name);
-        parcel.writeString(ipAddress);
+        parcel.writeString(domain);
         parcel.writeString(userName);
         parcel.writeString(password);
         parcel.writeInt(deviceType);
-        parcel.writeString(url);
-        parcel.writeInt(port);
         parcel.writeInt(channels);
-        parcel.writeInt(startChannel);
         parcel.writeInt(logId);
     }
 
@@ -206,17 +205,48 @@ public class CamDevice implements Parcelable  {
         return "CamDevice{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", ipAddress='" + ipAddress + '\'' +
+                ", domain='" + domain + '\'' +
                 ", userName='" + userName + '\'' +
                 ", password='" + password + '\'' +
                 ", deviceType=" + deviceType +
-                ", url='" + url + '\'' +
-                ", port=" + port +
                 ", channels=" + channels +
-                ", startChannel=" + startChannel +
                 ", logId=" + logId +
                 ", cams=" + cams +
                 '}';
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        return ((CamDevice)obj).id == this.id;
+    }
+
+    @SuppressLint("CheckResult")
+    public void login() {
+        Single.create(emitter -> {
+                    int logId = HikUtil.loginNormalDevice(this);
+                    if(logId < 0 ){
+                        emitter.onError(new Throwable("Cannot login to this hik device"));
+                    }else{
+                        emitter.onSuccess(1);
+                    }
+                }).flatMap((Function<Object, SingleSource<?>>) o -> Single.create((SingleOnSubscribe<Integer>) emitter -> {
+                    int result = HikUtil.getChannelsState(CamDevice.this);
+                    if(result < 0){
+                        emitter.onError(new Throwable("cannot get channels"));
+                    }else{
+                        emitter.onSuccess(result);
+                    }
+                }))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(response -> {
+                    Log.v("CamDevice", "device created completely");
+//                   getLoading().setValue(false);
+//                   scanDevices();
+
+                }, error -> {
+                    Log.e("CamDevice", error.getMessage());
+                });
     }
 }
 

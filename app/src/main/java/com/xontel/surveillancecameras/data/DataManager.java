@@ -7,6 +7,7 @@ import com.xontel.surveillancecameras.data.db.dao.DevicesDao;
 import com.xontel.surveillancecameras.data.network.RestApiHelper;
 import com.xontel.surveillancecameras.data.prefs.PreferencesHelper;
 import com.xontel.surveillancecameras.data.utils.LoggedInMode;
+import com.xontel.surveillancecameras.hikvision.CamDevice;
 import com.xontel.surveillancecameras.utils.MediaData;
 
 import java.util.List;
@@ -27,4 +28,10 @@ public interface DataManager extends CamDao, DevicesDao, PreferencesHelper, Rest
             String profilePicPath);
 
     Single<List<MediaData>> getStoredMedia(Context context, String mediaType);
+
+    Single<Integer> loginHikDevice(CamDevice camDevice);
+
+    Single<Integer> getChannelsInfo(CamDevice camDevice);
+
+    Single<Integer> getCFgInfo(CamDevice camDevice);
 }

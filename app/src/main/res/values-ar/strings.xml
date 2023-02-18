@@ -85,4 +85,10 @@
     <string name="error_streaming">خطأ في التشغيل</string>
     <string name="device_deleted">تم حذف الجهاز بنجاح</string>
     <string name="save">حفظ</string>
+    <string name="device_type">نوع الجهاز</string>
+    <string name="device_created">تم الإضافة بنجاح</string>
+    <string name="device_updated">Device updated successfully</string>
+    <string name="one_or_more_invalid_fields">حقل او اكثر غير صالح</string>
+    <string name="wrong_device_type">خطأ في نوع الجهاز</string>
+    <string name="domain">عنوان النطاق</string>
 </resources>
