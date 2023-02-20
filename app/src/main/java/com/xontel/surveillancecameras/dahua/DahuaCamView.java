@@ -73,10 +73,10 @@ public class DahuaCamView extends FrameLayout {
     }
 
     private void bind() {
-        surfaceView =  findViewById(R.id.hik_layout) ;
+        surfaceView =  findViewById(R.id.player_surface) ;
         errorTextView =  findViewById(R.id.error_stream) ;
         loadingDots =  findViewById(R.id.loading_dots) ;
-        dahuaSinglePlayer = new DahuaSinglePlayer(ipCam.getChannel(), ipCam.getLoginId(),  context);
+        dahuaSinglePlayer = new DahuaSinglePlayer(context, ipCam);
 //        dahuaSinglePlayer.initView(surfaceView);
         surfaceView.setOnClickListener(view -> {
             dahuaClickViews.onDahuaClick(ipCam);

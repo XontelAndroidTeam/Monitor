@@ -27,7 +27,6 @@ public class IpCam implements  Parcelable{
         this.deviceId = deviceId;
         this.type = type;
         this.loginId = loginId;
-        this.name = name;
         extractChannelName();
     }
 

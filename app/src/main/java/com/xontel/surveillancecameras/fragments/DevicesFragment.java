@@ -161,6 +161,7 @@ public class DevicesFragment extends BaseFragment implements DevicesAdapter.Clic
     }
 
     private void bindCamDevice(CamDevice data) {
+        binding.channels.setText(data.getChannels()+"");
         binding.dropDown.slideShowFilter.setText(getResources().getStringArray(R.array.device_type)[data.deviceType], false);
         binding.etName.setText(data.getName());
         binding.deviceFields.etDomain.setText(data.getDomain());
@@ -234,6 +235,7 @@ public class DevicesFragment extends BaseFragment implements DevicesAdapter.Clic
 
 
     private void setAllFieldsEmpty() {
+        binding.channels.setText("0");
         binding.etName.setText(null);
         binding.deviceFields.etPassword.setText(null);
         binding.deviceFields.etUsername.setText(null);

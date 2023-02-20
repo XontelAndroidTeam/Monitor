@@ -22,8 +22,8 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable;
 public class GridViewModel extends BaseViewModel {
     public static final String TAG = MainViewModel.class.getSimpleName();
     public final MutableLiveData<List<IpCam>> ipCams = new MutableLiveData<>(new ArrayList<>());
-    private int currentGridCount ;
-    private int index ;
+    private int currentGridCount;
+    private int index;
     private MainViewModel mMainViewModel;
     private Context context;
 
@@ -35,20 +35,22 @@ public class GridViewModel extends BaseViewModel {
     }
 
 
-
     private void calculateNewIndex() {
         int newGridCount = mMainViewModel.mGridObservable.getValue();
         int oldGridCount = currentGridCount;
-        if(newGridCount > oldGridCount){
-            index = (int)Math.floor((index * 1.0 * oldGridCount) / newGridCount);
-        }else{
-            index = (int)Math.ceil((index * 1.0 * oldGridCount) / newGridCount);
+        if (newGridCount > oldGridCount) {
+            index = (int) Math.floor((index * 1.0 * oldGridCount) / newGridCount);
+        } else {
+            index = (int) Math.ceil((index * 1.0 * oldGridCount) / newGridCount);
         }
     }
 
     private void populateCamsList() {
+        List<IpCam> cams = mMainViewModel.ipCams.getValue();
         int newGridCount = mMainViewModel.mGridObservable.getValue();
-        List<IpCam> newSubList = mMainViewModel.ipCams.getValue().subList(index * newGridCount, index* (newGridCount+1));
+        int start = index * newGridCount;
+        int end = Math.min(newGridCount * (index + 1), cams.size());
+        List<IpCam> newSubList = cams.subList(start, end);
         ipCams.setValue(newSubList);
     }
 
@@ -60,9 +62,6 @@ public class GridViewModel extends BaseViewModel {
         this.index = index;
     }
 
-    public MainViewModel getMainViewModel() {
-        return mMainViewModel;
-    }
 
     public void setMainViewModel(MainViewModel mainViewModel) {
         mMainViewModel = mainViewModel;
@@ -71,11 +70,10 @@ public class GridViewModel extends BaseViewModel {
             @Override
             public void onPropertyChanged(Observable sender, int propertyId) {
                 calculateNewIndex();
-                populateCamsList();
+//                populateCamsList();
             }
         });
     }
-
 
 
 }

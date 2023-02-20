@@ -12,14 +12,13 @@ import com.xontel.surveillancecameras.hikvision.CamDevice;
 import java.util.List;
 
 
-import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Single;
 
 import static androidx.room.OnConflictStrategy.REPLACE;
 @Dao
 public interface DevicesDao {
     @Query("SELECT * FROM cam_devices")
-    Flowable<List<CamDevice>> getDevicesAll();
+    Single<List<CamDevice>> getDevicesAll();
 
     @Insert(onConflict = REPLACE)
     Single<Long> insertCamDevice(CamDevice mCamDevice);
@@ -34,7 +33,7 @@ public interface DevicesDao {
     Single<Integer> updateCamDevice(CamDevice mCamDevice);
 
     @Query("SELECT * FROM cam_devices WHERE id = :id")
-    Single<CamDevice> getCamDeviceById(int id);
+    Single<CamDevice> getCamDeviceById(long id);
 
 
     @Query("SELECT * FROM cam_devices WHERE id IN (:cameraIds)")

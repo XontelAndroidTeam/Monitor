@@ -1,68 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="4dp"
+    app:cardBackgroundColor="@color/grey_color"
+    app:cardCornerRadius="10dp">
 
-
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="4dp"
-        android:backgroundTint="@color/black_color"
-        app:cardCornerRadius="10dp"
-       >
-
-        <SurfaceView
-            android:id="@+id/hik_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            />
+     <include
+         android:layout_height="match_parent"
+         android:layout_width="match_parent"
+         layout="@layout/view_stub"/>
+        <TextView
+            android:id="@+id/tv_cam_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|start"
+            android:maxLines="1"
+            android:visibility="gone"
+            android:paddingHorizontal="16dp"
+            android:background="@drawable/rounded_bg"
+            android:backgroundTint="@color/black"
+            android:textColor="@color/white"
+            android:textSize="15dp"
+            tools:text="@string/name" />
 
     <org.videolan.libvlc.util.LoadingDots
         android:id="@+id/loading_dots"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:visibility="gone"
         app:LoadingDots_auto_play="true"
         app:LoadingDots_dots_color="@android:color/white"
         app:LoadingDots_dots_count="4"
         app:LoadingDots_dots_size="20dp"
         app:LoadingDots_dots_space="1dp"
-        app:LoadingDots_loop_duration="800"
-        app:LoadingDots_loop_start_delay="100"
         app:LoadingDots_jump_duration="200"
-        app:LoadingDots_jump_height="10dp"/>
+        app:LoadingDots_jump_height="10dp"
+        app:LoadingDots_loop_duration="800"
+        app:LoadingDots_loop_start_delay="100" />
 
     <ImageView
         android:id="@+id/iv_add"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_gravity="center"
-        android:visibility="gone"
-        android:src="@drawable/ic_baseline_add_24"
-        app:tint="@color/white_color"/>
-
-        <TextView
-            android:id="@+id/tv_cam_name"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_gravity="top|start"
-            android:maxLines="1"
-            android:paddingStart="16dp"
-            android:textColor="@color/white"
-            android:textSize="24dp"
-            tools:text="@string/name" />
+        android:src="@drawable/baseline_add_circle_24"
+        app:tint="@color/white_color" />
 
 
     <TextView
         android:id="@+id/error_stream"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/error_streaming"
         android:textColor="@color/white_color"
         android:textSize="20dp"
-        android:visibility="gone"
         android:textStyle="bold"
-        android:layout_gravity="center"
-        android:text="@string/error_streaming"/>
+        android:visibility="gone" />
 
 
-    </FrameLayout>
+</androidx.cardview.widget.CardView>

@@ -92,7 +92,6 @@ public class AddCamActivity extends BaseActivity implements MainMvpView {
                  //   editedCam.setUrl(url);
                  //   editedCam.setName(name);
                  //   editedCam.setDescription(description);
-                    mPresenter.updateCamera(editedCam);
                 }
             }
         });

@@ -21,11 +21,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 
-import io.reactivex.rxjava3.annotations.NonNull;
-import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Single;
-import io.reactivex.rxjava3.core.SingleEmitter;
-import io.reactivex.rxjava3.core.SingleOnSubscribe;
 
 
 public class BaseDataManager implements DataManager {
@@ -70,7 +66,7 @@ public class BaseDataManager implements DataManager {
 
 
     @Override
-    public Flowable<List<CamDevice>> getDevicesAll() {
+    public Single<List<CamDevice>> getDevicesAll() {
         return mDatabase.mDevicesDao().getDevicesAll();
     }
 
@@ -95,7 +91,7 @@ public class BaseDataManager implements DataManager {
     }
 
     @Override
-    public Single<CamDevice> getCamDeviceById(int id) {
+    public Single<CamDevice> getCamDeviceById(long id) {
         return mDatabase.mDevicesDao().getCamDeviceById(id);
     }
 
@@ -110,20 +106,14 @@ public class BaseDataManager implements DataManager {
     }
 
     @Override
-    public Single<Integer> loginHikDevice(CamDevice camDevice) {
-       return Single.create(emitter -> {
-           int logId = HikUtil.loginNormalDevice(camDevice);
-           if(logId < 0 ){
-               emitter.onError(new Throwable("Cannot login to this hik device"));
-           }else{
-               emitter.onSuccess(1);
-           }
-       });
+    public Single<CamDevice> loginHikDevice(CamDevice camDevice) {
+       return HikUtil.loginNormalDevice(camDevice);
     }
 
     @Override
-    public Single<Integer> getChannelsInfo(CamDevice camDevice) {
-        return null;
+    public Single<CamDevice> getChannelsInfo(CamDevice camDevice) {
+
+        return HikUtil.getChannelsState(camDevice);
     }
 
     @Override

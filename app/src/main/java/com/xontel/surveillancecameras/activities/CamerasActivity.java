@@ -151,7 +151,7 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         // Continue with delete operation
-                        mPresenter.deleteCamera(cams.get(camPosition));
+
                     }
                 })
 

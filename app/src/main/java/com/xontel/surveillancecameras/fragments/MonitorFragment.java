@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.databinding.Observable;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
@@ -36,9 +37,7 @@ public class MonitorFragment extends BaseFragment {
     public static final String TAG = MonitorFragment.class.getSimpleName();
     private FragmentMonitorBinding binding;
     private PagerAdapter pagerAdapter;
-    private List<IpCam> ipCams = new ArrayList<>();
     private MainViewModel mainViewModel;
-    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss.SSS");
     private DataSetObserver emptyObserver ;
     @Inject
     ViewModelProviderFactory providerFactory;
@@ -48,6 +47,7 @@ public class MonitorFragment extends BaseFragment {
 
     @Override
     public void onResume(){
+        Log.v(TAG, "onResume");
         binding.noCams.btnAdd.setOnClickListener(view -> {
         navigateToDevices();
     });
@@ -57,6 +57,7 @@ public class MonitorFragment extends BaseFragment {
     @Override
     public void onPause() {
         super.onPause();
+        Log.v(TAG, "onPause");
     }
 
 
@@ -74,6 +75,7 @@ public class MonitorFragment extends BaseFragment {
         getFragmentComponent().inject(this);
         mainViewModel = new ViewModelProvider(requireActivity(), providerFactory).get(MainViewModel.class);
         setHasOptionsMenu(true);
+        Log.v(TAG, "onCreate");
     }
 
 
@@ -101,6 +103,7 @@ public class MonitorFragment extends BaseFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.v(TAG, "onCreateView");
         binding = FragmentMonitorBinding.inflate(inflater);
         setupObservables();
         setupCamsPager();
@@ -124,7 +127,7 @@ public class MonitorFragment extends BaseFragment {
                 }
             }
         };
-        pagerAdapter = new PagerAdapter(requireActivity(),0);
+        pagerAdapter = new PagerAdapter(requireActivity(),mainViewModel.mGridObservable.getValue());
         pagerAdapter.registerDataSetObserver(emptyObserver);
         binding.camsPager.setAdapter(pagerAdapter);
         binding.camsPager.setOffscreenPageLimit(1);
@@ -141,6 +144,12 @@ public class MonitorFragment extends BaseFragment {
                 reload();
             }
         });
+        mainViewModel.getLoading().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean loading) {
+                if(loading){showLoading();}else{hideLoading();}
+            }
+        });
     }
 
     private void reload() {
@@ -148,5 +157,21 @@ public class MonitorFragment extends BaseFragment {
             pagerAdapter.setGridCount(pagesCount);
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.v(TAG, "onStart");
+    }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.v(TAG, "onStop");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.v(TAG, "onDestroy");
+    }
 }

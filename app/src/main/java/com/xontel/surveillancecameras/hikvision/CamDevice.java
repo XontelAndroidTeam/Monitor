@@ -32,7 +32,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 public class CamDevice implements Parcelable  {
 
     @PrimaryKey(autoGenerate = true)
-    public int id;
+    public long id;
     @ColumnInfo(name = "name")
     public String name;
     @ColumnInfo(name = "domain")
@@ -64,7 +64,7 @@ public class CamDevice implements Parcelable  {
 
 
     protected CamDevice(Parcel in) {
-        id = in.readInt();
+        id = in.readLong();
         name = in.readString();
         domain = in.readString();
         userName = in.readString();
@@ -94,11 +94,11 @@ public class CamDevice implements Parcelable  {
         this.channels = channels;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id){
+    public void setId(long id){
         this.id = id;
     }
 
@@ -180,7 +180,7 @@ public class CamDevice implements Parcelable  {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeInt(id);
+        parcel.writeLong(id);
         parcel.writeString(name);
         parcel.writeString(domain);
         parcel.writeString(userName);
@@ -191,13 +191,13 @@ public class CamDevice implements Parcelable  {
     }
 
     public boolean isLoginValid(){
-        if (deviceType == CamDeviceType.HIKVISION.getValue()){
-            return  HikUtil.loginNormalDevice(this) >= 0;
-        }else if (deviceType == CamDeviceType.DAHUA.getValue()){
-            return DahuaUtil.loginNormalDevice(this) != 0;
-        }else{
+//        if (deviceType == CamDeviceType.HIKVISION.getValue()){
+//            return  HikUtil.loginNormalDevice(this) >= 0;
+//        }else if (deviceType == CamDeviceType.DAHUA.getValue()){
+//            return DahuaUtil.loginNormalDevice(this) != 0;
+//        }else{
             return true;
-        }
+//        }
     }
 
     @Override
@@ -220,33 +220,5 @@ public class CamDevice implements Parcelable  {
         return ((CamDevice)obj).id == this.id;
     }
 
-    @SuppressLint("CheckResult")
-    public void login() {
-        Single.create(emitter -> {
-                    int logId = HikUtil.loginNormalDevice(this);
-                    if(logId < 0 ){
-                        emitter.onError(new Throwable("Cannot login to this hik device"));
-                    }else{
-                        emitter.onSuccess(1);
-                    }
-                }).flatMap((Function<Object, SingleSource<?>>) o -> Single.create((SingleOnSubscribe<Integer>) emitter -> {
-                    int result = HikUtil.getChannelsState(CamDevice.this);
-                    if(result < 0){
-                        emitter.onError(new Throwable("cannot get channels"));
-                    }else{
-                        emitter.onSuccess(result);
-                    }
-                }))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(response -> {
-                    Log.v("CamDevice", "device created completely");
-//                   getLoading().setValue(false);
-//                   scanDevices();
-
-                }, error -> {
-                    Log.e("CamDevice", error.getMessage());
-                });
-    }
 }
 

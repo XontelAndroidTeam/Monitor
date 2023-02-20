@@ -1,30 +1,83 @@
 package com.xontel.surveillancecameras.hikvision;
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.PixelFormat;
+import android.graphics.PorterDuff;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewStub;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 
 import com.hikvision.netsdk.HCNetSDK;
 import com.hikvision.netsdk.INT_PTR;
 import com.hikvision.netsdk.NET_DVR_PREVIEWINFO;
 import com.hikvision.netsdk.RealPlayCallBack;
+import com.xontel.surveillancecameras.R;
+import com.xontel.surveillancecameras.data.db.model.IpCam;
 import com.xontel.surveillancecameras.utils.CamPlayer;
 import com.xontel.surveillancecameras.utils.StorageHelper;
 
 import org.MediaPlayer.PlayM4.Player;
 import org.MediaPlayer.PlayM4.PlayerCallBack;
+import org.videolan.libvlc.util.LoadingDots;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 
 
-public class HIKPlayer extends CamPlayer implements RealPlayCallBack {
+public class HIKPlayer extends CamPlayer implements RealPlayCallBack, SurfaceHolder.Callback {
     public static final String TAG = HIKPlayer.class.getSimpleName();
+    private LoadingDots mLoadingDots;
+    private TextView errorTextView;
+    private TextView name;
+    private ImageView addBtn;
+    private ViewStub surfaceStub ;
+    private SurfaceView mSurfaceView;
+    private IpCam mIpCam;
 
+    public HIKPlayer(Context context, IpCam ipCam) {
+        super(context, ipCam);
+        this.mIpCam = ipCam;
+    }
 
-    public HIKPlayer(int channel, int logId, Context context) {
-        super(channel, logId, context);
+    @Override
+    public void attachView(HikCamView hikCamView) {
+        this.mHikCamView = hikCamView;
+        mLoadingDots = hikCamView.findViewById(R.id.loading_dots);
+        name = hikCamView.findViewById(R.id.tv_cam_name);
+        errorTextView = hikCamView.findViewById(R.id.error_stream);
+        addBtn = hikCamView.findViewById(R.id.iv_add);
+        surfaceStub = hikCamView.findViewById(R.id.stub);
+        if(surfaceStub != null) {
+                mSurfaceView = (SurfaceView) surfaceStub.inflate();
+        }else{
+            createNewSurface();
+        }
+        mSurfaceView.getHolder().addCallback(this);
+        mLoadingDots.setVisibility(View.VISIBLE);
+        name.setVisibility(View.VISIBLE);
+        name.setText(mIpCam.getName());
+        addBtn.setVisibility(View.GONE);
+    }
+
+    private void createNewSurface() {
+        mSurfaceView = new SurfaceView(context);
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
+        );
+        mHikCamView.addView(mSurfaceView, layoutParams);
     }
 
     @Override
@@ -36,22 +89,23 @@ public class HIKPlayer extends CamPlayer implements RealPlayCallBack {
     public void stopLiveView() {
         unConfigurePlay();
         stopStream();
+        detachView();
+
     }
 
 
     // OUR START IS HERE
     @Override
     public void openStream() {
-
         NET_DVR_PREVIEWINFO previewInfo = new NET_DVR_PREVIEWINFO();
-        previewInfo.lChannel = channel;
+        previewInfo.lChannel = mIpCam.getChannel();
         previewInfo.dwStreamType = 1; // mainstream
         previewInfo.bBlocked = 1;
 
         new Thread(() -> {
-            realPlayId = HCNetSDK.getInstance().NET_DVR_RealPlay_V40((int) logId, previewInfo, HIKPlayer.this);
+            realPlayId = HCNetSDK.getInstance().NET_DVR_RealPlay_V40((int) mIpCam.getLoginId(), previewInfo, HIKPlayer.this);
             if (realPlayId < 0L) {
-                showError("NET_DVR_RealPlay is failed!Err: " + HCNetSDK.getInstance().NET_DVR_GetLastError() + " channel : " + channel);
+                showError("NET_DVR_RealPlay is failed!Err: " + HCNetSDK.getInstance().NET_DVR_GetLastError() + " channel : " + mIpCam.getChannel());
                 return;
             }
         }).start();
@@ -59,6 +113,19 @@ public class HIKPlayer extends CamPlayer implements RealPlayCallBack {
 
     }
 
+    @Override
+    public void showError(String logMessage) {
+        Log.e(getTAG(), logMessage);
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                mLoadingDots.setVisibility(View.GONE);
+                errorTextView.setText(logMessage);
+                errorTextView.setVisibility(View.VISIBLE);
+            }
+        });
+
+    }
 
     // THIS IS WHILE RUNNING
     @Override
@@ -107,27 +174,7 @@ public class HIKPlayer extends CamPlayer implements RealPlayCallBack {
                         + Player.getInstance().getLastError(m_iPort));
                 return;
             }
-            Player.getInstance().setDisplayCB(m_iPort, new PlayerCallBack.PlayerDisplayCB() {
-                @Override
-                public void onDisplay(int i, byte[] bytes, int i1, int i2, int i3, int i4, int i5, int i6) {
-                    isLoading.postValue(false);
-                }
-            });
-//            Player.getInstance().set(m_iPort, new PlayerCallBack.PlayerDisplayCB() {
-//                @Override
-//                public void onDisplay(int i, byte[] bytes, int i1, int i2, int i3, int i4, int i5, int i6) {
-//                    isLoading.postValue(false);
-//                }
-//            });
-
-            if (!Player.getInstance().setCurrentFrameNum(m_iPort,
-                    10)) // set stream mode
-            {
-                INT_PTR int_ptr = new INT_PTR();
-                int_ptr.iValue = HCNetSDK.getInstance().NET_DVR_GetLastError();
-                Log.v(TAG, "setCurrentFrameNum failed" + HCNetSDK.getInstance().NET_DVR_GetErrorMsg(int_ptr));
-//                return;
-            }
+            Player.getInstance().setDisplayCB(m_iPort, (i, bytes, i1, i2, i3, i4, i5, i6) -> new Handler(Looper.getMainLooper()).post(() -> mLoadingDots.setVisibility(View.GONE)));
             isConfigured = true;
             Log.v(TAG, "configured");
         }
@@ -147,44 +194,65 @@ public class HIKPlayer extends CamPlayer implements RealPlayCallBack {
     public void unConfigurePlay() {
         isConfigured = false;
         if (!Player.getInstance().stopSound()) {
-//           showError( "stop sound failed!");
+            showError( "stop sound failed!");
             return;
         }
-        // player stop play
+
+
+//         player stop play
         if (!Player.getInstance().stop(m_iPort)) {
             showError("stop is failed!");
             return;
         }
+        Log.v(TAG, "stopping");
 
     }
 
     @Override
+    public void detachView() {
+        mHikCamView = null;
+        mSurfaceView = null;
+        mLoadingDots.setVisibility(View.GONE);
+        name.setVisibility(View.GONE);
+        name.setText("");
+        addBtn.setVisibility(View.VISIBLE);
+    }
+
+    @Override
     public void stopStream() {
-        isConfigured = false;
+
         if (realPlayId < 0L) {
             return;
         }
-
         // net sdk stop preview
-        if (!HCNetSDK.getInstance().NET_DVR_StopRealPlay((int) realPlayId)) {
+        if (!HCNetSDK.getInstance().NET_DVR_StopRealPlay( realPlayId)) {
             showError("StopRealPlay is failed!Err:" + HCNetSDK.getInstance().NET_DVR_GetLastError());
             return;
         }
+        Log.v(TAG, "stop real play");
 
-//        if (!Player.getInstance().closeStream(m_iPort)) {
-//            showError( "closeStream is failed!");
-//            return;
-//        }
-//        if (!Player.getInstance().freePort(m_iPort)) {
-//            showError( "freePort is failed!" + m_iPort);
-//            return;
-//        }
+
+
+        if (!Player.getInstance().closeStream(m_iPort)) {
+            showError( "closeStream is failed!");
+            return;
+        }
+        Log.v(TAG, "close stream");
+        if (!Player.getInstance().freePort(m_iPort)) {
+            showError( "freePort is failed!" + m_iPort);
+            return;
+        }
+
+        Log.v(TAG, "free port");
+
+
 
 
         m_iPort = -1;
         realPlayId = -1;
-        isLoading.postValue(true);
-        isError.postValue(false);
+        mLoadingDots.setVisibility(View.GONE);
+        name.setText("");
+        addBtn.setVisibility(View.VISIBLE);
     }
 
 
@@ -215,11 +283,11 @@ public class HIKPlayer extends CamPlayer implements RealPlayCallBack {
             File dir = new File(StorageHelper.getMediaDirectory(context, Environment.DIRECTORY_MOVIES).getAbsolutePath() + "/monitor");
             File file = new File(dir, date + ".mp4");
             if (!HCNetSDK.getInstance().NET_DVR_SaveRealData((int) realPlayId, file.getAbsolutePath())) {
-                Log.e(TAG, "NET_DVR_SaveRealData on channel " + channel + " failed! error: "
+                Log.e(TAG, "NET_DVR_SaveRealData on channel " + mIpCam.getChannel() + " failed! error: "
                         + HCNetSDK.getInstance().NET_DVR_GetLastError());
                 return;
             } else {
-                Log.v(TAG, "Record started successfully on channel " + channel);
+                Log.v(TAG, "Record started successfully on channel " + mIpCam.getChannel());
             }
             isRecording = true;
         } else {
@@ -266,4 +334,19 @@ public class HIKPlayer extends CamPlayer implements RealPlayCallBack {
     }
 
 
+    @Override
+    public void surfaceCreated(@NonNull SurfaceHolder surfaceHolder) {
+        Log.v(TAG, "surfaceCreated");
+        startLiveView();
+    }
+
+    @Override
+    public void surfaceChanged(@NonNull SurfaceHolder surfaceHolder, int i, int i1, int i2) {
+        Log.v(TAG, "surfaceChanged");
+    }
+
+    @Override
+    public void surfaceDestroyed(@NonNull SurfaceHolder surfaceHolder) {
+        Log.v(TAG, "surfaceDestroyed");
+    }
 }

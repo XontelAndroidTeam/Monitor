@@ -52,12 +52,16 @@ public class BaseViewModel extends ViewModel {
         return errorMessage;
     }
 
-    public void showToastMessage(Context context, int device_deleted) {
+    public void showToastMessage(Context context, String message) {
         if(mToast != null) {
             mToast.cancel();
         }
-        mToast = Toast.makeText(context, device_deleted, Toast.LENGTH_LONG);
+        mToast = Toast.makeText(context, message, Toast.LENGTH_LONG);
         mToast.show();
+
+    }
+    public void showToastMessage(Context context, int stringRes) {
+        showToastMessage(context, context.getString(stringRes));
 
     }
     public void setErrorMessage(String errorMessage) {

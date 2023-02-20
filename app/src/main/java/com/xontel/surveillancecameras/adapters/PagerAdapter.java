@@ -17,7 +17,6 @@ import java.util.List;
 
 public class PagerAdapter extends FragmentStatePagerAdapter {
     public static final String TAG = PagerAdapter.class.getSimpleName();
-    private List<GridFragment> mGridFragments = new ArrayList<>();
     private int gridCount ;
     public PagerAdapter(@NonNull FragmentActivity activity, int gridCount) {
         super(activity.getSupportFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
@@ -31,7 +30,8 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getItemPosition(@NonNull Object object) {
-       return ((GridFragment)object).getPageIndex();
+        GridFragment gridFragment = ((GridFragment)object);
+       return 0;
     }
 
 

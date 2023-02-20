@@ -6,10 +6,13 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import androidx.annotation.NonNull;
+
 import com.company.NetSDK.CB_fRealDataCallBackEx;
 import com.company.NetSDK.INetSDK;
 import com.company.NetSDK.SDK_RealPlayType;
 import com.company.PlaySDK.IPlaySDK;
+import com.xontel.surveillancecameras.data.db.model.IpCam;
 import com.xontel.surveillancecameras.utils.CamPlayer;
 import com.xontel.surveillancecameras.utils.StorageHelper;
 
@@ -21,12 +24,13 @@ public class DahuaSinglePlayer extends CamPlayer implements CB_fRealDataCallBack
     private final static int RAW_AUDIO_VIDEO_MIX_DATA = 0;
     private boolean _isOpenSound;
     private boolean _isRecording;
+    private IpCam mIpCam;
     private int _curVolume = 0;
     private boolean _isDelayPlay;
 
 
-    public DahuaSinglePlayer(int channel, int logId, Context context) {
-       super(channel, logId, context);
+    public DahuaSinglePlayer(Context context, IpCam ipCam) {
+       super(context, ipCam);
     }
 
     @Override
@@ -42,7 +46,7 @@ public class DahuaSinglePlayer extends CamPlayer implements CB_fRealDataCallBack
 
     @Override
     public void openStream() {
-        realPlayId = INetSDK.RealPlayEx(logId, channel, SDK_RealPlayType.SDK_RType_Realplay_1);
+        realPlayId = (int) INetSDK.RealPlayEx(mIpCam.getLoginId(), mIpCam.getChannel(), SDK_RealPlayType.SDK_RType_Realplay_1);
         if (realPlayId == 0L) {
             Log.e(TAG, "startPlay: RealPlayEx failed!");
             isError.postValue(true);
@@ -177,5 +181,20 @@ public class DahuaSinglePlayer extends CamPlayer implements CB_fRealDataCallBack
             isLoading.postValue(false);
             IPlaySDK.PLAYInputData(m_iPort, buffer, buffer.length);
         }
+    }
+
+    @Override
+    public void surfaceCreated(@NonNull SurfaceHolder surfaceHolder) {
+
+    }
+
+    @Override
+    public void surfaceChanged(@NonNull SurfaceHolder surfaceHolder, int i, int i1, int i2) {
+
+    }
+
+    @Override
+    public void surfaceDestroyed(@NonNull SurfaceHolder surfaceHolder) {
+
     }
 }

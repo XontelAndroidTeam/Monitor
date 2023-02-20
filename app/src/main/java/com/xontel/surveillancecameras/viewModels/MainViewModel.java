@@ -24,6 +24,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.ObservableSource;
 import io.reactivex.rxjava3.core.SingleSource;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.functions.Function;
@@ -55,12 +56,27 @@ public class MainViewModel extends BaseViewModel {
         getLoading().setValue(true);
         getCompositeDisposable().add(getDataManager()
                 .getDevicesAll()
+                        .toObservable()
+                        .flatMapIterable(list -> list)
+                        .flatMap(new Function<CamDevice, ObservableSource<CamDevice>>() {
+                            @Override
+                            public ObservableSource<CamDevice> apply(CamDevice camDevice) throws Throwable {
+                                return getDataManager().loginHikDevice(camDevice).toObservable();
+                            }
+                        })
+                        .flatMap(new Function<CamDevice, ObservableSource<CamDevice>>() {
+                            @Override
+                            public ObservableSource<CamDevice> apply(CamDevice camDevice) throws Throwable {
+                                return getDataManager().getChannelsInfo(camDevice).toObservable();
+                            }
+                        })
+                        .toList()
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribe(response -> {
                     getLoading().setValue(false);
-                    camDevices.setValue(response);
-                    scanDevices();
+                   camDevices.setValue(response);
+                    populateIpCams();
 
                 }, error -> {
                     Log.e(TAG, error.getMessage());
@@ -70,39 +86,52 @@ public class MainViewModel extends BaseViewModel {
                 }));
     }
 
-    private void scanDevices() {
+    private void populateIpCams() {
         List<CamDevice> devices = camDevices.getValue();
-        for(CamDevice camDevice : devices){
-            if(!camDevice.isScanned()){
-                camDevice.login();
-                camDevice.setScanned(true);
-            }
-        }
-        camDevices.setValue(devices);
-    }
+        List<IpCam> cams = new ArrayList<>();
 
+        for(CamDevice camDevice: devices){
+            cams.addAll(camDevice.getCams());
+        }
+        ipCams.setValue(cams);
+    }
 
 
     public void createDevice(CamDevice device) {
         getLoading().setValue(true);
         getCompositeDisposable().add(getDataManager()
                 .insertCamDevice(device)
-                .flatMap((Function<Long, SingleSource<Integer>>)
-                        id -> getDataManager().loginHikDevice(device))
+                        .flatMap(new Function<Long, SingleSource<CamDevice>>() {
+                            @Override
+                            public SingleSource<CamDevice> apply(Long deviceId) throws Throwable {
+                                device.setId(deviceId);
+                                return getDataManager().loginHikDevice(device);
+                            }
+                        })
+                        .flatMap(new Function<CamDevice, SingleSource<CamDevice>>() {
+                            @Override
+                            public SingleSource<CamDevice> apply(CamDevice camDevice) throws Throwable {
+                                return getDataManager().getChannelsInfo(device);
+                            }
+                        })
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribe(response -> {
-
                     getLoading().setValue(false);
+                    addNewDevice(response);
                     showToastMessage(context, R.string.device_created);
+                     reloader.setValue(true);
                 }, error -> {
                     Log.e(TAG, error.getMessage());
                     getLoading().setValue(false);
                     getError().setValue(true);
-                    showToastMessage(context, R.string.Cant_LOGIN);
+                    showToastMessage(context,error.getMessage());
                 }));
 
     }
+
+
+
 
 
     public void updateDevice(CamDevice device) {
@@ -113,6 +142,7 @@ public class MainViewModel extends BaseViewModel {
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribe(response -> {
+                    updateDeviceInList(device);
                     getLoading().setValue(false);
                     showToastMessage(context, R.string.device_updated);
                     reloader.setValue(true);
@@ -124,6 +154,8 @@ public class MainViewModel extends BaseViewModel {
                 }));
     }
 
+
+
     public void deleteDevice(CamDevice device) {
         getLoading().setValue(true);
         getCompositeDisposable().add(
@@ -132,6 +164,7 @@ public class MainViewModel extends BaseViewModel {
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(success -> {
+                            deleteDeviceById(device);
                             getLoading().setValue(false);
                             showToastMessage(context, R.string.device_deleted);
                         }, error -> {
@@ -142,6 +175,31 @@ public class MainViewModel extends BaseViewModel {
                         }));
 
     }
+
+    private void deleteDeviceById(CamDevice device) {
+        List<CamDevice> devices = camDevices.getValue();
+        devices.remove(device);
+        camDevices.setValue(devices);
+    }
+
+    private void addNewDevice(CamDevice camDevice) {
+        List<CamDevice> devices = camDevices.getValue();
+        devices.add(camDevice);
+        camDevices.setValue(devices);
+    }
+
+    private void updateDeviceInList(CamDevice device) {
+        List<CamDevice> devices = camDevices.getValue();
+        int deviceIndex = devices.indexOf(device);
+        devices.remove(deviceIndex);
+        devices.add(deviceIndex, device);
+        camDevices.setValue(devices);
+    }
+
+
+
+
+
 
 
 

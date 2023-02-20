@@ -118,9 +118,24 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="end"
                     android:layout_marginVertical="8dp"
                     android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginVertical="8dp"
+                        style="@style/settingsLabel"
+                        android:text="@string/channels" />
+                    <TextView
+                        android:id="@+id/channels"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:paddingHorizontal="16dp"
+                        style="@style/settingsLabel"
+                        android:text="0" />
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_save"
                         android:layout_width="150dp"
