@@ -36,6 +36,9 @@ public abstract class CamPlayer implements SurfaceHolder.Callback{
 
     }
 
+    public CamPlayer(Context context) {
+        this.context = context;
+    }
 
     public CamPlayer() {
     }

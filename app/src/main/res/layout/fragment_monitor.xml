@@ -37,16 +37,15 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="8dp"
-            app:dotsColor="@color/white"
+            app:dotsColor="@color/accent_color"
             app:dotsCornerRadius="8dp"
             app:dotsSize="16dp"
-            android:visibility="gone"
             app:dotsSpacing="4dp"
             app:dotsWidthFactor="2.5"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:selectedDotColor="@color/primary_dark_color" />
+            app:selectedDotColor="@color/white" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

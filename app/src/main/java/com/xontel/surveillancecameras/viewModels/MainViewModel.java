@@ -14,6 +14,7 @@ import com.xontel.surveillancecameras.data.DataManager;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
 import com.xontel.surveillancecameras.fragments.DevicesFragment;
 import com.xontel.surveillancecameras.hikvision.CamDevice;
+import com.xontel.surveillancecameras.hikvision.HIKPlayer;
 import com.xontel.surveillancecameras.hikvision.HikUtil;
 import com.xontel.surveillancecameras.utils.CamDeviceType;
 import com.xontel.surveillancecameras.utils.rx.SchedulerProvider;
@@ -38,6 +39,8 @@ public class MainViewModel extends BaseViewModel {
     public final MutableLiveData<List<CamDevice>> camDevices = new MutableLiveData<>(new ArrayList<>());
 
     public final MutableLiveData<Boolean> reloader = new MutableLiveData<>(false);
+
+    private List<HIKPlayer> mPlayers = new ArrayList<>();
     private Context context;
 
 
@@ -45,6 +48,18 @@ public class MainViewModel extends BaseViewModel {
     public MainViewModel(Context context, SchedulerProvider mSchedulerProvider, CompositeDisposable mCompositeDisposable, DataManager manager) {
         super(mSchedulerProvider, mCompositeDisposable, manager);
         this.context = context;
+        createPlayers();
+    }
+
+    private void createPlayers() {
+        for(int i  = 0 ; i < 16 ; i++){
+            mPlayers.add(new HIKPlayer(context));
+        }
+    }
+
+
+    public List<HIKPlayer> getPlayers() {
+        return mPlayers;
     }
 
     public GridObservable getGridObservable() {

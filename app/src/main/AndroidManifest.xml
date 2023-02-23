@@ -20,7 +20,7 @@
         android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/mainTheme">
+        android:theme="@style/Theme.App.Starting">
         <activity android:name=".activities.GridTestActivity" android:exported="true">
 <!--            <intent-filter>-->
 <!--                <action android:name="android.intent.action.MAIN" />-->
@@ -58,8 +58,7 @@
         <activity
             android:name=".activities.HomeActivity"
             android:exported="true"
-            android:windowSoftInputMode="adjustPan"
-            android:theme="@style/homeTheme">
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 <!---->

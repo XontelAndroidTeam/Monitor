@@ -46,6 +46,7 @@ public class HomeActivity extends BaseActivity implements AdapterView.OnItemClic
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTheme(R.style.homeTheme);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         getActivityComponent().inject(this);
         mainViewModel = new ViewModelProvider(this, providerFactory).get(MainViewModel.class);

@@ -11,12 +11,15 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Interpolator;
+
 import androidx.annotation.NonNull;
 import androidx.databinding.Observable;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import com.xontel.surveillancecameras.R;
 import com.xontel.surveillancecameras.activities.AddNewDeviceActivity;
@@ -24,10 +27,13 @@ import com.xontel.surveillancecameras.adapters.PagerAdapter;
 import com.xontel.surveillancecameras.base.BaseFragment;
 import com.xontel.surveillancecameras.databinding.FragmentMonitorBinding;
 import com.xontel.surveillancecameras.hikvision.CamDevice;
+import com.xontel.surveillancecameras.utils.FixedSpeedScroller;
 import com.xontel.surveillancecameras.utils.ViewPagerWithEmptyView;
 import com.xontel.surveillancecameras.viewModels.MainViewModel;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
 import com.xontel.surveillancecameras.viewModels.ViewModelProviderFactory;
+
+import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -105,17 +111,33 @@ public class MonitorFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.v(TAG, "onCreateView");
         binding = FragmentMonitorBinding.inflate(inflater);
-        setupObservables();
-        setupCamsPager();
+
         requireActivity().setTitle(R.string.monitor);
         return binding.getRoot();
     }
 
     @Override
     protected void setUp(View view) {
+        setupObservables();
+        setupCamsPager();
     }
 
     private void setupCamsPager() {
+        try {
+            Field mScroller;
+            mScroller = ViewPager.class.getDeclaredField("mScroller");
+            mScroller.setAccessible(true);
+            Field interpolator = ViewPager.class.getDeclaredField("sInterpolator");
+            interpolator.setAccessible(true);
+            FixedSpeedScroller scroller = new FixedSpeedScroller(getContext(),  (Interpolator) interpolator.get(null));
+            // scroller.setFixedDuration(5000);
+            mScroller.set(binding.camsPager, scroller);
+        } catch (NoSuchFieldException e) {
+        } catch (IllegalArgumentException e) {
+        } catch (IllegalAccessException e) {
+        }
+        int pagesCount = (int)Math.ceil(mainViewModel.ipCams.getValue().size() * 1.0/ mainViewModel.mGridObservable.getValue());
+        pagerAdapter = new PagerAdapter(requireActivity(), pagesCount);
         emptyObserver = new DataSetObserver() {
             @Override
             public void onChanged() {
@@ -127,8 +149,7 @@ public class MonitorFragment extends BaseFragment {
                 }
             }
         };
-        pagerAdapter = new PagerAdapter(requireActivity(),mainViewModel.mGridObservable.getValue());
-        pagerAdapter.registerDataSetObserver(emptyObserver);
+//        pagerAdapter.registerDataSetObserver(emptyObserver);
         binding.camsPager.setAdapter(pagerAdapter);
         binding.camsPager.setOffscreenPageLimit(1);
         binding.dotsIndicator.setViewPager(binding.camsPager); //must be after adapter
@@ -154,7 +175,7 @@ public class MonitorFragment extends BaseFragment {
 
     private void reload() {
             int pagesCount = (int)Math.ceil(mainViewModel.ipCams.getValue().size() * 1.0/ mainViewModel.mGridObservable.getValue());
-            pagerAdapter.setGridCount(pagesCount);
+            pagerAdapter.setPagesCount(pagesCount);
     }
 
     @Override

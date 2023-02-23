@@ -1,17 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_margin="4dp"
-    app:cardBackgroundColor="@color/grey_color"
-    app:cardCornerRadius="10dp">
-
-     <include
-         android:layout_height="match_parent"
-         android:layout_width="match_parent"
-         layout="@layout/view_stub"/>
+    xmlns:tools="http://schemas.android.com/tools">
+    <ViewStub
+        android:id="@+id/stub"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:inflatedId="@+id/player_surface"
+        android:layout="@layout/surface_view" />
         <TextView
             android:id="@+id/tv_cam_name"
             android:layout_width="wrap_content"
@@ -33,7 +29,7 @@
         android:layout_gravity="center"
         android:visibility="gone"
         app:LoadingDots_auto_play="true"
-        app:LoadingDots_dots_color="@android:color/white"
+        app:LoadingDots_dots_color="@color/white"
         app:LoadingDots_dots_count="4"
         app:LoadingDots_dots_size="20dp"
         app:LoadingDots_dots_space="1dp"
@@ -63,4 +59,4 @@
         android:visibility="gone" />
 
 
-</androidx.cardview.widget.CardView>
+</merge>

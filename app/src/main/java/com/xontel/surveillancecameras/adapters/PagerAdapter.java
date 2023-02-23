@@ -1,6 +1,7 @@
 package com.xontel.surveillancecameras.adapters;
 
 import android.util.Log;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -17,27 +18,41 @@ import java.util.List;
 
 public class PagerAdapter extends FragmentStatePagerAdapter {
     public static final String TAG = PagerAdapter.class.getSimpleName();
-    private int gridCount ;
-    public PagerAdapter(@NonNull FragmentActivity activity, int gridCount) {
+    private int totalCams;
+
+    private int pagesCount ;
+    public PagerAdapter(@NonNull FragmentActivity activity, int pagesCount) {
         super(activity.getSupportFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-        this.gridCount = gridCount;
+        this.pagesCount = pagesCount;
     }
 
-    public void setGridCount(int pages) {
-        this.gridCount = pages;
+    public void setPagesCount(int pagesCount) {
+        this.pagesCount = pagesCount;
         notifyDataSetChanged();
     }
 
     @Override
     public int getItemPosition(@NonNull Object object) {
-        GridFragment gridFragment = ((GridFragment)object);
-       return 0;
+       GridFragment gridFragment = (GridFragment)object;
+        if(gridFragment.isResumed()){
+            return gridFragment.calculateNewIndex();
+        }
+       return POSITION_NONE;
     }
 
+    @Override
+    public void setPrimaryItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
+        super.setPrimaryItem(container, position, object);
+    }
+
+    @Override
+    public void startUpdate(@NonNull ViewGroup container) {
+        super.startUpdate(container);
+    }
 
     @Override
     public int getCount() {
-        return gridCount;
+        return pagesCount;
     }
 
 

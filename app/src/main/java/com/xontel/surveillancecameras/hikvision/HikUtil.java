@@ -20,6 +20,8 @@ import rx.SingleSubscriber;
 
 
 public class HikUtil {
+    public static final int CONNECTED = 1;
+    public static final int DIGITAL_CHANNELS_START = 33;
     public static final String TAG = HikUtil.class.getSimpleName() ;
 
     public static Single<CamDevice> loginNormalDevice(CamDevice camDevice) {
@@ -76,7 +78,7 @@ public class HikUtil {
                         byte[] digitalChannels = net_dvr_digital_channel_state.byDigitalChanState;
 
                         for (int i = 0; i < analogChannels.length; i++) {
-                            if (analogChannels[i] == 1) {
+                            if (analogChannels[i] == CONNECTED) {
                                 camDevice.getCams().add(new IpCam(i, (int) camDevice.getId(), camDevice.getDeviceType(), camDevice.getLogId()
                                 ));
                             }
@@ -84,8 +86,8 @@ public class HikUtil {
                         }
 
                         for (int i = 0; i < digitalChannels.length; i++) {
-                            if (digitalChannels[i] == 1) {
-                                camDevice.getCams().add(new IpCam(i + 33, (int) camDevice.getId(), camDevice.getDeviceType(), camDevice.getLogId()
+                            if (digitalChannels[i] == CONNECTED) {
+                                camDevice.getCams().add(new IpCam(i + DIGITAL_CHANNELS_START, (int) camDevice.getId(), camDevice.getDeviceType(), camDevice.getLogId()
                                 ));
                             }
                             Log.v(TAG, "channel : " + digitalChannels[i]);

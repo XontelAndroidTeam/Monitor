@@ -48,6 +48,7 @@ public abstract class BaseActivity extends AppCompatActivity implements MvpView,
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTheme(R.style.mainTheme);
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         mActivityComponent = DaggerActivityComponent.builder()
                 .activityModule(new ActivityModule(this))
