@@ -103,15 +103,8 @@ public class GridFragment extends BaseFragment {
         for (int i = 0; i < gridCount; i++) {
             int camIndex = (pageIndex * gridCount) + i;
             if (camIndex < ipCams.size()) {
-                int finalI = i;
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    @Override
-                    public void run() {
-                        viewModel.getPlayers().get(finalI).setIpCam(ipCams.get(camIndex));
-                        viewModel.getPlayers().get(finalI).attachView((HikCamView) binding.grid.getChildAt(finalI));
-                    }
-                });
-
+                viewModel.getPlayers().get(i).setIpCam(ipCams.get(camIndex));
+                viewModel.getPlayers().get(i).attachView((HikCamView) binding.grid.getChildAt(i));
             }
         }
     }
@@ -120,12 +113,7 @@ public class GridFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         Log.v(TAG, "onResume " + pageIndex);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                setupPlayers();
-            }
-        }).start();
+        setupPlayers();
 
     }
 
@@ -135,10 +123,12 @@ public class GridFragment extends BaseFragment {
             HIKPlayer hikPlayer = viewModel.getPlayers().get(i);
             if (hikPlayer.getIpCam() != null) {
                 hikPlayer.stopLiveView();
-                Log.v(TAG, "stooped "+i);
+                ((HikCamView) binding.grid.getChildAt(i)).resetView();
+                Log.v(TAG, "stooped " + i);
             }
         }
     }
+
 
     @Override
     public void onPause() {
@@ -147,7 +137,6 @@ public class GridFragment extends BaseFragment {
         stopAll();
         setUpGrid();
     }
-
 
 
     private void addViews(int gridCount) {
@@ -239,7 +228,7 @@ public class GridFragment extends BaseFragment {
         for (int i = childCount - 1; i >= 0; i--) {
             boolean isInTheNewRange = ((oldGrid * oldPage) + i) - (pageIndex * gridCount) < gridCount;
             if (!isInTheNewRange) {
-                Log.v(TAG, "index : "+i);
+                Log.v(TAG, "index : " + i);
                 viewModel.getPlayers().get(i).stopLiveView();
                 binding.grid.removeViewAt(i);
             }
