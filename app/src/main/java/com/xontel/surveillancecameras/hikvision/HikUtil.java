@@ -67,30 +67,31 @@ public class HikUtil {
                         int_ptr.iValue = HCNetSDK.getInstance().NET_DVR_GetLastError();
                         String errorMessage =  "failed to get channels state "+ HCNetSDK.getInstance().NET_DVR_GetErrorMsg(int_ptr);
                         Log.e(TAG, errorMessage);
-                        camDevice.getCams()
-                                .add(new IpCam(1,
-                                        (int) camDevice.getId(),
-                                        camDevice.getDeviceType(),
-                                        (int) camDevice.getId()));
+//                        camDevice.getCams()
+//                                .add(new IpCam(1,
+//                                        (int) camDevice.getId(),
+//                                        camDevice.getDeviceType(),
+//                                        (int) camDevice.getId()));
                     } else {
-                        Log.v(TAG, "Suc to get channels state");
+                        Log.v(TAG, "Suc to get channels state "+ camDevice.getDomain());
                         byte[] analogChannels = net_dvr_digital_channel_state.byAnalogChanState;
                         byte[] digitalChannels = net_dvr_digital_channel_state.byDigitalChanState;
-
+                        Log.v(TAG, "analog :  ");
                         for (int i = 0; i < analogChannels.length; i++) {
+                            Log.v(TAG, "channel : " + analogChannels[i]);
                             if (analogChannels[i] == CONNECTED) {
-                                camDevice.getCams().add(new IpCam(i, (int) camDevice.getId(), camDevice.getDeviceType(), camDevice.getLogId()
+                                camDevice.getCams().add(new IpCam(i+1, (int) camDevice.getId(), camDevice.getDeviceType(), camDevice.getLogId()
                                 ));
                             }
-                            Log.v(TAG, "channel : " + analogChannels[i]);
                         }
 
+                        Log.v(TAG, "digital :  ");
                         for (int i = 0; i < digitalChannels.length; i++) {
+                            Log.v(TAG, "channel : " + digitalChannels[i]);
                             if (digitalChannels[i] == CONNECTED) {
                                 camDevice.getCams().add(new IpCam(i + DIGITAL_CHANNELS_START, (int) camDevice.getId(), camDevice.getDeviceType(), camDevice.getLogId()
                                 ));
                             }
-                            Log.v(TAG, "channel : " + digitalChannels[i]);
                         }
 
                     }

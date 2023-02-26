@@ -48,6 +48,7 @@ public class CamDevice implements Parcelable  {
     private int channels ;
     @Ignore
     private int logId = -1;
+
     @Ignore
     private List<IpCam> cams = new ArrayList<>();
 

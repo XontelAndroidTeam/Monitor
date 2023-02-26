@@ -125,5 +125,9 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
 
+    // lifecycle
+    implementation "androidx.lifecycle:lifecycle-common-java8:2.5.0"
+
+
 
 }

@@ -117,6 +117,14 @@ public class IpCam implements  Parcelable{
         this.name = name;
     }
 
+    public int getStreamType() {
+        return streamType;
+    }
+
+    public void setStreamType(int streamType) {
+        this.streamType = streamType;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -140,5 +148,9 @@ public class IpCam implements  Parcelable{
                 ", loginId=" + loginId +
                 ", name='" + name + '\'' +
                 '}';
+    }
+
+    public void toggleStreamType() {
+        this.streamType = (streamType == 1) ? 0 : 1;
     }
 }
