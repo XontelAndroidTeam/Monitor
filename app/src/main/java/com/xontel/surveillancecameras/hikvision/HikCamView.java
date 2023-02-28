@@ -23,7 +23,7 @@ import com.xontel.surveillancecameras.utils.CommonUtils;
 
 import org.videolan.libvlc.util.LoadingDots;
 
-public class HikCamView extends CardView {
+public class HikCamView extends CardView implements SurfaceHolder.Callback {
     public static final String TAG = HikCamView.class.getSimpleName();
     private LoadingDots mLoadingDots;
     private TextView errorTextView;
@@ -32,9 +32,11 @@ public class HikCamView extends CardView {
     private ImageView addBtn;
     private ViewStub surfaceStub;
     private SurfaceView mSurfaceView;
+
     private Context context;
 
-    private SurfaceHolder.Callback mCallback;
+    private SurfaceCallback mSurfaceCallback;
+    private boolean isSurfaceCreated;
 
     public HikCamView(@NonNull Context context) {
         super(context);
@@ -45,32 +47,19 @@ public class HikCamView extends CardView {
     }
 
     private void init() {
-       inflate(context, R.layout.item_hik_cam, this);
+        inflate(context, R.layout.item_hik_cam, this);
 
         mLoadingDots = findViewById(R.id.loading_dots);
         name = findViewById(R.id.tv_cam_name);
         errorTextView = findViewById(R.id.error_stream);
         addBtn = findViewById(R.id.iv_add);
         surfaceStub = findViewById(R.id.stub);
-
-
-
-
-
+        mSurfaceView = (SurfaceView) surfaceStub.inflate();
+        mSurfaceView.getHolder().addCallback(this);
     }
 
 
-    private void createNewSurface() {
-        mSurfaceView = new SurfaceView(context);
-        mSurfaceView.getHolder().addCallback(mCallback);
-        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
-        );
-       addView(mSurfaceView, layoutParams);
-    }
-
-
-    public void showLoading(boolean show){
+    public void showLoading(boolean show) {
         mLoadingDots.setVisibility(show ? VISIBLE : GONE);
     }
 
@@ -78,46 +67,68 @@ public class HikCamView extends CardView {
         return mSurfaceView;
     }
 
-    public void setCamName(String camName){
+    public void setCamName(String camName) {
         name.setVisibility(VISIBLE);
         name.setText(camName);
     }
 
-
-    public void resetView(){
-        mLoadingDots.setVisibility(View.GONE);
-        addBtn.setVisibility(View.VISIBLE);
-        errorTextView.setVisibility(View.GONE);
-        name.setVisibility(GONE);
-        name.setText("");
-        if(mSurfaceView !=null) {
-            mSurfaceView.getHolder().removeCallback(mCallback);
-            removeView(mSurfaceView);
-        }
-    }
 
     public void showError(String logMessage) {
         errorTextView.setVisibility(VISIBLE);
         errorTextView.setText(logMessage);
     }
 
-    public void onAttachToPlayer(SurfaceHolder.Callback callback) {
+    public void onAttachToPlayer(SurfaceCallback surfaceCallback) {
+        this.mSurfaceCallback = surfaceCallback;
         mLoadingDots.setVisibility(View.VISIBLE);
 //        name.setVisibility(View.VISIBLE);
 //        name.setText(mIpCam.getName());
         addBtn.setVisibility(View.GONE);
-        this.mCallback = callback;
-        if(surfaceStub != null){
-            mSurfaceView = (SurfaceView) surfaceStub.inflate();
-            mSurfaceView.getHolder().addCallback(mCallback);
-        }else{
-            createNewSurface();
-        }
+    }
+
+    public void onDetachedFromPlayer() {
+        mLoadingDots.setVisibility(View.GONE);
+        addBtn.setVisibility(View.VISIBLE);
+        errorTextView.setVisibility(View.GONE);
+        name.setVisibility(GONE);
+        name.setText("");
+    }
+
+    @Override
+    public void surfaceCreated(@NonNull SurfaceHolder surfaceHolder) {
+        Log.v("GridFragment", "surfaceCreated__");
+        isSurfaceCreated = true;
+        if (mSurfaceCallback != null)
+            mSurfaceCallback.onSurfaceCreated();
+
+    }
+
+    @Override
+    public void surfaceChanged(@NonNull SurfaceHolder surfaceHolder, int i, int i1, int i2) {
+        Log.v("GridFragment", "surfaceChanged__");
+    }
+
+    @Override
+    public void surfaceDestroyed(@NonNull SurfaceHolder surfaceHolder) {
+        Log.v("GridFragment", "surfaceDestroyed__");
+        isSurfaceCreated = false;
+        if (mSurfaceCallback != null)
+            mSurfaceCallback.onSurfaceDestroyed();
+    }
+
+    public boolean isSurfaceCreated() {
+        return isSurfaceCreated;
     }
 
 
-    public interface HikClickViews{
+    public interface HikClickViews {
         void onHikClick(IpCam ipCam);
+    }
+
+    public interface SurfaceCallback {
+        void onSurfaceCreated();
+
+        void onSurfaceDestroyed();
     }
 }
 

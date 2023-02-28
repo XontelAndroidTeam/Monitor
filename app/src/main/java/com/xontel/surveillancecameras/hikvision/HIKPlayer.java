@@ -44,7 +44,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
-public class HIKPlayer  implements RealPlayCallBack, SurfaceHolder.Callback, DefaultLifecycleObserver {
+public class HIKPlayer implements RealPlayCallBack, HikCamView.SurfaceCallback {
     public static final String TAG = HIKPlayer.class.getSimpleName();
 
     public static final int DEFAULT_HIKVISION_PORT_NUMBER = 8000;
@@ -56,8 +56,10 @@ public class HIKPlayer  implements RealPlayCallBack, SurfaceHolder.Callback, Def
     public HikCamView mHikCamView;
     public int m_iPort = -1;
 
-    public int realPlayId = -1 ;
+    public int realPlayId = -1;
     public boolean isConfigured = false;
+
+    private boolean isSurfaceCreated ;
     private IpCam mIpCam;
 
     private int lock = 0;
@@ -74,32 +76,36 @@ public class HIKPlayer  implements RealPlayCallBack, SurfaceHolder.Callback, Def
     }
 
 
-    
     public void attachView(HikCamView hikCamView) {
 
         if (mIpCam == null) {
             throw new IllegalStateException("Set the IpCam Object first");
         }
         this.mHikCamView = hikCamView;
+
         mHikCamView.onAttachToPlayer(this);
+        if (mHikCamView.isSurfaceCreated()) {
+            Log.v(TAG, "calling from attach");
+            startLiveView();
+        }
     }
 
 
-   
     public void startLiveView() {
         openStream();
     }
 
-   
+
     public void stopLiveView() {
-            unConfigurePlay();
-            stopStream();
-            detachView();
+        mHikCamView.onDetachedFromPlayer();
+        unConfigurePlay();
+        stopStream();
+        detachView();
     }
 
 
     // OUR START IS HERE
-   
+
     public void openStream() {
         NET_DVR_PREVIEWINFO previewInfo = new NET_DVR_PREVIEWINFO();
         previewInfo.lChannel = mIpCam.getChannel();
@@ -127,21 +133,21 @@ public class HIKPlayer  implements RealPlayCallBack, SurfaceHolder.Callback, Def
 
     }
 
-   
+
     public void showError(String logMessage) {
         Log.e(getTAG(), logMessage);
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
-               mHikCamView.showLoading(false);
-               mHikCamView.showError(logMessage);
+                mHikCamView.showLoading(false);
+                mHikCamView.showError(logMessage);
             }
         });
 
     }
 
     // THIS IS WHILE RUNNING
-   
+
     public void configurePlayer(int iDataType, byte[] pDataBuffer, int iDataSize) {
         Log.v(TAG, "configuring channel :" + mIpCam.getChannel());
         if (m_iPort >= 0) {
@@ -193,7 +199,7 @@ public class HIKPlayer  implements RealPlayCallBack, SurfaceHolder.Callback, Def
                 public void onDisplay(int i, byte[] bytes, int i1, int i2, int i3, int i4, int i5, int i6) {
                     if (lock == 0) {
                         mRunnable = () -> {
-                           mHikCamView.showLoading(false);
+                            mHikCamView.showLoading(false);
                             lock = 1;
 
                         };
@@ -206,7 +212,7 @@ public class HIKPlayer  implements RealPlayCallBack, SurfaceHolder.Callback, Def
 
     }
 
-    
+
     public void play(byte[] pDataBuffer, int iDataSize) {
         if (!Player.getInstance().inputData(m_iPort, pDataBuffer, iDataSize)) {
 //            Log.e(TAG, "inputData failed with: " + Player.getInstance().getLastError(m_iPort));
@@ -215,7 +221,7 @@ public class HIKPlayer  implements RealPlayCallBack, SurfaceHolder.Callback, Def
 
 
     // THE END
-  
+
     public void unConfigurePlay() {
         if (!isConfigured) {
             return;
@@ -238,7 +244,7 @@ public class HIKPlayer  implements RealPlayCallBack, SurfaceHolder.Callback, Def
 
 
     }
-    
+
     public void detachView() {
         lock = 0;
         mHikCamView = null;
@@ -281,7 +287,6 @@ public class HIKPlayer  implements RealPlayCallBack, SurfaceHolder.Callback, Def
     }
 
 
-   
     public String getTAG() {
         return TAG;
     }
@@ -299,7 +304,6 @@ public class HIKPlayer  implements RealPlayCallBack, SurfaceHolder.Callback, Def
     }
 
 
-  
     public void captureVideo() {
         if (!isRecording) {
             String date = sDateFormat.format(new Date());
@@ -326,7 +330,6 @@ public class HIKPlayer  implements RealPlayCallBack, SurfaceHolder.Callback, Def
     }
 
 
-   
     public void takeSnapshot() {
         try {
             Player.MPInteger stWidth = new Player.MPInteger();
@@ -357,22 +360,6 @@ public class HIKPlayer  implements RealPlayCallBack, SurfaceHolder.Callback, Def
     }
 
 
-    @Override
-    public void surfaceCreated(@NonNull SurfaceHolder surfaceHolder) {
-        Log.v(TAG, "surfaceCreated");
-        startLiveView();
-    }
-
-    @Override
-    public void surfaceChanged(@NonNull SurfaceHolder surfaceHolder, int i, int i1, int i2) {
-        Log.v(TAG, "surfaceChanged");
-    }
-
-    @Override
-    public void surfaceDestroyed(@NonNull SurfaceHolder surfaceHolder) {
-        Log.v(TAG, "surfaceDestroyed");
-    }
-
     public void setIpCam(IpCam ipCam) {
         this.mIpCam = ipCam;
     }
@@ -381,15 +368,15 @@ public class HIKPlayer  implements RealPlayCallBack, SurfaceHolder.Callback, Def
         return mIpCam;
     }
 
+
     @Override
-    public void onResume(@NonNull LifecycleOwner owner) {
-        DefaultLifecycleObserver.super.onResume(owner);
-//        startLiveView();
+    public void onSurfaceCreated() {
+        isSurfaceCreated = true;
+        startLiveView();
     }
 
     @Override
-    public void onPause(@NonNull LifecycleOwner owner) {
-        DefaultLifecycleObserver.super.onPause(owner);
-//        stopLiveView();
+    public void onSurfaceDestroyed() {
+        isSurfaceCreated = false;
     }
 }

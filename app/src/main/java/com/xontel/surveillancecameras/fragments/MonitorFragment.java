@@ -175,6 +175,7 @@ public class MonitorFragment extends BaseFragment {
 
     private void reload() {
             int pagesCount = (int)Math.ceil(mainViewModel.ipCams.getValue().size() * 1.0/ mainViewModel.mGridObservable.getValue());
+            Log.v("GridFragment", "rebindOuter");
             pagerAdapter.setPagesCount(pagesCount);
     }
 

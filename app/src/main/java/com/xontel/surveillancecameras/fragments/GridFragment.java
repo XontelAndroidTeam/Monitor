@@ -78,13 +78,12 @@ public class GridFragment extends BaseFragment {
         pageIndex = getArguments().getInt(INDEX);
         mGridViewModel.setMainViewModel(viewModel);
         gridCount = viewModel.mGridObservable.getValue();
-        setUpGrid();
+//        setUpGrid();
         Log.v(TAG, "onCreateView " + pageIndex);
         return binding.getRoot();
     }
 
     private void setUpGrid() {
-        binding.grid.removeAllViews();
         int gridCount = viewModel.mGridObservable.getValue();
         int rowCount = (int) Math.sqrt(gridCount);
         binding.grid.setColumnCount(rowCount);
@@ -99,10 +98,12 @@ public class GridFragment extends BaseFragment {
     }
 
     private void setupPlayers() {
+        Log.v(TAG, "setupPlayers "+pageIndex);
         List<IpCam> ipCams = viewModel.ipCams.getValue();
         for (int i = 0; i < gridCount; i++) {
             int camIndex = (pageIndex * gridCount) + i;
             if (camIndex < ipCams.size()) {
+                Log.v(TAG, "loooop");
                 viewModel.getPlayers().get(i).setIpCam(ipCams.get(camIndex));
                 viewModel.getPlayers().get(i).attachView((HikCamView) binding.grid.getChildAt(i));
             }
@@ -113,7 +114,7 @@ public class GridFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         Log.v(TAG, "onResume " + pageIndex);
-        setupPlayers();
+//        setupPlayers();
 
     }
 
@@ -123,7 +124,6 @@ public class GridFragment extends BaseFragment {
             HIKPlayer hikPlayer = viewModel.getPlayers().get(i);
             if (hikPlayer.getIpCam() != null) {
                 hikPlayer.stopLiveView();
-                ((HikCamView) binding.grid.getChildAt(i)).resetView();
                 Log.v(TAG, "stooped " + i);
             }
         }
@@ -134,13 +134,12 @@ public class GridFragment extends BaseFragment {
     public void onPause() {
         super.onPause();
         Log.v(TAG, "onPause " + pageIndex);
-        stopAll();
-        setUpGrid();
+//        stopAll();
     }
 
 
-    private void addViews(int gridCount) {
-        for (int i = 0; i < gridCount; i++) {
+    private void addViews(int count) {
+        for (int i = 0; i < count; i++) {
             addNewView(null);
         }
     }
@@ -153,17 +152,33 @@ public class GridFragment extends BaseFragment {
     private void setupObservables() {
         mGridViewModel.gridChanged.observe(getViewLifecycleOwner(), changed -> {
             if (changed) {
-                if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) {
-                    int oldGridCount = gridCount;
-                    int oldPageIndex = pageIndex;
-                    pageIndex = calculateNewIndex();
-                    gridCount = viewModel.mGridObservable.getValue();
-                    rebind(oldGridCount, oldPageIndex);
-                } else {
-                    setUpGrid();
-                }
+//                int oldGridCount = gridCount;
+//                int oldPageIndex = pageIndex;
+//                pageIndex = calculateNewIndex();
+//                gridCount = viewModel.mGridObservable.getValue();
+//                if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) {
+//                    rebind(oldGridCount, oldPageIndex);
+//                } else {
+//                    notifyGridChanged();
+//                }
             }
         });
+    }
+
+    private void notifyGridChanged() {
+        int childrenCount = binding.grid.getChildCount();
+        int requiredItemsCount = gridCount;
+        if(requiredItemsCount > childrenCount){
+            addViews(requiredItemsCount - childrenCount);
+        }else{
+            removeViews(childrenCount - requiredItemsCount);
+        }
+    }
+
+    private void removeViews(int count) {
+        for (int i = 0; i < count; i++) {
+            binding.grid.removeViewAt(i);
+        }
     }
 
     private void rebind(int oldGrid, int oldPage) {

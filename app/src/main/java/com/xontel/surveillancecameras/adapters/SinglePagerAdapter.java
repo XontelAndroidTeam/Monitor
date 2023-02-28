@@ -2,46 +2,38 @@ package com.xontel.surveillancecameras.adapters;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.xontel.surveillancecameras.fragments.CamPreviewFragment;
+import com.xontel.surveillancecameras.fragments.GridFragment;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SinglePagerAdapter extends FragmentStatePagerAdapter  {
+public class SinglePagerAdapter extends FragmentStateAdapter {
+    private int pages;
 
-    private final List<Fragment> mFragmentList = new ArrayList<>();
 
-    public SinglePagerAdapter(@NonNull FragmentManager fm, int behavior) {
-        super(fm,behavior);
-    }
-
-    @Override
-    public int getItemPosition(@NonNull Object object) {
-        return POSITION_NONE;
+    public SinglePagerAdapter(@NonNull FragmentActivity fragmentActivity, int pages) {
+        super(fragmentActivity);
+        this.pages = pages;
     }
 
 
-
-    public void addFragment(CamPreviewFragment fragment) {
-        mFragmentList.add(fragment);
-        notifyDataSetChanged();
-    }
 
     @NonNull
-    @NotNull
     @Override
-    public Fragment getItem(int position) {
-        return mFragmentList.get(position);
+    public Fragment createFragment(int position) {
+        return GridFragment.newInstance(position);
     }
 
-
     @Override
-    public int getCount() {
-        return mFragmentList.size();
+    public int getItemCount() {
+        return pages;
     }
 }

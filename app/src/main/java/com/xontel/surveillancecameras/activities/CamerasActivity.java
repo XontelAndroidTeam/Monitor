@@ -221,15 +221,15 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
     }
 
     private void setupCamerasPager() {
-        singlePagerAdapter = new SinglePagerAdapter(getSupportFragmentManager(),1);
-        for (IpCam ipCam : cams) {
-            CamPreviewFragment camPreviewFragment = CamPreviewFragment.newInstance(ipCam);
-            singlePagerAdapter.addFragment(camPreviewFragment);
-        }
-        binding.vpSlider.setAdapter(singlePagerAdapter);
-        binding.vpSlider.setOffscreenPageLimit(0);
-        if (cams.size() > 2) {binding.dotsIndicator.setVisibility(View.VISIBLE);binding.dotsIndicator.setViewPager(binding.vpSlider);}else{binding.dotsIndicator.setVisibility(View.GONE);}
-        setupSliderSettings();
+//        singlePagerAdapter = new SinglePagerAdapter(getSupportFragmentManager(),1);
+//        for (IpCam ipCam : cams) {
+//            CamPreviewFragment camPreviewFragment = CamPreviewFragment.newInstance(ipCam);
+//            singlePagerAdapter.addFragment(camPreviewFragment);
+//        }
+//        binding.vpSlider.setAdapter(singlePagerAdapter);
+//        binding.vpSlider.setOffscreenPageLimit(0);
+//        if (cams.size() > 2) {binding.dotsIndicator.setVisibility(View.VISIBLE);binding.dotsIndicator.setViewPager(binding.vpSlider);}else{binding.dotsIndicator.setVisibility(View.GONE);}
+//        setupSliderSettings();
     }
 
     private void setupSliderSettings() {
