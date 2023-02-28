@@ -1,8 +1,6 @@
 package com.xontel.surveillancecameras.fragments;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,9 +9,7 @@ import android.widget.GridLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.databinding.Observable;
 import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.xontel.surveillancecameras.activities.HomeActivity;
@@ -21,13 +17,14 @@ import com.xontel.surveillancecameras.base.BaseFragment;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
 import com.xontel.surveillancecameras.databinding.FragmentGridBinding;
 import com.xontel.surveillancecameras.hikvision.HIKPlayer;
-import com.xontel.surveillancecameras.hikvision.HikCamView;
+import com.xontel.surveillancecameras.hikvision.CamPlayerView;
+import com.xontel.surveillancecameras.utils.CamDeviceType;
+import com.xontel.surveillancecameras.utils.CamPlayer;
 import com.xontel.surveillancecameras.utils.CommonUtils;
 import com.xontel.surveillancecameras.viewModels.GridViewModel;
 import com.xontel.surveillancecameras.viewModels.MainViewModel;
 import com.xontel.surveillancecameras.viewModels.ViewModelProviderFactory;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -78,7 +75,7 @@ public class GridFragment extends BaseFragment {
         pageIndex = getArguments().getInt(INDEX);
         mGridViewModel.setMainViewModel(viewModel);
         gridCount = viewModel.mGridObservable.getValue();
-//        setUpGrid();
+        setUpGrid();
         Log.v(TAG, "onCreateView " + pageIndex);
         return binding.getRoot();
     }
@@ -98,14 +95,18 @@ public class GridFragment extends BaseFragment {
     }
 
     private void setupPlayers() {
-        Log.v(TAG, "setupPlayers "+pageIndex);
+        Log.v(TAG, "setupPlayers " + pageIndex);
         List<IpCam> ipCams = viewModel.ipCams.getValue();
         for (int i = 0; i < gridCount; i++) {
             int camIndex = (pageIndex * gridCount) + i;
             if (camIndex < ipCams.size()) {
                 Log.v(TAG, "loooop");
-                viewModel.getPlayers().get(i).setIpCam(ipCams.get(camIndex));
-                viewModel.getPlayers().get(i).attachView((HikCamView) binding.grid.getChildAt(i));
+                IpCam cur = ipCams.get(camIndex);
+                if (cur.getType() == CamDeviceType.HIKVISION.getValue()) {
+                    viewModel.getHikPlayers().get(i).attachView((CamPlayerView) binding.grid.getChildAt(i), cur);
+                } else {
+                    viewModel.getDahPlayers().get(i).attachView((CamPlayerView) binding.grid.getChildAt(i), cur);
+                }
             }
         }
     }
@@ -114,16 +115,24 @@ public class GridFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         Log.v(TAG, "onResume " + pageIndex);
-//        setupPlayers();
+        setupPlayers();
 
     }
 
 
     private void stopAll() {
         for (int i = 0; i < gridCount; i++) {
-            HIKPlayer hikPlayer = viewModel.getPlayers().get(i);
-            if (hikPlayer.getIpCam() != null) {
-                hikPlayer.stopLiveView();
+            CamPlayer camPlayer;
+           int camIndex = (pageIndex * gridCount) + i;
+           IpCam curr = viewModel.ipCams.getValue().get(camIndex);
+            if (curr.getType() == CamDeviceType.HIKVISION.getValue()) {
+                camPlayer = viewModel.getHikPlayers().get(i);
+            } else {
+                camPlayer = viewModel.getDahPlayers().get(i);
+            }
+
+            if (camPlayer.getIpCam() != null) {
+                camPlayer.stopLiveView();
                 Log.v(TAG, "stooped " + i);
             }
         }
@@ -134,7 +143,7 @@ public class GridFragment extends BaseFragment {
     public void onPause() {
         super.onPause();
         Log.v(TAG, "onPause " + pageIndex);
-//        stopAll();
+        stopAll();
     }
 
 
@@ -152,15 +161,15 @@ public class GridFragment extends BaseFragment {
     private void setupObservables() {
         mGridViewModel.gridChanged.observe(getViewLifecycleOwner(), changed -> {
             if (changed) {
-//                int oldGridCount = gridCount;
-//                int oldPageIndex = pageIndex;
-//                pageIndex = calculateNewIndex();
-//                gridCount = viewModel.mGridObservable.getValue();
-//                if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) {
-//                    rebind(oldGridCount, oldPageIndex);
-//                } else {
-//                    notifyGridChanged();
-//                }
+                int oldGridCount = gridCount;
+                int oldPageIndex = pageIndex;
+                pageIndex = calculateNewIndex();
+                gridCount = viewModel.mGridObservable.getValue();
+                if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) {
+                    rebind(oldGridCount, oldPageIndex);
+                } else {
+                    notifyGridChanged();
+                }
             }
         });
     }
@@ -168,9 +177,9 @@ public class GridFragment extends BaseFragment {
     private void notifyGridChanged() {
         int childrenCount = binding.grid.getChildCount();
         int requiredItemsCount = gridCount;
-        if(requiredItemsCount > childrenCount){
+        if (requiredItemsCount > childrenCount) {
             addViews(requiredItemsCount - childrenCount);
-        }else{
+        } else {
             removeViews(childrenCount - requiredItemsCount);
         }
     }
@@ -185,12 +194,11 @@ public class GridFragment extends BaseFragment {
         Log.e(TAG, "rebind");
         int count = (int) Math.sqrt(gridCount);
         removeUnNecessaryViews(oldGrid, oldPage);
-        addTheRestOfViews(oldGrid, oldPage);
         for (int i = 0; i < binding.grid.getChildCount(); i++) {
-
             binding.grid.getChildAt(i).setLayoutParams(getViewLayoutParams());
-
         }
+        addTheRestOfViews(oldGrid, oldPage);
+
         binding.grid.setColumnCount(count);
         binding.grid.setRowCount(count);
 
@@ -217,7 +225,7 @@ public class GridFragment extends BaseFragment {
         int firstElementCamIndexInOldRange = (oldPage * oldGrid);
         int firstElementCamIndexInNewRange = (pageIndex * gridCount);
         int gap = Math.abs(firstElementCamIndexInNewRange - firstElementCamIndexInOldRange);
-        Collections.rotate(viewModel.getPlayers(), gap);
+        Collections.rotate(viewModel.getHikPlayers(), gap);
         for (int i = 0; i < gridCount; i++) {
             int camIndex = (pageIndex * gridCount) + i;
             int oldRangeStart = (oldGrid * oldPage);
@@ -227,8 +235,7 @@ public class GridFragment extends BaseFragment {
             if (!wasInOldRange) {
                 addNewView(i);
                 if (camIndex < ipCams.size()) {
-                    viewModel.getPlayers().get(i).setIpCam(ipCams.get(camIndex));
-                    viewModel.getPlayers().get(i).attachView((HikCamView) binding.grid.getChildAt(i));
+                    viewModel.getHikPlayers().get(i).attachView((CamPlayerView) binding.grid.getChildAt(i), ipCams.get(camIndex));
 //                    HIKPlayer hikPlayer = new HIKPlayer(getContext(), ipCams.get(camIndex));
 //                    hikPlayer.attachView((HikCamView) binding.grid.getChildAt(i));
 //                    mHIKPlayers.add(hikPlayer);
@@ -244,10 +251,18 @@ public class GridFragment extends BaseFragment {
             boolean isInTheNewRange = ((oldGrid * oldPage) + i) - (pageIndex * gridCount) < gridCount;
             if (!isInTheNewRange) {
                 Log.v(TAG, "index : " + i);
-                viewModel.getPlayers().get(i).stopLiveView();
-                binding.grid.removeViewAt(i);
+                int finalI = i;
+                int camIndex = oldGrid * oldPage + i;
+                if(camIndex < viewModel.ipCams.getValue().size()) {
+                    if (viewModel.ipCams.getValue().get(i).getType() == CamDeviceType.HIKVISION.getValue())
+                        viewModel.getHikPlayers().get(finalI).stopLiveView();
+                }else {
+                    viewModel.getDahPlayers().get(finalI).stopLiveView();
+                }
+                    binding.grid.removeViewAt(i);
+                }
             }
-        }
+
 
 
     }
@@ -281,7 +296,6 @@ public class GridFragment extends BaseFragment {
 
     public void addNewView(Integer index) {
         View playerView = createCamView();
-
         if (index != null) {
             binding.grid.addView(playerView, index, getViewLayoutParams());
         } else {
@@ -291,8 +305,7 @@ public class GridFragment extends BaseFragment {
 
     //
     private View createCamView() {
-        return new HikCamView(requireContext());
-
+        return new CamPlayerView(requireContext());
     }
 
 

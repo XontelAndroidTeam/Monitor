@@ -1,23 +1,9 @@
 package com.xontel.surveillancecameras.adapters;
 
 import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.SurfaceView;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.TextView;
 
-import com.xontel.surveillancecameras.R;
-import com.xontel.surveillancecameras.activities.CamerasActivity;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
-import com.xontel.surveillancecameras.hikvision.HikCamView;
-import com.xontel.surveillancecameras.utils.CamDeviceType;
-import com.xontel.surveillancecameras.vlc.VlcCamView;
-
-import org.videolan.libvlc.util.VLCVideoLayout;
 
 import java.util.ArrayList;
 import java.util.List;

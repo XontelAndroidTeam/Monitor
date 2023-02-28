@@ -2,21 +2,19 @@ package com.xontel.surveillancecameras.viewModels;
 
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.lifecycle.MutableLiveData;
 
 import com.xontel.surveillancecameras.R;
 import com.xontel.surveillancecameras.base.BaseViewModel;
 import com.xontel.surveillancecameras.customObservers.GridObservable;
-import com.xontel.surveillancecameras.dahua.DahuaUtil;
+import com.xontel.surveillancecameras.dahua.DahuaPlayer;
 import com.xontel.surveillancecameras.data.DataManager;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
-import com.xontel.surveillancecameras.fragments.DevicesFragment;
 import com.xontel.surveillancecameras.hikvision.CamDevice;
 import com.xontel.surveillancecameras.hikvision.HIKPlayer;
 import com.xontel.surveillancecameras.hikvision.HikUtil;
-import com.xontel.surveillancecameras.utils.CamDeviceType;
+import com.xontel.surveillancecameras.utils.CamPlayer;
 import com.xontel.surveillancecameras.utils.rx.SchedulerProvider;
 
 import java.util.ArrayList;
@@ -40,7 +38,8 @@ public class MainViewModel extends BaseViewModel {
 
     public final MutableLiveData<Boolean> reloader = new MutableLiveData<>(false);
 
-    private List<HIKPlayer> mPlayers = new ArrayList<>();
+    private List<HIKPlayer> hikPlayers = new ArrayList<>();
+    private List<DahuaPlayer> dahPlayers = new ArrayList<>();
     private Context context;
 
 
@@ -53,13 +52,17 @@ public class MainViewModel extends BaseViewModel {
 
     private void createPlayers() {
         for(int i  = 0 ; i < 16 ; i++){
-            mPlayers.add(new HIKPlayer(context));
+            hikPlayers.add(new HIKPlayer(context));
+            dahPlayers.add(new DahuaPlayer(context));
         }
     }
 
 
-    public List<HIKPlayer> getPlayers() {
-        return mPlayers;
+    public List<HIKPlayer> getHikPlayers() {
+        return hikPlayers;
+    }
+    public List<DahuaPlayer> getDahPlayers() {
+        return dahPlayers;
     }
 
     public GridObservable getGridObservable() {
@@ -76,7 +79,7 @@ public class MainViewModel extends BaseViewModel {
                         .flatMap(new Function<CamDevice, ObservableSource<CamDevice>>() {
                             @Override
                             public ObservableSource<CamDevice> apply(CamDevice camDevice) throws Throwable {
-                                return getDataManager().loginHikDevice(camDevice).toObservable();
+                                return getDataManager().loginDevice(camDevice).toObservable();
                             }
                         })
                         .flatMap(new Function<CamDevice, ObservableSource<CamDevice>>() {
@@ -120,7 +123,7 @@ public class MainViewModel extends BaseViewModel {
                             @Override
                             public SingleSource<CamDevice> apply(Long deviceId) throws Throwable {
                                 device.setId(deviceId);
-                                return getDataManager().loginHikDevice(device);
+                                return getDataManager().loginDevice(device);
                             }
                         })
                         .flatMap(new Function<CamDevice, SingleSource<CamDevice>>() {

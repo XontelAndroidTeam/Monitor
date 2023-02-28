@@ -5,26 +5,20 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewStub;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.LiveData;
 
 import com.xontel.surveillancecameras.R;
-import com.xontel.surveillancecameras.activities.HomeActivity;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
-import com.xontel.surveillancecameras.utils.CommonUtils;
 
 import org.videolan.libvlc.util.LoadingDots;
 
-public class HikCamView extends CardView implements SurfaceHolder.Callback {
-    public static final String TAG = HikCamView.class.getSimpleName();
+public class CamPlayerView extends CardView implements SurfaceHolder.Callback {
+    public static final String TAG = CamPlayerView.class.getSimpleName();
     private LoadingDots mLoadingDots;
     private TextView errorTextView;
 
@@ -38,7 +32,7 @@ public class HikCamView extends CardView implements SurfaceHolder.Callback {
     private SurfaceCallback mSurfaceCallback;
     private boolean isSurfaceCreated;
 
-    public HikCamView(@NonNull Context context) {
+    public CamPlayerView(@NonNull Context context) {
         super(context);
         this.context = context;
         setCardBackgroundColor(context.getColor(R.color.grey_color));
@@ -47,7 +41,7 @@ public class HikCamView extends CardView implements SurfaceHolder.Callback {
     }
 
     private void init() {
-        inflate(context, R.layout.item_hik_cam, this);
+        inflate(context, R.layout.item_player_view, this);
 
         mLoadingDots = findViewById(R.id.loading_dots);
         name = findViewById(R.id.tv_cam_name);

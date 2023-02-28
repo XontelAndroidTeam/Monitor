@@ -29,7 +29,7 @@ public interface DataManager extends CamDao, DevicesDao, PreferencesHelper, Rest
 
     Single<List<MediaData>> getStoredMedia(Context context, String mediaType);
 
-    Single<CamDevice> loginHikDevice(CamDevice camDevice);
+    Single<CamDevice> loginDevice(CamDevice camDevice);
 
     Single<CamDevice> getChannelsInfo(CamDevice camDevice);
 

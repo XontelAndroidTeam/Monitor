@@ -2,9 +2,7 @@ package com.xontel.surveillancecameras.dahua;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.SurfaceView;
-import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -13,13 +11,14 @@ import androidx.annotation.Nullable;
 import com.xontel.surveillancecameras.R;
 import com.xontel.surveillancecameras.activities.HomeActivity;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
-import com.xontel.surveillancecameras.hikvision.HikCamView;
 
 import org.videolan.libvlc.util.LoadingDots;
 
 public class DahuaCamView extends FrameLayout {
+    public static final int DEFAULT_HIKVISION_PORT_NUMBER = 8000;
+    public static final int DEFAULT_Dahua_PORT_NUMBER = 37777;
     private IpCam ipCam;
-    private DahuaSinglePlayer dahuaSinglePlayer ;
+    private DahuaPlayer mDahuaPlayer;
     private Context context;
     private TextView errorTextView;
     private LoadingDots loadingDots;
@@ -58,7 +57,7 @@ public class DahuaCamView extends FrameLayout {
         init();
     }
     private void init() {
-        inflate(context, R.layout.item_hik_cam, this);
+        inflate(context, R.layout.item_player_view, this);
         bind();
     }
 
@@ -76,17 +75,17 @@ public class DahuaCamView extends FrameLayout {
         surfaceView =  findViewById(R.id.player_surface) ;
         errorTextView =  findViewById(R.id.error_stream) ;
         loadingDots =  findViewById(R.id.loading_dots) ;
-        dahuaSinglePlayer = new DahuaSinglePlayer(context, ipCam);
+        mDahuaPlayer = new DahuaPlayer(context);
 //        dahuaSinglePlayer.initView(surfaceView);
         surfaceView.setOnClickListener(view -> {
             dahuaClickViews.onDahuaClick(ipCam);
         });
-        dahuaSinglePlayer.isLoading.observe((HomeActivity)context, aBoolean -> {
+        mDahuaPlayer.isLoading.observe((HomeActivity)context, aBoolean -> {
             if (aBoolean){loadingDots.setVisibility(VISIBLE);}
             else{loadingDots.setVisibility(GONE);}
         });
 
-        dahuaSinglePlayer.isError.observe((HomeActivity) context, aBoolean -> {
+        mDahuaPlayer.isError.observe((HomeActivity) context, aBoolean -> {
             if (aBoolean){errorTextView.setVisibility(VISIBLE);}
             else{errorTextView.setVisibility(GONE);}
         });

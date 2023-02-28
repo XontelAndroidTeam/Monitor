@@ -2,6 +2,7 @@ package com.xontel.surveillancecameras.data;
 
 import android.content.Context;
 
+import com.xontel.surveillancecameras.dahua.DahuaUtil;
 import com.xontel.surveillancecameras.data.db.AppDatabase;
 import com.xontel.surveillancecameras.data.network.RestApiHelper;
 import com.xontel.surveillancecameras.data.network.pojo.FeedItem;
@@ -13,6 +14,7 @@ import com.xontel.surveillancecameras.data.utils.LoggedInMode;
 import com.xontel.surveillancecameras.di.ApplicationContext;
 import com.xontel.surveillancecameras.hikvision.CamDevice;
 import com.xontel.surveillancecameras.hikvision.HikUtil;
+import com.xontel.surveillancecameras.utils.CamDeviceType;
 import com.xontel.surveillancecameras.utils.MediaData;
 import com.xontel.surveillancecameras.utils.StorageHelper;
 
@@ -82,7 +84,7 @@ public class BaseDataManager implements DataManager {
 
     @Override
     public Single<Integer> deleteCamDevice(CamDevice mCamDevice) {
-       return   mDatabase.mDevicesDao().deleteCamDevice(mCamDevice);
+        return mDatabase.mDevicesDao().deleteCamDevice(mCamDevice);
     }
 
     @Override
@@ -106,8 +108,10 @@ public class BaseDataManager implements DataManager {
     }
 
     @Override
-    public Single<CamDevice> loginHikDevice(CamDevice camDevice) {
-       return HikUtil.loginNormalDevice(camDevice);
+    public Single<CamDevice> loginDevice(CamDevice camDevice) {
+        if (camDevice.getDeviceType() == CamDeviceType.HIKVISION.getValue())
+            return HikUtil.loginNormalDevice(camDevice);
+        return DahuaUtil.loginNormalDevice(camDevice);
     }
 
     @Override
@@ -176,10 +180,6 @@ public class BaseDataManager implements DataManager {
     public int getStorageMedia() {
         return mPreferencesHelper.getStorageMedia();
     }
-
-
-
-
 
 
 }
