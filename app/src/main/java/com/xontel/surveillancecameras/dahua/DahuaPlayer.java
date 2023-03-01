@@ -16,12 +16,11 @@ import com.xontel.surveillancecameras.utils.StorageHelper;
 import java.io.File;
 import java.text.SimpleDateFormat;
 
-public class DahuaPlayer extends CamPlayer implements CamPlayerView.SurfaceCallback, CB_fRealDataCallBackEx {
+public class DahuaPlayer extends CamPlayer implements CamPlayerView.SurfaceCallback, IPlaySDKCallBack.fDisplayCBFun, CB_fRealDataCallBackEx {
     public static final String TAG = DahuaPlayer.class.getSimpleName();
     public static final int DEFAULT_Dahua_PORT_NUMBER = 37777;
     private final static int RAW_AUDIO_VIDEO_MIX_DATA = 0;
     private boolean _isOpenSound;
-    private boolean _isRecording;
     private int _curVolume = 0;
     private boolean _isDelayPlay;
 
@@ -51,8 +50,61 @@ public class DahuaPlayer extends CamPlayer implements CamPlayerView.SurfaceCallb
 
     }
 
+    @Override
+    public void configurePlayer(int iDataType, byte[] pDataBuffer, int iDataSize) {
+        if (m_iPort >= 0) {
+            return;
+        }
+
+        m_iPort = IPlaySDK.PLAYGetFreePort();
+        if (m_iPort == -1) {
+            showError("getPort is failed with: ");
+            return;
+        }
+        Log.i(TAG, "DAH getPort succ with: " + m_iPort);
 
 
+        boolean isOpened = IPlaySDK.PLAYOpenStream(m_iPort, null, 0, STREAM_BUF_SIZE) != 0;
+        if (!isOpened) {
+            showError( "OpenStream Failed");
+        }
+
+
+        boolean isPlaying = IPlaySDK.PLAYPlay(m_iPort, mCamPlayerView.getSurfaceView()) != 0;
+        if (!isPlaying) {
+            IPlaySDK.PLAYCloseStream(m_iPort);
+            showError( "PLAYPlay Failed");
+            return;
+        }
+        if (_isOpenSound) {
+            boolean isSuccess = IPlaySDK.PLAYPlaySoundShare(m_iPort) != 0;
+            if (!isSuccess) {
+                Log.e(TAG, "SoundShare Failed");
+//                IPlaySDK.PLAYStop(m_iPort);
+//                IPlaySDK.PLAYCloseStream(m_iPort);
+            }
+            if (-1 == _curVolume) {
+                _curVolume = IPlaySDK.PLAYGetVolume(m_iPort);
+            } else {
+                IPlaySDK.PLAYSetVolume(m_iPort, _curVolume);
+            }
+        }
+        if (_isDelayPlay) {
+            if (IPlaySDK.PLAYSetDelayTime(m_iPort, 500 /*ms*/, 1000 /*ms*/) == 0) {
+                Log.e(TAG, "SetDelayTime Failed");
+            }
+        }
+
+        IPlaySDK.PLAYSetDisplayCallBack(m_iPort,this , mIpCam.getChannel());
+        isConfigured = true ;
+    }
+
+
+
+    @Override
+    public void play(byte[] pDataBuffer, int iDataSize) {
+        IPlaySDK.PLAYInputData(m_iPort, pDataBuffer, pDataBuffer.length);
+    }
 
 
 
@@ -74,7 +126,7 @@ public class DahuaPlayer extends CamPlayer implements CamPlayerView.SurfaceCallb
                 }
             }
             if(IPlaySDK.PLAYStop(m_iPort) != 0){
-                showError("stop is failed!");
+                Log.e(TAG, "stop is failed! ");
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -90,22 +142,19 @@ public class DahuaPlayer extends CamPlayer implements CamPlayerView.SurfaceCallb
             return;
         }
         if(INetSDK.StopRealPlayEx(realPlayId)){
-            showError("StopRealPlay is failed!Err:");
-            return;
+            Log.e(TAG, "StopRealPlay is failed!Err:");
         }
-        if (_isRecording) {
+        if (isRecording) {
             if(INetSDK.StopSaveRealData(realPlayId)){
                 Log.e(TAG, "cannot StopSaveRealData ");
             }
         }
 
         if(IPlaySDK.PLAYCloseStream(m_iPort) != 0){
-            showError("closeStream is failed!");
-            return;
+            Log.e(TAG,"closeStream is failed!");
         }
         if(IPlaySDK.PLAYReleasePort(m_iPort) != 0){
-            showError("freePort is failed!" + m_iPort);
-            return;
+            Log.e(TAG,"freePort is failed!" + m_iPort);
         }
         m_iPort = -1 ;
         realPlayId = 0;
@@ -117,78 +166,17 @@ public class DahuaPlayer extends CamPlayer implements CamPlayerView.SurfaceCallb
     }
 
     @Override
-    public void configurePlayer(int iDataType, byte[] pDataBuffer, int iDataSize) {
-        if (m_iPort >= 0) {
-            return;
-        }
-
-        m_iPort = IPlaySDK.PLAYGetFreePort();
-        if (m_iPort == -1) {
-            showError("getPort is failed with: ");
-            return;
-        }
-
-
-        boolean isOpened = IPlaySDK.PLAYOpenStream(m_iPort, null, 0, STREAM_BUF_SIZE) != 0;
-        if (!isOpened) {
-            showError( "OpenStream Failed");
-
-        }
-
-
-        boolean isPlaying = IPlaySDK.PLAYPlay(m_iPort, mCamPlayerView.getSurfaceView()) != 0;
-        if (!isPlaying) {
-            showError( "PLAYPlay Failed");
-            IPlaySDK.PLAYCloseStream(m_iPort);
-            return;
-        }
-        if (_isOpenSound) {
-            boolean isSuccess = IPlaySDK.PLAYPlaySoundShare(m_iPort) != 0;
-            if (!isSuccess) {
-                showError( "SoundShare Failed");
-//                IPlaySDK.PLAYStop(m_iPort);
-//                IPlaySDK.PLAYCloseStream(m_iPort);
-            }
-            if (-1 == _curVolume) {
-                _curVolume = IPlaySDK.PLAYGetVolume(m_iPort);
-            } else {
-                IPlaySDK.PLAYSetVolume(m_iPort, _curVolume);
-            }
-        }
-        if (_isDelayPlay) {
-            if (IPlaySDK.PLAYSetDelayTime(m_iPort, 500 /*ms*/, 1000 /*ms*/) == 0) {
-                Log.d(TAG, "SetDelayTime Failed");
-            }
-        }
-
-        IPlaySDK.PLAYSetDisplayCallBack(m_iPort, new IPlaySDKCallBack.fDisplayCBFun() {
-            @Override
-            public void invoke(int i, byte[] bytes, int i1, int i2, int i3, int i4, int i5, long l) {
-                if (lock == 0) {
-                    mRunnable = () -> {
-                        if (mCamPlayerView != null) {
-                            mCamPlayerView.showLoading(false);
-                            lock = 1;
-                        }
-
-                    };
-                    mHandler.post(mRunnable);
-                }
-            }
-        }, mIpCam.getChannel());
-
-        isConfigured = true ;
+    public void freePort() {
+        IPlaySDK.PLAYReleasePort(m_iPort);
     }
 
-    @Override
-    public void play(byte[] pDataBuffer, int iDataSize) {
-        IPlaySDK.PLAYInputData(m_iPort, pDataBuffer, pDataBuffer.length);
-    }
+
+
 
     public void captureVideo(){
         try {
             sDateFormat = new SimpleDateFormat("yyyy-MM-dd-hh_mm_ss_Sss");
-            _isRecording = true;
+            isRecording = true;
             File dir = new File(StorageHelper.getMediaDirectory(context,Environment.DIRECTORY_MOVIES).getAbsolutePath());
             String date = sDateFormat.format(new java.util.Date());
             File file = new File(dir, date + ".mp4");
@@ -228,5 +216,17 @@ public class DahuaPlayer extends CamPlayer implements CamPlayerView.SurfaceCallb
     }
 
 
+    @Override
+    public void invoke(int i, byte[] bytes, int i1, int i2, int i3, int i4, int i5, long l) {
+        if (lock == 0) {
+            mRunnable = () -> {
+                if (mCamPlayerView != null) {
+                    mCamPlayerView.showLoading(false);
+                    lock = 1;
+                }
 
+            };
+            mHandler.post(mRunnable);
+        }
+    }
 }

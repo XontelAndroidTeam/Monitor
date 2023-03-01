@@ -17,7 +17,7 @@ import com.xontel.surveillancecameras.data.db.model.IpCam;
 
 import org.videolan.libvlc.util.LoadingDots;
 
-public class CamPlayerView extends CardView implements SurfaceHolder.Callback {
+public class CamPlayerView extends CardView implements SurfaceHolder.Callback, View.OnClickListener {
     public static final String TAG = CamPlayerView.class.getSimpleName();
     private LoadingDots mLoadingDots;
     private TextView errorTextView;
@@ -32,9 +32,12 @@ public class CamPlayerView extends CardView implements SurfaceHolder.Callback {
     private SurfaceCallback mSurfaceCallback;
     private boolean isSurfaceCreated;
 
-    public CamPlayerView(@NonNull Context context) {
+    private ClickListener mClickListener;
+
+    public CamPlayerView(@NonNull Context context, ClickListener clickListener) {
         super(context);
         this.context = context;
+        this.mClickListener = clickListener;
         setCardBackgroundColor(context.getColor(R.color.grey_color));
         setRadius(10);
         init();
@@ -81,9 +84,11 @@ public class CamPlayerView extends CardView implements SurfaceHolder.Callback {
     }
 
     public void onDetachedFromPlayer() {
+        this.mSurfaceCallback = null;
         mLoadingDots.setVisibility(View.GONE);
         addBtn.setVisibility(View.VISIBLE);
         errorTextView.setVisibility(View.GONE);
+        errorTextView.setText("");
         name.setVisibility(GONE);
         name.setText("");
     }
@@ -114,6 +119,11 @@ public class CamPlayerView extends CardView implements SurfaceHolder.Callback {
         return isSurfaceCreated;
     }
 
+    @Override
+    public void onClick(View view) {
+        mClickListener.onViewClicked(mSurfaceCallback != null);
+    }
+
 
     public interface HikClickViews {
         void onHikClick(IpCam ipCam);
@@ -123,6 +133,10 @@ public class CamPlayerView extends CardView implements SurfaceHolder.Callback {
         void onSurfaceCreated();
 
         void onSurfaceDestroyed();
+    }
+
+    public interface ClickListener{
+        void onViewClicked(boolean isAttachedToPlayer);
     }
 }
 

@@ -11,6 +11,8 @@ import androidx.lifecycle.MutableLiveData;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
 import com.xontel.surveillancecameras.hikvision.CamPlayerView;
 
+import org.MediaPlayer.PlayM4.Player;
+
 import java.text.SimpleDateFormat;
 
 public abstract class CamPlayer implements CamPlayerView.SurfaceCallback {
@@ -27,13 +29,17 @@ public abstract class CamPlayer implements CamPlayerView.SurfaceCallback {
 
     public int realPlayId = -1 ;
     public IpCam mIpCam;
-    public boolean isStopped = true;
+    public boolean isPlaying;
     public boolean isConfigured = false;
+
+    public boolean isRecording;
 
     public int lock = 0;
 
     public Handler mHandler = new Handler(Looper.getMainLooper());
     public Runnable mRunnable;
+
+    private Thread pauseThread ;
 
 
 
@@ -43,27 +49,18 @@ public abstract class CamPlayer implements CamPlayerView.SurfaceCallback {
 
 
     public void startLiveView() {
+        isPlaying = true;
         openStream();
     }
 
     public void stopLiveView() {
-        if (mCamPlayerView != null)
-            mCamPlayerView.onDetachedFromPlayer();
+        mCamPlayerView.onDetachedFromPlayer();
         detachView();
         new Thread(() -> {
-
             unConfigurePlay();
             stopStream();
-            isStopped = true;
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                @Override
-                public void run() {
-                    if (mCamPlayerView != null) {
-                        startLiveView();
-                    }
-                }
-            });
-
+            isPlaying = false;
+            onReady();
         }).start();
 
     }
@@ -76,22 +73,32 @@ public abstract class CamPlayer implements CamPlayerView.SurfaceCallback {
     public abstract String getTAG();
 
     public void showError(String logMessage) {
+        isPlaying = false;
+
+        if(m_iPort != -1){
+            freePort();
+        }
         Log.e(getTAG(), logMessage);
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
+        mHandler.post(new Runnable() {
             @Override
             public void run() {
-                mCamPlayerView.showLoading(false);
-                mCamPlayerView.showError(logMessage);
+                if(mCamPlayerView != null) {
+                    mCamPlayerView.showLoading(false);
+                    mCamPlayerView.showError(logMessage);
+                }
             }
         });
 
     }
 
+
+    public abstract void freePort();
+
     public void attachView(CamPlayerView camPlayerView, IpCam ipCam) {
         this.mIpCam = ipCam;
         this.mCamPlayerView = camPlayerView;
         mCamPlayerView.onAttachToPlayer(this);
-        if (mCamPlayerView.isSurfaceCreated() && isStopped) {
+        if (mCamPlayerView.isSurfaceCreated() && !isPlaying) {
             startLiveView();
         }
     }
@@ -128,5 +135,10 @@ public abstract class CamPlayer implements CamPlayerView.SurfaceCallback {
     @Override
     public void onSurfaceDestroyed() {
         isSurfaceCreated = false;
+    }
+    public void onReady(){
+        if(mCamPlayerView != null && mCamPlayerView.isSurfaceCreated()){
+            startLiveView();
+        }
     }
 }
