@@ -4,14 +4,12 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-import android.view.SurfaceHolder;
+import android.widget.Toast;
 
 import androidx.lifecycle.MutableLiveData;
 
 import com.xontel.surveillancecameras.data.db.model.IpCam;
 import com.xontel.surveillancecameras.hikvision.CamPlayerView;
-
-import org.MediaPlayer.PlayM4.Player;
 
 import java.text.SimpleDateFormat;
 
@@ -23,6 +21,8 @@ public abstract class CamPlayer implements CamPlayerView.SurfaceCallback {
     public MutableLiveData<Boolean> isError = new MutableLiveData(false);
     public MutableLiveData<Boolean> isLoading = new MutableLiveData(true);
     public CamPlayerView mCamPlayerView;
+
+    public Toast mToast;
 
     private boolean isSurfaceCreated;
     public int m_iPort = -1;
@@ -57,12 +57,12 @@ public abstract class CamPlayer implements CamPlayerView.SurfaceCallback {
     public void stopLiveView() {
         mCamPlayerView.onDetachedFromPlayer();
         detachView();
-//        new Thread(() -> {
+        new Thread(() -> {
             unConfigurePlay();
             stopStream();
             isPlaying = false;
 //            onReady();
-//        }).start();
+        }).start();
 
     }
 
@@ -92,6 +92,20 @@ public abstract class CamPlayer implements CamPlayerView.SurfaceCallback {
 
     }
 
+    public void showMessage(String message) {
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                if(mToast != null){
+                    mToast.cancel();
+                }
+                mToast = Toast.makeText(context, message, Toast.LENGTH_LONG);
+                mToast.show();
+            }
+        });
+
+    }
+
 
     public abstract void freePort();
 
@@ -113,7 +127,7 @@ public abstract class CamPlayer implements CamPlayerView.SurfaceCallback {
 
 
 
-    public abstract void captureVideo();
+    public abstract void captureVideo(boolean isRecording);
 
 
     public abstract void takeSnapshot();

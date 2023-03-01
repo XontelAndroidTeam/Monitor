@@ -3,6 +3,7 @@ package com.xontel.surveillancecameras.hikvision;
 import static com.hikvision.netsdk.SDKError.NET_DVR_CHAN_NOTSUPPORT;
 
 import android.content.Context;
+import android.media.MediaScannerConnection;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
@@ -17,6 +18,7 @@ import com.hikvision.netsdk.HCNetSDK;
 import com.hikvision.netsdk.INT_PTR;
 import com.hikvision.netsdk.NET_DVR_PREVIEWINFO;
 import com.hikvision.netsdk.RealPlayCallBack;
+import com.xontel.surveillancecameras.R;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
 import com.xontel.surveillancecameras.utils.CamPlayer;
 import com.xontel.surveillancecameras.utils.StorageHelper;
@@ -222,7 +224,7 @@ public class HIKPlayer extends CamPlayer implements  PlayerCallBack.PlayerDispla
 //    }
 
     @Override
-    public void captureVideo() {
+    public void captureVideo(boolean isRecording) {
         if (!isRecording) {
             String date = sDateFormat.format(new Date());
             File dir = new File(StorageHelper.getMediaDirectory(context, Environment.DIRECTORY_MOVIES).getAbsolutePath() + "/monitor");
@@ -253,12 +255,14 @@ public class HIKPlayer extends CamPlayer implements  PlayerCallBack.PlayerDispla
             Player.MPInteger stWidth = new Player.MPInteger();
             Player.MPInteger stHeight = new Player.MPInteger();
             if (!Player.getInstance().getPictureSize(m_iPort, stWidth, stHeight)) {
+                showMessage(context.getString(R.string.cant_take_photo)+" "+ "width : "+ stWidth +" "+ );
                 return;
             }
             int nSize = 5 * stWidth.value * stHeight.value;
             byte[] picBuf = new byte[nSize];
             Player.MPInteger stSize = new Player.MPInteger();
             if (!Player.getInstance().getBMP(m_iPort, picBuf, nSize, stSize)) {
+                showMessage(context.getString(R.string.cant_take_photo)+"22");
                 return;
             }
             if (sDateFormat == null) {
@@ -270,12 +274,16 @@ public class HIKPlayer extends CamPlayer implements  PlayerCallBack.PlayerDispla
             FileOutputStream fos = new FileOutputStream(file);
             fos.write(picBuf, 0, stSize.value);
             fos.close();
+            MediaScannerConnection.scanFile(context, new String[]{file.getAbsolutePath()}, new String[]{"image/*"}, (s, uri) -> Log.i(TAG, "onScanCompleted_video: "+uri));
+            showMessage(context.getString(R.string.snapshot_taken));
             //  Bitmap bitmap = BitmapFactory.decodeFile(dir.getAbsolutePath() + "/" + date + ".jpg");
         } catch (Exception err) {
-            showError("error: " + err.getMessage());
-
+            err.printStackTrace();
+            showMessage(err.getMessage()+"33");
         }
     }
+
+
 
 
     @Override

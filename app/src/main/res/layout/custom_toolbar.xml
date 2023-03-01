@@ -11,9 +11,9 @@
         app:layout_constraintTop_toTopOf="parent">
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
-            style="@style/Widget.MaterialComponents.Toolbar.Primary"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
+            android:background="@null"
             android:elevation="0dp"
             >
             <LinearLayout

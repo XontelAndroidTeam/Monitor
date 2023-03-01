@@ -10,6 +10,7 @@ import android.widget.GridLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -29,7 +30,6 @@ import com.xontel.surveillancecameras.viewModels.MainViewModel;
 import com.xontel.surveillancecameras.viewModels.ViewModelProviderFactory;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -108,17 +108,10 @@ public class GridFragment extends BaseFragment implements CamPlayerView.ClickLis
                 CamPlayer camPlayer;
                 if (cam.getType() == CamDeviceType.HIKVISION.getValue()) {
                     camPlayer = new HIKPlayer(getContext());
-//                    hikPlayer.attachView((CamPlayerView) binding.grid.getChildAt(i), cam);
-
-//                    viewModel.getHikPlayers().get(i).attachView((CamPlayerView) binding.grid.getChildAt(i), cam);
                 } else {
-
                     camPlayer = new DahuaPlayer(getContext());
-//                    dahuaPlayer.attachView((CamPlayerView) binding.grid.getChildAt(i), cam);
                 }
                 mPlayers.add(camPlayer);
-
-//                    viewModel.getDahPlayers().get(i).attachView((CamPlayerView) binding.grid.getChildAt(i), cam);
             }
         }
     }
@@ -141,9 +134,6 @@ public class GridFragment extends BaseFragment implements CamPlayerView.ClickLis
                 IpCam cam = ipCams.get(camIndex);
                 mPlayers.get(i).attachView((CamPlayerView) binding.grid.getChildAt(i), cam);
             }
-//                    viewModel.getHikPlayers().get(i).attachView((CamPlayerView) binding.grid.getChildAt(i), cam);
-
-//                    viewModel.getDahPlayers().get(i).attachView((CamPlayerView) binding.grid.getChildAt(i), cam);
         }
     }
 
@@ -196,6 +186,25 @@ public class GridFragment extends BaseFragment implements CamPlayerView.ClickLis
                 }
             }
         });
+
+
+        viewModel.takeSnapShot.observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean takeSnapshot) {
+                if (takeSnapshot && viewModel.mGridObservable.getValue() == 1) {
+                    mPlayers.get(0).takeSnapshot();
+                }
+            }
+        });
+
+        viewModel.recordVideo.observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean record) {
+                if (viewModel.mGridObservable.getValue() == 1) {
+//                    mPlayers.get(0).captureVideo(record);
+                }
+            }
+        });
     }
 
     private void notifyGridChanged() {
@@ -229,7 +238,7 @@ public class GridFragment extends BaseFragment implements CamPlayerView.ClickLis
 
 
     private GridLayout.LayoutParams getViewLayoutParams() {
-        int marginInPixels = (int) CommonUtils.convertDpToPixel(4, getContext());
+        int marginInPixels = (int) CommonUtils.convertDpToPixel(2, getContext());
         GridLayout.LayoutParams param = new GridLayout.LayoutParams(GridLayout.spec(
                 GridLayout.UNDEFINED, GridLayout.FILL, 1f),
                 GridLayout.spec(GridLayout.UNDEFINED, GridLayout.FILL, 1f));
@@ -245,10 +254,10 @@ public class GridFragment extends BaseFragment implements CamPlayerView.ClickLis
 
     private void addTheRestOfViews(int oldGrid, int oldPage) {
         List<IpCam> ipCams = viewModel.ipCams.getValue();
-        int firstElementCamIndexInOldRange = (oldPage * oldGrid);
-        int firstElementCamIndexInNewRange = (pageIndex * gridCount);
-        int gap = Math.abs(firstElementCamIndexInNewRange - firstElementCamIndexInOldRange);
-        Collections.rotate(viewModel.getHikPlayers(), gap);
+//        int firstElementCamIndexInOldRange = (oldPage * oldGrid);
+//        int firstElementCamIndexInNewRange = (pageIndex * gridCount);
+//        int gap = Math.abs(firstElementCamIndexInNewRange - firstElementCamIndexInOldRange);
+//        Collections.rotate(viewModel.getHikPlayers(), gap);
         for (int i = 0; i < gridCount; i++) {
             int camIndex = (pageIndex * gridCount) + i;
             int oldRangeStart = (oldGrid * oldPage);
@@ -258,10 +267,17 @@ public class GridFragment extends BaseFragment implements CamPlayerView.ClickLis
             if (!wasInOldRange) {
                 addNewView(i);
                 if (camIndex < ipCams.size()) {
-                    viewModel.getHikPlayers().get(i).attachView((CamPlayerView) binding.grid.getChildAt(i), ipCams.get(camIndex));
-//                    HIKPlayer hikPlayer = new HIKPlayer(getContext(), ipCams.get(camIndex));
-//                    hikPlayer.attachView((HikCamView) binding.grid.getChildAt(i));
-//                    mHIKPlayers.add(hikPlayer);
+//                    viewModel.getHikPlayers().get(i).attachView((CamPlayerView) binding.grid.getChildAt(i), ipCams.get(camIndex));
+                    IpCam curr = ipCams.get(camIndex);
+                    CamPlayer camPlayer;
+                    if (curr.getType() == CamDeviceType.HIKVISION.getValue()) {
+                        camPlayer = new HIKPlayer(getContext());
+                    } else {
+                        camPlayer = new DahuaPlayer(getContext());
+                    }
+
+                    camPlayer.attachView((CamPlayerView) binding.grid.getChildAt(i), curr);
+                    mPlayers.add(camPlayer);
                 }
             }
 
@@ -277,17 +293,13 @@ public class GridFragment extends BaseFragment implements CamPlayerView.ClickLis
                 int camIndex = oldGrid * oldPage + i;
                 List<IpCam> cams = viewModel.ipCams.getValue();
                 if (camIndex < cams.size()) {
-                    IpCam curr = cams.get(camIndex);
-
-                        mPlayers.get(i).stopLiveView();
-                        mPlayers.remove(i);
-//                        viewModel.getHikPlayers().get(i).stopLiveView();
-
-//                        viewModel.getDahPlayers().get(i).stopLiveView();
-                    }
+                    mPlayers.get(i).stopLiveView();
+                    mPlayers.remove(i);
                 }
                 binding.grid.removeViewAt(i);
             }
+
+        }
 
 
     }

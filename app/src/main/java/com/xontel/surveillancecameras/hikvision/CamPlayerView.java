@@ -39,7 +39,7 @@ public class CamPlayerView extends CardView implements SurfaceHolder.Callback, V
         this.context = context;
         this.mClickListener = clickListener;
         setCardBackgroundColor(context.getColor(R.color.grey_color));
-        setRadius(10);
+//        setRadius(10);
         init();
     }
 

@@ -38,8 +38,13 @@ public class MainViewModel extends BaseViewModel {
 
     public final MutableLiveData<Boolean> reloader = new MutableLiveData<>(false);
 
-    private List<HIKPlayer> hikPlayers = new ArrayList<>();
-    private List<DahuaPlayer> dahPlayers = new ArrayList<>();
+    public final MutableLiveData<Boolean> oneCam = new MutableLiveData<>(false);
+
+    public final MutableLiveData<Boolean> takeSnapShot = new MutableLiveData<>(false);
+
+    public final MutableLiveData<Boolean> recordVideo = new MutableLiveData<>(false);
+
+
     private Context context;
 
 
@@ -47,23 +52,11 @@ public class MainViewModel extends BaseViewModel {
     public MainViewModel(Context context, SchedulerProvider mSchedulerProvider, CompositeDisposable mCompositeDisposable, DataManager manager) {
         super(mSchedulerProvider, mCompositeDisposable, manager);
         this.context = context;
-        createPlayers();
-    }
 
-    private void createPlayers() {
-        for(int i  = 0 ; i < 16 ; i++){
-            hikPlayers.add(new HIKPlayer(context));
-            dahPlayers.add(new DahuaPlayer(context));
-        }
     }
 
 
-    public List<HIKPlayer> getHikPlayers() {
-        return hikPlayers;
-    }
-    public List<DahuaPlayer> getDahPlayers() {
-        return dahPlayers;
-    }
+
 
     public GridObservable getGridObservable() {
         return mGridObservable;

@@ -1,6 +1,8 @@
 package com.xontel.surveillancecameras.customObservers;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import androidx.databinding.BaseObservable;
@@ -25,6 +27,7 @@ public class GridObservable extends BaseObservable {
     public GridObservable(Context context, DataManager dataManager) {
         this.mDataManager = dataManager;
         this.mContext = context;
+        Log.v("testo", "fff2");
     }
 
     @Bindable
@@ -46,9 +49,14 @@ public class GridObservable extends BaseObservable {
 
             // React to the change.
             saveGridCount(gridCount);
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    // Notify observers of a new value.
+                    notifyPropertyChanged(BR.gridCount);
+                }
+            });
 
-            // Notify observers of a new value.
-            notifyPropertyChanged(BR.gridCount);
         }
     }
 

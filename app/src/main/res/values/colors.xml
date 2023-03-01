@@ -36,7 +36,7 @@
     <color name="call_btn">#23920D</color>
     <color name="line_color">#E1E2E2</color>
     <color name="transparent">#00000000</color>
-    <color name="white_transparent">#4DFFFFFF</color>
+    <color name="white_transparent">#85FFFFFF</color>
     <color name="black_effective">#2a2a2a</color>
     <color name="hangup_color">#E61F1F</color>
     <color name="grey_color">#818080</color>

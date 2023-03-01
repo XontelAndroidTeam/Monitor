@@ -173,10 +173,10 @@ public class DahuaPlayer extends CamPlayer implements CamPlayerView.SurfaceCallb
 
 
 
-    public void captureVideo(){
+    public void captureVideo(boolean isRecording){
         try {
             sDateFormat = new SimpleDateFormat("yyyy-MM-dd-hh_mm_ss_Sss");
-            isRecording = true;
+            this.isRecording = true;
             File dir = new File(StorageHelper.getMediaDirectory(context,Environment.DIRECTORY_MOVIES).getAbsolutePath());
             String date = sDateFormat.format(new java.util.Date());
             File file = new File(dir, date + ".mp4");

@@ -136,7 +136,7 @@ public class HomeActivity extends BaseActivity implements AdapterView.OnItemClic
     }
 
 
-    private void toggleSideMenu() {
+    public void toggleSideMenu() {
         if (binding.drawer.isOpen())
             binding.drawer.close();
         else
