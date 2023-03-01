@@ -48,10 +48,11 @@ public class HIKPlayer extends CamPlayer implements  PlayerCallBack.PlayerDispla
     // OUR START IS HERE
 
     public void openStream() {
-        NET_DVR_PREVIEWINFO previewInfo = new NET_DVR_PREVIEWINFO();
-        previewInfo.lChannel = mIpCam.getChannel();
-        previewInfo.dwStreamType = mIpCam.getStreamType(); // mainstream
-        previewInfo.bBlocked = 1;
+        new Thread(() -> {
+            NET_DVR_PREVIEWINFO previewInfo = new NET_DVR_PREVIEWINFO();
+            previewInfo.lChannel = mIpCam.getChannel();
+            previewInfo.dwStreamType = mIpCam.getStreamType(); // mainstream
+            previewInfo.bBlocked = 1;
 
             mRealPlayCallBack = (iRealhandle, iDataType, pDataBuffer, iDataSize) -> {
                 if (HCNetSDK.NET_DVR_SYSHEAD == iDataType) {
@@ -77,6 +78,8 @@ public class HIKPlayer extends CamPlayer implements  PlayerCallBack.PlayerDispla
                 return;
             }
 
+
+        }).start();
 
     }
 

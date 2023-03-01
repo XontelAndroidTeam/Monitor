@@ -49,6 +49,7 @@ public abstract class CamPlayer implements CamPlayerView.SurfaceCallback {
 
 
     public void startLiveView() {
+        Log.v(getTAG(), "startLiveView___");
         isPlaying = true;
         openStream();
     }
@@ -56,12 +57,12 @@ public abstract class CamPlayer implements CamPlayerView.SurfaceCallback {
     public void stopLiveView() {
         mCamPlayerView.onDetachedFromPlayer();
         detachView();
-        new Thread(() -> {
+//        new Thread(() -> {
             unConfigurePlay();
             stopStream();
             isPlaying = false;
-            onReady();
-        }).start();
+//            onReady();
+//        }).start();
 
     }
 
@@ -99,6 +100,7 @@ public abstract class CamPlayer implements CamPlayerView.SurfaceCallback {
         this.mCamPlayerView = camPlayerView;
         mCamPlayerView.onAttachToPlayer(this);
         if (mCamPlayerView.isSurfaceCreated() && !isPlaying) {
+            Log.v(getTAG(), "first");
             startLiveView();
         }
     }
@@ -129,6 +131,7 @@ public abstract class CamPlayer implements CamPlayerView.SurfaceCallback {
     @Override
     public void onSurfaceCreated() {
         isSurfaceCreated = true;
+        Log.v(getTAG(), "last");
         startLiveView();
     }
 

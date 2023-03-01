@@ -76,11 +76,12 @@ public class CamPlayerView extends CardView implements SurfaceHolder.Callback, V
     }
 
     public void onAttachToPlayer(SurfaceCallback surfaceCallback) {
-        this.mSurfaceCallback = surfaceCallback;
+        Log.v(TAG, "atttach___");
         mLoadingDots.setVisibility(View.VISIBLE);
 //        name.setVisibility(View.VISIBLE);
 //        name.setText(mIpCam.getName());
         addBtn.setVisibility(View.GONE);
+        this.mSurfaceCallback = surfaceCallback;
     }
 
     public void onDetachedFromPlayer() {
