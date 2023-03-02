@@ -73,7 +73,8 @@ public class SavedMediaFragment extends BaseFragment implements LoaderManager.Lo
     @Override
     public void onResume() {
         super.onResume();
-
+        LoaderManager.getInstance(this).initLoader(IMAGES_LOADER, null, this);
+        LoaderManager.getInstance(this).initLoader(VIDEOS_LOADER, null, this);
     }
 
     @Override
@@ -111,9 +112,6 @@ public class SavedMediaFragment extends BaseFragment implements LoaderManager.Lo
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        if (getArguments() != null) {
-
-        }
     }
 
     @Override
@@ -128,8 +126,7 @@ public class SavedMediaFragment extends BaseFragment implements LoaderManager.Lo
     @Override
     protected void setUp(View view) {
         setupMediaList();
-        LoaderManager.getInstance(this).initLoader(IMAGES_LOADER, null, this);
-        LoaderManager.getInstance(this).initLoader(VIDEOS_LOADER, null, this);
+
     }
 
     private void setupMediaList() {

@@ -1,5 +1,7 @@
 package com.xontel.surveillancecameras.fragments;
 
+import static android.view.FrameMetrics.ANIMATION_DURATION;
+
 import android.content.Intent;
 import android.database.DataSetObservable;
 import android.database.DataSetObserver;
@@ -57,6 +59,56 @@ public class MonitorFragment extends BaseFragment implements AdapterView.OnItemC
     @Inject
     ViewModelProviderFactory providerFactory;
 
+    private boolean isBtnsShown = true;
+
+    private Handler btnsHandler = new Handler();
+
+    private static final long TIME_TO_HIDE_BTNS = 5000;
+    private static final long ANIMATION_DURATION = 300;
+    private  Runnable btnsRemovalRunnable = new Runnable() {
+        @Override
+        public void run() {
+            hideButtons();
+        }
+    };
+
+    private void hideButtons() {
+        if(isBtnsShown) {
+            binding.llBtns.animate()
+                    .alpha(0.0f)
+                    .translationY(-100)
+                    .setDuration(ANIMATION_DURATION)
+                    .setListener(null);
+            binding.dotsIndicator.animate()
+                    .alpha(0.0f)
+                    .translationY(100)
+                    .setDuration(ANIMATION_DURATION)
+                    .setListener(null);
+            isBtnsShown = false;
+        }
+    }
+
+    private void showButtons() {
+        if(!isBtnsShown) {
+            binding.llBtns.animate()
+                    .alpha(1.0f)
+                    .translationY(0)
+                    .setDuration(ANIMATION_DURATION)
+                    .setListener(null);
+            binding.dotsIndicator.animate()
+                    .alpha(1.0f)
+                    .translationY(0)
+                    .setDuration(ANIMATION_DURATION)
+                    .setListener(null);
+            isBtnsShown = true;
+        }
+    }
+
+    private void scheduleHidingBtns() {
+        btnsHandler.removeCallbacks(btnsRemovalRunnable);//add this
+        btnsHandler.postDelayed(btnsRemovalRunnable, TIME_TO_HIDE_BTNS);
+    }
+
 
     public MonitorFragment() {
     }
@@ -65,6 +117,7 @@ public class MonitorFragment extends BaseFragment implements AdapterView.OnItemC
     public void onResume() {
         super.onResume();
         ((HomeActivity) getActivity()).getSupportActionBar().hide();
+//        reload();
         Log.v(TAG, "onResume");
 
     }
@@ -73,6 +126,7 @@ public class MonitorFragment extends BaseFragment implements AdapterView.OnItemC
     public void onPause() {
         super.onPause();
         ((HomeActivity) getActivity()).getSupportActionBar().show();
+        pagerAdapter.setPagesCount(0);
         Log.v(TAG, "onPause");
     }
 
@@ -129,7 +183,7 @@ public class MonitorFragment extends BaseFragment implements AdapterView.OnItemC
     }
 
 
-    private void setupGridDropDown() {
+        private void setupGridDropDown() {
         ArrayAdapter gridDropDownAdapter = new ArrayAdapter<String>(getContext(),
                 android.R.layout.simple_spinner_dropdown_item,
                 getResources().getStringArray(R.array.grid_count));
@@ -168,7 +222,7 @@ public class MonitorFragment extends BaseFragment implements AdapterView.OnItemC
                 }
             }
         };
-//        pagerAdapter.registerDataSetObserver(emptyObserver);
+        pagerAdapter.registerDataSetObserver(emptyObserver);
         binding.camsPager.setAdapter(pagerAdapter);
         binding.camsPager.setOffscreenPageLimit(1);
         binding.dotsIndicator.setViewPager(binding.camsPager); //must be after adapter
@@ -213,7 +267,6 @@ public class MonitorFragment extends BaseFragment implements AdapterView.OnItemC
         int newGrid = mainViewModel.mGridObservable.getValue();
         int camsCount = mainViewModel.ipCams.getValue().size();
         int pagesCount = (int) Math.ceil(camsCount * 1.0 / newGrid);
-        Log.v("GridFragment", "rebindOuter");
         pagerAdapter.setPagesCount(pagesCount);
     }
 

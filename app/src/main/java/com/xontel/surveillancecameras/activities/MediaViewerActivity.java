@@ -10,19 +10,26 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.google.android.exoplayer2.ExoPlayer;
+import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.xontel.surveillancecameras.R;
+import com.xontel.surveillancecameras.adapters.PagerAdapter;
 import com.xontel.surveillancecameras.base.BaseActivity;
 import com.xontel.surveillancecameras.databinding.ActivityMediaViewerActivityBinding;
 import com.xontel.surveillancecameras.databinding.DialogMediaDetailsBinding;
@@ -37,13 +44,12 @@ import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 
 public class MediaViewerActivity extends BaseActivity {
+    public static final String TAG  = MediaViewerActivity.class.getSimpleName();
     private ActivityMediaViewerActivityBinding binding;
-    public static final String KEY_MEDIA_TYPE = "media_type";
-    public static final String KEY_MEDIA_FILE_PATH = "media_path";
-    public static final int MEDIA_VIDEO = 1;
-    public static final int MEDIA_IMAGE = 0;
-    private MediaPlayer mediaPlayer;
-    private MediaData mediaFilePath;
+    public static final String KEY_MEDIA_DATA = "media_data";
+
+    private MediaData mMediaData;
+    private ExoPlayer simpleExoPlayer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,42 +64,45 @@ public class MediaViewerActivity extends BaseActivity {
     }
 
     private void intUI() {
-        mediaFilePath = getIntent().getParcelableExtra(KEY_MEDIA_FILE_PATH);
+        mMediaData = getIntent().getParcelableExtra(KEY_MEDIA_DATA);
         binding.ivDetails.setOnClickListener(v -> {
-            MediaDetailsDialog mediaDetailsDialog = new MediaDetailsDialog(this, new File( mediaFilePath.getMediaPath() == null  ? mediaFilePath.getMediaPath() : mediaFilePath.getMediaPath()));
+            MediaDetailsDialog mediaDetailsDialog = new MediaDetailsDialog(this, new File( mMediaData.getMediaPath() == null  ? mMediaData.getMediaPath() : mMediaData.getMediaPath()));
             mediaDetailsDialog.show();
         });
-        if(getIntent().hasExtra(KEY_MEDIA_TYPE)){
-            if(getIntent().getIntExtra(KEY_MEDIA_TYPE, MEDIA_IMAGE) == MEDIA_IMAGE){
-                showImage();
-            }else{
-                showVideo();
-            }
+
+        if(mMediaData.getMediaType().equals(Environment.DIRECTORY_PICTURES)){
+            showImage();
+        }else{
+            showVideo();
         }
 
     }
 
     private void showImage(){
-        Glide.with(this).asBitmap().load(mediaFilePath.getMediaType()).into(new SimpleTarget<Bitmap>() {
-
-            @Override
-            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                    binding.ivImagePreview.setImageBitmap(resource);
-            }
-        });
-        binding.ivImagePreview.setVisibility(View.VISIBLE);
+        Uri uri = mMediaData.getMediaUri();
+        Log.v(TAG, uri.toString());
+        Glide.with(this)
+                .asBitmap()
+                .load(mMediaData.getMediaUri())
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                        binding.ivImagePreview.setImageBitmap(resource);
+                    }
+                });
         binding.ivImagePreview.setZoom(1f);
     }
 
     private void showVideo(){
-        binding.vlcLayout.setVisibility(View.VISIBLE);
-        mediaPlayer = new MediaPlayer(this);
-        mediaPlayer.attachViews(binding.vlcLayout);
-        final Media media = new Media(mediaPlayer.getLibVLCInstance(), mediaFilePath.getMediaPath());
-        media.addCommonOptions();
-        mediaPlayer.setMedia(media);
-        media.release();
-        mediaPlayer.play();
+        simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(this);
+        binding.playView.setPlayer(simpleExoPlayer);
+        binding.playView.setKeepScreenOn(true);
+        DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(this, "cameras");
+        MediaSource mediaSource = new ExtractorMediaSource.Factory(dataSourceFactory)
+                .createMediaSource(Uri.fromFile(new File(mMediaData.getMediaPath())));
+        simpleExoPlayer.prepare(mediaSource);
+        simpleExoPlayer.setPlayWhenReady(true);
+        binding.playView.setVisibility(View.VISIBLE);
     }
 
 
@@ -107,6 +116,6 @@ public class MediaViewerActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mediaPlayer != null){mediaPlayer.release();}
+        if (simpleExoPlayer != null){simpleExoPlayer.release();}
     }
 }

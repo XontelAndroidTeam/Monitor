@@ -110,8 +110,11 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:3.9.1'
 
     //exo
-    implementation 'com.google.android.exoplayer:exoplayer:2.9.6'
-    implementation 'com.github.MikeOrtiz:TouchImageView:3.1.1'
+    implementation 'com.google.android.exoplayer:exoplayer:2.9.0'
+
+
+    // ZoomableView
+    implementation 'com.github.MikeOrtiz:TouchImageView:3.2.0'
 
 
     // Splash Screen
@@ -127,6 +130,9 @@ dependencies {
 
     // lifecycle
     implementation "androidx.lifecycle:lifecycle-common-java8:2.5.0"
+
+    //shimmer
+    implementation 'com.facebook.shimmer:shimmer:0.5.0'
 
 
 

@@ -133,7 +133,7 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
         private void viewMedia() {
             MediaData data = itemList.get(getAbsoluteAdapterPosition()) ;
             Intent intent = new Intent(context, MediaViewerActivity.class);
-            intent.putExtra(MediaViewerActivity.KEY_MEDIA_FILE_PATH, data);
+            intent.putExtra(MediaViewerActivity.KEY_MEDIA_DATA, data);
             context.startActivity(intent);
         }
 
@@ -147,7 +147,7 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
                 try {
                     image.setImageBitmap(context.getContentResolver().loadThumbnail(
                             data.getMediaUri(),
-                          new Size(200, 200), // TODO check for smarter alternatives
+                          new Size(500, 500), // TODO check for smarter alternatives
                             null
                     ));
                 } catch (IOException e) {

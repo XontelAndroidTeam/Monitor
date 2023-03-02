@@ -43,8 +43,8 @@ import javax.inject.Inject;
 public class CamerasActivity extends BaseActivity implements MainMvpView {
     public static final String KEY_CAMERAS = "cameras";
     public static final String KEY_SLIDE_SHOW = "slide_show";
-    private static final long TIME_TO_HIDE_BTNS = 5000;
-    private static final long ANIMATION_DURATION = 300;
+        private static final long TIME_TO_HIDE_BTNS = 5000;
+        private static final long ANIMATION_DURATION = 300;
     private SinglePagerAdapter singlePagerAdapter;
     private Menu optionMenu ;
     int slideInterval;

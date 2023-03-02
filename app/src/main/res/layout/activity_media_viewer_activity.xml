@@ -14,15 +14,14 @@
             android:layout_height="match_parent"
             android:scaleType="fitXY"
             android:adjustViewBounds="true"
-            android:visibility="gone" />
+           />
 
-        <org.videolan.libvlc.util.VLCVideoLayout
-            android:id="@+id/vlc_layout"
+        <com.google.android.exoplayer2.ui.PlayerView
+            android:id="@+id/play_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone"
-            android:layout_gravity="bottom|center"
-            app:vlc_error_text_size="30dp" />
+            android:layout_gravity="bottom|center" />
 
         <FrameLayout
             android:layout_width="match_parent"

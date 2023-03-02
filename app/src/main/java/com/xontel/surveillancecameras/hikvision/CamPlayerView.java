@@ -45,7 +45,6 @@ public class CamPlayerView extends CardView implements SurfaceHolder.Callback, V
 
     private void init() {
         inflate(context, R.layout.item_player_view, this);
-
         mLoadingDots = findViewById(R.id.loading_dots);
         name = findViewById(R.id.tv_cam_name);
         errorTextView = findViewById(R.id.error_stream);
@@ -53,6 +52,7 @@ public class CamPlayerView extends CardView implements SurfaceHolder.Callback, V
         surfaceStub = findViewById(R.id.stub);
         mSurfaceView = (SurfaceView) surfaceStub.inflate();
         mSurfaceView.getHolder().addCallback(this);
+        setOnClickListener(this);
     }
 
 
@@ -96,7 +96,6 @@ public class CamPlayerView extends CardView implements SurfaceHolder.Callback, V
 
     @Override
     public void surfaceCreated(@NonNull SurfaceHolder surfaceHolder) {
-        Log.v("GridFragment", "surfaceCreated__");
         isSurfaceCreated = true;
         if (mSurfaceCallback != null)
             mSurfaceCallback.onSurfaceCreated();
@@ -105,12 +104,11 @@ public class CamPlayerView extends CardView implements SurfaceHolder.Callback, V
 
     @Override
     public void surfaceChanged(@NonNull SurfaceHolder surfaceHolder, int i, int i1, int i2) {
-        Log.v("GridFragment", "surfaceChanged__");
+
     }
 
     @Override
     public void surfaceDestroyed(@NonNull SurfaceHolder surfaceHolder) {
-        Log.v("GridFragment", "surfaceDestroyed__");
         isSurfaceCreated = false;
         if (mSurfaceCallback != null)
             mSurfaceCallback.onSurfaceDestroyed();

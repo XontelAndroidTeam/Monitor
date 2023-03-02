@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:shimmer_repeat_delay="1"
+        app:shimmer_repeat_count="10000"
+        android:id="@+id/shimmer">
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:rowCount="3"
+            android:columnCount="3">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_margin="8dp"
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:background="@color/grey_color" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_margin="8dp"
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:background="@color/grey_color" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_margin="8dp"
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:background="@color/grey_color" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_margin="8dp"
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:background="@color/grey_color" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_margin="8dp"
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:background="@color/grey_color" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_margin="8dp"
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:background="@color/grey_color" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_margin="8dp"
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:background="@color/grey_color" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_margin="8dp"
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:background="@color/grey_color" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_margin="8dp"
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:background="@color/grey_color" />
+        </GridLayout>
+
+    </com.facebook.shimmer.ShimmerFrameLayout>
+</layout>

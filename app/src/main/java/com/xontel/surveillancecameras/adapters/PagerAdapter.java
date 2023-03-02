@@ -37,9 +37,6 @@ public class PagerAdapter extends XontelFragmentStatePagerAdapter {
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
         Object o = super.instantiateItem(container, position);
-        Log.v(TAG, "instantiateItem " + ((Fragment) o).hashCode() + " " + position);
-        Log.v(TAG, "instantiateItem " + ((Fragment) o).getLifecycle().getCurrentState().name() + " " + position);
-        Log.v(TAG, "instantiateItem " + ((Fragment) o).getParentFragmentManager() + " " + position);
         return o;
     }
 
@@ -47,7 +44,7 @@ public class PagerAdapter extends XontelFragmentStatePagerAdapter {
     public int getItemPosition(@NonNull Object object) {
 //        Log.v(TAG, "getItemPosition "+((Fragment)object).hashCode());
         GridFragment gridFragment = (GridFragment) object;
-        if (gridFragment.isResumed()) {
+        if (gridFragment.isResumed() && pagesCount > 0) {
             int newPosition = gridFragment.calculateNewIndex();
             int oldPosition = mFragments.indexOf(object);
             if(oldPosition < newPosition){

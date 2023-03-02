@@ -255,7 +255,7 @@ public class HIKPlayer extends CamPlayer implements  PlayerCallBack.PlayerDispla
             Player.MPInteger stWidth = new Player.MPInteger();
             Player.MPInteger stHeight = new Player.MPInteger();
             if (!Player.getInstance().getPictureSize(m_iPort, stWidth, stHeight)) {
-                showMessage(context.getString(R.string.cant_take_photo)+" "+ "width : "+ stWidth +" "+ );
+                showMessage(context.getString(R.string.cant_take_photo)+" "+ "width : " );
                 return;
             }
             int nSize = 5 * stWidth.value * stHeight.value;

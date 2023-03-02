@@ -263,7 +263,6 @@ public class GridFragment extends BaseFragment implements CamPlayerView.ClickLis
             int oldRangeStart = (oldGrid * oldPage);
             int oldRangeEnd = (oldGrid * oldPage) + oldGrid;
             boolean wasInOldRange = oldRangeStart <= camIndex && camIndex < oldRangeEnd;
-
             if (!wasInOldRange) {
                 addNewView(i);
                 if (camIndex < ipCams.size()) {
@@ -372,9 +371,11 @@ public class GridFragment extends BaseFragment implements CamPlayerView.ClickLis
 
     @Override
     public void onViewClicked(boolean isAttachedToPlayer) {
-        if (!isAttachedToPlayer) {
-            NavHostFragment.findNavController(this).navigate(R.id.action_monitorFragment_to_deviceFragment);
-
+        Log.v(TAG, "clicked");
+        if (isAttachedToPlayer) {
+            viewModel.mGridObservable.setGridCount("1");
+        }else{
+            //TODO navigate to devices
         }
     }
 }
