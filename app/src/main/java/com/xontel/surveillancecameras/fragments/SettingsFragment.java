@@ -106,15 +106,15 @@ public class SettingsFragment extends BaseFragment {
             currentValue = requireContext().getString(R.string.internal_storage) ;
             StorageHelper.saveStorageType(requireContext(),currentValue);
         }
-        binding.mediaFilter.setText(currentValue);
+        binding.mediaFilter.setText(currentValue, false);
         binding.mediaFilter.setAdapter(mediaDirsDropDownAdapter);
     }
 
     private void setupDropDowns() {
         ArrayAdapter mediaDirsDropDownAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, currentStorage);
         ArrayAdapter intervalsDirsDropDownAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, getResources().getStringArray(R.array.intervals));
-        binding.mediaFilter.setText(StorageHelper.getSaveStorageName(requireContext()));
-        binding.slideShowFilter.setText(StorageHelper.getSlideInterval(requireContext()) );
+        binding.mediaFilter.setText(StorageHelper.getSaveStorageName(requireContext()),false);
+        binding.slideShowFilter.setText(StorageHelper.getSlideInterval(requireContext()), false);
         binding.mediaFilter.setAdapter(mediaDirsDropDownAdapter);
         binding.slideShowFilter.setAdapter(intervalsDirsDropDownAdapter);
 
@@ -123,7 +123,7 @@ public class SettingsFragment extends BaseFragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 String name = binding.slideShowFilter.getText().toString();
                 StorageHelper.saveSlideInterval(requireContext(),name);
-                binding.slideShowFilter.setText(name);
+                binding.slideShowFilter.setText(name, false);
                 binding.slideShowFilter.setAdapter(intervalsDirsDropDownAdapter);
             }
         });
@@ -132,7 +132,7 @@ public class SettingsFragment extends BaseFragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 String name = binding.mediaFilter.getText().toString();
-                binding.mediaFilter.setText(name);
+                binding.mediaFilter.setText(name, false);
                 binding.mediaFilter.setAdapter(mediaDirsDropDownAdapter);
                 StorageHelper.saveStorageType(requireContext(),name);
             }

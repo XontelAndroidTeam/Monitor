@@ -257,7 +257,7 @@ public class CamPreviewFragment extends BaseFragment {
         watchFile();
         if (cam.getType() == CamDeviceType.HIKVISION.getValue()){}
         else if(cam.getType() == CamDeviceType.DAHUA.getValue()){
-            mDahuaPlayer.captureVideo(true);}
+            mDahuaPlayer.captureVideo();}
         else{vlcSinglePlayer.vlcRecording();}
     }
 

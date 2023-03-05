@@ -168,13 +168,15 @@ public class GridFragment extends BaseFragment implements CamPlayerView.ClickLis
     }
 
     public int calculateNewIndex() {
-        return (int) Math.floor((pageIndex * 1.0 * gridCount) / viewModel.mGridObservable.getValue());
+        int newGridCount = viewModel.mGridObservable.getValue();
+        return (int) Math.floor((pageIndex * 1.0 * gridCount) / newGridCount);
     }
 
 
     private void setupObservables() {
         mGridViewModel.gridChanged.observe(getViewLifecycleOwner(), changed -> {
-            if (changed) {
+            int newGrid = viewModel.mGridObservable.getValue();
+            if (changed && newGrid != gridCount) {
                 int oldGridCount = gridCount;
                 int oldPageIndex = pageIndex;
                 pageIndex = calculateNewIndex();
@@ -200,8 +202,8 @@ public class GridFragment extends BaseFragment implements CamPlayerView.ClickLis
         viewModel.recordVideo.observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean record) {
-                if (viewModel.mGridObservable.getValue() == 1) {
-//                    mPlayers.get(0).captureVideo(record);
+                if (viewModel.mGridObservable.getValue() == 1 && record && isResumed()) {
+                    mPlayers.get(0).captureVideo();
                 }
             }
         });
@@ -370,12 +372,37 @@ public class GridFragment extends BaseFragment implements CamPlayerView.ClickLis
     }
 
     @Override
-    public void onViewClicked(boolean isAttachedToPlayer) {
-        Log.v(TAG, "clicked");
+    public void onViewClicked(boolean isAttachedToPlayer, CamPlayerView camPlayerView) {
         if (isAttachedToPlayer) {
+            int viewPosition = binding.grid.indexOfChild(camPlayerView);
+            removeAllExcept(viewPosition);
+            pageIndex = pageIndex * gridCount + viewPosition;
+            gridCount = 1;
+            for (int i = 0; i < binding.grid.getChildCount(); i++) {
+                binding.grid.getChildAt(i).setLayoutParams(getViewLayoutParams());
+            }
+            binding.grid.setColumnCount(1);
+            binding.grid.setRowCount(1);
             viewModel.mGridObservable.setGridCount("1");
         }else{
-            //TODO navigate to devices
+            NavHostFragment.findNavController(this).navigate(R.id.action_monitorFragment_to_deviceFragment);
+        }
+    }
+
+    private void removeAllExcept(int indexOfChild) {
+        int childCount = binding.grid.getChildCount();
+        for (int i = childCount - 1; i >= 0; i--) {
+            if(i != indexOfChild){
+                Log.v(TAG, "index : " + i);
+                int camIndex = gridCount * pageIndex + i;
+                List<IpCam> cams = viewModel.ipCams.getValue();
+                if (camIndex < cams.size()) {
+                    mPlayers.get(i).stopLiveView();
+                    mPlayers.remove(i);
+                }
+                binding.grid.removeViewAt(i);
+            }
+
         }
     }
 }

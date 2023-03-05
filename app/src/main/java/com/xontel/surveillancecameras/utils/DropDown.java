@@ -42,7 +42,7 @@ public class DropDown extends TextInputLayout {
         if (attributeSet != null) {
             TypedArray a = context.obtainStyledAttributes(attributeSet, R.styleable.drop_down_attributes);
             defaultText = a.getString(R.styleable.drop_down_attributes_text);
-            mAutoCompleteTextView.setText(defaultText);
+            mAutoCompleteTextView.setText(defaultText, false);
         }
 
     }

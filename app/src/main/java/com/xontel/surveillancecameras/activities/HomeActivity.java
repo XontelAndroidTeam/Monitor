@@ -100,7 +100,7 @@ public class HomeActivity extends BaseActivity implements AdapterView.OnItemClic
                 android.R.layout.simple_spinner_dropdown_item,
                 getResources().getStringArray(R.array.grid_count));
         AutoCompleteTextView autoCompleteTextView = textInputLayout.findViewById(R.id.slide_show_filter);
-        autoCompleteTextView.setText(String.valueOf(mainViewModel.mGridObservable.getValue()));
+        autoCompleteTextView.setText(String.valueOf(mainViewModel.mGridObservable.getValue()), false);
         autoCompleteTextView.setAdapter(gridDropDownAdapter);
         autoCompleteTextView.setOnItemClickListener(this);
         binding.setLifecycleOwner(this);

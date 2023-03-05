@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 
 import android.content.ContentUris;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -75,7 +76,6 @@ public class MediaViewerActivity extends BaseActivity {
         }else{
             showVideo();
         }
-
     }
 
     private void showImage(){
@@ -94,15 +94,20 @@ public class MediaViewerActivity extends BaseActivity {
     }
 
     private void showVideo(){
-        simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(this);
-        binding.playView.setPlayer(simpleExoPlayer);
-        binding.playView.setKeepScreenOn(true);
-        DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(this, "cameras");
-        MediaSource mediaSource = new ExtractorMediaSource.Factory(dataSourceFactory)
-                .createMediaSource(Uri.fromFile(new File(mMediaData.getMediaPath())));
-        simpleExoPlayer.prepare(mediaSource);
-        simpleExoPlayer.setPlayWhenReady(true);
-        binding.playView.setVisibility(View.VISIBLE);
+//        simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(this);
+//        binding.playView.setPlayer(simpleExoPlayer);
+//        binding.playView.setKeepScreenOn(true);
+//        DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(this, "cameras");
+//        MediaSource mediaSource = new ExtractorMediaSource
+//                .Factory(dataSourceFactory)
+//                .createMediaSource(Uri.fromFile(new File(mMediaData.getMediaPath())));
+//        simpleExoPlayer.prepare(mediaSource);
+//        simpleExoPlayer.setPlayWhenReady(true);
+//        binding.playView.setVisibility(View.VISIBLE);
+        Uri uri = mMediaData.getMediaUri();
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        intent.setDataAndType(uri, "video/mp4");
+        startActivity(intent);
     }
 
 

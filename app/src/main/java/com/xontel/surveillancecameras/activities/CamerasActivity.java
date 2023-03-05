@@ -246,9 +246,9 @@ public class CamerasActivity extends BaseActivity implements MainMvpView {
     @Override
     protected void onResume() {
         super.onResume();
-        showButtons();
-        scheduleHidingBtns();
-        setupCamerasPager();
+            showButtons();
+            scheduleHidingBtns();
+            setupCamerasPager();
     }
 
     @Override

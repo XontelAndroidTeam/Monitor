@@ -120,7 +120,7 @@ public class CamPlayerView extends CardView implements SurfaceHolder.Callback, V
 
     @Override
     public void onClick(View view) {
-        mClickListener.onViewClicked(mSurfaceCallback != null);
+        mClickListener.onViewClicked(mSurfaceCallback != null, this);
     }
 
 
@@ -135,7 +135,7 @@ public class CamPlayerView extends CardView implements SurfaceHolder.Callback, V
     }
 
     public interface ClickListener{
-        void onViewClicked(boolean isAttachedToPlayer);
+        void onViewClicked(boolean isAttachedToPlayer, CamPlayerView camPlayerView);
     }
 }
 

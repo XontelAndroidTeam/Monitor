@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
+import android.net.Uri;
 import android.opengl.Visibility;
 import android.os.Build;
 import android.os.Environment;
@@ -132,16 +133,23 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
 
         private void viewMedia() {
             MediaData data = itemList.get(getAbsoluteAdapterPosition()) ;
-            Intent intent = new Intent(context, MediaViewerActivity.class);
-            intent.putExtra(MediaViewerActivity.KEY_MEDIA_DATA, data);
-            context.startActivity(intent);
+            if(data.getMediaType().equals(Environment.DIRECTORY_PICTURES)) {
+                Intent intent = new Intent(context, MediaViewerActivity.class);
+                intent.putExtra(MediaViewerActivity.KEY_MEDIA_DATA, data);
+                context.startActivity(intent);
+            }else{
+                Uri uri = data.getMediaUri();
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                intent.setDataAndType(uri, "video/mp4");
+                context.startActivity(intent);
+            }
         }
 
 
 
         public void onBind(int position) {
             showChecker(selectionModeEnabled);
-            checker.setChecked(selectedItems.contains(itemList.get(getAdapterPosition())));
+            checker.setChecked(selectedItems.contains(itemList.get(getAbsoluteAdapterPosition())));
             MediaData data = itemList.get(position);
             play.setVisibility(data.getMediaType().equals(Environment.DIRECTORY_PICTURES) ? View.GONE : View.VISIBLE);
                 try {

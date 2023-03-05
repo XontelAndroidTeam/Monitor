@@ -11,7 +11,8 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:clickable="true">
 
 
         <include
@@ -36,6 +37,15 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+        <ImageView
+            android:id="@+id/btn_show_controllers"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_gravity="top|center"
+            android:alpha="0"
+            android:src="@drawable/ic_baseline_keyboard_arrow_down_24"
+            android:background="@drawable/half_circle"
+            android:tint="#C1C0C0"/>
         <LinearLayout
             android:id="@+id/ll_btns"
             android:layout_width="match_parent"
@@ -73,7 +83,7 @@
                 app:iconGravity="textStart"
                 android:padding="0dp"
                 app:iconPadding="0dp"
-                android:visibility="@{viewModel.oneCam ? View.VISIBLE : View.GONE, default=gone}"
+                android:visibility="@{viewModel.oneCam &amp;&amp; viewModel.ipCams.size() > 0? View.VISIBLE : View.GONE, default=gone}"
                 app:iconTint="@color/white"
                 android:insetLeft="0dp"
                 android:insetTop="0dp"
@@ -91,7 +101,7 @@
                 app:icon="@drawable/ic_baseline_video_cam_24"
                 app:iconSize="35dp"
                 app:iconGravity="textStart"
-                android:visibility="@{viewModel.oneCam ? View.VISIBLE : View.GONE, default=gone}"
+                android:visibility="@{viewModel.oneCam &amp;&amp; viewModel.ipCams.size() > 0 ? View.VISIBLE : View.GONE, default=gone}"
                 android:padding="0dp"
                 app:iconPadding="0dp"
                 app:iconTint="@color/white"

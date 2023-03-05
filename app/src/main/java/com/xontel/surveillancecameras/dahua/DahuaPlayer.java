@@ -173,7 +173,7 @@ public class DahuaPlayer extends CamPlayer implements CamPlayerView.SurfaceCallb
 
 
 
-    public void captureVideo(boolean isRecording){
+    public void captureVideo(){
         try {
             sDateFormat = new SimpleDateFormat("yyyy-MM-dd-hh_mm_ss_Sss");
             this.isRecording = true;

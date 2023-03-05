@@ -5,21 +5,13 @@ import static com.hikvision.netsdk.SDKError.NET_DVR_CHAN_NOTSUPPORT;
 import android.content.Context;
 import android.media.MediaScannerConnection;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 
-import androidx.lifecycle.MutableLiveData;
-
-import com.company.NetSDK.INetSDK;
 import com.hikvision.netsdk.HCNetSDK;
 import com.hikvision.netsdk.INT_PTR;
 import com.hikvision.netsdk.NET_DVR_PREVIEWINFO;
 import com.hikvision.netsdk.RealPlayCallBack;
 import com.xontel.surveillancecameras.R;
-import com.xontel.surveillancecameras.data.db.model.IpCam;
 import com.xontel.surveillancecameras.utils.CamPlayer;
 import com.xontel.surveillancecameras.utils.StorageHelper;
 
@@ -224,19 +216,21 @@ public class HIKPlayer extends CamPlayer implements  PlayerCallBack.PlayerDispla
 //    }
 
     @Override
-    public void captureVideo(boolean isRecording) {
+    public void captureVideo() {
         if (!isRecording) {
             String date = sDateFormat.format(new Date());
-            File dir = new File(StorageHelper.getMediaDirectory(context, Environment.DIRECTORY_MOVIES).getAbsolutePath() + "/monitor");
+            File dir = new File(StorageHelper.getMediaDirectory(context, Environment.DIRECTORY_MOVIES).getAbsolutePath());
             File file = new File(dir, date + ".mp4");
+            Log.v(TAG, file.getAbsolutePath());
             if (!HCNetSDK.getInstance().NET_DVR_SaveRealData((int) realPlayId, file.getAbsolutePath())) {
-                Log.e(TAG, "NET_DVR_SaveRealData on channel " + mIpCam.getChannel() + " failed! error: "
+                Log.e(TAG, "NET_DVR_SaveRealData failed! error: "
                         + HCNetSDK.getInstance().NET_DVR_GetLastError());
                 return;
             } else {
-                Log.v(TAG, "Record started successfully on channel " + mIpCam.getChannel());
+                Log.v(TAG, "Record started successfully ");
+                isRecording = true;
             }
-            isRecording = true;
+
         } else {
             if (!HCNetSDK.getInstance().NET_DVR_StopSaveRealData((int) realPlayId)) {
                 Log.e(TAG, "NET_DVR_StopSaveRealData failed! error: "

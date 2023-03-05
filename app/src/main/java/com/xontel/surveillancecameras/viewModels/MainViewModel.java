@@ -176,6 +176,7 @@ public class MainViewModel extends BaseViewModel {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(success -> {
                             deleteDeviceById(device);
+                            deleteIpCamsWithID(device);
                             getLoading().setValue(false);
                             showToastMessage(context, R.string.device_deleted);
                         }, error -> {
@@ -185,6 +186,16 @@ public class MainViewModel extends BaseViewModel {
                             setErrorMessage(error.getMessage());
                         }));
 
+    }
+
+    private void deleteIpCamsWithID(CamDevice device) {
+        List<IpCam> cams = ipCams.getValue();
+        for(int i = cams.size() - 1 ; i >=0 ; i--){
+            if(cams.get(i).getDeviceId() == device.getId()){
+                cams.remove(i);
+            }
+        }
+        ipCams.setValue(cams);
     }
 
     private void deleteDeviceById(CamDevice device) {
@@ -197,6 +208,7 @@ public class MainViewModel extends BaseViewModel {
         List<CamDevice> devices = camDevices.getValue();
         devices.add(camDevice);
         camDevices.setValue(devices);
+        populateIpCams();
     }
 
     private void updateDeviceInList(CamDevice device) {

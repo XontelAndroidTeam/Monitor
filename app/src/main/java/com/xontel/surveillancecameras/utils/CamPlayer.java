@@ -127,7 +127,7 @@ public abstract class CamPlayer implements CamPlayerView.SurfaceCallback {
 
 
 
-    public abstract void captureVideo(boolean isRecording);
+    public abstract void captureVideo();
 
 
     public abstract void takeSnapshot();

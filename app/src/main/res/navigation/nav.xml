@@ -13,7 +13,10 @@
         tools:layout="@layout/fragment_monitor">
         <action
             android:id="@+id/action_monitorFragment_to_deviceFragment"
-            app:destination="@id/deviceFragment" />
+            app:destination="@id/deviceFragment"
+            app:popUpTo="@id/monitorFragment"
+            app:popUpToInclusive="true"
+            />
     </fragment>
     <fragment
         android:id="@+id/deviceFragment"

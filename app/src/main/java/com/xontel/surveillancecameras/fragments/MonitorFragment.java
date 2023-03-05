@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -84,6 +85,10 @@ public class MonitorFragment extends BaseFragment implements AdapterView.OnItemC
                     .translationY(100)
                     .setDuration(ANIMATION_DURATION)
                     .setListener(null);
+            binding.btnShowControllers.animate()
+                    .alpha(1.0f)
+                    .setDuration(ANIMATION_DURATION)
+                    .setListener(null);
             isBtnsShown = false;
         }
     }
@@ -98,6 +103,10 @@ public class MonitorFragment extends BaseFragment implements AdapterView.OnItemC
             binding.dotsIndicator.animate()
                     .alpha(1.0f)
                     .translationY(0)
+                    .setDuration(ANIMATION_DURATION)
+                    .setListener(null);
+            binding.btnShowControllers.animate()
+                    .alpha(0.0f)
                     .setDuration(ANIMATION_DURATION)
                     .setListener(null);
             isBtnsShown = true;
@@ -116,9 +125,11 @@ public class MonitorFragment extends BaseFragment implements AdapterView.OnItemC
     @Override
     public void onResume() {
         super.onResume();
+        showButtons();
+        scheduleHidingBtns();
         ((HomeActivity) getActivity()).getSupportActionBar().hide();
 //        reload();
-        Log.v(TAG, "onResume");
+        Log.v(TAG, "onResume "+hashCode());
 
     }
 
@@ -127,7 +138,7 @@ public class MonitorFragment extends BaseFragment implements AdapterView.OnItemC
         super.onPause();
         ((HomeActivity) getActivity()).getSupportActionBar().show();
         pagerAdapter.setPagesCount(0);
-        Log.v(TAG, "onPause");
+        Log.v(TAG, "onPause "+hashCode());
     }
 
 
@@ -144,7 +155,7 @@ public class MonitorFragment extends BaseFragment implements AdapterView.OnItemC
         super.onCreate(savedInstanceState);
         getFragmentComponent().inject(this);
         mainViewModel = new ViewModelProvider(requireActivity(), providerFactory).get(MainViewModel.class);
-        Log.v(TAG, "onCreate");
+        Log.v(TAG, "onCreate "+hashCode());
     }
 
 
@@ -155,7 +166,7 @@ public class MonitorFragment extends BaseFragment implements AdapterView.OnItemC
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.v(TAG, "onCreateView");
+        Log.v(TAG, "onCreateView  "+hashCode());
         binding = FragmentMonitorBinding.inflate(inflater);
         binding.setViewModel(mainViewModel);
         requireActivity().setTitle(R.string.monitor);
@@ -164,6 +175,12 @@ public class MonitorFragment extends BaseFragment implements AdapterView.OnItemC
 
     @Override
     protected void setUp(View view) {
+        binding.btnAdd.setOnClickListener(view1 -> NavHostFragment.findNavController(MonitorFragment.this).navigate(R.id.action_monitorFragment_to_deviceFragment));
+        binding.noCams.btnAdd.setOnClickListener(view1 -> NavHostFragment.findNavController(MonitorFragment.this).navigate(R.id.action_monitorFragment_to_deviceFragment));
+        binding.btnShowControllers.setOnClickListener((v) -> {
+            showButtons();
+            scheduleHidingBtns();
+        });
         mainViewModel.oneCam.setValue(mainViewModel.mGridObservable.getValue() == 1);
         binding.btnMenu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -177,6 +194,13 @@ public class MonitorFragment extends BaseFragment implements AdapterView.OnItemC
                 mainViewModel.takeSnapShot.setValue(true);
             }
         });
+
+        binding.btnRecord.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mainViewModel.recordVideo.setValue(true);
+            }
+        });
         setupGridDropDown();
         setupObservables();
         setupCamsPager();
@@ -187,7 +211,7 @@ public class MonitorFragment extends BaseFragment implements AdapterView.OnItemC
         ArrayAdapter gridDropDownAdapter = new ArrayAdapter<String>(getContext(),
                 android.R.layout.simple_spinner_dropdown_item,
                 getResources().getStringArray(R.array.grid_count));
-        binding.slideShowFilter.setText(String.valueOf(mainViewModel.mGridObservable.getValue()));
+        binding.slideShowFilter.setText(String.valueOf(mainViewModel.mGridObservable.getValue()), false);
         binding.slideShowFilter.setAdapter(gridDropDownAdapter);
         binding.slideShowFilter.setOnItemClickListener(this);
 
@@ -243,6 +267,7 @@ public class MonitorFragment extends BaseFragment implements AdapterView.OnItemC
         mainViewModel.mGridObservable.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
             @Override
             public void onPropertyChanged(Observable sender, int propertyId) {
+                updateDropDownSelectionIfNotChanged();
                 mainViewModel.oneCam.setValue(mainViewModel.mGridObservable.getValue() == 1);
                 reload();
             }
@@ -257,6 +282,13 @@ public class MonitorFragment extends BaseFragment implements AdapterView.OnItemC
                 }
             }
         });
+    }
+
+    private void updateDropDownSelectionIfNotChanged() {
+        int dropDownSelection = Integer.parseInt(binding.slideShowFilter.getText().toString());
+        if(dropDownSelection != mainViewModel.mGridObservable.getValue()){
+            binding.slideShowFilter.setText(mainViewModel.mGridObservable.getValue()+"", false);
+        }
     }
 
     private void lockPager(Boolean record) {
@@ -274,19 +306,19 @@ public class MonitorFragment extends BaseFragment implements AdapterView.OnItemC
     @Override
     public void onStart() {
         super.onStart();
-        Log.v(TAG, "onStart");
+        Log.v(TAG, "onStart "+hashCode());
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        Log.v(TAG, "onStop");
+        Log.v(TAG, "onStop "+hashCode());
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.v(TAG, "onDestroy");
+        Log.v(TAG, "onDestroy "+hashCode());
     }
 
     @Override
@@ -296,7 +328,6 @@ public class MonitorFragment extends BaseFragment implements AdapterView.OnItemC
             public void run() {
                 int gridCount = Integer.parseInt(binding.slideShowFilter.getText().toString());
                 if (mainViewModel.getGridObservable().getValue() != gridCount) {
-                    StorageHelper.saveGridCount(getContext(), gridCount);
                     mainViewModel.mGridObservable.setGridCount(gridCount + "");
                 }
             }
