@@ -202,8 +202,14 @@ public class GridFragment extends BaseFragment implements CamPlayerView.ClickLis
         viewModel.recordVideo.observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean record) {
-                if (viewModel.mGridObservable.getValue() == 1 && record && isResumed()) {
-                    mPlayers.get(0).captureVideo();
+                if (viewModel.mGridObservable.getValue() == 1 && isResumed()) {
+                    if (record) {
+                        viewModel.isRecording.setValue(mPlayers.get(0).recordVideo());
+                    }
+                    else {
+                        viewModel.isRecording.setValue(false);
+                        mPlayers.get(0).stopRecordingVideo();
+                    }
                 }
             }
         });
@@ -384,7 +390,7 @@ public class GridFragment extends BaseFragment implements CamPlayerView.ClickLis
             binding.grid.setColumnCount(1);
             binding.grid.setRowCount(1);
             viewModel.mGridObservable.setGridCount("1");
-        }else{
+        } else {
             NavHostFragment.findNavController(this).navigate(R.id.action_monitorFragment_to_deviceFragment);
         }
     }
@@ -392,7 +398,7 @@ public class GridFragment extends BaseFragment implements CamPlayerView.ClickLis
     private void removeAllExcept(int indexOfChild) {
         int childCount = binding.grid.getChildCount();
         for (int i = childCount - 1; i >= 0; i--) {
-            if(i != indexOfChild){
+            if (i != indexOfChild) {
                 Log.v(TAG, "index : " + i);
                 int camIndex = gridCount * pageIndex + i;
                 List<IpCam> cams = viewModel.ipCams.getValue();

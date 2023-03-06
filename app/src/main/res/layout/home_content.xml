@@ -17,14 +17,13 @@
             android:layout_height="0dp"
             android:layout_weight="1">
 
-            <com.xontel.surveillancecameras.utils.ViewPagerWithEmptyView
+            <com.xontel.surveillancecameras.utils.ViewPagerWithCustomScroll
                 android:id="@+id/vp_slider"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginVertical="24dp"
                 android:layoutDirection="ltr" />
-
             <include
                 android:id="@+id/pager_empty_view"
                 layout="@layout/no_cams"

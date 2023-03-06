@@ -50,7 +50,7 @@ public class HomeActivity extends BaseActivity implements AdapterView.OnItemClic
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         getActivityComponent().inject(this);
         mainViewModel = new ViewModelProvider(this, providerFactory).get(MainViewModel.class);
-        mainViewModel.getAllDevices();
+//        mainViewModel.getAllDevices();
         setUp();
 
     }

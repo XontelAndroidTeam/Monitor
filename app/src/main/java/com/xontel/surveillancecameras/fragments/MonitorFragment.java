@@ -1,53 +1,34 @@
 package com.xontel.surveillancecameras.fragments;
 
-import static android.view.FrameMetrics.ANIMATION_DURATION;
-
-import android.content.Intent;
-import android.database.DataSetObservable;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
-import android.view.DragEvent;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Interpolator;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 
-import androidx.annotation.NonNull;
 import androidx.databinding.Observable;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
-import com.google.android.material.textfield.TextInputLayout;
 import com.xontel.surveillancecameras.R;
-import com.xontel.surveillancecameras.activities.AddNewDeviceActivity;
 import com.xontel.surveillancecameras.activities.HomeActivity;
 import com.xontel.surveillancecameras.adapters.PagerAdapter;
 import com.xontel.surveillancecameras.base.BaseFragment;
 import com.xontel.surveillancecameras.databinding.FragmentMonitorBinding;
-import com.xontel.surveillancecameras.hikvision.CamDevice;
 import com.xontel.surveillancecameras.utils.FixedSpeedScroller;
-import com.xontel.surveillancecameras.utils.StorageHelper;
-import com.xontel.surveillancecameras.utils.ViewPagerWithEmptyView;
 import com.xontel.surveillancecameras.viewModels.MainViewModel;
-import com.xontel.surveillancecameras.data.db.model.IpCam;
 import com.xontel.surveillancecameras.viewModels.ViewModelProviderFactory;
 
+import org.videolan.libvlc.util.TimeCounter;
+
 import java.lang.reflect.Field;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -57,6 +38,8 @@ public class MonitorFragment extends BaseFragment implements AdapterView.OnItemC
     private PagerAdapter pagerAdapter;
     private MainViewModel mainViewModel;
     private DataSetObserver emptyObserver;
+
+    private TimeCounter timer;
     @Inject
     ViewModelProviderFactory providerFactory;
 
@@ -66,7 +49,7 @@ public class MonitorFragment extends BaseFragment implements AdapterView.OnItemC
 
     private static final long TIME_TO_HIDE_BTNS = 5000;
     private static final long ANIMATION_DURATION = 300;
-    private  Runnable btnsRemovalRunnable = new Runnable() {
+    private Runnable btnsRemovalRunnable = new Runnable() {
         @Override
         public void run() {
             hideButtons();
@@ -74,7 +57,7 @@ public class MonitorFragment extends BaseFragment implements AdapterView.OnItemC
     };
 
     private void hideButtons() {
-        if(isBtnsShown) {
+        if (isBtnsShown) {
             binding.llBtns.animate()
                     .alpha(0.0f)
                     .translationY(-100)
@@ -94,7 +77,7 @@ public class MonitorFragment extends BaseFragment implements AdapterView.OnItemC
     }
 
     private void showButtons() {
-        if(!isBtnsShown) {
+        if (!isBtnsShown) {
             binding.llBtns.animate()
                     .alpha(1.0f)
                     .translationY(0)
@@ -129,7 +112,7 @@ public class MonitorFragment extends BaseFragment implements AdapterView.OnItemC
         scheduleHidingBtns();
         ((HomeActivity) getActivity()).getSupportActionBar().hide();
 //        reload();
-        Log.v(TAG, "onResume "+hashCode());
+        Log.v(TAG, "onResume " + hashCode());
 
     }
 
@@ -138,7 +121,7 @@ public class MonitorFragment extends BaseFragment implements AdapterView.OnItemC
         super.onPause();
         ((HomeActivity) getActivity()).getSupportActionBar().show();
         pagerAdapter.setPagesCount(0);
-        Log.v(TAG, "onPause "+hashCode());
+        Log.v(TAG, "onPause " + hashCode());
     }
 
 
@@ -155,7 +138,7 @@ public class MonitorFragment extends BaseFragment implements AdapterView.OnItemC
         super.onCreate(savedInstanceState);
         getFragmentComponent().inject(this);
         mainViewModel = new ViewModelProvider(requireActivity(), providerFactory).get(MainViewModel.class);
-        Log.v(TAG, "onCreate "+hashCode());
+        Log.v(TAG, "onCreate " + hashCode());
     }
 
 
@@ -166,7 +149,7 @@ public class MonitorFragment extends BaseFragment implements AdapterView.OnItemC
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.v(TAG, "onCreateView  "+hashCode());
+        Log.v(TAG, "onCreateView  " + hashCode());
         binding = FragmentMonitorBinding.inflate(inflater);
         binding.setViewModel(mainViewModel);
         requireActivity().setTitle(R.string.monitor);
@@ -207,7 +190,7 @@ public class MonitorFragment extends BaseFragment implements AdapterView.OnItemC
     }
 
 
-        private void setupGridDropDown() {
+    private void setupGridDropDown() {
         ArrayAdapter gridDropDownAdapter = new ArrayAdapter<String>(getContext(),
                 android.R.layout.simple_spinner_dropdown_item,
                 getResources().getStringArray(R.array.grid_count));
@@ -246,22 +229,30 @@ public class MonitorFragment extends BaseFragment implements AdapterView.OnItemC
                 }
             }
         };
-        pagerAdapter.registerDataSetObserver(emptyObserver);
+//        pagerAdapter.registerDataSetObserver(emptyObserver);
         binding.camsPager.setAdapter(pagerAdapter);
         binding.camsPager.setOffscreenPageLimit(1);
         binding.dotsIndicator.setViewPager(binding.camsPager); //must be after adapter
     }
 
     private void setupObservables() {
-        mainViewModel.recordVideo.observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+        mainViewModel.isRecording.observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean record) {
-                if (mainViewModel.mGridObservable.getValue() == 1) {
-                    lockPager(record);
+                lockPager(record);
+                if (timer != null) {
+                    timer.stop();
                 }
+                if (record) {
+                    timer = new TimeCounter(binding.recordPanel.timer);
+                    timer.count();
+                }
+
             }
         });
         mainViewModel.ipCams.observe(getViewLifecycleOwner(), allIpCams -> {
+            Log.e(TAG, allIpCams.size()+" size");
+            binding.noCams.getRoot().setVisibility(allIpCams.size() == 0 ? View.VISIBLE : View.GONE);
             reload();
         });
         mainViewModel.mGridObservable.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
@@ -286,13 +277,14 @@ public class MonitorFragment extends BaseFragment implements AdapterView.OnItemC
 
     private void updateDropDownSelectionIfNotChanged() {
         int dropDownSelection = Integer.parseInt(binding.slideShowFilter.getText().toString());
-        if(dropDownSelection != mainViewModel.mGridObservable.getValue()){
-            binding.slideShowFilter.setText(mainViewModel.mGridObservable.getValue()+"", false);
+        if (dropDownSelection != mainViewModel.mGridObservable.getValue()) {
+            binding.slideShowFilter.setText(mainViewModel.mGridObservable.getValue() + "", false);
         }
     }
 
     private void lockPager(Boolean record) {
-        binding.camsPager.setEnabled(!record);
+        Log.v(TAG, "lock : " + record);
+        binding.camsPager.disableScroll(record);
     }
 
     private void reload() {
@@ -306,19 +298,19 @@ public class MonitorFragment extends BaseFragment implements AdapterView.OnItemC
     @Override
     public void onStart() {
         super.onStart();
-        Log.v(TAG, "onStart "+hashCode());
+        Log.v(TAG, "onStart " + hashCode());
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        Log.v(TAG, "onStop "+hashCode());
+        Log.v(TAG, "onStop " + hashCode());
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.v(TAG, "onDestroy "+hashCode());
+        Log.v(TAG, "onDestroy " + hashCode());
     }
 
     @Override

@@ -121,9 +121,9 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
             if(selectionModeEnabled){
                 checker.toggle();
                 if(checker.isChecked()){
-                    selectedItems.add(itemList.get(getAdapterPosition()));
+                    selectedItems.add(itemList.get(getAbsoluteAdapterPosition()));
                 }else{
-                    selectedItems.remove(itemList.get(getAdapterPosition()));
+                    selectedItems.remove(itemList.get(getAbsoluteAdapterPosition()));
                 }
                 clickAction.notifySelectionMode();
             }else{

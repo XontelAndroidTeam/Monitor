@@ -252,13 +252,14 @@ public class CamPreviewFragment extends BaseFragment {
       //          .show();
   //  }
 
-    private void captureVideo(){
+    private void captureVideo() {
         isPicture = false;
         watchFile();
-        if (cam.getType() == CamDeviceType.HIKVISION.getValue()){}
-        else if(cam.getType() == CamDeviceType.DAHUA.getValue()){
-            mDahuaPlayer.captureVideo();}
-        else{vlcSinglePlayer.vlcRecording();}
+        if (cam.getType() == CamDeviceType.HIKVISION.getValue()) {
+        } else if (cam.getType() == CamDeviceType.DAHUA.getValue()) {
+//            mDahuaPlayer.captureVideo(viewModel.isRecording);}
+//        else{vlcSinglePlayer.vlcRecording();}
+        }
     }
 
     private void stopCaptureVideo(){

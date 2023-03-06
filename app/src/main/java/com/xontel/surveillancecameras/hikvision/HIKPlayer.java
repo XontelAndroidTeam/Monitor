@@ -24,14 +24,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
-public class HIKPlayer extends CamPlayer implements  PlayerCallBack.PlayerDisplayCB, CamPlayerView.SurfaceCallback {
+public class HIKPlayer extends CamPlayer implements PlayerCallBack.PlayerDisplayCB, CamPlayerView.SurfaceCallback {
     public static final String TAG = HIKPlayer.class.getSimpleName();
     public static final int DEFAULT_HIKVISION_PORT_NUMBER = 8000;
 
     private RealPlayCallBack mRealPlayCallBack;
-
-
-
 
 
     public HIKPlayer(Context context) {
@@ -116,8 +113,7 @@ public class HIKPlayer extends CamPlayer implements  PlayerCallBack.PlayerDispla
             }
 
 
-
-            if (!(mCamPlayerView != null && mCamPlayerView.getSurfaceView()!=null) || !Player.getInstance().play(m_iPort, mCamPlayerView.getSurfaceView().getHolder())) {
+            if (!(mCamPlayerView != null && mCamPlayerView.getSurfaceView() != null) || !Player.getInstance().play(m_iPort, mCamPlayerView.getSurfaceView().getHolder())) {
                 Player.getInstance().closeStream(m_iPort);
                 showError("play failed");
                 return;
@@ -173,7 +169,6 @@ public class HIKPlayer extends CamPlayer implements  PlayerCallBack.PlayerDispla
     }
 
 
-
     @Override
     public void stopStream() {
         if (realPlayId < 0L) {
@@ -183,12 +178,7 @@ public class HIKPlayer extends CamPlayer implements  PlayerCallBack.PlayerDispla
         if (!HCNetSDK.getInstance().NET_DVR_StopRealPlay(realPlayId)) {
             Log.e(TAG, "StopRealPlay is failed!Err:" + HCNetSDK.getInstance().NET_DVR_GetLastError());
         }
-        if (isRecording) {
-            if(HCNetSDK.getInstance().NET_DVR_StopSaveRealData(realPlayId)){
-                Log.e(TAG, "cannot StopSaveRealData ");
-            }
-        }
-
+        stopRecordingVideo();
         if (!Player.getInstance().closeStream(m_iPort)) {
             Log.e(TAG, "closeStream is failed!");
         }
@@ -216,31 +206,37 @@ public class HIKPlayer extends CamPlayer implements  PlayerCallBack.PlayerDispla
 //    }
 
     @Override
-    public void captureVideo() {
+    public boolean recordVideo() {
         if (!isRecording) {
             String date = sDateFormat.format(new Date());
             File dir = new File(StorageHelper.getMediaDirectory(context, Environment.DIRECTORY_MOVIES).getAbsolutePath());
             File file = new File(dir, date + ".mp4");
             Log.v(TAG, file.getAbsolutePath());
-            if (!HCNetSDK.getInstance().NET_DVR_SaveRealData((int) realPlayId, file.getAbsolutePath())) {
-                Log.e(TAG, "NET_DVR_SaveRealData failed! error: "
-                        + HCNetSDK.getInstance().NET_DVR_GetLastError());
-                return;
-            } else {
+            if (HCNetSDK.getInstance().NET_DVR_SaveRealData((int) realPlayId, file.getAbsolutePath())) {
                 Log.v(TAG, "Record started successfully ");
                 isRecording = true;
+                return true;
             }
+            Log.e(TAG, "NET_DVR_SaveRealData failed! error: "
+                    + HCNetSDK.getInstance().NET_DVR_GetLastError());
+        }
 
-        } else {
-            if (!HCNetSDK.getInstance().NET_DVR_StopSaveRealData((int) realPlayId)) {
-                Log.e(TAG, "NET_DVR_StopSaveRealData failed! error: "
-                        + HCNetSDK.getInstance()
-                        .NET_DVR_GetLastError());
-            } else {
+        return false;
+    }
+
+    @Override
+    public boolean stopRecordingVideo() {
+        if (isRecording) {
+            if (HCNetSDK.getInstance().NET_DVR_StopSaveRealData((int) realPlayId)) {
                 System.out.println("NET_DVR_StopSaveRealData succ!");
+                return true;
             }
+            Log.e(TAG, "NET_DVR_StopSaveRealData failed! error: "
+                    + HCNetSDK.getInstance()
+                    .NET_DVR_GetLastError());
             isRecording = false;
         }
+        return false;
     }
 
     @Override
@@ -249,14 +245,14 @@ public class HIKPlayer extends CamPlayer implements  PlayerCallBack.PlayerDispla
             Player.MPInteger stWidth = new Player.MPInteger();
             Player.MPInteger stHeight = new Player.MPInteger();
             if (!Player.getInstance().getPictureSize(m_iPort, stWidth, stHeight)) {
-                showMessage(context.getString(R.string.cant_take_photo)+" "+ "width : " );
+//                showMessage(context.getString(R.string.cant_take_photo) + " " + "width : ");
                 return;
             }
             int nSize = 5 * stWidth.value * stHeight.value;
             byte[] picBuf = new byte[nSize];
             Player.MPInteger stSize = new Player.MPInteger();
             if (!Player.getInstance().getBMP(m_iPort, picBuf, nSize, stSize)) {
-                showMessage(context.getString(R.string.cant_take_photo)+"22");
+//                showMessage(context.getString(R.string.cant_take_photo) + "22");
                 return;
             }
             if (sDateFormat == null) {
@@ -268,16 +264,14 @@ public class HIKPlayer extends CamPlayer implements  PlayerCallBack.PlayerDispla
             FileOutputStream fos = new FileOutputStream(file);
             fos.write(picBuf, 0, stSize.value);
             fos.close();
-            MediaScannerConnection.scanFile(context, new String[]{file.getAbsolutePath()}, new String[]{"image/*"}, (s, uri) -> Log.i(TAG, "onScanCompleted_video: "+uri));
+            MediaScannerConnection.scanFile(context, new String[]{file.getAbsolutePath()}, new String[]{"image/*"}, (s, uri) -> Log.i(TAG, "onScanCompleted_video: " + uri));
             showMessage(context.getString(R.string.snapshot_taken));
             //  Bitmap bitmap = BitmapFactory.decodeFile(dir.getAbsolutePath() + "/" + date + ".jpg");
         } catch (Exception err) {
             err.printStackTrace();
-            showMessage(err.getMessage()+"33");
+            showMessage(err.getMessage() );
         }
     }
-
-
 
 
     @Override

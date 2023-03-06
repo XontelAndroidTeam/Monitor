@@ -2,6 +2,7 @@ package com.xontel.surveillancecameras.fragments;
 
 import android.app.ProgressDialog;
 import android.content.ContentUris;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -203,22 +204,21 @@ public class SavedMediaFragment extends BaseFragment implements LoaderManager.Lo
     }
 
     private void shareSelectedItems(List<MediaData> selectedFiles) {
-//        if(selectedFiles.size() > 0) {
-//            Intent intent = new Intent();
-//            intent.setAction(Intent.ACTION_SEND_MULTIPLE);
-//            intent.putExtra(Intent.EXTRA_SUBJECT, "Here are some files.");
-//            intent.setType("image/jpeg");
-//            ArrayList<Uri> files = new ArrayList<Uri>();
-//            for (MediaData file : selectedFiles) {
-//                Uri uri = Uri.fromFile(file);
-//                files.add(uri);
-//            }
-//            selectedFiles.clear();
-//            intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, files);
-//            startActivity(intent);
-//        }else{
-//            showMessage(R.string.nothing_selected);
-//        }
+        if(selectedFiles.size() > 0) {
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_SEND_MULTIPLE);
+            intent.putExtra(Intent.EXTRA_SUBJECT, "Here are some files.");
+            intent.setType("image/jpeg");
+            ArrayList<Uri> files = new ArrayList<Uri>();
+            for (MediaData file : selectedFiles) {
+                files.add(file.getMediaUri());
+            }
+            selectedFiles.clear();
+            intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, files);
+            startActivity(intent);
+        }else{
+            showMessage(R.string.nothing_selected);
+        }
 
     }
 

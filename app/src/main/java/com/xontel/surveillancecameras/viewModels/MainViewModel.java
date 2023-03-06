@@ -44,6 +44,8 @@ public class MainViewModel extends BaseViewModel {
 
     public final MutableLiveData<Boolean> recordVideo = new MutableLiveData<>(false);
 
+    public final MutableLiveData<Boolean> isRecording = new MutableLiveData<>(false);
+
 
     private Context context;
 

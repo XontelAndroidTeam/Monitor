@@ -20,6 +20,8 @@ public abstract class CamPlayer implements CamPlayerView.SurfaceCallback {
     public SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd-hh_mm_ss_Sss");
     public MutableLiveData<Boolean> isError = new MutableLiveData(false);
     public MutableLiveData<Boolean> isLoading = new MutableLiveData(true);
+
+    public boolean isRecording ;
     public CamPlayerView mCamPlayerView;
 
     public Toast mToast;
@@ -32,7 +34,6 @@ public abstract class CamPlayer implements CamPlayerView.SurfaceCallback {
     public boolean isPlaying;
     public boolean isConfigured = false;
 
-    public boolean isRecording;
 
     public int lock = 0;
 
@@ -127,7 +128,9 @@ public abstract class CamPlayer implements CamPlayerView.SurfaceCallback {
 
 
 
-    public abstract void captureVideo();
+    public abstract boolean recordVideo();
+
+    public abstract boolean stopRecordingVideo();
 
 
     public abstract void takeSnapshot();

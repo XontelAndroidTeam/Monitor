@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
+import androidx.lifecycle.MutableLiveData;
+
 import com.company.NetSDK.CB_fRealDataCallBackEx;
 import com.company.NetSDK.INetSDK;
 import com.company.NetSDK.SDK_RealPlayType;
@@ -133,6 +135,15 @@ public class DahuaPlayer extends CamPlayer implements CamPlayerView.SurfaceCallb
         }
     }
 
+    @Override
+    public boolean recordVideo() {
+        return false;
+    }
+
+    @Override
+    public boolean stopRecordingVideo() {
+        return false;
+    }
 
 
     @Override
@@ -173,7 +184,7 @@ public class DahuaPlayer extends CamPlayer implements CamPlayerView.SurfaceCallb
 
 
 
-    public void captureVideo(){
+    public void captureVideo(MutableLiveData<Boolean> isRecording){
         try {
             sDateFormat = new SimpleDateFormat("yyyy-MM-dd-hh_mm_ss_Sss");
             this.isRecording = true;
