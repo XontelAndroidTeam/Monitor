@@ -15,9 +15,11 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
+
 import com.xontel.surveillancecameras.R;
 import com.xontel.surveillancecameras.activities.CamerasActivity;
 import com.xontel.surveillancecameras.base.BaseFragment;
@@ -33,19 +35,22 @@ import com.xontel.surveillancecameras.utils.StorageHelper;
 import com.xontel.surveillancecameras.viewModels.MainViewModel;
 import com.xontel.surveillancecameras.viewModels.ViewModelProviderFactory;
 import com.xontel.surveillancecameras.vlc.VlcSinglePlayer;
+
 import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
+
 import javax.inject.Inject;
 
 public class CamPreviewFragment extends BaseFragment {
     public static final String TAG = CamPreviewFragment.class.getSimpleName();
     private VlcSinglePlayer vlcSinglePlayer;
-    private HIKPlayer hikSinglePlayer ;
+    private HIKPlayer hikSinglePlayer;
     private DahuaPlayer mDahuaPlayer;
     private MainViewModel mainViewModel;
     private int recordTime = 0;
@@ -96,7 +101,7 @@ public class CamPreviewFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentCameraBinding.inflate(inflater);
         binding.setLifecycleOwner(getViewLifecycleOwner());
-        parentBinding = ((CamerasActivity)requireActivity()).getViewRoot();
+        parentBinding = ((CamerasActivity) requireActivity()).getViewRoot();
         mSimpleDateFormat = new SimpleDateFormat("HH:mm:ss");
         TimeZone tz = TimeZone.getTimeZone("UTC");
         mSimpleDateFormat.setTimeZone(tz);
@@ -116,7 +121,7 @@ public class CamPreviewFragment extends BaseFragment {
         });
 
         StorageBroadcastReceiver.refreshRemovable.observe(getViewLifecycleOwner(), aBoolean -> {
-            if (aBoolean){
+            if (aBoolean) {
                 watchFile();
                 StorageBroadcastReceiver.refreshRemovable.setValue(false);
             }
@@ -126,20 +131,22 @@ public class CamPreviewFragment extends BaseFragment {
     }
 
     private void watchFile() {
-        if (observer != null){ observer.stopWatching();}
-        String path = StorageHelper.getMediaDirectory(requireContext(),isPicture ? Environment.DIRECTORY_PICTURES :Environment.DIRECTORY_MOVIES ).getAbsolutePath();
-        observer = new FileObserver(path) {
-        @Override
-        public void onEvent(int event, String file) {
-            if(event == FileObserver.CREATE && !file.equals(".probe") && file.toLowerCase().endsWith("mp4")){
-                File pathFile = new File(path, file);
-                MediaScannerConnection.scanFile(requireContext(), new String[]{pathFile.getAbsolutePath()}, new String[]{"video/*"}, (s, uri) -> Log.i("TATZ", "onScanCompleted_video: "+uri));
-            }else if(event == FileObserver.CREATE && !file.equals(".probe") ){
-                File pathFile = new File(path, file);
-                MediaScannerConnection.scanFile(requireContext(), new String[]{pathFile.getAbsolutePath()}, new String[]{"image/*"}, (s, uri) -> Log.i("TATZ", "onScanCompleted_image: "+uri));
-            }
+        if (observer != null) {
+            observer.stopWatching();
         }
-    };
+        String path = StorageHelper.getMediaDirectory(requireContext(), isPicture ? Environment.DIRECTORY_PICTURES : Environment.DIRECTORY_MOVIES).getAbsolutePath();
+        observer = new FileObserver(path) {
+            @Override
+            public void onEvent(int event, String file) {
+                if (event == FileObserver.CREATE && !file.equals(".probe") && file.toLowerCase().endsWith("mp4")) {
+                    File pathFile = new File(path, file);
+                    MediaScannerConnection.scanFile(requireContext(), new String[]{pathFile.getAbsolutePath()}, new String[]{"video/*"}, (s, uri) -> Log.i("TATZ", "onScanCompleted_video: " + uri));
+                } else if (event == FileObserver.CREATE && !file.equals(".probe")) {
+                    File pathFile = new File(path, file);
+                    MediaScannerConnection.scanFile(requireContext(), new String[]{pathFile.getAbsolutePath()}, new String[]{"image/*"}, (s, uri) -> Log.i("TATZ", "onScanCompleted_image: " + uri));
+                }
+            }
+        };
         observer.startWatching();
     }
 
@@ -149,17 +156,18 @@ public class CamPreviewFragment extends BaseFragment {
     }
 
     @Override
-    protected void setUp(View view) { }
+    protected void setUp(View view) {
+    }
 
 
     private void playCamStream() {
-        if (cam.getType() == CamDeviceType.HIKVISION.getValue()){
+        if (cam.getType() == CamDeviceType.HIKVISION.getValue()) {
 //            hikSinglePlayer =  new HIKSinglePlayer(cam.getChannel(),cam.getLoginId(),requireContext());
 //            hikSinglePlayer.initView(binding.surfaceView);
-        }else if(cam.getType() == CamDeviceType.DAHUA.getValue()){
+        } else if (cam.getType() == CamDeviceType.DAHUA.getValue()) {
 //            dahuaSinglePlayer =  new DahuaSinglePlayer(cam.getChannel(),cam.getLoginId(),requireContext());
 //            dahuaSinglePlayer.initView(binding.surfaceView);
-        }else{
+        } else {
             binding.vlcLayout.setVisibility(View.VISIBLE);
             binding.surfaceView.setVisibility(View.GONE);
 //            vlcSinglePlayer = new VlcSinglePlayer(requireContext());
@@ -178,7 +186,9 @@ public class CamPreviewFragment extends BaseFragment {
     private void stopRecordingVideo() {
         binding.recordLayout.llRecordPanel.setVisibility(View.GONE);
 //        mainViewModel.toggleVideoRecord();
-        if (mTimer != null){mTimer.cancel();}
+        if (mTimer != null) {
+            mTimer.cancel();
+        }
         stopCaptureVideo();
     }
 
@@ -191,7 +201,7 @@ public class CamPreviewFragment extends BaseFragment {
 
 
     private void enableVideoRecordingView() {
-       binding.recordLayout.llRecordPanel.setVisibility(View.VISIBLE);
+        binding.recordLayout.llRecordPanel.setVisibility(View.VISIBLE);
         mTimer = new Timer();
         mTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -209,13 +219,20 @@ public class CamPreviewFragment extends BaseFragment {
     }
 
 
-
     @Override
     public void onResume() {
-        parentBinding.btnDetails.setOnClickListener(view ->{ showCamDetails();});
-        parentBinding.btnShare.setOnClickListener(view ->{ shareCam(); });
-        parentBinding.btnSnapshot.setOnClickListener(view ->{ captureImage(); });
-        parentBinding.btnRecord.setOnClickListener(view ->{ startRecordingVideo();});
+        parentBinding.btnDetails.setOnClickListener(view -> {
+            showCamDetails();
+        });
+        parentBinding.btnShare.setOnClickListener(view -> {
+            shareCam();
+        });
+        parentBinding.btnSnapshot.setOnClickListener(view -> {
+            captureImage();
+        });
+        parentBinding.btnRecord.setOnClickListener(view -> {
+            startRecordingVideo();
+        });
         super.onResume();
     }
 
@@ -232,25 +249,25 @@ public class CamPreviewFragment extends BaseFragment {
         startActivity(Intent.createChooser(i, getString(R.string.share_url)));
     }
 
-   // private void editCam() {
-     //   Intent intent = new Intent(requireActivity(), AddNewDeviceActivity.class);
-   //     intent.putExtra(AddNewDeviceActivity.KEY_DEVICE, cam);
-   //     startActivityForResult(intent, REQUEST_CODE_EDIT_CAM);
-   // }
+    // private void editCam() {
+    //   Intent intent = new Intent(requireActivity(), AddNewDeviceActivity.class);
+    //     intent.putExtra(AddNewDeviceActivity.KEY_DEVICE, cam);
+    //     startActivityForResult(intent, REQUEST_CODE_EDIT_CAM);
+    // }
 
-  //  private void deleteCam() {
-   //     new MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
-   //             .setTitle(R.string.delete_camera)
-   //             .setMessage(R.string.are_you_sure_delete)
-      //          .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-     //               public void onClick(DialogInterface dialog, int which) {
-                        // Continue with delete operation
-                      //  mPresenter.deleteCamera(cams.get(camPosition));
+    //  private void deleteCam() {
+    //     new MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
+    //             .setTitle(R.string.delete_camera)
+    //             .setMessage(R.string.are_you_sure_delete)
+    //          .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+    //               public void onClick(DialogInterface dialog, int which) {
+    // Continue with delete operation
+    //  mPresenter.deleteCamera(cams.get(camPosition));
     //                }
-     //           })
-      //          .setNegativeButton(android.R.string.no, null)
-      //          .show();
-  //  }
+    //           })
+    //          .setNegativeButton(android.R.string.no, null)
+    //          .show();
+    //  }
 
     private void captureVideo() {
         isPicture = false;
@@ -262,34 +279,43 @@ public class CamPreviewFragment extends BaseFragment {
         }
     }
 
-    private void stopCaptureVideo(){
-        if (cam.getType() == CamDeviceType.HIKVISION.getValue()){}
-        else if(cam.getType() == CamDeviceType.DAHUA.getValue()){
-            mDahuaPlayer.stopCaptureVideo();}
-        else{vlcSinglePlayer.vlcStopRecording();}
+    private void stopCaptureVideo() {
+        if (cam.getType() == CamDeviceType.HIKVISION.getValue()) {
+        } else if (cam.getType() == CamDeviceType.DAHUA.getValue()) {
+            mDahuaPlayer.stopCaptureVideo();
+        } else {
+            vlcSinglePlayer.vlcStopRecording();
+        }
     }
 
-    private void captureImage(){
+    private void captureImage() {
         isPicture = true;
         watchFile();
-        if (cam.getType() == CamDeviceType.HIKVISION.getValue()){hikSinglePlayer.takeSnapshot();}
-        else if(cam.getType() == CamDeviceType.DAHUA.getValue()){
-            mDahuaPlayer.takeSnapshot();}
-        else{vlcSinglePlayer.vlcCaptureImage();}
-        ((CamerasActivity)requireActivity()).showMessage(getString(R.string.Take_Picture));
+        if (cam.getType() == CamDeviceType.HIKVISION.getValue()) {
+            hikSinglePlayer.takeSnapshot();
+        } else if (cam.getType() == CamDeviceType.DAHUA.getValue()) {
+            mDahuaPlayer.takeSnapshot();
+        } else {
+            vlcSinglePlayer.vlcCaptureImage();
+        }
+        ((CamerasActivity) requireActivity()).showMessage(getString(R.string.take_picture));
     }
-
-
 
 
     @Override
     public void onDestroy() {
-        if (mTimer != null){mTimer.cancel();}
-        if (cam.getType() == CamDeviceType.HIKVISION.getValue()){ //hikSinglePlayer.cleanUp();
+        if (mTimer != null) {
+            mTimer.cancel();
         }
-        else if(cam.getType() == CamDeviceType.DAHUA.getValue()){ mDahuaPlayer.stopStream();}
-        else{vlcSinglePlayer.removeVlcPlayer();}
-        if(observer != null){observer.stopWatching();}
+        if (cam.getType() == CamDeviceType.HIKVISION.getValue()) { //hikSinglePlayer.cleanUp();
+        } else if (cam.getType() == CamDeviceType.DAHUA.getValue()) {
+            mDahuaPlayer.stopStream();
+        } else {
+            vlcSinglePlayer.removeVlcPlayer();
+        }
+        if (observer != null) {
+            observer.stopWatching();
+        }
         super.onDestroy();
     }
 

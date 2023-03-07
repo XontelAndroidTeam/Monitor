@@ -24,6 +24,7 @@ import android.widget.ArrayAdapter;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.xontel.surveillancecameras.R;
 import com.xontel.surveillancecameras.activities.AddNewDeviceActivity;
+import com.xontel.surveillancecameras.activities.HomeActivity;
 import com.xontel.surveillancecameras.adapters.DevicesAdapter;
 import com.xontel.surveillancecameras.base.BaseFragment;
 import com.xontel.surveillancecameras.databinding.FragmentDevicesBinding;
@@ -44,6 +45,8 @@ import okhttp3.Call;
 
 
 public class DevicesFragment extends BaseFragment implements DevicesAdapter.ClickListener  {
+
+    public static final String KEY_VIEW_TYPE = "type";
     private FragmentDevicesBinding binding;
     private DevicesAdapter mDevicesAdapter;
     private MainViewModel mMainViewModel;
@@ -67,6 +70,7 @@ public class DevicesFragment extends BaseFragment implements DevicesAdapter.Clic
         super.onCreate(savedInstanceState);
         getFragmentComponent().inject(this);
         setHasOptionsMenu(true);
+        ((HomeActivity) requireActivity()).getSupportActionBar().show();
         mMainViewModel = new ViewModelProvider(requireActivity(), providerFactory).get(MainViewModel.class);
     }
 
@@ -93,9 +97,12 @@ public class DevicesFragment extends BaseFragment implements DevicesAdapter.Clic
         });
         mMainViewModel.camDevices.observe(getViewLifecycleOwner(), camDevices -> {
             mDevicesAdapter.addItems(camDevices);
+            if(getArguments() != null){
+                mDevicesAdapter.setCurrentSelectedItem(DevicesAdapter.NO_SELECTION);
+            }
         });
         mMainViewModel.reloader.observe(getViewLifecycleOwner(), reload -> {
-            if(reload){
+            if(reload == 1){
                 enableReadMode();
             }
         });
@@ -115,7 +122,7 @@ public class DevicesFragment extends BaseFragment implements DevicesAdapter.Clic
         });
         binding.btnSave.setOnClickListener(v -> {
             if (validateFields()) {
-                int deviceType = CamDeviceType.getTypeFromString(binding.dropDown.slideShowFilter.getText().toString());
+                int deviceType = CamDeviceType.getTypeFromString(getContext(), binding.dropDown.slideShowFilter.getText().toString());
                 String deviceName = binding.etName.getText().toString();
                 String ip = binding.deviceFields.etDomain.getText().toString();
                 String userName = binding.deviceFields.etUsername.getText().toString();
@@ -135,7 +142,7 @@ public class DevicesFragment extends BaseFragment implements DevicesAdapter.Clic
     }
 
     private boolean validateFields() {
-        boolean isDropDownChoiceValid =  CamDeviceType.getTypeFromString(binding.dropDown.slideShowFilter.getText().toString()) != -1 ;
+        boolean isDropDownChoiceValid =  CamDeviceType.getTypeFromString(getContext(), binding.dropDown.slideShowFilter.getText().toString()) != -1 ;
         if(!isDropDownChoiceValid){
             showMessage(R.string.wrong_device_type);
             return false;

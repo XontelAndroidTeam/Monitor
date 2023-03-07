@@ -12,6 +12,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layoutDirection="ltr"
         android:clickable="true">
 
 
@@ -42,6 +43,7 @@
             android:layout_width="150dp"
             android:layout_height="50dp"
             android:layout_gravity="top|center"
+       android:visibility="gone"
             android:alpha="0"
             android:src="@drawable/ic_baseline_keyboard_arrow_down_24"
             android:background="@drawable/half_circle"
@@ -54,6 +56,7 @@
             android:paddingHorizontal="16dp"
             android:paddingVertical="8dp"
             android:gravity="top"
+            android:visibility="gone"
             android:background="@drawable/overlay_gradient"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

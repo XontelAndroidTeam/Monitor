@@ -3,6 +3,7 @@ package com.xontel.surveillancecameras.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -50,7 +51,7 @@ public class HomeActivity extends BaseActivity implements AdapterView.OnItemClic
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         getActivityComponent().inject(this);
         mainViewModel = new ViewModelProvider(this, providerFactory).get(MainViewModel.class);
-//        mainViewModel.getAllDevices();
+        mainViewModel.getAllDevices();
         setUp();
 
     }
@@ -100,7 +101,7 @@ public class HomeActivity extends BaseActivity implements AdapterView.OnItemClic
                 android.R.layout.simple_spinner_dropdown_item,
                 getResources().getStringArray(R.array.grid_count));
         AutoCompleteTextView autoCompleteTextView = textInputLayout.findViewById(R.id.slide_show_filter);
-        autoCompleteTextView.setText(String.valueOf(mainViewModel.mGridObservable.getValue()), false);
+        autoCompleteTextView.setText(String.format("%d", mainViewModel.mGridObservable.getValue()), false);
         autoCompleteTextView.setAdapter(gridDropDownAdapter);
         autoCompleteTextView.setOnItemClickListener(this);
         binding.setLifecycleOwner(this);

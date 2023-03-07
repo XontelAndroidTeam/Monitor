@@ -204,11 +204,12 @@ public class GridFragment extends BaseFragment implements CamPlayerView.ClickLis
             public void onChanged(Boolean record) {
                 if (viewModel.mGridObservable.getValue() == 1 && isResumed()) {
                     if (record) {
-                        viewModel.isRecording.setValue(mPlayers.get(0).recordVideo());
+                        boolean r = mPlayers.get(0).recordVideo();
+                        viewModel.isRecording.setValue(r);
                     }
                     else {
                         viewModel.isRecording.setValue(false);
-                        mPlayers.get(0).stopRecordingVideo();
+                        boolean r = mPlayers.get(0).stopRecordingVideo();
                     }
                 }
             }
@@ -391,7 +392,9 @@ public class GridFragment extends BaseFragment implements CamPlayerView.ClickLis
             binding.grid.setRowCount(1);
             viewModel.mGridObservable.setGridCount("1");
         } else {
-            NavHostFragment.findNavController(this).navigate(R.id.action_monitorFragment_to_deviceFragment);
+            Bundle bundle = new Bundle();
+            bundle.putInt(DevicesFragment.KEY_VIEW_TYPE, -1);
+            NavHostFragment.findNavController(this).navigate(R.id.action_monitorFragment_to_deviceFragment, bundle);
         }
     }
 

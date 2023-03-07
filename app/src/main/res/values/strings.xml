@@ -13,7 +13,6 @@
     <string name="submit">Submit</string>
     <string name="init_sdk_init_error">Error starting HCNetSDK</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="error_occurred">An error occurred while processing</string>
     <string name="cameras">Cameras</string>
     <string name="edit">Edit</string>
@@ -83,8 +82,8 @@
     <string name="device_list">Device list</string>
     <string name="no_devices">No devices added yet</string>
     <string name="update">Update</string>
-    <string name="Cant_LOGIN">Can\'t connect with this device</string>
-    <string name="Take_Picture">Picture captured successfully</string>
+    <string name="cant_login">Can\'t connect with this device</string>
+    <string name="take_picture">Picture captured successfully</string>
     <string name="error_streaming">Error Streaming</string>
     <string name="device_deleted">Device deleted successfully</string>
     <string name="save">Save</string>

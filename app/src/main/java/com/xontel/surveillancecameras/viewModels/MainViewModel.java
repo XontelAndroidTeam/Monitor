@@ -36,7 +36,7 @@ public class MainViewModel extends BaseViewModel {
     public final MutableLiveData<List<IpCam>> ipCams = new MutableLiveData<>(new ArrayList<>());
     public final MutableLiveData<List<CamDevice>> camDevices = new MutableLiveData<>(new ArrayList<>());
 
-    public final MutableLiveData<Boolean> reloader = new MutableLiveData<>(false);
+    public final MutableLiveData<Integer> reloader = new MutableLiveData<>(0);
 
     public final MutableLiveData<Boolean> oneCam = new MutableLiveData<>(false);
 
@@ -54,7 +54,6 @@ public class MainViewModel extends BaseViewModel {
     public MainViewModel(Context context, SchedulerProvider mSchedulerProvider, CompositeDisposable mCompositeDisposable, DataManager manager) {
         super(mSchedulerProvider, mCompositeDisposable, manager);
         this.context = context;
-
     }
 
 
@@ -132,8 +131,12 @@ public class MainViewModel extends BaseViewModel {
                 .subscribe(response -> {
                     getLoading().setValue(false);
                     addNewDevice(response);
+                    if(!response.isLoggedIn()){
+                        showToastMessage(context, R.string.cant_login);
+                        return;
+                    }
                     showToastMessage(context, R.string.device_created);
-                     reloader.setValue(true);
+                     reloader.setValue(1);
                 }, error -> {
                     Log.e(TAG, error.getMessage());
                     getLoading().setValue(false);
@@ -158,7 +161,7 @@ public class MainViewModel extends BaseViewModel {
                     updateDeviceInList(device);
                     getLoading().setValue(false);
                     showToastMessage(context, R.string.device_updated);
-                    reloader.setValue(true);
+                    reloader.setValue(0);
                 }, error -> {
                     Log.e(TAG, error.getMessage());
                     getLoading().setValue(false);

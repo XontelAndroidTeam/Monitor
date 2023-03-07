@@ -131,6 +131,13 @@ public class CamDevice implements Parcelable  {
         return logId;
     }
 
+    public boolean isLoggedIn(){
+        if(CamDeviceType.HIKVISION.getValue() == deviceType){
+            return logId > -1;
+        }
+        return logId != 0;
+    }
+
     public void setLogId(int logId) {
         this.logId = logId;
     }

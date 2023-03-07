@@ -1,5 +1,6 @@
 package com.xontel.surveillancecameras.fragments;
 
+import android.content.res.Configuration;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,6 +12,7 @@ import android.view.animation.Interpolator;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 
+import androidx.annotation.NonNull;
 import androidx.databinding.Observable;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -29,6 +31,7 @@ import com.xontel.surveillancecameras.viewModels.ViewModelProviderFactory;
 import org.videolan.libvlc.util.TimeCounter;
 
 import java.lang.reflect.Field;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -37,7 +40,15 @@ public class MonitorFragment extends BaseFragment implements AdapterView.OnItemC
     private FragmentMonitorBinding binding;
     private PagerAdapter pagerAdapter;
     private MainViewModel mainViewModel;
-    private DataSetObserver emptyObserver;
+    private DataSetObserver emptyObserver = new DataSetObserver() {
+        @Override
+        public void onChanged() {
+            super.onChanged();
+            boolean noCams = pagerAdapter.getCount() == 0;
+            binding.noCams.getRoot().setVisibility(noCams ? View.VISIBLE : View.GONE);
+            binding.camsPager.setVisibility(noCams ? View.GONE : View.VISIBLE);
+        }
+    };
 
     private TimeCounter timer;
     @Inject
@@ -58,6 +69,7 @@ public class MonitorFragment extends BaseFragment implements AdapterView.OnItemC
 
     private void hideButtons() {
         if (isBtnsShown) {
+            binding.slideShowFilter.dismissDropDown();
             binding.llBtns.animate()
                     .alpha(0.0f)
                     .translationY(-100)
@@ -108,10 +120,6 @@ public class MonitorFragment extends BaseFragment implements AdapterView.OnItemC
     @Override
     public void onResume() {
         super.onResume();
-        showButtons();
-        scheduleHidingBtns();
-        ((HomeActivity) getActivity()).getSupportActionBar().hide();
-//        reload();
         Log.v(TAG, "onResume " + hashCode());
 
     }
@@ -119,7 +127,6 @@ public class MonitorFragment extends BaseFragment implements AdapterView.OnItemC
     @Override
     public void onPause() {
         super.onPause();
-        ((HomeActivity) getActivity()).getSupportActionBar().show();
         pagerAdapter.setPagesCount(0);
         Log.v(TAG, "onPause " + hashCode());
     }
@@ -158,8 +165,8 @@ public class MonitorFragment extends BaseFragment implements AdapterView.OnItemC
 
     @Override
     protected void setUp(View view) {
-        binding.btnAdd.setOnClickListener(view1 -> NavHostFragment.findNavController(MonitorFragment.this).navigate(R.id.action_monitorFragment_to_deviceFragment));
-        binding.noCams.btnAdd.setOnClickListener(view1 -> NavHostFragment.findNavController(MonitorFragment.this).navigate(R.id.action_monitorFragment_to_deviceFragment));
+        binding.btnAdd.setOnClickListener(view1 -> NavHostFragment.findNavController(MonitorFragment.this).navigate(R.id.action_monitorFragment_to_deviceFragment, new Bundle()));
+        binding.noCams.btnAdd.setOnClickListener(view1 -> binding.btnAdd.performClick());
         binding.btnShowControllers.setOnClickListener((v) -> {
             showButtons();
             scheduleHidingBtns();
@@ -181,7 +188,7 @@ public class MonitorFragment extends BaseFragment implements AdapterView.OnItemC
         binding.btnRecord.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mainViewModel.recordVideo.setValue(true);
+                mainViewModel.recordVideo.setValue(!mainViewModel.recordVideo.getValue());
             }
         });
         setupGridDropDown();
@@ -194,7 +201,7 @@ public class MonitorFragment extends BaseFragment implements AdapterView.OnItemC
         ArrayAdapter gridDropDownAdapter = new ArrayAdapter<String>(getContext(),
                 android.R.layout.simple_spinner_dropdown_item,
                 getResources().getStringArray(R.array.grid_count));
-        binding.slideShowFilter.setText(String.valueOf(mainViewModel.mGridObservable.getValue()), false);
+        binding.slideShowFilter.setText(String.format("%d", mainViewModel.mGridObservable.getValue()), false);
         binding.slideShowFilter.setAdapter(gridDropDownAdapter);
         binding.slideShowFilter.setOnItemClickListener(this);
 
@@ -203,37 +210,15 @@ public class MonitorFragment extends BaseFragment implements AdapterView.OnItemC
 
 
     private void setupCamsPager() {
-        try {
-            Field mScroller;
-            mScroller = ViewPager.class.getDeclaredField("mScroller");
-            mScroller.setAccessible(true);
-            Field interpolator = ViewPager.class.getDeclaredField("sInterpolator");
-            interpolator.setAccessible(true);
-            FixedSpeedScroller scroller = new FixedSpeedScroller(getContext(), (Interpolator) interpolator.get(null));
-            // scroller.setFixedDuration(5000);
-            mScroller.set(binding.camsPager, scroller);
-        } catch (NoSuchFieldException e) {
-        } catch (IllegalArgumentException e) {
-        } catch (IllegalAccessException e) {
-        }
         int pagesCount = (int) Math.ceil(mainViewModel.ipCams.getValue().size() * 1.0 / mainViewModel.mGridObservable.getValue());
         pagerAdapter = new PagerAdapter(requireActivity(), pagesCount);
-        emptyObserver = new DataSetObserver() {
-            @Override
-            public void onChanged() {
-                super.onChanged();
-                if (pagerAdapter != null && binding.noCams != null) {
-                    boolean noCams = pagerAdapter.getCount() == 0;
-                    binding.noCams.getRoot().setVisibility(noCams ? View.VISIBLE : View.GONE);
-                    binding.camsPager.setVisibility(noCams ? View.GONE : View.VISIBLE);
-                }
-            }
-        };
-//        pagerAdapter.registerDataSetObserver(emptyObserver);
+        pagerAdapter.registerDataSetObserver(emptyObserver);
         binding.camsPager.setAdapter(pagerAdapter);
         binding.camsPager.setOffscreenPageLimit(1);
-        binding.dotsIndicator.setViewPager(binding.camsPager); //must be after adapter
+        binding.dotsIndicator.attachTo(binding.camsPager); //must be after adapter
     }
+
+
 
     private void setupObservables() {
         mainViewModel.isRecording.observe(getViewLifecycleOwner(), new Observer<Boolean>() {
@@ -251,9 +236,21 @@ public class MonitorFragment extends BaseFragment implements AdapterView.OnItemC
             }
         });
         mainViewModel.ipCams.observe(getViewLifecycleOwner(), allIpCams -> {
-            Log.e(TAG, allIpCams.size()+" size");
-            binding.noCams.getRoot().setVisibility(allIpCams.size() == 0 ? View.VISIBLE : View.GONE);
-            reload();
+            if (!mainViewModel.getLoading().getValue()) {
+                if(allIpCams.size() > 0) {
+                    binding.llBtns.setVisibility(View.VISIBLE);
+                    binding.btnShowControllers.setVisibility(View.VISIBLE);
+                    ((HomeActivity) requireActivity()).getSupportActionBar().hide();
+                    showButtons();
+                    scheduleHidingBtns();
+                }else {
+                    binding.btnShowControllers.setVisibility(View.GONE);
+                    binding.llBtns.setVisibility(View.GONE);
+                    ((HomeActivity) requireActivity()).getSupportActionBar().show();
+                    hideButtons();
+                }
+                reload();
+            }
         });
         mainViewModel.mGridObservable.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
             @Override
@@ -278,7 +275,7 @@ public class MonitorFragment extends BaseFragment implements AdapterView.OnItemC
     private void updateDropDownSelectionIfNotChanged() {
         int dropDownSelection = Integer.parseInt(binding.slideShowFilter.getText().toString());
         if (dropDownSelection != mainViewModel.mGridObservable.getValue()) {
-            binding.slideShowFilter.setText(mainViewModel.mGridObservable.getValue() + "", false);
+            binding.slideShowFilter.setText(String.format("%d", mainViewModel.mGridObservable.getValue()), false);
         }
     }
 

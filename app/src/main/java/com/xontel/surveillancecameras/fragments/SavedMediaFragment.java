@@ -32,6 +32,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.xontel.surveillancecameras.R;
+import com.xontel.surveillancecameras.activities.HomeActivity;
 import com.xontel.surveillancecameras.adapters.MediaAdapter;
 import com.xontel.surveillancecameras.base.BaseFragment;
 import com.xontel.surveillancecameras.databinding.FragmentSavedMediaBinding;
@@ -69,13 +70,19 @@ public class SavedMediaFragment extends BaseFragment implements LoaderManager.Lo
         // Required empty public constructor
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        showLoading();
+        LoaderManager.getInstance(this).initLoader(IMAGES_LOADER, null, this);
+        LoaderManager.getInstance(this).initLoader(VIDEOS_LOADER, null, this);
 
+    }
 
     @Override
     public void onResume() {
         super.onResume();
-        LoaderManager.getInstance(this).initLoader(IMAGES_LOADER, null, this);
-        LoaderManager.getInstance(this).initLoader(VIDEOS_LOADER, null, this);
+
     }
 
     @Override
@@ -113,6 +120,7 @@ public class SavedMediaFragment extends BaseFragment implements LoaderManager.Lo
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        ((HomeActivity) requireActivity()).getSupportActionBar().show();
     }
 
     @Override
@@ -182,6 +190,7 @@ public class SavedMediaFragment extends BaseFragment implements LoaderManager.Lo
                 images.clear();
                 images.addAll(MediaUtils.extractMedia(data, Environment.DIRECTORY_PICTURES));
                 notifyDataChanged();
+                hideLoading();
                 break;
             case VIDEOS_LOADER:
                 videos.clear();

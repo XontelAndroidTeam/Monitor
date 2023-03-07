@@ -227,6 +227,7 @@ public class HIKPlayer extends CamPlayer implements PlayerCallBack.PlayerDisplay
     @Override
     public boolean stopRecordingVideo() {
         if (isRecording) {
+            isRecording = false;
             if (HCNetSDK.getInstance().NET_DVR_StopSaveRealData((int) realPlayId)) {
                 System.out.println("NET_DVR_StopSaveRealData succ!");
                 return true;
@@ -234,7 +235,6 @@ public class HIKPlayer extends CamPlayer implements PlayerCallBack.PlayerDisplay
             Log.e(TAG, "NET_DVR_StopSaveRealData failed! error: "
                     + HCNetSDK.getInstance()
                     .NET_DVR_GetLastError());
-            isRecording = false;
         }
         return false;
     }
@@ -269,7 +269,8 @@ public class HIKPlayer extends CamPlayer implements PlayerCallBack.PlayerDisplay
             //  Bitmap bitmap = BitmapFactory.decodeFile(dir.getAbsolutePath() + "/" + date + ".jpg");
         } catch (Exception err) {
             err.printStackTrace();
-            showMessage(err.getMessage() );
+            Log.e(TAG, err.getMessage());
+//            showMessage(err.getMessage() );
         }
     }
 

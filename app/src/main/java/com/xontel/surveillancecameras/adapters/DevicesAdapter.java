@@ -19,11 +19,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DevicesAdapter extends RecyclerView.Adapter<DevicesAdapter.DeviceViewHolder> {
+
     public static final int NO_SELECTION = -1;
     private List<CamDevice> mDeviceList = new ArrayList<>();
     private Context mContext;
     private ClickListener mClickListener;
     private int selectedItemPosition = 0;
+
 
 
     public DevicesAdapter(Context context, List<CamDevice> deviceList, ClickListener clickListener) {
