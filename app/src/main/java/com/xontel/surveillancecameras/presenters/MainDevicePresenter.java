@@ -5,7 +5,7 @@ import android.util.Log;
 import com.xontel.surveillancecameras.base.BasePresenter;
 import com.xontel.surveillancecameras.base.MvpView;
 import com.xontel.surveillancecameras.data.DataManager;
-import com.xontel.surveillancecameras.hikvision.CamDevice;
+import com.xontel.surveillancecameras.data.db.model.CamDevice;
 import com.xontel.surveillancecameras.utils.rx.SchedulerProvider;
 
 import java.util.concurrent.Callable;

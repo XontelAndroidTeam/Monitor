@@ -9,6 +9,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.FrameLayout;
+import android.widget.Spinner;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
@@ -31,10 +34,10 @@ import com.xontel.surveillancecameras.databinding.ActivityMainBinding;
 import java.util.Objects;
 import javax.inject.Inject;
 
-public class HomeActivity extends BaseActivity implements AdapterView.OnItemClickListener {
+public class HomeActivity extends BaseActivity implements AdapterView.OnItemSelectedListener {
 
     private static final String TAG = HomeActivity.class.getSimpleName();
-    private TextInputLayout textInputLayout;
+    private FrameLayout textInputLayout;
     private ActivityMainBinding binding;
 
 
@@ -50,7 +53,7 @@ public class HomeActivity extends BaseActivity implements AdapterView.OnItemClic
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         getActivityComponent().inject(this);
         mainViewModel = new ViewModelProvider(this, providerFactory).get(MainViewModel.class);
-//        mainViewModel.getAllDevices();
+        mainViewModel.getAllDevices();
         setUp();
 
     }
@@ -94,45 +97,20 @@ public class HomeActivity extends BaseActivity implements AdapterView.OnItemClic
     }
 
     private void setupGridDropDown() {
-        textInputLayout = (TextInputLayout) getLayoutInflater().inflate(R.layout.drop_down, null);
+        textInputLayout = (FrameLayout) getLayoutInflater().inflate(R.layout.drop_down, null);
         binding.appBar.llCustomView.addView(textInputLayout);
         ArrayAdapter gridDropDownAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_dropdown_item,
                 getResources().getStringArray(R.array.grid_count));
-        AutoCompleteTextView autoCompleteTextView = textInputLayout.findViewById(R.id.slide_show_filter);
-        autoCompleteTextView.setText(String.valueOf(mainViewModel.mGridObservable.getValue()), false);
-        autoCompleteTextView.setAdapter(gridDropDownAdapter);
-        autoCompleteTextView.setOnItemClickListener(this);
+        Spinner spinner = textInputLayout.findViewById(R.id.spinner);
+//        autoCompleteTextView.setText(String.valueOf(mainViewModel.mGridObservable.getValue()), false);
+        spinner.setAdapter(gridDropDownAdapter);
+        spinner.setOnItemSelectedListener(this);
         binding.setLifecycleOwner(this);
     }
 
     private void removeGridDropDown(){
         binding.appBar.llCustomView.removeView(textInputLayout);
-    }
-
-    private void setupSideMenu() {
-        SideMenuAdapter sideMenuAdapter = new SideMenuAdapter(this, labelsId -> {
-            switch (labelsId) {
-                case R.string.monitor:
-                    binding.drawer.close();
-                    break;
-                case R.string.devices:
-                    navigateToActivity(DevicesActivity.class);
-                    break;
-                case R.string.saved_media:
-                    navigateToActivity(SavedMediaActivity.class);
-                    break;
-                case R.string.settings:
-                    navigateToActivity(SettingsActivity.class);
-                    break;
-            }
-
-        });
-    }
-
-    private void navigateToActivity(Class classZ) {
-        binding.drawer.close();
-        startActivity(new Intent(this, classZ));
     }
 
 
@@ -149,7 +127,6 @@ public class HomeActivity extends BaseActivity implements AdapterView.OnItemClic
     @Override
     protected void onResume() {
         super.onResume();
-        setupSideMenu();
     }
 
 
@@ -158,16 +135,20 @@ public class HomeActivity extends BaseActivity implements AdapterView.OnItemClic
     }
 
 
+
+
     @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-        AutoCompleteTextView autoCompleteTextView = textInputLayout.findViewById(R.id.slide_show_filter);
-        int gridCount = Integer.parseInt(autoCompleteTextView.getText().toString());
-        if (mainViewModel.getGridObservable().getValue() != gridCount){
-            StorageHelper.saveGridCount(this,gridCount);
-            mainViewModel.mGridObservable.setGridCount(gridCount+"");
-        }
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+//        AutoCompleteTextView autoCompleteTextView = textInputLayout.findViewById(R.id.slide_show_filter);
+//        int gridCount = Integer.parseInt(autoCompleteTextView.getText().toString());
+//        if (mainViewModel.getGridObservable().getValue() != gridCount){
+//            StorageHelper.saveGridCount(this,gridCount);
+//            mainViewModel.mGridObservable.setGridCount(gridCount+"");
+//        }
     }
 
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
 
-
+    }
 }

@@ -40,12 +40,13 @@ public class StorageHelper {
     public static final String KEY_CHOSEN_STORAGE = "chosen_storage";
     public static final String KEY_CHOSEN_SLIDE = "chosen_slide";
     public static final String KEY_CHOSEN_GRID = "chosen_grid";
-    public static final String[] projection = new String[] {
+    public static final String[] projection = new String[]{
             MediaStore.Images.Media._ID,
             MediaStore.Images.Media.DATA,
             MediaStore.Images.Media.DISPLAY_NAME,
             MediaStore.Images.Media.DURATION,
-            MediaStore.Images.Media.SIZE};
+            MediaStore.Images.Media.SIZE
+    };
 
 
     public static List<StorageVolume> getActiveVolumes(Context context) {
@@ -74,12 +75,12 @@ public class StorageHelper {
 
     public static File getMediaDirectory(Context context, String mediaType) {
         try {
-            File appMediaDir = new File(getChosenExternalStorageDir(context)+"/"+mediaType+"/monitor");
-            if (!appMediaDir.exists()){
+            File appMediaDir = new File(getChosenExternalStorageDir(context) + "/" + mediaType + "/monitor");
+            if (!appMediaDir.exists()) {
                 appMediaDir.mkdirs();
             }
             return appMediaDir;
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
@@ -142,16 +143,16 @@ public class StorageHelper {
     }
  */
 
-    public static String getLabelFromVolume(Context context, StorageVolume volume){
+    public static String getLabelFromVolume(Context context, StorageVolume volume) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            if(volume.isEmulated()){
+            if (volume.isEmulated()) {
                 return context.getString(R.string.internal_storage);
-            }else if(volume.isRemovable()){
-                if(isSDCard(context, volume))
+            } else if (volume.isRemovable()) {
+                if (isSDCard(context, volume))
                     return context.getString(R.string.sd_card);
             }
         }
-        return context.getString(R.string.usb) ;
+        return context.getString(R.string.usb);
     }
 
 
@@ -177,10 +178,10 @@ public class StorageHelper {
 
     public static String getLabelFromStorageType(Context context, int storageType) {
         if (storageType == SDCARD_STORAGE) {
-            return  context.getString(R.string.sd_card);
+            return context.getString(R.string.sd_card);
 
         } else if (storageType == USB_STORAGE) {
-            return  context.getString(R.string.usb);
+            return context.getString(R.string.usb);
         } else {
             return context.getString(R.string.internal_storage);
         }
@@ -210,31 +211,31 @@ public class StorageHelper {
         sharedPreferences.edit().putInt(KEY_CHOSEN_STORAGE, getStorageTypeFromLabel(context, label)).apply();
     }
 
-    public static String  getSaveStorageName(Context context){
+    public static String getSaveStorageName(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE);
         int storageType = sharedPreferences.getInt(KEY_CHOSEN_STORAGE, INTERNAL_STORAGE);
-        return getLabelFromStorageType(context,storageType);
+        return getLabelFromStorageType(context, storageType);
     }
 
 
-    public static String getSlideInterval(Context context){
+    public static String getSlideInterval(Context context) {
         ArrayList<String> data = new ArrayList<>(Arrays.asList(context.getResources().getStringArray(R.array.intervals)));
         SharedPreferences sharedPreferences = context.getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE);
         return data.get(sharedPreferences.getInt(KEY_CHOSEN_SLIDE, 0));
     }
 
-    public static void saveSlideInterval(Context context,String name){
+    public static void saveSlideInterval(Context context, String name) {
         ArrayList<String> data = new ArrayList<>(Arrays.asList(context.getResources().getStringArray(R.array.intervals)));
         SharedPreferences sharedPreferences = context.getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE);
         sharedPreferences.edit().putInt(KEY_CHOSEN_SLIDE, data.indexOf(name)).apply();
     }
 
-    public static void saveGridCount(Context context,int gridCount){
+    public static void saveGridCount(Context context, int gridCount) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE);
         sharedPreferences.edit().putInt(KEY_CHOSEN_GRID, gridCount).apply();
     }
 
-    public static int getGridCount(Context context){
+    public static int getGridCount(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(CommonUtils.SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE);
         return sharedPreferences.getInt(KEY_CHOSEN_GRID, 16);
     }
@@ -265,45 +266,49 @@ public class StorageHelper {
     }
 
 
-    public static List<MediaData> getMediaItems(Context context, String mediaType){
+    public static List<MediaData> getMediaItems(Context context, String mediaType) {
         List<Uri> collection = StorageHelper.getContentUris(context, mediaType);
         List<MediaData> mediaList = new ArrayList<>();
-        for (Uri uri:collection){
+        for (Uri uri : collection) {
             mediaList.addAll(getMediaFromUri(context, uri, mediaType));
         }
         return mediaList;
     }
 
-    private static List<MediaData> getMediaFromUri(Context context, Uri uri, String mediaType){
+    private static List<MediaData> getMediaFromUri(Context context, Uri uri, String mediaType) {
         List<MediaData> mediaList = new ArrayList<>();
-       Cursor cursor = context.getContentResolver().query(
+        Cursor cursor = context.getContentResolver().query(
                 uri,
                 projection,
                 null,
                 null,
                 null
         );
-            // Cache column indices.
-            int idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID);
-            int nameColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME);
-            int durationColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DURATION);
-            int sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.SIZE);
-            int data = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        // Cache column indices.
+        int idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID);
+        int nameColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME);
+        int durationColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DURATION);
+        int sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.SIZE);
+        int data = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
 
-            while (cursor.moveToNext()) {
-                // Get values of columns for a given video.
-                long id = cursor.getLong(idColumn);
-                String name = cursor.getString(nameColumn);
-                int duration = cursor.getInt(durationColumn);
-                int size = cursor.getInt(sizeColumn);
-                String dataPath = cursor.getString(data);
-                Uri contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id);
-                if (dataPath.contains(mediaType + StorageHelper.APP_MEDIA_DIRECTORY_PATH)){
-                    mediaList.add(new MediaData(contentUri, name, size, mediaType, duration, dataPath));
-                }
+
+        while (cursor.moveToNext()) {
+            // Get values of columns for a given video.
+            long id = cursor.getLong(idColumn);
+            String name = cursor.getString(nameColumn);
+            int duration = cursor.getInt(durationColumn);
+            int size = cursor.getInt(sizeColumn);
+            String dataPath = cursor.getString(data);
+            Uri contentUri = ContentUris.withAppendedId(uri, id);
+            if (dataPath.contains(mediaType + StorageHelper.APP_MEDIA_DIRECTORY_PATH)) {
+                mediaList.add(new MediaData(contentUri, name, size, mediaType, duration, dataPath));
             }
-            return mediaList;
+        }
+        return mediaList;
     }
 
 
+//    public static List<Long> deleteMedia(Context context, List<MediaData> mediaData) {
+//
+//    }
 }

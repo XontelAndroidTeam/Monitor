@@ -17,8 +17,8 @@ import io.reactivex.rxjava3.core.Single;
 import static androidx.room.OnConflictStrategy.REPLACE;
 @Dao
 public interface CamDao {
-    /*
-    @Query("SELECT * FROM camera")
+
+    @Query("SELECT * FROM channels")
     Flowable<List<IpCam>> getAll();
 
     @Insert(onConflict = REPLACE)
@@ -33,15 +33,13 @@ public interface CamDao {
     @Update
     Single<Integer> updateIpCam(IpCam mIpCam);
 
-    @Query("SELECT * FROM camera WHERE id = :id")
+    @Query("SELECT * FROM channels WHERE id = :id")
     Single<IpCam> getIpCamById(int id);
 
 
-    @Query("SELECT * FROM camera WHERE id IN (:cameraIds)")
+    @Query("SELECT * FROM channels WHERE id IN (:cameraIds)")
     Single<List<IpCam>> loadAllByIds(int[] cameraIds);
 
-    @Query("SELECT * FROM camera WHERE name LIKE :name")
+    @Query("SELECT * FROM channels WHERE name LIKE :name")
     Single<IpCam> findByName(String name);
-
-     */
 }

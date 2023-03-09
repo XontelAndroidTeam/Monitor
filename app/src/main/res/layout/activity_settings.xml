@@ -94,7 +94,7 @@
                     app:boxStrokeWidth="0dp"
                     android:showDividers="end"
                     app:boxStrokeWidthFocused="0dp"
-                    app:endIconDrawable="@drawable/ic_baseline_keyboard_arrow_down_24"
+
                     app:endIconTint="@color/black"
                     android:text="@={data.slideShowInterval}">
 
@@ -130,7 +130,7 @@
                     app:boxCornerRadiusTopStart="5dp"
                     app:boxStrokeWidth="0dp"
                     app:boxStrokeWidthFocused="0dp"
-                    app:endIconDrawable="@drawable/ic_baseline_keyboard_arrow_down_24"
+
                     app:endIconTint="@color/black">
 
                     <AutoCompleteTextView

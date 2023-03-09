@@ -45,7 +45,7 @@
                         app:boxStrokeWidth="0dp"
                         android:showDividers="end"
                         app:boxStrokeWidthFocused="0dp"
-                        app:endIconDrawable="@drawable/ic_grid"
+
                         app:endIconTint="@color/primary_color">
 
                         <AutoCompleteTextView

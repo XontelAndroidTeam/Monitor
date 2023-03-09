@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.xontel.surveillancecameras.viewModels.GridViewModel;
 import com.xontel.surveillancecameras.viewModels.MainViewModel;
+import com.xontel.surveillancecameras.viewModels.MediaViewModel;
 import com.xontel.surveillancecameras.viewModels.SettingViewModel;
 import com.xontel.surveillancecameras.di.ViewModelKey;
 
@@ -23,6 +24,11 @@ public abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(GridViewModel.class)
     public abstract ViewModel bindGridViewModel(GridViewModel gridViewModel);
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(MediaViewModel.class)
+    public abstract ViewModel bindMediaViewModel(MediaViewModel mediaViewModel);
 
     @Binds
     @IntoMap

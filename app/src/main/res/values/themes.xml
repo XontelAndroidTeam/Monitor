@@ -117,10 +117,8 @@
         <item name="android:textSize">25sp</item>
     </style>
 
-    <style name="Widget.App.Spinner" parent="@style/Widget.AppCompat.Spinner">
-        <item name="overlapAnchor">true</item>
-        <item name="android:background">@drawable/spinner_bg</item>
-    </style>
+
+
     <style name="CustomProgressBarHorizontal" parent="android:Widget.ProgressBar.Horizontal">
         <item name="android:progressDrawable">@drawable/progress_bar</item>
         <item name="android:minHeight">40dp</item>

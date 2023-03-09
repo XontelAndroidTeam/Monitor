@@ -2,7 +2,6 @@ package com.xontel.surveillancecameras.di.component;
 
 
 import com.xontel.surveillancecameras.activities.AddCamActivity;
-import com.xontel.surveillancecameras.activities.AddNewDeviceActivity;
 import com.xontel.surveillancecameras.activities.CamerasActivity;
 import com.xontel.surveillancecameras.activities.DevicesActivity;
 import com.xontel.surveillancecameras.activities.HomeActivity;
@@ -30,7 +29,6 @@ public interface ActivityComponent {
 
     void inject(AddCamActivity addCamActivity);
 
-    void inject(AddNewDeviceActivity addNewDeviceActivity);
 
     void inject(DevicesActivity devicesActivity);
 

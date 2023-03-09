@@ -64,7 +64,8 @@
             android:layout_height="wrap_content"
             android:maxLength="20"
             style="@style/editTextStyle"
-            android:inputType="textPassword"/>
+            android:inputType="textPassword"
+            android:imeOptions="actionDone"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout

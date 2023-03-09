@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.xontel.surveillancecameras.dahua.DahuaUtil;
 import com.xontel.surveillancecameras.data.db.AppDatabase;
+import com.xontel.surveillancecameras.data.db.model.IpCam;
 import com.xontel.surveillancecameras.data.network.RestApiHelper;
 import com.xontel.surveillancecameras.data.network.pojo.FeedItem;
 import com.xontel.surveillancecameras.data.network.pojo.LoginRequest;
@@ -12,7 +13,7 @@ import com.xontel.surveillancecameras.data.network.pojo.WrapperResponse;
 import com.xontel.surveillancecameras.data.prefs.PreferencesHelper;
 import com.xontel.surveillancecameras.data.utils.LoggedInMode;
 import com.xontel.surveillancecameras.di.ApplicationContext;
-import com.xontel.surveillancecameras.hikvision.CamDevice;
+import com.xontel.surveillancecameras.data.db.model.CamDevice;
 import com.xontel.surveillancecameras.hikvision.HikUtil;
 import com.xontel.surveillancecameras.utils.CamDeviceType;
 import com.xontel.surveillancecameras.utils.MediaData;
@@ -23,6 +24,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 
+import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Single;
 
 
@@ -63,7 +65,21 @@ public class BaseDataManager implements DataManager {
 
     @Override
     public Single<List<MediaData>> getStoredMedia(Context context, String mediaType) {
-        return Single.create(emitter -> emitter.onSuccess(StorageHelper.getMediaItems(context, mediaType)));
+        return Single.create(emitter ->{
+            try{
+                List<MediaData> mediaData = StorageHelper.getMediaItems(context, mediaType);
+                emitter.onSuccess(mediaData);
+            }catch (Exception e){
+                e.printStackTrace();
+                emitter.onError(e);
+            }
+
+        });
+    }
+
+    @Override
+    public Single<List<Long>> deleteMedia(Context context, List<MediaData> mediaData) {
+        return /*Single.create(emitter -> emitter.onSuccess())*/null;
     }
 
 
@@ -106,25 +122,6 @@ public class BaseDataManager implements DataManager {
     public Single<CamDevice> findDeviceByName(String name) {
         return mDatabase.mDevicesDao().findDeviceByName(name);
     }
-
-    @Override
-    public Single<CamDevice> loginDevice(CamDevice camDevice) {
-        if (camDevice.getDeviceType() == CamDeviceType.HIKVISION.getValue())
-            return HikUtil.loginNormalDevice(camDevice);
-        return DahuaUtil.loginNormalDevice(camDevice);
-    }
-
-    @Override
-    public Single<CamDevice> getChannelsInfo(CamDevice camDevice) {
-
-        return HikUtil.getChannelsState(camDevice);
-    }
-
-    @Override
-    public Single<Integer> getCFgInfo(CamDevice camDevice) {
-        return null;
-    }
-
 
     @Override
     public Single<WrapperResponse<UserProfile>> doLoginApiCall(LoginRequest request) {
@@ -182,4 +179,43 @@ public class BaseDataManager implements DataManager {
     }
 
 
+    @Override
+    public Flowable<List<IpCam>> getAll() {
+        return mDatabase.camDao().getAll();
+    }
+
+    @Override
+    public Single<Long> insertIpCam(IpCam mIpCam) {
+        return mDatabase.camDao().insertIpCam(mIpCam);
+    }
+
+    @Override
+    public Single<List<Long>> insertAllIpCam(IpCam... mIpCamsList) {
+        return mDatabase.camDao().insertAllIpCam(mIpCamsList);
+    }
+
+    @Override
+    public Single<Integer> deleteIpCam(IpCam mIpCam) {
+        return mDatabase.camDao().deleteIpCam(mIpCam);
+    }
+
+    @Override
+    public Single<Integer> updateIpCam(IpCam mIpCam) {
+        return mDatabase.camDao().updateIpCam(mIpCam);
+    }
+
+    @Override
+    public Single<IpCam> getIpCamById(int id) {
+        return mDatabase.camDao().getIpCamById(id);
+    }
+
+    @Override
+    public Single<List<IpCam>> loadAllByIds(int[] cameraIds) {
+        return mDatabase.camDao().loadAllByIds(cameraIds);
+    }
+
+    @Override
+    public Single<IpCam> findByName(String name) {
+        return mDatabase.camDao().findByName(name);
+    }
 }

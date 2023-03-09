@@ -92,4 +92,8 @@
     <string name="wrong_device_type">خطأ في نوع الجهاز</string>
     <string name="domain">عنوان النطاق</string>
     <string name="channels">القنوات : </string>
+    <string name="wrong_user_password">\tusername or password is incorrect. The username or password entered during registration is wrong.</string>
+    <string name="network_error">Failed to connect to device. The device is offline or the connection timeout caused by network reasons, etc.</string>
+    <string name="max_users">\tThe number of users logged into the device has reached the maximum.</string>
+    <string name="error_title">خطأ</string>
 </resources>

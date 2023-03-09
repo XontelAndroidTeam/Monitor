@@ -151,11 +151,12 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
             showChecker(selectionModeEnabled);
             checker.setChecked(selectedItems.contains(itemList.get(getAbsoluteAdapterPosition())));
             MediaData data = itemList.get(position);
+            Log.e("TAG", data.toString());
             play.setVisibility(data.getMediaType().equals(Environment.DIRECTORY_PICTURES) ? View.GONE : View.VISIBLE);
                 try {
                     image.setImageBitmap(context.getContentResolver().loadThumbnail(
                             data.getMediaUri(),
-                          new Size(500, 500), // TODO check for smarter alternatives
+                          new Size(300, 300), // TODO check for smarter alternatives
                             null
                     ));
                 } catch (IOException e) {

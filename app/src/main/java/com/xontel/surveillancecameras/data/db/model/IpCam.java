@@ -2,64 +2,67 @@ package com.xontel.surveillancecameras.data.db.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
-import com.hikvision.netsdk.HCNetSDK;
-import com.hikvision.netsdk.NET_DVR_PICCFG_V30;
-import com.hikvision.netsdk.NET_DVR_PREVIEWINFO;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
 
-import java.nio.charset.StandardCharsets;
+import com.xontel.surveillancecameras.dahua.DahuaUtil;
+import com.xontel.surveillancecameras.hikvision.HikUtil;
+import com.xontel.surveillancecameras.utils.CamDeviceType;
+
+import io.reactivex.rxjava3.core.Single;
+
+@Entity(tableName = "channels")
+public class IpCam implements Parcelable {
+    public static final String TAG = IpCam.class.getSimpleName();
+
+    @PrimaryKey(autoGenerate = true)
+    public long id;
+
+    @Ignore
+    private int channel;
+
+    @ColumnInfo(name = "device_id")
+    private long deviceId;
+
+    @ColumnInfo(name = "device_name")
+    private String deviceName;
+
+    @ColumnInfo(name = "type")
+    private int type;
 
 
-public class IpCam implements  Parcelable{
-    public static final String TAG  = IpCam.class.getSimpleName();
-    private int channel = 0 ;
-    private int deviceId;
-    private int type ;
+    @ColumnInfo(name = "stream_type")
+    private int streamType = 1;
 
-    private int streamType = 1 ;
-    private int loginId = -1;
+    @Ignore
+    private long logId;
+
+
+    @ColumnInfo(name = "name")
     private String name;
 
+    @ColumnInfo(name = "full_name")
+    private String fullName;
 
-    public IpCam(int channel, int deviceId, int type,int loginId) {
+
+    @ColumnInfo(name = "included")
+    private boolean included = true;
+
+    @ColumnInfo(name = "analog")
+    private boolean analog;
+
+
+    public IpCam(int channel, int deviceId, String deviceName, boolean analog, int type, long logId) {
         this.channel = channel;
         this.deviceId = deviceId;
+        this.deviceName = deviceName;
         this.type = type;
-        this.loginId = loginId;
-//        extractChannelName();
-    }
+        this.logId = logId;
+        this.analog = analog;
 
-    private void extractChannelName() {
-        NET_DVR_PICCFG_V30 net_dvr_piccfg_v30 = new NET_DVR_PICCFG_V30();
-        if(!HCNetSDK.getInstance().NET_DVR_GetDVRConfig(loginId,
-                HCNetSDK.NET_DVR_GET_PICCFG_V30,
-                channel, net_dvr_piccfg_v30)){
-            Log.e(TAG, "failed to get channels state");
-            name = "";
-        }else{
-            name = new String(net_dvr_piccfg_v30.sChanName, StandardCharsets.UTF_8).replaceAll("\0", "");
-            Log.e(TAG, "name is : "+name);
-        }
-
-        NET_DVR_PREVIEWINFO net_dvr_previewinfo = new NET_DVR_PREVIEWINFO();
-        net_dvr_previewinfo.lChannel = channel;
-        net_dvr_previewinfo.dwStreamType = streamType;
-
-        if(HCNetSDK.getInstance().NET_DVR_RealPlay_V40(loginId, net_dvr_previewinfo, null) < 0){
-            Log.e(TAG, "failed to get channels state");
-            streamType = 0;
-        }
-        HCNetSDK.getInstance().NET_DVR_StopRealPlay(loginId);
-    }
-
-
-    protected IpCam(Parcel in) {
-        channel = in.readInt();
-        deviceId = in.readInt();
-        type = in.readInt();
-        loginId = in.readInt();
-        name = in.readString();
     }
 
     public static final Creator<IpCam> CREATOR = new Creator<IpCam>() {
@@ -74,7 +77,21 @@ public class IpCam implements  Parcelable{
         }
     };
 
+    public boolean isAnalog() {
+        return analog;
+    }
 
+    public void setAnalog(boolean analog) {
+        this.analog = analog;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public int getChannel() {
         return channel;
@@ -84,13 +101,20 @@ public class IpCam implements  Parcelable{
         this.channel = channel;
     }
 
-
-    public int getDeviceId() {
+    public long getDeviceId() {
         return deviceId;
     }
 
-    public void setDeviceId(int deviceId) {
+    public void setDeviceId(long deviceId) {
         this.deviceId = deviceId;
+    }
+
+    public String getDeviceName() {
+        return deviceName;
+    }
+
+    public void setDeviceName(String deviceName) {
+        this.deviceName = deviceName;
     }
 
     public int getType() {
@@ -101,22 +125,6 @@ public class IpCam implements  Parcelable{
         this.type = type;
     }
 
-    public int getLoginId() {
-        return loginId;
-    }
-
-    public void setLoginId(int loginId) {
-        this.loginId = loginId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public int getStreamType() {
         return streamType;
     }
@@ -125,6 +133,59 @@ public class IpCam implements  Parcelable{
         this.streamType = streamType;
     }
 
+    public long getLogId() {
+        return logId;
+    }
+
+    public void setLogId(long logId) {
+        this.logId = logId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+        fullName = deviceName + "-" + name;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public boolean isIncluded() {
+        return included;
+    }
+
+    public void setIncluded(boolean included) {
+        this.included = included;
+    }
+
+    public void toggleStreamType() {
+        this.streamType = (streamType == 1) ? 0 : 1;
+    }
+
+    @Ignore
+    protected IpCam(Parcel in) {
+        id = in.readLong();
+        channel = in.readInt();
+        deviceId = in.readInt();
+        deviceName = in.readString();
+        type = in.readInt();
+        streamType = in.readInt();
+        logId = in.readInt();
+        name = in.readString();
+        fullName = in.readString();
+        included = in.readByte() != 0;
+        analog = in.readByte() != 0;
+    }
+
+
     @Override
     public int describeContents() {
         return 0;
@@ -132,25 +193,21 @@ public class IpCam implements  Parcelable{
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeLong(id);
         parcel.writeInt(channel);
-        parcel.writeInt(deviceId);
+        parcel.writeLong(deviceId);
+        parcel.writeString(deviceName);
         parcel.writeInt(type);
-        parcel.writeInt(loginId);
+        parcel.writeInt(streamType);
+        parcel.writeLong(logId);
         parcel.writeString(name);
+        parcel.writeString(fullName);
+        parcel.writeByte((byte) (included ? 1 : 0));
+        parcel.writeByte((byte) (analog ? 1 : 0));
     }
 
-    @Override
-    public String toString() {
-        return "IpCam{" +
-                ", channel=" + channel +
-                ", deviceId=" + deviceId +
-                ", type=" + type +
-                ", loginId=" + loginId +
-                ", name='" + name + '\'' +
-                '}';
-    }
 
-    public void toggleStreamType() {
-        this.streamType = (streamType == 1) ? 0 : 1;
+    public Single<String> extractChannelName() {
+        return CamDeviceType.HIKVISION.getValue() == type ? HikUtil.extractChannelName(this) : DahuaUtil.extractChannelName(this);
     }
 }

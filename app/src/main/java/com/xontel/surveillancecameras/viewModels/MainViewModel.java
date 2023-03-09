@@ -8,13 +8,9 @@ import androidx.lifecycle.MutableLiveData;
 import com.xontel.surveillancecameras.R;
 import com.xontel.surveillancecameras.base.BaseViewModel;
 import com.xontel.surveillancecameras.customObservers.GridObservable;
-import com.xontel.surveillancecameras.dahua.DahuaPlayer;
 import com.xontel.surveillancecameras.data.DataManager;
 import com.xontel.surveillancecameras.data.db.model.IpCam;
-import com.xontel.surveillancecameras.hikvision.CamDevice;
-import com.xontel.surveillancecameras.hikvision.HIKPlayer;
-import com.xontel.surveillancecameras.hikvision.HikUtil;
-import com.xontel.surveillancecameras.utils.CamPlayer;
+import com.xontel.surveillancecameras.data.db.model.CamDevice;
 import com.xontel.surveillancecameras.utils.rx.SchedulerProvider;
 
 import java.util.ArrayList;
@@ -58,8 +54,6 @@ public class MainViewModel extends BaseViewModel {
     }
 
 
-
-
     public GridObservable getGridObservable() {
         return mGridObservable;
     }
@@ -69,26 +63,26 @@ public class MainViewModel extends BaseViewModel {
         getLoading().setValue(true);
         getCompositeDisposable().add(getDataManager()
                 .getDevicesAll()
-                        .toObservable()
-                        .flatMapIterable(list -> list)
-                        .flatMap(new Function<CamDevice, ObservableSource<CamDevice>>() {
-                            @Override
-                            public ObservableSource<CamDevice> apply(CamDevice camDevice) throws Throwable {
-                                return getDataManager().loginDevice(camDevice).toObservable();
-                            }
-                        })
-                        .flatMap(new Function<CamDevice, ObservableSource<CamDevice>>() {
-                            @Override
-                            public ObservableSource<CamDevice> apply(CamDevice camDevice) throws Throwable {
-                                return getDataManager().getChannelsInfo(camDevice).toObservable();
-                            }
-                        })
-                        .toList()
+                .toObservable()
+                .flatMapIterable(list -> list)
+                .flatMap(new Function<CamDevice, ObservableSource<CamDevice>>() {
+                    @Override
+                    public ObservableSource<CamDevice> apply(CamDevice camDevice) throws Throwable {
+                        return getDataManager().loginDevice(camDevice).toObservable();
+                    }
+                })
+                .flatMap(new Function<CamDevice, ObservableSource<CamDevice>>() {
+                    @Override
+                    public ObservableSource<CamDevice> apply(CamDevice camDevice) throws Throwable {
+                        return getDataManager().getChannelsInfo(camDevice).toObservable();
+                    }
+                })
+                .toList()
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribe(response -> {
                     getLoading().setValue(false);
-                   camDevices.setValue(response);
+                    camDevices.setValue(response);
                     populateIpCams();
 
                 }, error -> {
@@ -103,7 +97,7 @@ public class MainViewModel extends BaseViewModel {
         List<CamDevice> devices = camDevices.getValue();
         List<IpCam> cams = new ArrayList<>();
 
-        for(CamDevice camDevice: devices){
+        for (CamDevice camDevice : devices) {
             cams.addAll(camDevice.getCams());
         }
         ipCams.setValue(cams);
@@ -112,43 +106,68 @@ public class MainViewModel extends BaseViewModel {
 
     public void createDevice(CamDevice device) {
         getLoading().setValue(true);
-        getCompositeDisposable().add(getDataManager()
-                .insertCamDevice(device)
-                        .flatMap(new Function<Long, SingleSource<CamDevice>>() {
-                            @Override
-                            public SingleSource<CamDevice> apply(Long deviceId) throws Throwable {
-                                device.setId(deviceId);
-                                return getDataManager().loginDevice(device);
-                            }
+        getCompositeDisposable().add(
+                getDataManager()
+                        .insertCamDevice(device)
+                        .flatMap((Function<Long, SingleSource<Long>>) deviceId -> {
+                            device.setId(deviceId);
+                            return device.login(context);
                         })
-                        .flatMap(new Function<CamDevice, SingleSource<CamDevice>>() {
-                            @Override
-                            public SingleSource<CamDevice> apply(CamDevice camDevice) throws Throwable {
-                                return getDataManager().getChannelsInfo(device);
-                            }
-                        })
-                .subscribeOn(getSchedulerProvider().io())
-                .observeOn(getSchedulerProvider().ui())
-                .subscribe(response -> {
-                    getLoading().setValue(false);
-                    addNewDevice(response);
-                    showToastMessage(context, R.string.device_created);
-                     reloader.setValue(true);
-                }, error -> {
-                    Log.e(TAG, error.getMessage());
-                    getLoading().setValue(false);
-                    getError().setValue(true);
-                    showToastMessage(context,error.getMessage());
-                }));
+                        .subscribeOn(getSchedulerProvider().io())
+                        .observeOn(getSchedulerProvider().ui())
+                        .subscribe(response -> {
+                                    getLoading().setValue(false);
+                                    device.setLogId(response);
+                                    extractDeviceCams(device);
+                                },
+                                error -> {
+                                    Log.e(TAG, error.getMessage());
+                                    getLoading().setValue(false);
+                                    showDialogMessage(context, error.getMessage());
+                                }));
 
     }
 
 
+    private void extractDeviceCams(CamDevice device) {
+        getLoading().setValue(true);
+        getCompositeDisposable().add(device.extractChannels()
+                .toObservable()
+                .flatMapIterable(list -> list)
+                .flatMap(new Function<IpCam, ObservableSource<Long>>() {
+                    @Override
+                    public ObservableSource<Long> apply(IpCam ipCam) throws Throwable {
+                        return ipCam.extractChannelName().toObservable()
+                                .flatMap(new Function<String, ObservableSource<Long>>() {
+                                    @Override
+                                    public ObservableSource<Long> apply(String name) throws Throwable {
+                                        ipCam.setDeviceId(device.getId());
+                                        ipCam.setDeviceName(device.name);
+                                        ipCam.setName(name);
+                                        return getDataManager().insertIpCam(ipCam).toObservable();
+                                    }
+                                });
+                    }
+                })
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe(response -> {
+                            getLoading().setValue(false);
+                            onNewDeviceCreated();
+                        },
+                        error -> {
+                            Log.e(TAG, error.getMessage());
+                            getLoading().setValue(false);
+//                            showDialogMessage(context, error.getMessage());
+                        }));
 
+    }
+
+    private void onNewDeviceCreated() {
+    }
 
 
     public void updateDevice(CamDevice device) {
-        device.setScanned(false);
         getLoading().setValue(true);
         getCompositeDisposable().add(getDataManager()
                 .updateCamDevice(device)
@@ -166,7 +185,6 @@ public class MainViewModel extends BaseViewModel {
                     setErrorMessage(error.getMessage());
                 }));
     }
-
 
 
     public void deleteDevice(CamDevice device) {
@@ -192,8 +210,8 @@ public class MainViewModel extends BaseViewModel {
 
     private void deleteIpCamsWithID(CamDevice device) {
         List<IpCam> cams = ipCams.getValue();
-        for(int i = cams.size() - 1 ; i >=0 ; i--){
-            if(cams.get(i).getDeviceId() == device.getId()){
+        for (int i = cams.size() - 1; i >= 0; i--) {
+            if (cams.get(i).getDeviceId() == device.getId()) {
                 cams.remove(i);
             }
         }
@@ -222,13 +240,6 @@ public class MainViewModel extends BaseViewModel {
     }
 
 
-
-
-
-
-
-
-
 //    private void extractDevices() {
 //        List<IpCam> tempIpCams = new ArrayList<>();
 //        if (camDevices.getValue() != null && !camDevices.getValue().isEmpty()) {
@@ -246,8 +257,6 @@ public class MainViewModel extends BaseViewModel {
 //            ipCams.setValue(tempIpCams);
 //        }
 //    }
-
-
 
 
 }

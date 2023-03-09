@@ -1,46 +1,28 @@
 package com.xontel.surveillancecameras.fragments;
 
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.xontel.surveillancecameras.R;
-import com.xontel.surveillancecameras.activities.AddNewDeviceActivity;
 import com.xontel.surveillancecameras.adapters.DevicesAdapter;
 import com.xontel.surveillancecameras.base.BaseFragment;
 import com.xontel.surveillancecameras.databinding.FragmentDevicesBinding;
-import com.xontel.surveillancecameras.hikvision.CamDevice;
-import com.xontel.surveillancecameras.presenters.MainDeviceMvpPresenter;
-import com.xontel.surveillancecameras.presenters.MainDeviceMvpView;
+import com.xontel.surveillancecameras.data.db.model.CamDevice;
 import com.xontel.surveillancecameras.utils.CamDeviceType;
 import com.xontel.surveillancecameras.utils.DataFormMode;
 import com.xontel.surveillancecameras.viewModels.MainViewModel;
 import com.xontel.surveillancecameras.viewModels.ViewModelProviderFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.inject.Inject;
-
-import okhttp3.Call;
 
 
 public class DevicesFragment extends BaseFragment implements DevicesAdapter.ClickListener  {
@@ -115,12 +97,15 @@ public class DevicesFragment extends BaseFragment implements DevicesAdapter.Clic
         });
         binding.btnSave.setOnClickListener(v -> {
             if (validateFields()) {
-                int deviceType = CamDeviceType.getTypeFromString(binding.dropDown.slideShowFilter.getText().toString());
+                int deviceType = binding.dropDown.spinner.getSelectedItemPosition();
                 String deviceName = binding.etName.getText().toString();
                 String ip = binding.deviceFields.etDomain.getText().toString();
                 String userName = binding.deviceFields.etUsername.getText().toString();
                 String password = binding.deviceFields.etPassword.getText().toString();
-                CamDevice camDevice = new CamDevice(deviceName, userName, password, ip, deviceType);
+
+                CamDevice camDevice = CamDeviceType.HIKVISION.getValue() == deviceType ?
+                        new HikDevice(deviceName, userName, password, ip) :
+                        new DahuaDevice(deviceName, userName, password, ip);
                 if(mode.equals(DataFormMode.CREATE)) {
                     mMainViewModel.createDevice(camDevice);
                     mDevicesAdapter.setCurrentSelectedItem(0);
@@ -135,7 +120,7 @@ public class DevicesFragment extends BaseFragment implements DevicesAdapter.Clic
     }
 
     private boolean validateFields() {
-        boolean isDropDownChoiceValid =  CamDeviceType.getTypeFromString(binding.dropDown.slideShowFilter.getText().toString()) != -1 ;
+        boolean isDropDownChoiceValid =  /*CamDeviceType.getTypeFromString(binding.dropDown.slideShowFilter.getText().toString()) != -1 */true;
         if(!isDropDownChoiceValid){
             showMessage(R.string.wrong_device_type);
             return false;
@@ -155,14 +140,15 @@ public class DevicesFragment extends BaseFragment implements DevicesAdapter.Clic
         ArrayAdapter typesDropDownAdapter = new ArrayAdapter<String>(getContext(),
                 android.R.layout.simple_spinner_dropdown_item, types
         );
-        binding.dropDown.slideShowFilter.setAdapter(typesDropDownAdapter);
-        typesDropDownAdapter.notifyDataSetChanged();
+        binding.dropDown.spinner.setAdapter(typesDropDownAdapter);
         binding.setLifecycleOwner(this);
     }
 
     private void bindCamDevice(CamDevice data) {
+        binding.llStatus.setVisibility(View.VISIBLE);
         binding.channels.setText(data.getChannels()+"");
-        binding.dropDown.slideShowFilter.setText(getResources().getStringArray(R.array.device_type)[data.deviceType], false);
+        binding.status.setColorFilter(ContextCompat.getColor(requireContext(), data.isLoggedIn() ? R.color.green_color : R.color.red_color));
+        binding.dropDown.spinner.setSelection(data.deviceType);
         binding.etName.setText(data.getName());
         binding.deviceFields.etDomain.setText(data.getDomain());
         binding.deviceFields.etUsername.setText(data.getUserName());
@@ -176,7 +162,6 @@ public class DevicesFragment extends BaseFragment implements DevicesAdapter.Clic
         mDevicesAdapter = new DevicesAdapter(getContext(), mMainViewModel.camDevices.getValue(), this);
         binding.rvDevices.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.rvDevices.setEmptyView(binding.noDevices.getRoot());
-        binding.rvDevices.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
         binding.rvDevices.setAdapter(mDevicesAdapter);
     }
 
@@ -217,7 +202,7 @@ public class DevicesFragment extends BaseFragment implements DevicesAdapter.Clic
     private void flushAllFields() {
         setAllFieldsEnabled(true);
         setAllFieldsEmpty();
-        binding.dropDown.slideShowFilter.setText(getString(R.string.device_type), false);
+        binding.dropDown.spinner.setSelection(0);
         binding.btnSave.setVisibility(View.VISIBLE);
         binding.btnDelete.setVisibility(View.GONE);
         binding.btnUpdate.setVisibility(View.GONE);
@@ -235,6 +220,7 @@ public class DevicesFragment extends BaseFragment implements DevicesAdapter.Clic
 
 
     private void setAllFieldsEmpty() {
+        binding.llStatus.setVisibility(View.GONE);
         binding.channels.setText("0");
         binding.etName.setText(null);
         binding.deviceFields.etPassword.setText(null);
@@ -249,7 +235,7 @@ public class DevicesFragment extends BaseFragment implements DevicesAdapter.Clic
         binding.deviceFields.usernameInputLayout.setEnabled(enabled);
         binding.deviceFields.domainInputLayout.setEnabled(enabled);
         binding.deviceFields.descriptionInputLayout.setEnabled(enabled);
-        binding.dropDown.getRoot().setEnabled(enabled);
+        binding.dropDown.spinner.setEnabled(enabled);
     }
 
     private void lockAllFields() {

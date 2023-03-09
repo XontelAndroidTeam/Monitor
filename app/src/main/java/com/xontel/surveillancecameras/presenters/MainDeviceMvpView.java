@@ -2,7 +2,7 @@ package com.xontel.surveillancecameras.presenters;
 
 import com.xontel.surveillancecameras.base.MvpView;
 
-import com.xontel.surveillancecameras.hikvision.CamDevice;
+import com.xontel.surveillancecameras.data.db.model.CamDevice;
 
 import java.util.List;
 

@@ -13,6 +13,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
@@ -39,6 +41,8 @@ import com.xontel.surveillancecameras.utils.CommonUtils;
 import com.xontel.surveillancecameras.utils.MediaData;
 import com.xontel.surveillancecameras.utils.MediaUtils;
 import com.xontel.surveillancecameras.utils.StorageHelper;
+import com.xontel.surveillancecameras.viewModels.MediaViewModel;
+import com.xontel.surveillancecameras.viewModels.ViewModelProviderFactory;
 
 import java.io.File;
 import java.lang.reflect.Array;
@@ -46,36 +50,35 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import javax.inject.Inject;
 
-public class SavedMediaFragment extends BaseFragment implements LoaderManager.LoaderCallbacks<Cursor>, MediaAdapter.ClickActionListener {
+
+public class SavedMediaFragment extends BaseFragment implements MediaAdapter.ClickActionListener {
     public static final String TAG = SavedMediaFragment.class.getSimpleName();
     private FragmentSavedMediaBinding binding ;
     private MediaAdapter mediaAdapter;
-    private List<MediaData> images = new ArrayList<>();
-    private List<MediaData> videos = new ArrayList<>();
     private android.view.ActionMode actionMode;
-    private ProgressDialog progressDialog;
-    public static final int IMAGES_LOADER = 0;
-    public static final int VIDEOS_LOADER = 1;
-    public static final String[] projection = new String[] {
-            MediaStore.Images.Media._ID,
-            MediaStore.Images.Media.DATA,
-            MediaStore.Images.Media.DISPLAY_NAME,
-            MediaStore.Images.Media.DURATION,
-            MediaStore.Images.Media.SIZE};
+
+
+    private MediaViewModel mMediaViewModel;
+
+    @Inject
+    ViewModelProviderFactory providerFactory;
 
 
     public SavedMediaFragment() {
         // Required empty public constructor
     }
 
-
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
 
     @Override
     public void onResume() {
         super.onResume();
-        LoaderManager.getInstance(this).initLoader(IMAGES_LOADER, null, this);
-        LoaderManager.getInstance(this).initLoader(VIDEOS_LOADER, null, this);
+
     }
 
     @Override
@@ -113,6 +116,11 @@ public class SavedMediaFragment extends BaseFragment implements LoaderManager.Lo
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        getFragmentComponent().inject(this);
+        mMediaViewModel = new ViewModelProvider(this, providerFactory).get(MediaViewModel.class);
+        mMediaViewModel.getAllAppMedia();
+
+
     }
 
     @Override
@@ -127,6 +135,24 @@ public class SavedMediaFragment extends BaseFragment implements LoaderManager.Lo
     @Override
     protected void setUp(View view) {
         setupMediaList();
+
+        mMediaViewModel.getLoading().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean loading) {
+                if(loading){
+                    showLoading();
+                }else{
+                    hideLoading();
+                }
+            }
+        });
+        mMediaViewModel.media.observe(getViewLifecycleOwner(), new Observer<List<MediaData>>() {
+            @Override
+            public void onChanged(List<MediaData> mediaData) {
+                mediaAdapter.setAllData(mediaData);
+            }
+        });
+
 
     }
 
@@ -147,61 +173,7 @@ public class SavedMediaFragment extends BaseFragment implements LoaderManager.Lo
         updateActionMode();
     }
 
-  
-    @NonNull
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
-        switch (id) {
-            case IMAGES_LOADER:
-                return new CursorLoader(
-                        getContext(),
-                       MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                        projection,
-                        MediaStore.Images.Media.VOLUME_NAME + " IN "+createSelectionForVolumes() +" AND "+ MediaStore.Images.Media.RELATIVE_PATH+"=?",
-                        createSelectionArgs(Environment.DIRECTORY_PICTURES),
-                        null
-                );
-            case VIDEOS_LOADER:
-                return new CursorLoader(
-                        getContext(),
-                        MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
-                        projection,
-                        MediaStore.Images.Media.VOLUME_NAME + " IN "+createSelectionForVolumes()+" AND " + MediaStore.Images.Media.RELATIVE_PATH+"=?",
-                        createSelectionArgs(Environment.DIRECTORY_MOVIES),
-                        null
-                );
-            default:
-                return null;
-        }
-    }
 
-    @Override
-    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
-        switch (loader.getId()){
-            case IMAGES_LOADER:
-                images.clear();
-                images.addAll(MediaUtils.extractMedia(data, Environment.DIRECTORY_PICTURES));
-                notifyDataChanged();
-                break;
-            case VIDEOS_LOADER:
-                videos.clear();
-                videos.addAll(MediaUtils.extractMedia(data, Environment.DIRECTORY_MOVIES));
-                notifyDataChanged();
-                break;
-        }
-    }
-
-    private void notifyDataChanged() {
-       List<MediaData> allMedia = new ArrayList<>();
-       allMedia.addAll(images);
-       allMedia.addAll(videos);
-       mediaAdapter.setAllData(allMedia);
-    }
-
-    @Override
-    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
-
-    }
 
     private void shareSelectedItems(List<MediaData> selectedFiles) {
         if(selectedFiles.size() > 0) {
@@ -322,32 +294,18 @@ public class SavedMediaFragment extends BaseFragment implements LoaderManager.Lo
         }
     }
 
-    private void setupProgressDialog() {
-        progressDialog = new ProgressDialog(getContext());
-        progressDialog.setMax(100); // Progress Dialog Max Value
-        progressDialog.setTitle(R.string.deleting); // Setting Title
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL); // Progress Dialog Style Horizontal
-        progressDialog.setCancelable(false);
-        progressDialog.show();
-    }
 
-    private void setProgressDialogValues(int value){
-        progressDialog.setProgress(value);
-    }
-    private void hideProgressDialogValues(){
-        progressDialog.dismiss();
-    }
 
     private void deleteSelectedItems(List<MediaData> selectedFiles) {
         if(selectedFiles.size() > 0 ) {
-            setupProgressDialog();
+//            setupProgressDialog();
             for (int i = 0; i < selectedFiles.size(); i++) {
-                setProgressDialogValues(i);
+//                setProgressDialogValues(i);
                 if (!CommonUtils.deleteFile(new File(selectedFiles.get(i).getMediaPath() == null || selectedFiles.get(i).getMediaPath().isEmpty()  ? selectedFiles.get(i).getMediaPath() : selectedFiles.get(i).getMediaPath()  ))) {
                     Toast.makeText(getContext(), R.string.file_delete_error + selectedFiles.get(i).getName(), Toast.LENGTH_LONG).show();
                 }
             }
-            hideProgressDialogValues();
+//            hideProgressDialogValues();
             selectedFiles.clear();
             onDeleteCompleted();
         }else{
@@ -360,39 +318,13 @@ public class SavedMediaFragment extends BaseFragment implements LoaderManager.Lo
 //        getAllPics();
     }
 
-  
-    private String createSelectionForVolumes(){
-        Set<String> volumesNames = MediaStore.getExternalVolumeNames(getContext());
-        String selection = "(";
-        for(String name : volumesNames){
-            selection+="?,";
-        }
 
-        selection = selection.substring(0, selection.length() - 1);
-         selection+= ")";
-         Log.v(TAG, selection);
-         return selection;
-    }
 
   
-    private String[] createSelectionArgs(String mediaType){
-        int i = 0;
-        Set<String> volumesNames = MediaStore.getExternalVolumeNames(getContext());
-        String[] selectionArgs = new String[volumesNames.size()+1];
-        for(String name : volumesNames){
-            selectionArgs[i++] = name;
-        }
-        selectionArgs[selectionArgs.length - 1] = mediaType + StorageHelper.APP_MEDIA_DIRECTORY_PATH;
-        for(String s: selectionArgs) {
-            Log.v(TAG, s);
-        }
-        return selectionArgs;
-    }
+
 
     @Override
     public void onStop() {
         super.onStop();
-        LoaderManager.getInstance(this).destroyLoader(IMAGES_LOADER);
-        LoaderManager.getInstance(this).destroyLoader(VIDEOS_LOADER);
     }
 }

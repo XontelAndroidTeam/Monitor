@@ -5,11 +5,7 @@
         android:enabled="true"
         android:icon="@drawable/ic_camera_monitor"
         android:title="@string/monitor"/>
-    <item
-        android:id="@+id/slideShowFragment"
-        android:enabled="true"
-        android:icon="@drawable/ic_slide_show"
-        android:title="@string/slide_show"/>
+
     <item
         android:id="@+id/savedMediaFragment"
         android:enabled="true"

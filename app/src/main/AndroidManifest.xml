@@ -29,13 +29,6 @@
 <!--            </intent-filter>-->
         </activity>
         <activity
-            android:name=".activities.AddNewDeviceActivity"
-            android:label="@string/add_device">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
             android:name=".activities.DevicesActivity"
             android:label="@string/devices" />
         <activity

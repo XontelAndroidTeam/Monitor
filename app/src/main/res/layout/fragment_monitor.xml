@@ -43,8 +43,7 @@
             android:layout_height="50dp"
             android:layout_gravity="top|center"
             android:alpha="0"
-            android:src="@drawable/ic_baseline_keyboard_arrow_down_24"
-            android:background="@drawable/half_circle"
+
             android:tint="#C1C0C0"/>
         <LinearLayout
             android:id="@+id/ll_btns"

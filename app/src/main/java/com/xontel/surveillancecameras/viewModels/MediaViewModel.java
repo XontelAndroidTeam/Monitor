@@ -2,6 +2,8 @@ package com.xontel.surveillancecameras.viewModels;
 
 import android.content.Context;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
@@ -29,28 +31,24 @@ public class MediaViewModel extends BaseViewModel {
     public static final String TAG = MediaViewModel.class.getSimpleName();
     private Context context;
     public MutableLiveData<List<MediaData>> media = new MutableLiveData<>(new ArrayList<>());
-    public MutableLiveData<List<MediaData>> videos = new MutableLiveData<>(new ArrayList<>());
 
     @Inject
     public MediaViewModel(Context context, SchedulerProvider mSchedulerProvider, CompositeDisposable mCompositeDisposable, DataManager manager) {
         super(mSchedulerProvider, mCompositeDisposable, manager);
         this.context = context ;
-        getAllAppMedia(Environment.DIRECTORY_PICTURES);
-        getAllAppMedia(Environment.DIRECTORY_MOVIES);
     }
 
 
-    public void getAllAppMedia(String mediaType){
+    public void getAllAppMedia(){
         getLoading().setValue(true);
         getCompositeDisposable().add(getDataManager()
-                .getStoredMedia(context, mediaType)
+                .getStoredMedia(context, Environment.DIRECTORY_PICTURES)
+                        .mergeWith(getDataManager().getStoredMedia(context, Environment.DIRECTORY_MOVIES))
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribe(response -> {
                     getLoading().setValue(false);
-                   List<MediaData> mediaData = media.getValue();
-                   mediaData.addAll(response);
-                   media.setValue(mediaData);
+                   media.setValue(response);
 
                 }, error -> {
                     Log.e(TAG, error.getMessage() );

@@ -1,19 +1,20 @@
 package com.xontel.surveillancecameras.adapters;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.xontel.surveillancecameras.R;
-import com.xontel.surveillancecameras.hikvision.CamDevice;
+import com.xontel.surveillancecameras.data.db.model.CamDevice;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,19 +61,28 @@ public class DevicesAdapter extends RecyclerView.Adapter<DevicesAdapter.DeviceVi
         int textColorRes = position == selectedItemPosition ? R.color.white_color : R.color.black_color;
         int iconColorRes = position == selectedItemPosition ? R.color.white_color : R.color.accent_color;
         int bgColor = position == selectedItemPosition ? R.color.accent_color : R.color.white_color;
+        holder.status.setColorFilter(ContextCompat.getColor(mContext, data.isLoggedIn() ? R.color.green_color : R.color.red_color));
+        holder.channels.setText(data.getChannels()+"");
         holder.title.setText(data.getName());
         holder.ipOrUrl.setText(data.getDomain());
         holder.title.setTextColor(ContextCompat.getColor(mContext, textColorRes));
         holder.ipOrUrl.setTextColor(ContextCompat.getColor(mContext, textColorRes));
-        holder.itemView.setBackgroundColor(ContextCompat.getColor(mContext, bgColor));
+        holder.channels.setTextColor(ContextCompat.getColor(mContext, textColorRes));
+        holder.separator.setBackgroundColor(ContextCompat.getColor(mContext, textColorRes));
+        ((CardView)holder.itemView).setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(mContext, bgColor)));
         holder.imageView.setColorFilter(ContextCompat.getColor(mContext, iconColorRes));
 
     }
 
 
     public void setCurrentSelectedItem(int position) {
+        int oldSelectedItem = selectedItemPosition;
         selectedItemPosition = mDeviceList.isEmpty() ? NO_SELECTION : mDeviceList.size() <= position ? 0 : position;
         mClickListener.onItemClicked(getSelectedDevice());
+//        if(oldSelectedItem != selectedItemPosition) {
+//            notifyItemChanged(oldSelectedItem);
+//            notifyItemChanged(selectedItemPosition);
+//        }
         notifyDataSetChanged();
     }
 
@@ -93,12 +103,19 @@ public class DevicesAdapter extends RecyclerView.Adapter<DevicesAdapter.DeviceVi
         TextView ipOrUrl;
         ImageView imageView;
 
+        ImageView status ;
+        TextView channels;
+        View separator ;
+
         public DeviceViewHolder(@NonNull View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
             title = itemView.findViewById(R.id.tv_title);
             ipOrUrl = itemView.findViewById(R.id.tv_desc);
             imageView = itemView.findViewById(R.id.iv_cam);
+             status = itemView.findViewById(R.id.status);
+             channels = itemView.findViewById(R.id.channels);
+             separator =itemView.findViewById(R.id.separator);;
         }
 
         @Override

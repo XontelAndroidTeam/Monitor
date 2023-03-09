@@ -1,7 +1,6 @@
 package com.xontel.surveillancecameras.viewModels;
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.databinding.Observable;
 import androidx.databinding.Observable.OnPropertyChangedCallback;
@@ -9,13 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.xontel.surveillancecameras.base.BaseViewModel;
 import com.xontel.surveillancecameras.data.DataManager;
-import com.xontel.surveillancecameras.data.db.model.IpCam;
-import com.xontel.surveillancecameras.hikvision.CamDevice;
-import com.xontel.surveillancecameras.hikvision.HIKPlayer;
 import com.xontel.surveillancecameras.utils.rx.SchedulerProvider;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 

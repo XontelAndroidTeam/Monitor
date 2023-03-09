@@ -5,6 +5,8 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
+
 public class MediaData  implements Parcelable {
     private String name;
     private Integer size;
@@ -128,5 +130,17 @@ public class MediaData  implements Parcelable {
         dest.writeString(mediaUri.toString());
         dest.writeString(mediaType);
 
+    }
+
+    @Override
+    public String toString() {
+        return "MediaData{" +
+                "name='" + name + '\'' +
+                ", size=" + size +
+                ", duration=" + duration +
+                ", mediaPath='" + mediaPath + '\'' +
+                ", mediaUri=" + mediaUri +
+                ", mediaType='" + mediaType + '\'' +
+                '}';
     }
 }

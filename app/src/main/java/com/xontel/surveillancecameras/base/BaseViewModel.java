@@ -6,6 +6,8 @@ import android.widget.Toast;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.xontel.surveillancecameras.R;
 import com.xontel.surveillancecameras.data.DataManager;
 import com.xontel.surveillancecameras.utils.rx.SchedulerProvider;
 
@@ -63,6 +65,14 @@ public class BaseViewModel extends ViewModel {
     public void showToastMessage(Context context, int stringRes) {
         showToastMessage(context, context.getString(stringRes));
 
+    }
+
+    public void showDialogMessage(Context context, String message) {
+        new MaterialAlertDialogBuilder(context, R.style.AlertDialogTheme)
+                .setTitle(R.string.error_title)
+                .setMessage(message)
+                .setPositiveButton(android.R.string.yes, (dialog, which) -> dialog.dismiss())
+                .show();
     }
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;

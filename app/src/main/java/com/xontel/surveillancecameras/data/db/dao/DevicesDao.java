@@ -7,7 +7,7 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.xontel.surveillancecameras.hikvision.CamDevice;
+import com.xontel.surveillancecameras.data.db.model.CamDevice;
 
 import java.util.List;
 

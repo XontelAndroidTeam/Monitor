@@ -181,7 +181,7 @@ public class MonitorFragment extends BaseFragment implements AdapterView.OnItemC
         binding.btnRecord.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mainViewModel.recordVideo.setValue(true);
+                mainViewModel.recordVideo.setValue(!mainViewModel.recordVideo.getValue());
             }
         });
         setupGridDropDown();

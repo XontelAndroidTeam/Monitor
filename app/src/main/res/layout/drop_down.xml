@@ -7,35 +7,18 @@
 
     </data>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/grid_drop_down"
-        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
-        android:layout_width="90dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="24dp"
-        app:boxBackgroundColor="@color/edit_text_color"
-        app:boxCornerRadiusBottomEnd="5dp"
-        app:boxCornerRadiusBottomStart="5dp"
-        app:boxCornerRadiusTopEnd="5dp"
-        app:boxCornerRadiusTopStart="5dp"
-        app:boxStrokeWidth="0dp"
-        android:showDividers="end"
-        app:endIconTint="@color/black"
-        app:boxStrokeWidthFocused="0dp">
+    <FrameLayout
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:background="@drawable/custom_edit_text">
 
-        <AutoCompleteTextView
-            android:id="@+id/slide_show_filter"
+        <Spinner
+            android:id="@+id/spinner"
+            style="@style/Widget.AppCompat.DropDownItem.Spinner"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@null"
-            android:dropDownSelector="@drawable/rounded__bg"
-            android:inputType="none"
-            android:maxLines="1"
-            android:padding="2dp"
-            android:singleLine="true"
-            android:textAlignment="viewStart"
-            android:textColor="@color/black"
-            android:textSize="14sp"
-            tools:ignore="LabelFor" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:overlapAnchor="false"
+
+            android:spinnerMode="dropdown" />
+    </FrameLayout>
 </layout>
