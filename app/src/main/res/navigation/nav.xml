@@ -22,7 +22,8 @@
         android:id="@+id/deviceFragment"
         android:name="com.xontel.surveillancecameras.fragments.DevicesFragment"
         android:label="@string/devices"
-        tools:layout="@layout/fragment_devices"/>
+        tools:layout="@layout/fragment_devices">
+    </fragment>
     <fragment
         android:id="@+id/savedMediaFragment"
         android:name="com.xontel.surveillancecameras.fragments.SavedMediaFragment"

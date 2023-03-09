@@ -17,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 
 import com.xontel.surveillancecameras.R;
+import com.xontel.surveillancecameras.activities.HomeActivity;
 import com.xontel.surveillancecameras.utils.StorageBroadcastReceiver;
 import com.xontel.surveillancecameras.utils.StorageHelper;
 import com.xontel.surveillancecameras.viewModels.MainViewModel;
@@ -64,7 +65,7 @@ public class SettingsFragment extends BaseFragment {
         getCurrentStorage();
         mSettingViewModel = new ViewModelProvider(this, mViewModelProviderFactory).get(SettingViewModel.class);
         mMainViewModel = new ViewModelProvider(requireActivity(), mViewModelProviderFactory).get(MainViewModel.class);
-        setHasOptionsMenu(true);
+        ((HomeActivity) requireActivity()).getSupportActionBar().show();
     }
 
     @Override
