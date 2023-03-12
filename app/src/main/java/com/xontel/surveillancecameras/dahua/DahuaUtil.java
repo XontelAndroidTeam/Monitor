@@ -79,7 +79,7 @@ public class DahuaUtil {
                     Log.v(TAG, "analog ================ ");
                     for (int i = 0; i < camDevice.getChannels(); i++) {
                         Log.v(TAG, "channel : " + i);
-                        cams.add(new IpCam(i + 1, (int) camDevice.getId(), camDevice.getName(), true, (int) camDevice.getLogId(), CamDeviceType.DAHUA.getValue()
+                        cams.add(new IpCam(i + 1, (int) camDevice.getId(), camDevice.getName(), (int) camDevice.getLogId(), CamDeviceType.DAHUA.getValue(), false
                         ));
                     }
 
@@ -92,7 +92,7 @@ public class DahuaUtil {
         return Single.create(emitter -> {
             String name = "";
             SDKDEV_CHANNEL_CFG[] sdk_dev_channel_cfg = new SDKDEV_CHANNEL_CFG[1];
-            if (!INetSDK.GetDevConfig(ipCam.getLoginId(),
+            if (!INetSDK.GetDevConfig(ipCam.getLogId(),
                     FinalVar.SDK_DEV_CHANNELCFG,
                     ipCam.getChannel(), sdk_dev_channel_cfg, null,  5000)) {
                 String errorMessage = "failed to get channel name : " + INetSDK.GetLastError();

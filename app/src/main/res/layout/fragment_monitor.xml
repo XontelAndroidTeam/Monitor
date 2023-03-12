@@ -2,8 +2,11 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+
     <data>
-        <import type="android.view.View"/>
+
+        <import type="android.view.View" />
+
         <variable
             name="viewModel"
             type="com.xontel.surveillancecameras.viewModels.MainViewModel" />
@@ -12,7 +15,6 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layoutDirection="ltr"
         android:clickable="true">
 
 
@@ -38,128 +40,107 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
         <ImageView
             android:id="@+id/btn_show_controllers"
             android:layout_width="150dp"
             android:layout_height="50dp"
             android:layout_gravity="top|center"
-       android:visibility="gone"
             android:alpha="0"
+            app:tint="#C1C0C0"
+            android:visibility="gone" />
 
-            android:tint="#C1C0C0"/>
         <LinearLayout
             android:id="@+id/ll_btns"
             android:layout_width="match_parent"
             android:layout_height="100dp"
+            android:background="@drawable/overlay_gradient"
+            android:gravity="top"
             android:orientation="horizontal"
             android:paddingHorizontal="16dp"
             android:paddingVertical="8dp"
-            android:gravity="top"
             android:visibility="gone"
-            android:background="@drawable/overlay_gradient"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
                 android:id="@+id/btn_menu"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:src="@drawable/ic_baseline_menu_24"
-                android:tint="@color/white"/>
+                android:tint="@color/white" />
+
             <View
                 android:id="@+id/tv_cam_name"
                 android:layout_width="0dp"
-                android:layout_weight="1"
+                android:layout_height="0dp"
 
-                android:layout_height="0dp" />
+                android:layout_weight="1" />
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_snapshot"
+                style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton.Icon"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:layout_marginTop="-5dp"
-                app:backgroundTint="@android:color/holo_red_dark"
                 android:layout_marginHorizontal="4dp"
-                style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton.Icon"
-                app:icon="@drawable/ic_baseline_insert_photo_24"
-                app:iconSize="35dp"
-                app:iconGravity="textStart"
-                android:padding="0dp"
-                app:iconPadding="0dp"
-                app:iconTint="@color/white"
+                android:layout_marginTop="-5dp"
                 android:insetLeft="0dp"
                 android:insetTop="0dp"
                 android:insetRight="0dp"
                 android:insetBottom="0dp"
+                android:padding="0dp"
                 android:visibility="@{viewModel.oneCam &amp;&amp; viewModel.ipCams.size() > 0? View.VISIBLE : View.GONE, default=gone}"
-                tools:visibility="visible"
+                app:backgroundTint="@android:color/holo_red_dark"
+                app:icon="@drawable/ic_baseline_insert_photo_24"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"
+                app:iconSize="35dp"
+                app:iconTint="@color/white"
                 app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.Button.Circle"
-                />
+                tools:visibility="visible" />
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_record"
+                style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton.Icon"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                app:backgroundTint="@color/green_color"
                 android:layout_marginHorizontal="4dp"
-                style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton.Icon"
-                app:icon="@drawable/ic_baseline_video_cam_24"
-                app:iconSize="35dp"
-                app:iconGravity="textStart"
                 android:layout_marginTop="-5dp"
-                android:padding="0dp"
-                app:iconPadding="0dp"
-                app:iconTint="@color/white"
-                android:visibility="@{viewModel.oneCam &amp;&amp; viewModel.ipCams.size() > 0? View.VISIBLE : View.GONE, default=gone}"
                 android:insetLeft="0dp"
                 android:insetTop="0dp"
                 android:insetRight="0dp"
                 android:insetBottom="0dp"
-                tools:visibility="visible"
+                android:padding="0dp"
+                android:visibility="@{viewModel.oneCam &amp;&amp; viewModel.ipCams.size() > 0? View.VISIBLE : View.GONE, default=gone}"
+                app:backgroundTint="@color/green_color"
+                app:icon="@drawable/ic_baseline_video_cam_24"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"
+                app:iconSize="35dp"
+                app:iconTint="@color/white"
                 app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.Button.Circle"
-                />
-            <include android:id="@+id/record_panel"
+                tools:visibility="visible" />
+
+            <include
+                android:id="@+id/record_panel"
                 layout="@layout/record_panel"
-                android:visibility="@{viewModel.isRecording? View.VISIBLE : View.GONE, default=gone}"/>
+                android:visibility="@{viewModel.isRecording? View.VISIBLE : View.GONE, default=gone}" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/grid_drop_down"
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
+            <com.xontel.surveillancecameras.utils.CustomSpinner
+                android:id="@+id/drop_down"
                 android:layout_width="100dp"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:layout_marginHorizontal="24dp"
-                app:boxBackgroundMode="outline"
-                app:boxBackgroundColor="@color/white_transparent"
-                app:boxCornerRadiusBottomEnd="5dp"
-                app:boxCornerRadiusBottomStart="5dp"
-                app:boxCornerRadiusTopEnd="5dp"
-                app:boxCornerRadiusTopStart="5dp"
-                android:showDividers="end"
-                app:endIconTint="@color/black"
-                app:boxStrokeWidth="2dp"
-                app:boxStrokeWidthFocused="1dp">
-
-                <AutoCompleteTextView
-                    android:id="@+id/slide_show_filter"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:dropDownSelector="@drawable/rounded__bg"
-                    android:inputType="none"
-                    android:maxLines="1"
-                    android:padding="2dp"
-                    android:singleLine="true"
-                    android:textAlignment="viewStart"
-                    android:textColor="@color/white"
-                    tools:text="16"
-                    android:textSize="24dp"
-                    tools:ignore="LabelFor" />
-            </com.google.android.material.textfield.TextInputLayout>
+                android:background="@drawable/bordered_bg"
+                android:backgroundTint="@color/white" />
 
             <ImageView
                 android:id="@+id/btn_add"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:src="@drawable/ic_baseline_add_24"
-                android:tint="@color/white"/>
+                android:tint="@color/white" />
 
         </LinearLayout>
 
@@ -168,12 +149,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:layout_gravity="bottom|center_horizontal"
             android:layout_marginBottom="8dp"
             app:dotsColor="@color/white"
             app:dotsCornerRadius="8dp"
             app:dotsSize="16dp"
             app:dotsSpacing="4dp"
-            android:layout_gravity="bottom|center_horizontal"
             app:dotsWidthFactor="2.5"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

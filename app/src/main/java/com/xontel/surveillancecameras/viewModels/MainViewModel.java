@@ -68,13 +68,13 @@ public class MainViewModel extends BaseViewModel {
                 .flatMap(new Function<CamDevice, ObservableSource<CamDevice>>() {
                     @Override
                     public ObservableSource<CamDevice> apply(CamDevice camDevice) throws Throwable {
-                        return getDataManager().loginDevice(camDevice).toObservable();
+                        return /*getDataManager().loginDevice(camDevice).toObservable()*/ null;
                     }
                 })
                 .flatMap(new Function<CamDevice, ObservableSource<CamDevice>>() {
                     @Override
                     public ObservableSource<CamDevice> apply(CamDevice camDevice) throws Throwable {
-                        return getDataManager().getChannelsInfo(camDevice).toObservable();
+                        return /*getDataManager().getChannelsInfo(camDevice).toObservable()*/ null;
                     }
                 })
                 .toList()
@@ -98,7 +98,7 @@ public class MainViewModel extends BaseViewModel {
         List<IpCam> cams = new ArrayList<>();
 
         for (CamDevice camDevice : devices) {
-            cams.addAll(camDevice.getCams());
+//            cams.addAll(camDevice.getCams());
         }
         ipCams.setValue(cams);
     }
@@ -134,21 +134,13 @@ public class MainViewModel extends BaseViewModel {
         getCompositeDisposable().add(device.extractChannels()
                 .toObservable()
                 .flatMapIterable(list -> list)
-                .flatMap(new Function<IpCam, ObservableSource<Long>>() {
-                    @Override
-                    public ObservableSource<Long> apply(IpCam ipCam) throws Throwable {
-                        return ipCam.extractChannelName().toObservable()
-                                .flatMap(new Function<String, ObservableSource<Long>>() {
-                                    @Override
-                                    public ObservableSource<Long> apply(String name) throws Throwable {
-                                        ipCam.setDeviceId(device.getId());
-                                        ipCam.setDeviceName(device.name);
-                                        ipCam.setName(name);
-                                        return getDataManager().insertIpCam(ipCam).toObservable();
-                                    }
-                                });
-                    }
-                })
+                .flatMap((Function<IpCam, ObservableSource<Long>>) ipCam -> ipCam.extractChannelName().toObservable()
+                        .flatMap((Function<String, ObservableSource<Long>>) name -> {
+                            ipCam.setDeviceId(device.getId());
+                            ipCam.setDeviceName(device.name);
+                            ipCam.setName(name);
+                            return getDataManager().insertIpCam(ipCam).toObservable();
+                        }))
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribe(response -> {
@@ -167,7 +159,7 @@ public class MainViewModel extends BaseViewModel {
     }
 
 
-    public void updateDevice(CamDevice device) {
+    public void updateDevice(CamDevice device){
         getLoading().setValue(true);
         getCompositeDisposable().add(getDataManager()
                 .updateCamDevice(device)
@@ -230,7 +222,6 @@ public class MainViewModel extends BaseViewModel {
         camDevices.setValue(devices);
         populateIpCams();
     }
-
     private void updateDeviceInList(CamDevice device) {
         List<CamDevice> devices = camDevices.getValue();
         int deviceIndex = devices.indexOf(device);

@@ -99,7 +99,7 @@ public class HikUtil {
                         for (int i = 0; i < analogChannels.length; i++) {
                             Log.v(TAG, "channel : " + analogChannels[i]);
                             if (analogChannels[i] == CONNECTED) {
-                                cams.add(new IpCam(i + 1, (int) camDevice.getId(), camDevice.getName(), true, CamDeviceType.HIKVISION.getValue(), (int) camDevice.getLogId()));
+                                cams.add(new IpCam(i + 1, (int) camDevice.getId(), camDevice.getName(),  CamDeviceType.HIKVISION.getValue(), (int) camDevice.getLogId(), true));
                             }
                         }
 
@@ -107,7 +107,7 @@ public class HikUtil {
                         for (int i = 0; i < digitalChannels.length; i++) {
                             Log.v(TAG, "channel : " + digitalChannels[i]);
                             if (digitalChannels[i] == CONNECTED) {
-                                cams.add(new IpCam(i + DIGITAL_CHANNELS_START, (int) camDevice.getId(), camDevice.getName(), false, CamDeviceType.HIKVISION.getValue(),(int) camDevice.getLogId()
+                                cams.add(new IpCam(i + DIGITAL_CHANNELS_START, (int) camDevice.getId(), camDevice.getName(),  CamDeviceType.HIKVISION.getValue(),(int) camDevice.getLogId(), false
                                 ));
                             }
                         }
@@ -124,7 +124,7 @@ public class HikUtil {
             INT_PTR int_ptr = new INT_PTR();
             String name = "";
             NET_DVR_PICCFG_V30 net_dvr_piccfg_v30 = new NET_DVR_PICCFG_V30();
-            if (!HCNetSDK.getInstance().NET_DVR_GetDVRConfig((int) ipCam.getLoginId(),
+            if (!HCNetSDK.getInstance().NET_DVR_GetDVRConfig((int) ipCam.getLogId(),
                     HCNetSDK.NET_DVR_GET_PICCFG_V30,
                     ipCam.getChannel(), net_dvr_piccfg_v30)) {
                 int_ptr.iValue = HCNetSDK.getInstance().NET_DVR_GetLastError();

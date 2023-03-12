@@ -54,7 +54,7 @@ public class HIKPlayer extends CamPlayer implements PlayerCallBack.PlayerDisplay
                     }
                 }
             };
-            realPlayId = HCNetSDK.getInstance().NET_DVR_RealPlay_V40(mIpCam.getLoginId(), previewInfo, mRealPlayCallBack);
+            realPlayId = HCNetSDK.getInstance().NET_DVR_RealPlay_V40((int) mIpCam.getLogId(), previewInfo, mRealPlayCallBack);
             if (realPlayId < 0L) {
                 int error = HCNetSDK.getInstance().NET_DVR_GetLastError();
                 Log.v(TAG, "Last error " + error);

@@ -42,12 +42,21 @@ public class CamDevice implements Parcelable {
     @Ignore
     public long logId;
 
+
+    public CamDevice(long id, String name, String domain, String userName, String password, int deviceType, int startDigitalChan, int channels) {
+        this.id = id;
+        this.name = name;
+        this.domain = domain;
+        this.userName = userName;
+        this.password = password;
+        this.deviceType = deviceType;
+        this.startDigitalChan = startDigitalChan;
+        this.channels = channels;
+    }
+
+
     @Ignore
-    public List<IpCam> cams = new ArrayList<>();
-
-
-    public CamDevice(long logId, String name, String userName, String password, String domain, int deviceType) {
-        this.logId = logId;
+    public CamDevice(String name, String domain, String userName, String password, int deviceType) {
         this.name = name;
         this.domain = domain;
         this.userName = userName;
@@ -66,7 +75,6 @@ public class CamDevice implements Parcelable {
         startDigitalChan = in.readInt();
         channels = in.readInt();
         logId = in.readLong();
-        cams = in.readArrayList(IpCam.class.getClassLoader());
     }
 
     public static final Creator<CamDevice> CREATOR = new Creator<CamDevice>() {
@@ -92,7 +100,6 @@ public class CamDevice implements Parcelable {
         parcel.writeInt(startDigitalChan);
         parcel.writeInt(channels);
         parcel.writeLong(logId);
-        parcel.writeList(cams);
     }
 
     @Override
@@ -126,13 +133,6 @@ public class CamDevice implements Parcelable {
         this.name = name;
     }
 
-    public List<IpCam> getCams() {
-        return cams;
-    }
-
-    public void setCams(List<IpCam> cams) {
-        this.cams = cams;
-    }
 
     public long getLogId() {
         return logId;
@@ -205,7 +205,6 @@ public class CamDevice implements Parcelable {
                 ", deviceType=" + deviceType +
                 ", channels=" + channels +
                 ", logId=" + logId +
-                ", cams=" + cams +
                 '}';
     }
 

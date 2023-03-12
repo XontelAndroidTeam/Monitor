@@ -26,6 +26,7 @@ import javax.inject.Inject;
 
 
 public class DevicesFragment extends BaseFragment implements DevicesAdapter.ClickListener  {
+    public static final String KEY_VIEW_TYPE = "view_type";
     private FragmentDevicesBinding binding;
     private DevicesAdapter mDevicesAdapter;
     private MainViewModel mMainViewModel;
@@ -61,6 +62,7 @@ public class DevicesFragment extends BaseFragment implements DevicesAdapter.Clic
         binding.addDevice.getRoot().setOnClickListener(view -> {
             mDevicesAdapter.setCurrentSelectedItem(DevicesAdapter.NO_SELECTION);
         });
+
         binding.btnUpdate.setOnClickListener(view -> updateCurrentData());
         binding.btnDelete.setOnClickListener(view -> deleteCurrentData());
 
@@ -97,15 +99,13 @@ public class DevicesFragment extends BaseFragment implements DevicesAdapter.Clic
         });
         binding.btnSave.setOnClickListener(v -> {
             if (validateFields()) {
-                int deviceType = binding.dropDown.spinner.getSelectedItemPosition();
+                int deviceType = binding.dropDown.getSpinner().getSelectedItemPosition();
                 String deviceName = binding.etName.getText().toString();
                 String ip = binding.deviceFields.etDomain.getText().toString();
                 String userName = binding.deviceFields.etUsername.getText().toString();
                 String password = binding.deviceFields.etPassword.getText().toString();
 
-                CamDevice camDevice = CamDeviceType.HIKVISION.getValue() == deviceType ?
-                        new HikDevice(deviceName, userName, password, ip) :
-                        new DahuaDevice(deviceName, userName, password, ip);
+                CamDevice camDevice = new CamDevice(deviceName, ip,  userName, password, deviceType);
                 if(mode.equals(DataFormMode.CREATE)) {
                     mMainViewModel.createDevice(camDevice);
                     mDevicesAdapter.setCurrentSelectedItem(0);
@@ -140,7 +140,7 @@ public class DevicesFragment extends BaseFragment implements DevicesAdapter.Clic
         ArrayAdapter typesDropDownAdapter = new ArrayAdapter<String>(getContext(),
                 android.R.layout.simple_spinner_dropdown_item, types
         );
-        binding.dropDown.spinner.setAdapter(typesDropDownAdapter);
+        binding.dropDown.getSpinner().setAdapter(typesDropDownAdapter);
         binding.setLifecycleOwner(this);
     }
 
@@ -148,7 +148,7 @@ public class DevicesFragment extends BaseFragment implements DevicesAdapter.Clic
         binding.llStatus.setVisibility(View.VISIBLE);
         binding.channels.setText(data.getChannels()+"");
         binding.status.setColorFilter(ContextCompat.getColor(requireContext(), data.isLoggedIn() ? R.color.green_color : R.color.red_color));
-        binding.dropDown.spinner.setSelection(data.deviceType);
+        binding.dropDown.getSpinner().setSelection(data.deviceType);
         binding.etName.setText(data.getName());
         binding.deviceFields.etDomain.setText(data.getDomain());
         binding.deviceFields.etUsername.setText(data.getUserName());
@@ -202,7 +202,7 @@ public class DevicesFragment extends BaseFragment implements DevicesAdapter.Clic
     private void flushAllFields() {
         setAllFieldsEnabled(true);
         setAllFieldsEmpty();
-        binding.dropDown.spinner.setSelection(0);
+        binding.dropDown.getSpinner().setSelection(0);
         binding.btnSave.setVisibility(View.VISIBLE);
         binding.btnDelete.setVisibility(View.GONE);
         binding.btnUpdate.setVisibility(View.GONE);
@@ -215,7 +215,7 @@ public class DevicesFragment extends BaseFragment implements DevicesAdapter.Clic
         binding.btnSave.setVisibility(View.VISIBLE);
         binding.btnDelete.setVisibility(View.GONE);
         binding.btnUpdate.setVisibility(View.GONE);
-        binding.dropDown.getRoot().setEnabled(true);
+        binding.dropDown.getSpinner().setEnabled(true);
     }
 
 
@@ -235,7 +235,7 @@ public class DevicesFragment extends BaseFragment implements DevicesAdapter.Clic
         binding.deviceFields.usernameInputLayout.setEnabled(enabled);
         binding.deviceFields.domainInputLayout.setEnabled(enabled);
         binding.deviceFields.descriptionInputLayout.setEnabled(enabled);
-        binding.dropDown.spinner.setEnabled(enabled);
+        binding.dropDown.getSpinner().setEnabled(enabled);
     }
 
     private void lockAllFields() {

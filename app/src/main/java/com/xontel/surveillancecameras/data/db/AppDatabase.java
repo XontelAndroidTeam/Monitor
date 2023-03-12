@@ -16,7 +16,7 @@ import com.xontel.surveillancecameras.data.db.model.IpCam;
  * Created on : Feb 01, 2019
  * Author     : AndroidWave
  */
-@Database(entities = {CamDevice.class, IpCam.class}, version = 7, exportSchema = false)
+@Database(entities = {CamDevice.class, IpCam.class}, version = 8, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     private static final String DATABASE_NAME = "cameras-database";
     private static AppDatabase mInstance;

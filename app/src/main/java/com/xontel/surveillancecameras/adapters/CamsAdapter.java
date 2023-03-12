@@ -210,7 +210,7 @@ public class CamsAdapter extends RecyclerView.Adapter<BaseViewHolder>  {
 
         @Override
         public void onClick(View view) {
-            ((HomeActivity) context).addNewCam();
+//            ((HomeActivity) context).addNewCam();
         }
     }
 

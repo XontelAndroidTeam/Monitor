@@ -91,9 +91,8 @@
                         android:layout_weight="1"
                         android:text="@string/device_info" />
 
-                    <include
+                    <com.xontel.surveillancecameras.utils.CustomSpinner
                         android:id="@+id/drop_down"
-                        layout="@layout/drop_down"
                         android:layout_width="200dp"
                         android:layout_height="50dp" />
                 </LinearLayout>

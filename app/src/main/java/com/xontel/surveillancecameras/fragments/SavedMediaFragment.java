@@ -118,9 +118,6 @@ public class SavedMediaFragment extends BaseFragment implements MediaAdapter.Cli
         setHasOptionsMenu(true);
         getFragmentComponent().inject(this);
         mMediaViewModel = new ViewModelProvider(this, providerFactory).get(MediaViewModel.class);
-        mMediaViewModel.getAllAppMedia();
-
-
     }
 
     @Override
@@ -134,6 +131,7 @@ public class SavedMediaFragment extends BaseFragment implements MediaAdapter.Cli
 
     @Override
     protected void setUp(View view) {
+                mMediaViewModel.getAllAppMedia();
         setupMediaList();
 
         mMediaViewModel.getLoading().observe(getViewLifecycleOwner(), new Observer<Boolean>() {

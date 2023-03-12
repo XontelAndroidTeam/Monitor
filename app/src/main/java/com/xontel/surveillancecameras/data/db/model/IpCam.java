@@ -20,49 +20,48 @@ public class IpCam implements Parcelable {
 
     @PrimaryKey(autoGenerate = true)
     public long id;
-
-    @Ignore
-    private int channel;
-
     @ColumnInfo(name = "device_id")
     private long deviceId;
-
     @ColumnInfo(name = "device_name")
     private String deviceName;
-
     @ColumnInfo(name = "type")
     private int type;
-
-
     @ColumnInfo(name = "stream_type")
     private int streamType = 1;
-
+    @ColumnInfo(name = "name")
+    private String name;
+    @ColumnInfo(name = "full_name")
+    private String fullName;
+    @ColumnInfo(name = "included")
+    private boolean included = true;
+    @ColumnInfo(name = "analog")
+    private boolean analog;
+    @ColumnInfo(name = "channel")
+    private int channel;
     @Ignore
     private long logId;
 
 
-    @ColumnInfo(name = "name")
-    private String name;
+    public IpCam(long id,  long deviceId, String deviceName, int type, int streamType, String name, String fullName, boolean included, boolean analog) {
+        this.id = id;
+        this.deviceId = deviceId;
+        this.deviceName = deviceName;
+        this.type = type;
+        this.streamType = streamType;
+        this.name = name;
+        this.fullName = fullName;
+        this.included = included;
+        this.analog = analog;
+    }
 
-    @ColumnInfo(name = "full_name")
-    private String fullName;
-
-
-    @ColumnInfo(name = "included")
-    private boolean included = true;
-
-    @ColumnInfo(name = "analog")
-    private boolean analog;
-
-
-    public IpCam(int channel, int deviceId, String deviceName, boolean analog, int type, long logId) {
+    @Ignore
+    public IpCam(int channel, long deviceId, String deviceName, int type, long logId, boolean analog) {
         this.channel = channel;
         this.deviceId = deviceId;
         this.deviceName = deviceName;
         this.type = type;
         this.logId = logId;
         this.analog = analog;
-
     }
 
     public static final Creator<IpCam> CREATOR = new Creator<IpCam>() {

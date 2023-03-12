@@ -37,8 +37,8 @@ public class DahuaPlayer extends CamPlayer implements CamPlayerView.SurfaceCallb
     @Override
     public void openStream() {
         new Thread(()->{
-            Log.v(TAG, "in player logid : "+mIpCam.getLoginId()+" channel : "+mIpCam.getChannel());
-            realPlayId = (int) INetSDK.RealPlayEx(mIpCam.getLoginId(), 0, SDK_RealPlayType.SDK_RType_Realplay_1);
+            Log.v(TAG, "in player logid : "+mIpCam.getLogId()+" channel : "+mIpCam.getChannel());
+            realPlayId = (int) INetSDK.RealPlayEx(mIpCam.getLogId(), 0, SDK_RealPlayType.SDK_RType_Realplay_1);
             if (realPlayId == 0) {
                 showError(" DAHUA_RealPlay is failed!Err: ");
                 return;

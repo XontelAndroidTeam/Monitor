@@ -6,11 +6,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Interpolator;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.Observable;
@@ -24,7 +27,9 @@ import com.xontel.surveillancecameras.activities.HomeActivity;
 import com.xontel.surveillancecameras.adapters.PagerAdapter;
 import com.xontel.surveillancecameras.base.BaseFragment;
 import com.xontel.surveillancecameras.databinding.FragmentMonitorBinding;
+import com.xontel.surveillancecameras.utils.CustomSpinner;
 import com.xontel.surveillancecameras.utils.FixedSpeedScroller;
+import com.xontel.surveillancecameras.utils.StorageHelper;
 import com.xontel.surveillancecameras.viewModels.MainViewModel;
 import com.xontel.surveillancecameras.viewModels.ViewModelProviderFactory;
 
@@ -35,7 +40,7 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 
-public class MonitorFragment extends BaseFragment implements AdapterView.OnItemClickListener {
+public class MonitorFragment extends BaseFragment implements AdapterView.OnItemSelectedListener {
     public static final String TAG = MonitorFragment.class.getSimpleName();
     private FragmentMonitorBinding binding;
     private PagerAdapter pagerAdapter;
@@ -51,6 +56,8 @@ public class MonitorFragment extends BaseFragment implements AdapterView.OnItemC
     };
 
     private TimeCounter timer;
+
+    private Spinner mSpinner;
     @Inject
     ViewModelProviderFactory providerFactory;
 
@@ -69,7 +76,7 @@ public class MonitorFragment extends BaseFragment implements AdapterView.OnItemC
 
     private void hideButtons() {
         if (isBtnsShown) {
-            binding.slideShowFilter.dismissDropDown();
+//            binding.dropDown.getSpinner().clos;
             binding.llBtns.animate()
                     .alpha(0.0f)
                     .translationY(-100)
@@ -149,9 +156,6 @@ public class MonitorFragment extends BaseFragment implements AdapterView.OnItemC
     }
 
 
-    private void navigateToDevices() {
-        NavHostFragment.findNavController(this).navigate(R.id.action_monitorFragment_to_deviceFragment);
-    }
 
 
     @Override
@@ -191,22 +195,12 @@ public class MonitorFragment extends BaseFragment implements AdapterView.OnItemC
                 mainViewModel.recordVideo.setValue(!mainViewModel.recordVideo.getValue());
             }
         });
-        setupGridDropDown();
+//        setupGridDropDown();
         setupObservables();
         setupCamsPager();
     }
 
 
-    private void setupGridDropDown() {
-        ArrayAdapter gridDropDownAdapter = new ArrayAdapter<String>(getContext(),
-                android.R.layout.simple_spinner_dropdown_item,
-                getResources().getStringArray(R.array.grid_count));
-        binding.slideShowFilter.setText(String.format("%d", mainViewModel.mGridObservable.getValue()), false);
-        binding.slideShowFilter.setAdapter(gridDropDownAdapter);
-        binding.slideShowFilter.setOnItemClickListener(this);
-
-        binding.setLifecycleOwner(this);
-    }
 
 
     private void setupCamsPager() {
@@ -273,9 +267,9 @@ public class MonitorFragment extends BaseFragment implements AdapterView.OnItemC
     }
 
     private void updateDropDownSelectionIfNotChanged() {
-        int dropDownSelection = Integer.parseInt(binding.slideShowFilter.getText().toString());
+        int dropDownSelection = Integer.parseInt(getResources().getStringArray(R.array.grid_count)[mSpinner.getSelectedItemPosition()]);
         if (dropDownSelection != mainViewModel.mGridObservable.getValue()) {
-            binding.slideShowFilter.setText(String.format("%d", mainViewModel.mGridObservable.getValue()), false);
+            binding.dropDown.getSpinner().setSelection(0); // TODO fix it
         }
     }
 
@@ -310,17 +304,23 @@ public class MonitorFragment extends BaseFragment implements AdapterView.OnItemC
         Log.v(TAG, "onDestroy " + hashCode());
     }
 
+
+
     @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                int gridCount = Integer.parseInt(binding.slideShowFilter.getText().toString());
+                int gridCount = Integer.parseInt(getResources().getStringArray(R.array.grid_count)[i]);
                 if (mainViewModel.getGridObservable().getValue() != gridCount) {
                     mainViewModel.mGridObservable.setGridCount(gridCount + "");
                 }
             }
         }).start();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
 
     }
 }

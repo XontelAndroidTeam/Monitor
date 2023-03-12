@@ -35,7 +35,7 @@ public class MediaViewModel extends BaseViewModel {
     @Inject
     public MediaViewModel(Context context, SchedulerProvider mSchedulerProvider, CompositeDisposable mCompositeDisposable, DataManager manager) {
         super(mSchedulerProvider, mCompositeDisposable, manager);
-        this.context = context ;
+        this.context = context;
     }
 
 
@@ -43,17 +43,17 @@ public class MediaViewModel extends BaseViewModel {
         getLoading().setValue(true);
         getCompositeDisposable().add(getDataManager()
                 .getStoredMedia(context, Environment.DIRECTORY_PICTURES)
-                        .mergeWith(getDataManager().getStoredMedia(context, Environment.DIRECTORY_MOVIES))
+//                        .mergeWith(getDataManager().getStoredMedia(context, Environment.DIRECTORY_MOVIES))
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribe(response -> {
-                    getLoading().setValue(false);
-                   media.setValue(response);
+                    getLoading().postValue(false);
+                   media.postValue(response);
 
                 }, error -> {
                     Log.e(TAG, error.getMessage() );
-                    getLoading().setValue(false);
-                    getError().setValue(true);
+                    getLoading().postValue(false);
+                    getError().postValue(true);
                     setErrorMessage(error.getMessage());
                 }));
     }

@@ -1,96 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
     </data>
 
-    <com.facebook.shimmer.ShimmerFrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:shimmer_repeat_delay="1"
-        app:shimmer_repeat_count="10000"
-        android:id="@+id/shimmer">
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:layout_gravity="center"
+        android:background="@drawable/rounded__bg"
+        android:backgroundTint="@color/white"
+        >
 
-        <GridLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:rowCount="3"
-            android:columnCount="3">
 
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_margin="8dp"
-                android:layout_columnWeight="1"
-                android:layout_rowWeight="1"
-                android:background="@color/grey_color" />
 
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_margin="8dp"
-                android:layout_columnWeight="1"
-                android:layout_rowWeight="1"
-                android:background="@color/grey_color" />
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/pb_loading"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:indeterminate="true"
+            android:layout_centerHorizontal="true"
+            android:indeterminateTint="@color/primary_color"
+            app:indicatorColor="@color/primary_color"
+            app:indicatorSize="100dp"
+            app:trackThickness="4dp" />
 
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_margin="8dp"
-                android:layout_columnWeight="1"
-                android:layout_rowWeight="1"
-                android:background="@color/grey_color" />
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/pb_loading"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/black_color"
+            android:textSize="24dp"
+            tools:text="loading" />
 
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_margin="8dp"
-                android:layout_columnWeight="1"
-                android:layout_rowWeight="1"
-                android:background="@color/grey_color" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_margin="8dp"
-                android:layout_columnWeight="1"
-                android:layout_rowWeight="1"
-                android:background="@color/grey_color" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_margin="8dp"
-                android:layout_columnWeight="1"
-                android:layout_rowWeight="1"
-                android:background="@color/grey_color" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_margin="8dp"
-                android:layout_columnWeight="1"
-                android:layout_rowWeight="1"
-                android:background="@color/grey_color" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_margin="8dp"
-                android:layout_columnWeight="1"
-                android:layout_rowWeight="1"
-                android:background="@color/grey_color" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_margin="8dp"
-                android:layout_columnWeight="1"
-                android:layout_rowWeight="1"
-                android:background="@color/grey_color" />
-        </GridLayout>
-
-    </com.facebook.shimmer.ShimmerFrameLayout>
+    </RelativeLayout>
 </layout>
